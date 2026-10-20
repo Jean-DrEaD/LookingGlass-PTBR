@@ -1,19 +1,17 @@
-<p align="center">
-<img src="https://raw.githubusercontent.com/Jean-DrEaD/Looking-Glass-android-edition/assets/icon.png" alt="Looking Glass" width="256">
-</p>
+<p align="center"><img src="docs/icon.png" width="160" alt="Looking Glass PT-BR"></p>
 
 <h1 align="center">Looking Glass — Edição PT-BR</h1>
 
+<p align="center">Port do recomp em Rust de <i>American McGee's Alice</i> para <b>Android</b> e <b>Windows</b>, com tradução em português do Brasil.</p>
+
 <p align="center">
-Port do recomp em Rust de <em>American McGee's Alice</em> para <strong>Android</strong> e <strong>Windows</strong>, com tradução em português do Brasil.
-</p>
-<p align="center">
-  <a href="https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest"><img src="https://img.shields.io/github/v/release/Jean-DrEaD/Looking-Glass-android-edition?label=release&color=b3121f" alt="Release"></a>
-  <a href="https://github.com/Jean-DrEaD/Looking-Glass-android-edition/actions"><img src="https://img.shields.io/github/actions/workflow/status/Jean-DrEaD/Looking-Glass-android-edition/android.yml?branch=android-br&label=build" alt="Build"></a>
-  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android">
-  <img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white" alt="Windows">
-  <img src="https://img.shields.io/badge/idioma-pt--BR-009c3b" alt="pt-BR">
-  <a href="LICENSE-MIT"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue" alt="MIT"></a>
+  <a href="https://github.com/Jean-DrEaD/LookingGlass-PTBR/releases/latest"><img src="https://img.shields.io/github/v/release/Jean-DrEaD/LookingGlass-PTBR?include_prereleases&label=release"></a>
+  <a href="https://github.com/Jean-DrEaD/LookingGlass-PTBR/actions/workflows/android.yml"><img src="https://img.shields.io/github/actions/workflow/status/Jean-DrEaD/LookingGlass-PTBR/android.yml?label=android"></a>
+  <a href="https://github.com/Jean-DrEaD/LookingGlass-PTBR/actions/workflows/windows.yml"><img src="https://img.shields.io/github/actions/workflow/status/Jean-DrEaD/LookingGlass-PTBR/windows.yml?label=windows"></a>
+  <img src="https://img.shields.io/badge/Android-8.0+-3DDC84?logo=android&logoColor=white">
+  <img src="https://img.shields.io/badge/Windows-10+-0078D6">
+  <img src="https://img.shields.io/badge/idioma-pt--BR-009C3B">
+  <img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue">
 </p>
 
 > ⚠️ **Os arquivos do jogo não estão incluídos.** Use uma cópia de *American McGee's Alice* que você tenha direito de usar.
@@ -27,12 +25,13 @@ Port do recomp em Rust de <em>American McGee's Alice</em> para <strong>Android</
 - [Licença](#licença)
 
 ## Download
-| Plataforma | Arquivo | Branch |
-|---|---|---|
-| Android | [APK (última versão)](https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest) | [`android-br`](../../tree/android-br) |
-| Windows | [ZIP (última versão)](https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest) | [`windows-br`](../../tree/windows-br) |
 
-Confira os arquivos com o [SHA256SUMS.txt](https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest/download/SHA256SUMS.txt). Leia as [notas da versão](https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest) antes de instalar.
+| Plataforma | Arquivo | Checksum |
+|---|---|---|
+| Android 8.0+ | [APK](https://github.com/Jean-DrEaD/LookingGlass-PTBR/releases/latest/download/LookingGlass-PTBR-Android.apk) | [sha256](https://github.com/Jean-DrEaD/LookingGlass-PTBR/releases/latest/download/LookingGlass-PTBR-Android.apk.sha256) |
+| Windows 10+ | [ZIP](https://github.com/Jean-DrEaD/LookingGlass-PTBR/releases/latest/download/LookingGlass-PTBR-Windows.zip) | [sha256](https://github.com/Jean-DrEaD/LookingGlass-PTBR/releases/latest/download/LookingGlass-PTBR-Windows.zip.sha256) |
+
+[Todas as versões](https://github.com/Jean-DrEaD/LookingGlass-PTBR/releases)
 
 ## Instalação
 

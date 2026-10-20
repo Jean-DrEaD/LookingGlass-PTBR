@@ -3,7 +3,7 @@ name: Windows Build
 on:
   push:
     branches: [android-br]
-    tags: ['br*']
+    tags: ['br*', 'alice_br_v*']
   workflow_dispatch:
 
 permissions:
@@ -55,6 +55,26 @@ jobs:
           Compress-Archive -Path dist/LookingGlass -DestinationPath "dist/$n"
           (Get-FileHash "dist/$n" -Algorithm SHA256).Hash.ToLower() + "  $n" | Out-File dist/SHA256SUMS-windows.txt -Encoding ascii
 
+      - name: Nomes padronizados
+
+        if: startsWith(github.ref, 'refs/tags/')
+
+        shell: pwsh
+
+        run: |
+
+          New-Item rel -ItemType Directory -Force | Out-Null
+
+          $z = Get-ChildItem -Recurse -Filter *.zip | ? { $_.FullName -notmatch '[\/]rel[\/]' } | Select-Object -First 1
+
+          if (-not $z) { throw "ZIP não encontrado" }
+
+          Copy-Item $z.FullName rel/LookingGlass-PTBR-Windows.zip
+
+          $h = (Get-FileHash rel/LookingGlass-PTBR-Windows.zip SHA256).Hash.ToLower()
+
+          "$h  LookingGlass-PTBR-Windows.zip" | Set-Content rel/LookingGlass-PTBR-Windows.zip.sha256 -Encoding ascii
+
       - name: Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
@@ -79,7 +99,8 @@ jobs:
 
             ### Requisitos
             Arquivos `pak0`, `pak1_large`, `pak2`, `pak3`, `pak4_*` e `pak5_mod` (.pk3). Confira os checksums em `SHA256SUMS*.txt`.
+          name: Looking Glass PT-BR ${{ github.ref_name }}
           files: |
-            dist/LookingGlass-windows-*.zip
-            dist/SHA256SUMS-windows.txt
+            rel/LookingGlass-PTBR-Windows.zip
+            rel/LookingGlass-PTBR-Windows.zip.sha256
           generate_release_notes: true
