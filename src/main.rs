@@ -34,7 +34,7 @@ mod duchess;
 mod duchess_check;
 mod electric;
 mod encounters;
-mod entity;
+use lg_core::entity;
 mod environment;
 mod event;
 mod event_check;
