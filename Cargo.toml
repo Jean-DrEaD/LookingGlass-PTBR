@@ -1,3 +1,6 @@
+[workspace]
+members = [".", "crates/lg-core"]
+
 [package]
 name = "looking-glass"
 version = "0.32.0-preview.2"
@@ -7,6 +10,7 @@ publish = false
 description = "Local Rust compatibility research for user-supplied Alice game data"
 
 [dependencies]
+lg-core = { path = "crates/lg-core" }
 anyhow = "1.0"
 macroquad = "=0.4.14"
 zip = { version = "=0.6.6", default-features = false, features = ["deflate"] }
