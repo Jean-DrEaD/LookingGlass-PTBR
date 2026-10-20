@@ -47,7 +47,7 @@ mod fortress;
 mod fortress_route;
 mod frozen;
 mod gym;
-mod i18n;
+use lg_core::i18n;
 mod hud;
 mod input;
 mod interaction;
