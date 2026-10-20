@@ -5,4 +5,11 @@ edition = "2021"
 rust-version = "1.86"
 publish = false
 
+[features]
+default = ["std"]
+std = ["serde/std", "glam/std", "anyhow/std"]
+
 [dependencies]
+serde = { version = "=1.0.228", default-features = false, features = ["derive", "alloc"] }
+glam = { version = "=0.27.0", default-features = false, features = ["libm", "serde"] }
+anyhow = { version = "1.0", default-features = false }
