@@ -205,11 +205,17 @@ impl Skip {
         if self.scene.is_none() {
             return;
         }
-        let label = format!("Hold {key} to skip scene");
-        let w = ui.font.width(&label, 18.);
+        let label = crate::i18n::tr(&format!("Hold {key} to skip scene")).into_owned();
+        let max = screen_width() * 0.6;
+        let mut size = 18.;
+        let mut w = ui.font.width(&label, size);
+        if w > max {
+            size = (18. * max / w).max(12.);
+            w = ui.font.width(&label, size);
+        }
         let x = screen_width() - w - 34.;
         ui.dialog(Rect::new(x - 18., 18., w + 36., 36.));
-        ui.label(&label, x, 41., 18., WHITE);
+        ui.label(&label, x, 41., size, WHITE);
         draw_rectangle(x, 48., w * (self.held / 0.65).min(1.), 2., WHITE);
     }
 }

@@ -44,11 +44,28 @@ impl Canvas {
 }
 
 pub struct BitmapFont {
+    ttf: bool,
     texture: Texture2D,
     indices: Vec<i32>,
     glyphs: Vec<Rect>,
     height: f32,
 }
+
+fn font_character(c: char) -> char {
+    match c {
+        '’' | '‘' => '\'',
+        '“' | '”' => '"',
+        '—' | '–' => '-',
+            'õ' => 'o', 'Õ' => 'O', 'ã' => 'a', 'Ã' => 'A',
+        _ => c,
+    }
+}
+
+fn direct_glyph_index(indices: &[i32], c: char) -> Option<usize> {
+    indices.get(font_character(c) as usize).copied()
+        .filter(|&i| i >= 0).map(|i| i as usize)
+}
+
 impl BitmapFont {
     pub fn load(assets: &mut Assets, name: &str) -> Result<Self> {
         let tokens = bsp::tokens(&String::from_utf8_lossy(
@@ -98,8 +115,14 @@ impl BitmapFont {
                 .all(|&i| i == -1 || (i >= 0 && (i as usize) < glyphs.len())),
             "Invalid glyph reference"
         );
+        let atlas_path = if name == "asrafel" && assets.contains("gfx/fonts/asrafel.tga") {
+        "gfx/fonts/asrafel.tga".to_owned()
+        } else {
+    format!("gfx/2d/fonts/{name}.tga")
+        };
         Ok(Self {
-            texture: load_texture(assets, &format!("gfx/2d/fonts/{name}.tga"))?,
+            ttf: name == "asrafel",
+            texture: load_texture(assets, &atlas_path)?,
             indices,
             glyphs,
             height: tokens
@@ -114,24 +137,50 @@ impl BitmapFont {
             '’' | '‘' => '\'',
             '“' | '”' => '"',
             '—' | '–' => '-',
+            'õ' => 'o', 'Õ' => 'O', 'ã' => 'a', 'Ã' => 'A',
             _ => c,
         };
-        let n = c as usize;
-        let i = self
-            .indices
-            .get(n)
-            .copied()
-            .unwrap_or(self.indices[b'?' as usize]);
+        let look = |c: char| self.indices.get(c as usize).copied().unwrap_or(-1);
+        let mut i = look(c);
+        if i < 0 && !c.is_ascii() {
+            // Fonte sem a letra acentuada: usa a letra sem acento só aqui
+            if let Some(b) = deunicode::deunicode_char(c).and_then(|s| s.chars().next()) {
+                i = look(b);
+            }
+            if i < 0 {
+                i = self.indices[b'?' as usize];
+            }
+        }
         if i < 0 {
             Rect::default()
         } else {
             self.glyphs[i as usize]
         }
     }
+    pub(crate) fn supports_character(&self, c: char) -> bool {
+        direct_glyph_index(&self.indices, c).is_some()
+            || deunicode::deunicode_char(c)
+                .and_then(|s| s.chars().next())
+                .is_some_and(|b| direct_glyph_index(&self.indices, b).is_some())
+    }
+    pub(crate) fn visible_vertical_bounds(&self, text: &str, size: f32) -> Option<(f32, f32)> {
+        let scale = size / self.height;
+        text.chars()
+            .map(|c| self.glyph(c))
+            .filter(|g| g.w > 0. && g.h > 0.)
+            .fold(None, |acc: Option<(f32, f32)>, g| {
+                let b = g.h * scale;
+                Some(acc.map_or((0., b), |(t, bot)| (t, bot.max(b))))
+            })
+    }
     pub fn width(&self, text: &str, size: f32) -> f32 {
+        let __t = crate::i18n::tr(text);
+        let text: &str = &__t;
         text.chars().map(|c| self.glyph(c).w).sum::<f32>() * size / self.height
     }
     pub fn left(&self, text: &str, x: f32, y: f32, size: f32, color: Color) {
+        let __t = crate::i18n::tr(text);
+        let text: &str = &__t;
         self.draw(
             Canvas {
                 scale: 1.,
@@ -144,15 +193,24 @@ impl BitmapFont {
         );
     }
     pub fn draw_left(&self, canvas: Canvas, text: &str, mut r: Rect, size: f32, color: Color) {
+        let __t = crate::i18n::tr(text);
+        let text: &str = &__t;
         r.w = r.w.min(self.width(text, size));
         self.draw(canvas, text, r, size, color);
     }
     pub fn draw(&self, canvas: Canvas, text: &str, r: Rect, size: f32, color: Color) {
+        let __t = crate::i18n::tr(text);
+        let text: &str = &__t;
         let width: f32 = text.chars().map(|c| self.glyph(c).w).sum();
         let scale = (size / self.height).min(r.w / width.max(1.));
         let mut x = r.x + (r.w - width * scale) * 0.5;
         let y = r.y + (r.h - self.height * scale) * 0.5;
         for c in text.chars() {
+            let __a = if matches!(c, 'õ' | 'Õ' | 'ã' | 'Ã') { accent_of(c) } else { 0 };
+            if __a > 0 {
+                let g = self.glyph(c);
+                if __a != 0 { draw_accent(__a, c.is_uppercase(), canvas.rect(Rect::new(x, y, g.w * scale, g.h * scale)), color); }
+            }
             let glyph = self.glyph(c);
             if glyph.w > 0. && glyph.h > 0. {
                 let dest = canvas.rect(Rect::new(x, y, glyph.w * scale, glyph.h * scale));
@@ -253,6 +311,8 @@ impl Ui {
         }
     }
     pub fn center(&self, text: &str, r: Rect, size: f32, color: Color) {
+        let __tr = crate::i18n::tr(text);
+        let text: &str = &__tr;
         self.font.draw(
             Canvas {
                 scale: 1.,
@@ -265,10 +325,14 @@ impl Ui {
         );
     }
     pub fn label(&self, text: &str, x: f32, y: f32, size: f32, color: Color) {
+        let __tr = crate::i18n::tr(text);
+        let text: &str = &__tr;
         self.font.left(text, x + 1., y + 1., size, BLACK);
         self.font.left(text, x, y, size, color);
     }
     pub fn fit_label(&self, text: &str, x: f32, y: f32, size: f32, width: f32, color: Color) {
+        let __tr = crate::i18n::tr(text);
+        let text: &str = &__tr;
         self.label(
             text,
             x,
@@ -278,6 +342,8 @@ impl Ui {
         );
     }
     pub fn toast(&self, text: &str, y: f32) {
+        let __tr = crate::i18n::tr(text);
+        let text: &str = &__tr;
         let s = overlay_scale();
         let size = 22. * s;
         let w = (self.font.width(text, size) + 56. * s)
@@ -301,6 +367,8 @@ impl Ui {
         }
     }
     pub fn paused(&self, prompt: &str) {
+        let __tr = crate::i18n::tr(prompt);
+        let prompt: &str = &__tr;
         let s = (screen_height() / 600.).clamp(0.7, 1.5 * overlay_scale());
         draw_texture_ex(
             &self.pause,
@@ -380,5 +448,67 @@ fn nine(t: &Texture2D, r: Rect, b: f32) {
                 },
             );
         }
+    }
+}
+
+pub fn fold_accents(s: &str) -> String {
+    s.chars().map(|c| match c {
+        'á'|'à'|'â'|'ã'|'ä' => 'a', 'Á'|'À'|'Â'|'Ã'|'Ä' => 'A',
+        'é'|'ê'|'è' => 'e', 'É'|'Ê'|'È' => 'E',
+        'í'|'ì' => 'i', 'Í'|'Ì' => 'I',
+        'ó'|'ô'|'õ'|'ò' => 'o', 'Ó'|'Ô'|'Õ'|'Ò' => 'O',
+        'ú'|'ü'|'ù' => 'u', 'Ú'|'Ü'|'Ù' => 'U',
+        'ç' => 'c', 'Ç' => 'C', _ => c,
+    }).collect()
+}
+pub fn accent_of(c: char) -> u8 {
+    match c {
+        'á'|'é'|'í'|'ó'|'ú'|'Á'|'É'|'Í'|'Ó'|'Ú' => 1,
+        'à'|'è'|'ì'|'ò'|'ù'|'À'|'È'|'Ì'|'Ò'|'Ù' => 2,
+        'â'|'ê'|'ô'|'Â'|'Ê'|'Ô' => 3,
+        'ã'|'õ'|'Ã'|'Õ' => 4,
+        'ä'|'ü'|'Ä'|'Ü' => 5,
+        'ç'|'Ç' => 6,
+        _ => 0,
+    }
+}
+
+fn draw_accent(kind: u8, upper: bool, d: Rect, color: Color) {
+    // Ajuste fino: topo da tinta da letra e linha de base, em fração da célula.
+    const UP_TOP: f32 = 0.10;   // topo das maiúsculas
+    const LO_TOP: f32 = 0.34;   // topo das minúsculas (versaletes)
+    const BASE: f32 = 0.80;     // linha de base (cedilha)
+    let ink = if upper { UP_TOP } else { LO_TOP };
+    let h = d.h * 0.13;                       // altura do acento
+    let bot = d.y + d.h * ink - d.h * 0.03;   // logo acima da letra
+    let top = bot - h;
+    let mid = (top + bot) * 0.5;
+    let cx = d.x + d.w * 0.5;
+    let w = d.w * 0.30;
+    let th = (d.h * 0.035).max(1.);
+    let color = Color::new(color.r * 0.92, color.g * 0.92, color.b * 0.92, color.a * 0.9);
+    match kind {
+        1 => draw_line(cx - w * 0.3, bot, cx + w * 0.3, top, th, color),
+        2 => draw_line(cx - w * 0.3, top, cx + w * 0.3, bot, th, color),
+        3 => {
+            draw_line(cx - w * 0.5, bot, cx, top, th, color);
+            draw_line(cx, top, cx + w * 0.5, bot, th, color);
+        }
+        4 => {
+            let (a, b) = (mid + h * 0.25, mid - h * 0.25);
+            draw_line(cx - w * 0.7, a, cx - w * 0.25, b, th, color);
+            draw_line(cx - w * 0.25, b, cx + w * 0.25, a, th, color);
+            draw_line(cx + w * 0.25, a, cx + w * 0.7, b, th, color);
+        }
+        5 => {
+            draw_circle(cx - w * 0.4, mid, th * 0.9, color);
+            draw_circle(cx + w * 0.4, mid, th * 0.9, color);
+        }
+        6 => {
+            let b = d.y + d.h * BASE;
+            draw_line(cx, b, cx + w * 0.3, b + d.h * 0.06, th, color);
+            draw_line(cx + w * 0.3, b + d.h * 0.06, cx - w * 0.2, b + d.h * 0.11, th, color);
+        }
+        _ => {}
     }
 }

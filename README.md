@@ -1,185 +1,75 @@
-# Looking Glass — American McGee's Alice Re-Remaster
+<p align="center">
+<img src="https://raw.githubusercontent.com/Jean-DrEaD/Looking-Glass-android-edition/assets/icon.png" alt="Looking Glass" width="256">
+</p>
 
-**Play the whole game, from the opening to the final boss, ending and credits.**
-All **39 campaign visits**, including return visits, are playable in this
-experimental Windows preview.
+<h1 align="center">Looking Glass — Edição PT-BR</h1>
 
-Looking Glass is an unofficial **re-remaster of American McGee's Alice**: it
-brings the **2011 rerelease's game data** into a newly written, open-source Rust
-engine with guided setup, configurable controller support and modern display
-options. It uses your own compatible game files and runs independently of the
-original game executable, gameplay DLL and Alice: Madness Returns.
+<p align="center">
+Port do recomp em Rust de <em>American McGee's Alice</em> para <strong>Android</strong> e <strong>Windows</strong>, com tradução em português do Brasil.
+</p>
+<p align="center">
+  <a href="https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest"><img src="https://img.shields.io/github/v/release/Jean-DrEaD/Looking-Glass-android-edition?label=release&color=b3121f" alt="Release"></a>
+  <a href="https://github.com/Jean-DrEaD/Looking-Glass-android-edition/actions"><img src="https://img.shields.io/github/actions/workflow/status/Jean-DrEaD/Looking-Glass-android-edition/android.yml?branch=android-br&label=build" alt="Build"></a>
+  <img src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" alt="Android">
+  <img src="https://img.shields.io/badge/Windows-10%2B-0078D6?logo=windows&logoColor=white" alt="Windows">
+  <img src="https://img.shields.io/badge/idioma-pt--BR-009c3b" alt="pt-BR">
+  <a href="LICENSE-MIT"><img src="https://img.shields.io/badge/licen%C3%A7a-MIT-blue" alt="MIT"></a>
+</p>
 
-[Visit the Looking Glass website](https://skulitom.github.io/LookingGlass/) ·
-**[Download for Windows — play the full campaign](https://github.com/skulitom/LookingGlass/releases/download/v0.32.0-preview.2/LookingGlass-Windows-x64-v0.32.0-preview.2.zip)** ·
-[Watch the 78-second story showcase](#gameplay-showcase) ·
-[Report a bug](https://github.com/skulitom/LookingGlass/issues/new/choose)
+> ⚠️ **Os arquivos do jogo não estão incluídos.** Use uma cópia de *American McGee's Alice* que você tenha direito de usar.
 
-**One download, three steps:** save the ZIP, choose **Extract All**,
-then open **Launch.cmd** in the extracted LookingGlass folder. Guided setup
-handles the separate game files. The link above downloads the right Windows
-package directly; no need to choose from a release file list.
+## Sumário
+- [Download](#download)
+- [Instalação](#instalação)
+- [Tradução PT-BR](#tradução-pt-br)
+- [Compilando](#compilando)
+- [Créditos](#créditos)
+- [Licença](#licença)
 
-This is an experimental preview, with remaining fidelity and device-testing gaps.
-The engine download includes no original game data. You need compatible files
-you are entitled to use. **American McGee's Alice belongs to EA; original game
-content remains with EA and its respective rights holders.** Looking Glass claims
-no ownership of that content. [Rights and distribution notice](LEGAL.md).
+## Download
+| Plataforma | Arquivo | Branch |
+|---|---|---|
+| Android | [APK (última versão)](https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest) | [`android-br`](../../tree/android-br) |
+| Windows | [ZIP (última versão)](https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest) | [`windows-br`](../../tree/windows-br) |
 
-## Gameplay showcase
+Confira os arquivos com o [SHA256SUMS.txt](https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest/download/SHA256SUMS.txt). Leia as [notas da versão](https://github.com/Jean-DrEaD/Looking-Glass-android-edition/releases/latest) antes de instalar.
 
-[![Watch the story and gameplay showcase: Cheshire, the Rabbit and Pandemonium's minecart](docs/media/gameplay/story-preview.gif)](https://skulitom.github.io/LookingGlass/#showcase)
+## Instalação
 
-**[Watch the new 78-second showcase in your browser](https://skulitom.github.io/LookingGlass/#showcase)** ·
-[Download the video](https://github.com/skulitom/LookingGlass/releases/download/v0.32.0-preview.1/LookingGlass-Story-Showcase.mp4)
+### Windows
+1. Extraia o ZIP inteiro numa pasta com permissão de escrita (ex.: `Documentos\LookingGlass`).
+2. Rode o `Setup.exe`: ele baixa o jogo em PT-BR ou usa um `.7z`/pasta que você já tenha. Tudo fica na pasta do jogo (portátil).
+3. Escolha o idioma. Para português, use o [pacote PT-BR](https://archive.org/details/alice_remastered_ptbr).
+4. Jogue pelo `Launch.cmd`.
 
-Cutscenes from the **first two chapters — Dementia and Pandemonium** lead into
-combat and exploration. Meet the Rabbit and Cheshire Cat, collect the Vorpal
-Blade, hear the Gnome's warning through subtitles, and take the minecart ride.
-Actual in-engine footage at normal speed, edited with titles and transitions;
-720p, 30 fps. **The recordings are silent; dialogue subtitles are enabled.**
+### Android
+1. Instale o APK (permita a instalação de fontes desconhecidas).
+2. Abra o app e selecione os seus arquivos `.pk3`.
 
-Want more of the opening story? Two separate one-minute edits:
+> Faça backup dos saves antes de atualizar.
 
-- **[Chapter 1: Dementia](https://github.com/skulitom/LookingGlass/releases/download/v0.32.0-preview.1/LookingGlass-Chapter-1-Dementia.mp4)** — Alice's arrival, Cheshire, the Blade and the little door.
-- **[Chapter 2: Pandemonium](https://github.com/skulitom/LookingGlass/releases/download/v0.32.0-preview.1/LookingGlass-Chapter-2-Pandemonium.mp4)** — the Gnome's warning and the minecart sequence.
+Detalhes em [`docs/INSTALL.md`](docs/INSTALL.md) e [`docs/ANDROID.md`](docs/ANDROID.md).
 
-[Recording and editing details](docs/media/gameplay/README.md#story-and-opening-chapter-videos).
+## Tradução PT-BR
+O pacote PT-BR substitui o `pak4_english.pk3`, e o `Setup.cmd` o reconhece pela palavra `passo`. Pendências nas [issues](../../issues?q=label%3Atradu%C3%A7%C3%A3o).
 
-## Why try Looking Glass?
-
-The practical benefits are easier setup, flexible controls and a game engine
-that can be inspected and improved. These conveniences are built into this
-project:
-
-| Feature | What it means for you |
-| --- | --- |
-| **Full playable campaign** | Start a new game and play all 39 story visits through the final boss, ending and credits, with campaign progress and saves carried between levels. |
-| **Guided installation** | One setup window finds, optionally downloads, checks and unpacks compatible game files, then starts the game. No compiler, separate extractor or changes to the original executable are needed. |
-| **Built-in controller support** | Play and navigate menus with an Xbox/XInput controller. Rebind buttons, adjust stick sensitivity and deadzones, and invert the camera. An active controller disconnect pauses play. |
-| **Modern display and camera options** | Choose window resolutions including 1080p, 1440p and 4K, or borderless fullscreen at your desktop resolution. Adjust third-person camera distance, mouse sensitivity and look inversion in the settings. |
-| **Easy chapter replay** | Browse all 39 story visits, including return visits, and choose a difficulty from the chapter menu. Each selection starts a fresh visit; normal exits carry your campaign forward. |
-| **Save protection and recovery** | Four manual slots, quick save and a separate autosave have picture previews. Each slot keeps a previous validated copy, which the loader can recover if the current file is damaged. |
-| **Source that can be improved** | The newly written engine code is available in this project under MIT. Contributors can inspect behavior, fix bugs and extend it, with automated gameplay and save checks to help catch regressions. |
-
-Looking Glass retains the original artwork, models, music and voices from your
-game files. Its focus is rebuilding the engine and gameplay with these practical
-conveniences; visual and behavioral fidelity are still being refined.
-
-## Recreated gameplay
-
-- **Campaign progression:** story-ordered levels and return visits, quest items,
-  puzzles, moving machinery and persistent world state.
-- **Combat:** the weapon and power-up systems, enemy encounters and boss fights.
-- **Traversal:** rope climbing and swinging, ledge grabs and pull-ups, swimming,
-  currents and breath management.
-- **Story and atmosphere:** scripted cameras and character performances,
-  conversations, Cheshire hints, music, voices and positional sound effects.
-
-These systems are implemented with remaining gaps documented below. They are
-recreations of the original game's features, alongside the conveniences above.
-
-## Current status
-
-**The full campaign is playable; this re-remaster is still an experimental preview.**
-
-All 39 campaign visits have been completed in automated native playthroughs:
-three Easy and two Normal runs, including one uninterrupted fresh campaign.
-The other four used earned checkpoints while fixes were developed. The ending
-film and credits were also checked in the viewer. These results do not establish
-complete visual, audio or original-game fidelity. See the
-[campaign audit](docs/CAMPAIGN_RUN_AUDIT.md) and
-[known issues](docs/KNOWN_ISSUES.md) for exact coverage and remaining work.
-
-The current development build supports Windows x64, the English 2011 vanilla
-data set, persistent campaign saves, keyboard/mouse and configurable controller
-input. Other data editions and platforms have not been certified.
-
-Expect remaining differences in cutscene staging, effects, materials and enemy
-behavior, plus a reported waterside rope-grab issue. Broader PC and audible
-playthrough validation remain unfinished. Looking Glass uses its own save
-format; saves from the original game cannot be imported.
-
-## Gameplay
-
-Short clips recorded in the Windows preview, at normal speed. These recordings
-are **silent**. Select a preview to watch or download the full video.
-
-| Dry Landing | Pool of Tears | Pale Realm |
-| --- | --- | --- |
-| [![Cards combat against an ant guard](docs/media/gameplay/dry-landing.gif)](docs/media/gameplay/dry-landing.mp4) | [![Exploring the waterfall path](docs/media/gameplay/pool-of-tears.gif)](docs/media/gameplay/pool-of-tears.mp4) | [![Walking through the chess town](docs/media/gameplay/pale-realm.gif)](docs/media/gameplay/pale-realm.mp4) |
-| Cards combat · [Watch video, 11 seconds](docs/media/gameplay/dry-landing.mp4) | Waterfall exploration · [Watch video, 10 seconds](docs/media/gameplay/pool-of-tears.mp4) | Chess town exploration · [Watch video, 14 seconds](docs/media/gameplay/pale-realm.mp4) |
-
-Full videos are 720p. [Recording details](docs/media/gameplay/README.md).
-
-## Install and play
-
-1. **[Download for Windows](https://github.com/skulitom/LookingGlass/releases/download/v0.32.0-preview.2/LookingGlass-Windows-x64-v0.32.0-preview.2.zip)**. This downloads the one ZIP you need.
-2. Right-click the ZIP, choose **Extract All**, and open the extracted folder.
-   Keep it somewhere writable, such as `Documents\LookingGlass`.
-3. Double-click **Launch.cmd**. On the first launch, a setup window finds existing
-   game files or offers to download the compatible files from Internet Archive.
-4. Select **Set up**. Setup checks and unpacks the files, then opens the game.
-   Next time, just open **Launch.cmd** or your optional desktop shortcut.
-
-Choose **New Game** to play the full campaign in story order, or use the chapter
-chooser to jump into a particular visit.
-
-No commands, Rust, separate 7-Zip installation or administrator access are needed
-for the Windows package. Allow **3 GB of free space**; the optional game-data
-download is about **933 MB**. Setup needs internet access only if you choose Download.
-
-**Where do the game files come from?** The supported file is
-**Alice1_2011_vanilla.7z** from
-[American McGee's Alice (2011) on Internet Archive](https://archive.org/details/alice_202106).
-Setup can download it for you, or you can use **Choose archive** / **Choose folder**
-for files you already have. Use game files you are entitled to use. Original game
-data is not included in the Looking Glass release.
-
-That download is hosted by a third party, not this project. Its availability
-and setup's integrity checks do not establish permission to download or use it.
-See the [game-data and media notice](LEGAL.md#what-the-project-distributes).
-
-See [installation and troubleshooting](docs/INSTALL.md), including updates and
-building from source. [Release notes and checksums](https://github.com/skulitom/LookingGlass/releases/tag/v0.32.0-preview.2)
-describe the exact package and its verification limits.
-
-Use the in-game settings to view or change controls. **Esc** opens the menu,
-**F5/F9** quick-save/load, and **Tab** opens the chapter chooser. Choosing a
-chapter starts a new visit; use normal exits to carry campaign progress.
-
-## Build and contribute
-
-```powershell
-cargo test --locked
-cargo build --release --locked
-.\Setup.cmd
-.\Launch.cmd
+## Compilando
+```bash
+cargo build --release
+cargo test
+python tools/test_windows_setup.py  # testes do instalador
+python tools/package_android.py     # APK (branch android-br)
 ```
+Requisitos: Rust estável, Python 3, Android SDK/NDK (para o APK). Veja [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-The minimum Rust version is declared in [Cargo.toml](Cargo.toml). The dependency
-versions are locked. Building does not fetch original game data.
+## Créditos
+- **[skulitom/LookingGlass](https://github.com/skulitom/LookingGlass)**: projeto original do engine.
+- **[Player124413](https://github.com/Player124413)**: port Android.
+- **[Wemino](https://github.com/Wemino/VorpalFix)**: autoria das texturas HD.
+- **[MJay/MJarcos da Tribo Gamer](https://tribogamer.com)**: tradução e adaptação PT-BR.
+- **American McGee's Alice**: © Electronic Arts / Rogue Entertainment. Projeto de fãs, sem afiliação ou relação ou admiração(não se admira empresas ou pessoas ;) ).
+- Ícone: arte própria do projeto.
 
-[Contribution guidance](CONTRIBUTING.md) explains the source boundary, testing
-and bug-report requirements. Development shortcuts are under
-[tools/launchers](tools/launchers/README.md); ordinary play uses root `Launch.cmd`.
-
-## Documentation
-
-- [Installation](docs/INSTALL.md) and [controls](docs/CONTROLS.md)
-- [Campaign route audit](docs/CAMPAIGN_RUN_AUDIT.md) and [known issues](docs/KNOWN_ISSUES.md)
-- [Validation](docs/VALIDATION.md) and [save behavior](docs/SAVES.md)
-- [Release preparation](docs/RELEASE_PLAN.md)
-- [Code signing policy and privacy](docs/CODE_SIGNING.md) — application awaiting review; current preview unsigned
-- [Earlier development notes](docs/DEVELOPMENT_HISTORY.md)
-
-## License and independence
-
-Newly authored source and documentation use the [MIT license](LICENSE-MIT).
-Original game assets, gameplay footage and third-party components are excluded
-from that license.
-**This project is not endorsed by or affiliated with EA or its licensors.**
-EA and the respective rights holders retain all rights in the original game,
-its assets and trademarks. The project hosts no playable original game-data
-packages; published gameplay footage is described separately in the
-[rights, ownership and distribution notice](LEGAL.md).
+## Licença
+Código sob [MIT](LICENSE-MIT). Avisos legais e mídia em [`LEGAL.md`](LEGAL.md).
+Os dados do jogo pertencem aos seus detentores e **não** são distribuídos aqui.

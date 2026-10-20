@@ -1421,9 +1421,14 @@ impl Model {
             let tex = if let Some(t) = textures.get(&path) {
                 t.clone()
             } else {
-                let image = texture::decode(assets, &path)?;
-                let t = Texture2D::from_rgba8(image.width, image.height, &image.pixels);
-                t.set_filter(FilterMode::Linear);
+                let t = if crate::android::is_android() {
+                    texture::load_gpu(assets, &path, true, true)?
+                } else {
+                    let image = texture::decode(assets, &path)?;
+                    let t = Texture2D::from_rgba8(image.width, image.height, &image.pixels);
+                    t.set_filter(FilterMode::Linear);
+                    t
+                };
                 textures.insert(path, t.clone());
                 t
             };
@@ -2712,7 +2717,13 @@ impl Npcs {
             if actor.guide.is_some() {
                 continue;
             }
-            actor.ground(dt, world, &self.models[actor.model].data.meta);
+            if !(crate::android::is_android()
+                && actor.footing.is_some()
+                && actor.falling == 0.
+                && actor.position().distance_squared(eye) > 1200. * 1200.)
+            {
+                actor.ground(dt, world, &self.models[actor.model].data.meta);
+            }
             if let Some(p) = &mut actor.resident {
                 p.update(
                     dt,
@@ -3265,8 +3276,9 @@ impl Npcs {
                 self.attack_fx.lightning(beam.from, beam.to, camera, beam.age, 500., true, atmosphere);
                 self.material.bind();
             }
+            let max_dist = 3500. * crate::android::active_preset().lod_distance_scale();
             let offset = actor.target() - camera;
-            if offset.length_squared() > 3500. * 3500.
+            if offset.length_squared() > max_dist * max_dist
                 || (offset.length_squared() > 200. * 200.
                     && offset.normalize().dot(direction) < -0.3)
             {

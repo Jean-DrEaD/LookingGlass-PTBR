@@ -29,6 +29,7 @@ mod camera_portal;
 pub use billboard_check::check as check_billboards;
 
 pub(crate) const BLEND_COUNT: usize = 109;
+pub(crate) const SOLID_OPAQUE_MATERIAL: usize = BLEND_COUNT * 2;
 
 const VERTEX: &str = r#"#version 100
 attribute vec3 position; attribute vec2 texcoord; attribute vec4 color0; attribute vec4 normal;
@@ -57,7 +58,7 @@ void main(){
  if(lm.z>0.5&&FxModel<0.5){float index=floor(lm.z-1.0+0.1);vec2 tile=vec2(mod(index,AtlasGrid.x),floor(index/AtlasGrid.x));vec2 sampleUV=(tile+clamp(lm.xy,vec2(0.5/128.0),vec2(127.5/128.0)))/AtlasGrid;lighting=min(vec3(1.0),texture2D(LightAtlas,sampleUV).rgb*2.0);}
  vec3 rgb=diffuse.rgb*mix(vec3(1.0),lighting,Lit*(1.0-Fullbright))*Gain.rgb;
  if(FxModel>0.5&&Lit<0.5)rgb*=color.rgb;
- rgb+=diffuse.rgb*dynamicLight(worldPosition)*Gain.rgb;
+ if(Lit>0.5&&Fullbright<0.5)rgb+=diffuse.rgb*dynamicLight(worldPosition)*Gain.rgb;
  if(FxAppearance.z>1.5)rgb=mix(rgb,rgb*vec3(0.65,1.15,0.7),0.6);else if(FxAppearance.z>0.5)rgb=mix(rgb,rgb*vec3(1.3,0.55,0.4),0.6);
  // Multiplicative actor layers fade toward their neutral blend colour.
  if(FxAppearance.w>0.0)rgb=mix(rgb,vec3(1.0),FxAppearance.w);else if(FxAppearance.w<0.0)rgb=mix(rgb,vec3(0.5),-FxAppearance.w);
@@ -180,29 +181,36 @@ fn outside_bounds(min: Vec3, max: Vec3) -> bool {
     .map(|p| m * p.extend(1.));
     (0..3).any(|a| points.iter().all(|p| p[a] < -p.w) || points.iter().all(|p| p[a] > p.w))
 }
+thread_local! {
+    static MAPPING_SCRATCH: RefCell<Vec<u16>> = const { RefCell::new(Vec::new()) };
+}
 fn selected_mesh(mesh: &Mesh, compact: bool) -> Mesh {
     if !compact {
         return crate::render_fx::copy_mesh(mesh);
     }
-    let mut mapping = vec![u16::MAX; mesh.vertices.len()];
-    let mut vertices = Vec::new();
-    let indices = mesh
-        .indices
-        .iter()
-        .map(|&i| {
-            let next = &mut mapping[i as usize];
-            if *next == u16::MAX {
-                *next = vertices.len() as u16;
-                vertices.push(mesh.vertices[i as usize]);
-            }
-            *next
-        })
-        .collect();
-    Mesh {
-        vertices,
-        indices,
-        texture: mesh.texture.clone(),
-    }
+    MAPPING_SCRATCH.with(|scratch| {
+        let mut mapping = scratch.borrow_mut();
+        mapping.clear();
+        mapping.resize(mesh.vertices.len(), u16::MAX);
+        let mut vertices = Vec::with_capacity(mesh.indices.len().min(mesh.vertices.len()));
+        let indices = mesh
+            .indices
+            .iter()
+            .map(|&i| {
+                let next = &mut mapping[i as usize];
+                if *next == u16::MAX {
+                    *next = vertices.len() as u16;
+                    vertices.push(mesh.vertices[i as usize]);
+                }
+                *next
+            })
+            .collect();
+        Mesh {
+            vertices,
+            indices,
+            texture: mesh.texture.clone(),
+        }
+    })
 }
 fn upload(image: texture::RgbaImage) -> Texture2D {
     let t = Texture2D::from_rgba8(image.width, image.height, &image.pixels);
@@ -302,7 +310,16 @@ pub(crate) fn world_material(index: usize) -> Result<Rc<Material>> {
         if let Some(material) = cache.borrow().get(&index).and_then(Weak::upgrade) {
             return Ok(material);
         }
-        let fragment = crate::lighting::fragment(&crate::environment::fragment(FRAGMENT));
+        let base_fragment = if index == SOLID_OPAQUE_MATERIAL {
+            FRAGMENT
+                .lines()
+                .filter(|line| !line.contains("discard;"))
+                .collect::<Vec<_>>()
+                .join("\n")
+        } else {
+            FRAGMENT.to_owned()
+        };
+        let fragment = crate::lighting::fragment(&crate::environment::fragment(&base_fragment));
         let mut uniforms = vec![
             UniformDesc::new("AtlasGrid", UniformType::Float2),
             UniformDesc::new("Fullbright", UniformType::Float1),
@@ -327,12 +344,16 @@ pub(crate) fn world_material(index: usize) -> Result<Rc<Material>> {
                 },
                 MaterialParams {
                     pipeline_params: PipelineParams {
-                        depth_test: if index >= BLEND_COUNT {
+                        depth_test: if index >= BLEND_COUNT && index < SOLID_OPAQUE_MATERIAL {
                             Comparison::Equal
                         } else {
                             Comparison::LessOrEqual
                         },
-                        ..depth_pipeline(blend(index % BLEND_COUNT))
+                        ..depth_pipeline(if index == SOLID_OPAQUE_MATERIAL {
+                            None
+                        } else {
+                            blend(index % BLEND_COUNT)
+                        })
                     },
                     uniforms,
                     textures: vec!["LightAtlas".into(), "SkyBackdrop".into()],
@@ -394,9 +415,12 @@ fn load_layers(
                 if let Some(tex) = cache.get(&path) {
                     tex.clone()
                 } else {
-                    match texture::decode(assets, &path) {
-                        Ok(img) => {
-                            let tex = upload(img);
+                    match if crate::android::is_android() {
+                        texture::load_gpu(assets, &path, true, true)
+                    } else {
+                        texture::decode(assets, &path).map(upload)
+                    } {
+                        Ok(tex) => {
                             cache.insert(path, tex.clone());
                             tex
                         }
@@ -414,13 +438,22 @@ fn load_layers(
             textures.push(tex);
         }
         let lit = index == 0 && !spec.is_some_and(|s| s.unlit) && (lightmapped || !stage.identity);
-        layers.push(Layer {
-            material: blend_index(stage.blend)
+        let material = if crate::android::is_android()
+            && stage.blend == Blend::Opaque
+            && !(stage.depth_equal && index > 0)
+            && stage.alpha_test == 0
+        {
+            SOLID_OPAQUE_MATERIAL
+        } else {
+            blend_index(stage.blend)
                 + if stage.depth_equal && index > 0 {
                     BLEND_COUNT
                 } else {
                     0
-                },
+                }
+        };
+        layers.push(Layer {
+            material,
             spec: stage,
             textures,
             lit,
@@ -549,32 +582,47 @@ fn draw_batch(
     if can_cull && context.enabled && !backdrop && batch.parts.is_empty() {
         let center = (min + max) * 0.5;
         let radius = (max - min).length() * 0.5;
+        let max_error = crate::android::active_preset().lod_error_limit();
         if let Some(level) = batch
             .detail
             .iter()
             .rev()
-            .find(|l| crate::render_fx::projected_error(center, radius, l.error) <= 0.35)
+            .find(|l| crate::render_fx::projected_error(center, radius, l.error) <= max_error)
         {
             context.stats.detail_saved += (batch.mesh.indices.len() - level.indices.len()) / 3;
             batch.mesh.indices.clone_from(&level.indices);
         }
     }
     context.stats.triangles += batch.mesh.indices.len() / 3 * batch.layers.len();
-    for (j, (v, base)) in batch.mesh.vertices.iter_mut().zip(&batch.base).enumerate() {
-        // Billboards use source UV corners to build geometry. Animated layer
-        // UVs from the previous frame must not move or rotate those corners.
-        v.uv = base.uv;
-        let mut p = batch
-            .animation
-            .as_ref()
-            .map_or(base.position, |animation| animation.position(j, time));
-        for deform in &batch.deforms {
-            p = deform.position(p, batch.normals[j], base.uv, time);
+    let has_pos_transform = batch.animation.is_some()
+        || !batch.deforms.is_empty()
+        || batch.motion.is_some()
+        || transform.is_some()
+        || offset != Vec3::ZERO;
+    let needs_pos_restore = !has_pos_transform
+        && batch
+            .mesh
+            .vertices
+            .first()
+            .zip(batch.base.first())
+            .is_some_and(|(v, b)| v.position != b.position);
+    if has_pos_transform || needs_pos_restore {
+        for (j, (v, base)) in batch.mesh.vertices.iter_mut().zip(&batch.base).enumerate() {
+            // Billboards use source UV corners to build geometry. Animated layer
+            // UVs from the previous frame must not move or rotate those corners.
+            v.uv = base.uv;
+            let mut p = batch
+                .animation
+                .as_ref()
+                .map_or(base.position, |animation| animation.position(j, time));
+            for deform in &batch.deforms {
+                p = deform.position(p, batch.normals[j], base.uv, time);
+            }
+            if let Some(motion) = &batch.motion {
+                p = motion.point(p, time);
+            }
+            v.position = transform.map_or(p, |(_, o, r)| *o + *r * p) + offset;
         }
-        if let Some(motion) = &batch.motion {
-            p = motion.point(p, time);
-        }
-        v.position = transform.map_or(p, |(_, o, r)| *o + *r * p) + offset;
     }
     if let Some(locked) = batch.deforms.iter().find_map(|d| {
         if let crate::materials::Deform::Sprite(lock) = d {
@@ -639,31 +687,62 @@ fn draw_batch(
     let mut queued = Vec::new();
     for layer in &batch.layers {
         let material = &materials[layer.material];
-        for (j, (v, base)) in batch.mesh.vertices.iter_mut().zip(&batch.base).enumerate() {
-            let mut n = batch.normals[j];
-            for deform in &batch.deforms {
-                n = deform.normal(base.position, n, time);
+        let sky_uv = batch.sky && !batch.portal;
+        let needs_normal = layer.spec.environment || layer.spec.dot_alpha.is_some();
+        let needs_eye_dir = layer.spec.dot_alpha.is_some();
+        let static_uv = !sky_uv
+            && layer.spec.vector_uv.is_none()
+            && !layer.spec.environment
+            && layer.spec.mods.is_empty();
+        if static_uv && !needs_eye_dir {
+            let fixed_alpha = (!layer.spec.vertex_alpha).then_some(255u8);
+            let needs_uv_color_restore = batch.layers.len() > 1
+                || batch.deforms.iter().any(|d| matches!(d, crate::materials::Deform::Sprite(_)))
+                || batch
+                    .mesh
+                    .vertices
+                    .first()
+                    .zip(batch.base.first())
+                    .is_some_and(|(v, b)| {
+                        v.uv != b.uv || v.color[3] != fixed_alpha.unwrap_or(b.color[3])
+                    });
+            if needs_uv_color_restore {
+                for (v, base) in batch.mesh.vertices.iter_mut().zip(&batch.base) {
+                    v.uv = base.uv;
+                    v.color = base.color;
+                    if let Some(a) = fixed_alpha {
+                        v.color[3] = a;
+                    }
+                }
             }
-            let n = batch
-                .motion
-                .as_ref()
-                .map_or(n, |m| m.normal(n, time));
-            let normal = transform.map_or(n, |(_, _, r)| *r * n);
-            let uv = if batch.sky && !batch.portal {
-                let ray = (v.position - camera).normalize_or_zero();
-                // Infinite, curved cloud projection; no translation with player motion.
-                ray.truncate() / (ray.z.abs() + 0.25) * 0.25 + Vec2::splat(0.5)
-            } else {
-                base.uv
-            };
-            v.uv = layer.spec.view_uv(uv, v.position, normal, camera, time);
-            v.color = base.color;
-            v.color[3] = (255.
-                * layer.spec.opacity(
-                    normal,
-                    (camera - v.position).normalize_or_zero(),
-                    base.color[3],
-                )) as u8;
+        } else {
+            for (j, (v, base)) in batch.mesh.vertices.iter_mut().zip(&batch.base).enumerate() {
+                let normal = if needs_normal {
+                    let mut n = batch.normals[j];
+                    for deform in &batch.deforms {
+                        n = deform.normal(base.position, n, time);
+                    }
+                    let n = batch.motion.as_ref().map_or(n, |m| m.normal(n, time));
+                    transform.map_or(n, |(_, _, r)| *r * n)
+                } else {
+                    Vec3::ZERO
+                };
+                let uv = if sky_uv {
+                    let ray = (v.position - camera).normalize_or_zero();
+                    // Infinite, curved cloud projection; no translation with player motion.
+                    ray.truncate() / (ray.z.abs() + 0.25) * 0.25 + Vec2::splat(0.5)
+                } else {
+                    base.uv
+                };
+                v.uv = layer.spec.view_uv(uv, v.position, normal, camera, time);
+                v.color = base.color;
+                let eye_dir = if needs_eye_dir {
+                    (camera - v.position).normalize_or_zero()
+                } else {
+                    Vec3::ZERO
+                };
+                v.color[3] = (255. * layer.spec.opacity(normal, eye_dir, base.color[3])) as u8;
+            }
         }
         batch.mesh.texture = Some(layer.textures[layer.spec.frame(time)].clone());
         if crate::render_fx::active() && batch.transparent() && !backdrop && !batch.sky {
@@ -684,11 +763,13 @@ fn draw_batch(
         }
         material.set_uniform("FxModel", 0_f32);
         material.set_uniform("FxAppearance", Vec4::ZERO);
-        crate::lighting::apply(
-            material,
-            false,
-            crate::render_fx::active() && layer.lit && !backdrop && !batch.sky,
-        );
+        if !crate::android::is_android() {
+            crate::lighting::apply(
+                material,
+                false,
+                crate::render_fx::active() && layer.lit && !backdrop && !batch.sky,
+            );
+        }
         material.set_uniform(
             "Lit",
             if layer.lit && !batch.sky && !backdrop {
@@ -736,7 +817,11 @@ fn draw_batch(
             },
         );
         gl_use_material(material);
-        if batch.mesh.indices.len() < batch.full_indices.len() {
+        if batch.mesh.indices.len() < batch.full_indices.len()
+            && (!crate::android::is_android()
+                || (batch.mesh.vertices.len() > 256
+                    && batch.mesh.indices.len() * 2 < batch.mesh.vertices.len()))
+        {
             draw_mesh(&selected_mesh(&batch.mesh, true));
         } else {
             draw_mesh(&batch.mesh);
@@ -1003,6 +1088,9 @@ impl Scene {
         for m in &self.bound_materials {
             self.atmosphere.apply(m, camera);
             m.set_uniform("Fullbright", if fullbright { 1_f32 } else { 0. });
+            if crate::android::is_android() {
+                crate::lighting::apply(m, false, crate::render_fx::active() && !fullbright);
+            }
         }
         particles.prepare_draw(camera, &self.atmosphere);
         let mut order = Vec::new();
@@ -1086,8 +1174,22 @@ impl Scene {
                 }
             }
         }
-        let atlas = Texture2D::from_rgba8((cols * 128) as u16, (rows * 128) as u16, &atlas);
-        atlas.set_filter(FilterMode::Linear);
+        let atlas = if crate::android::is_android() {
+            texture::upload_gpu_unscaled(
+                &format!("$lightmap:{name}:{count}"),
+                texture::RgbaImage {
+                    width: (cols * 128) as u16,
+                    height: (rows * 128) as u16,
+                    pixels: atlas,
+                },
+                false,
+                false,
+            )
+        } else {
+            let t = Texture2D::from_rgba8((cols * 128) as u16, (rows * 128) as u16, &atlas);
+            t.set_filter(FilterMode::Linear);
+            t
+        };
         let fallback = Texture2D::from_rgba8(
             2,
             2,
@@ -1427,9 +1529,30 @@ impl Scene {
                     |(a, b), p| (a.min(p), b.max(p)),
                 );
             }
+            if batch.layers.len() == 1 && !batch.layers[0].spec.vertex_alpha {
+                for v in &mut batch.mesh.vertices {
+                    v.color[3] = 255;
+                }
+            }
             batch.base = batch.mesh.vertices.clone();
             batch.center =
                 batch.base.iter().map(|v| v.position).sum::<Vec3>() / batch.base.len() as f32;
+        }
+        if crate::android::is_android() && decoration_start < batches.len() {
+            batches[decoration_start..].sort_by_key(|b| {
+                let first = b.layers.first();
+                (
+                    b.transparent(),
+                    first.map_or(usize::MAX, |l| l.material),
+                    first.map_or(0, |l| l.spec.alpha_test),
+                    first.map_or(false, |l| l.spec.clamp),
+                    first.map_or(false, |l| l.lit),
+                    first
+                        .and_then(|l| l.spec.images.first())
+                        .cloned()
+                        .unwrap_or_default(),
+                )
+            });
         }
         missing.sort();
         missing.dedup();
@@ -1471,6 +1594,9 @@ impl Scene {
                     materials[i % BLEND_COUNT].clone()
                 },
             );
+        }
+        if crate::android::is_android() {
+            materials.push(world_material(SOLID_OPAQUE_MATERIAL)?);
         }
         let mut bound_materials = Vec::new();
         for material in &materials {
@@ -1659,6 +1785,9 @@ impl Scene {
         for m in &self.bound_materials {
             self.atmosphere.apply(m, camera);
             m.set_uniform("Fullbright", if fullbright { 1_f32 } else { 0. });
+            if crate::android::is_android() {
+                crate::lighting::apply(m, false, crate::render_fx::active() && !fullbright);
+            }
         }
         context.cluster = cluster;
         context.enabled = self.optimize;

@@ -14,13 +14,15 @@ use anyhow::{Context, Result};
 use macroquad::prelude::*;
 
 pub fn config() -> macroquad::conf::Conf {
+    let android = crate::android::is_android();
     macroquad::conf::Conf {
         miniquad_conf: Conf {
             window_title: "Looking Glass".into(),
             window_width: 1200,
             window_height: 680,
+            fullscreen: false,
             high_dpi: true,
-            sample_count: 1,
+            sample_count: if android { 0 } else { 1 },
             ..Default::default()
         },
         draw_call_vertex_capacity: 60000,
@@ -715,6 +717,17 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
     let mut played = resume.is_none();
     let mut post_game = false;
     let mut save_frame = crate::save_preview::Frame::default();
+    // Filled by Action::Save in the modal menu loop so the save runs next
+    // frame after the menu closes and the 3D world re-renders for a fresh
+    // thumbnail (instead of saving a menu-stilled or black frame).
+    let mut menu_save_pending: Option<Slot> = None;
+    // Overlay grace: time-based, 400 ms after opening MAP/inventory. During
+    // this window we ignore Escape/pointer clicks so the opening finger can't
+    // immediately dismiss the newly opened overlay. Wall-clock based because
+    // Android/miniquad sometimes skip Stationary touch events (touches() looks
+    // empty while the finger is still held), which makes frame-count-based or
+    // finger-lift-based grace end one frame too early.
+    let mut overlay_grace_until: f64 = 0.;
     macro_rules! level_snapshot {
         () => {
             Level {
@@ -867,9 +880,73 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
     retry.remember(game_snapshot!());
     loop {
         let mut frame_profile = crate::frame_profile::span("frame_cpu");
+        let current_aim = vec3(
+            yaw.cos() * pitch.cos(),
+            yaw.sin() * pitch.cos(),
+            pitch.sin(),
+        );
+        let can_use = player.rope_prompt(&scene.world).is_some()
+            || interactions
+                .pandemonium
+                .as_ref()
+                .is_some_and(|p| p.prompt(&scene.world, player.eye()).is_some())
+            || interactions
+                .conversation(&scene.world, player.eye(), current_aim, &npcs, &story)
+                .is_some()
+            || interactions
+                .prompt(&scene.world, player.eye(), current_aim)
+                .is_some();
+        let cutscene_active = interactions
+            .village
+            .as_ref()
+            .is_some_and(|v| v.cinema.active())
+            || interactions
+                .fortress
+                .as_ref()
+                .is_some_and(|f| f.state.cinema.active())
+            || interactions
+                .duchess
+                .as_ref()
+                .and_then(|d| d.scene_id())
+                .is_some()
+            || interactions
+                .pandemonium
+                .as_ref()
+                .and_then(|p| p.scene_id())
+                .is_some()
+            || interactions
+                .beyond
+                .as_ref()
+                .is_some_and(|b| b.scene_id().is_some())
+            || interactions.scene_id_after(None).is_some()
+            || interactions
+                .pool
+                .as_ref()
+                .is_some_and(|p| p.scene_id().is_some())
+            || interactions
+                .school
+                .as_ref()
+                .is_some_and(|s| s.scene_id().is_some());
+        input.set_touch_context(crate::touch::TouchContext {
+            in_gameplay: !menu && !inventory_menu && !console.open && !paused,
+            paused,
+            inventory_open: inventory_menu,
+            help_open: get_time() < help_until,
+            alive: stats.alive(),
+            swimming: player.immersion.level >= 2,
+            climbing_rope: player.rope.is_some()
+                || player.script_motion == 1
+                || interactions
+                    .pandemonium
+                    .as_ref()
+                    .is_some_and(|p| p.rope_hand().is_some()),
+            flying,
+            dialogue_active: story.busy(),
+            cinematic_active: cutscene_active,
+            can_interact: can_use,
+        });
         input.update(&preferences, window_focused());
         let overlay_before = menu || inventory_menu || console.open || paused;
-        let context_before = (menu, inventory_menu, console.open, paused);
         if input.disconnected {
             paused = true;
             hud.announce("Controller disconnected / reconnect or use keyboard and mouse");
@@ -877,8 +954,11 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
         if is_quit_requested() {
             break;
         }
-        if window_focused() && !console.open {
-            if (is_key_pressed(KeyCode::Escape) || input.pad_pressed("Start"))
+        if window_focused() && !console.open && !escape_menu.page.is_some() {
+            if (is_key_pressed(KeyCode::Escape)
+                || is_key_pressed(KeyCode::Back)
+                || input.pad_pressed("Start")
+                || input.touch.menu_pressed())
                 && !menu
                 && !inventory_menu
             {
@@ -895,9 +975,11 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             mouse_look.release();
             clock.pause();
             help_until = 0.;
-            // Consume Escape before entering the separate modal frame loop. No
-            // physics, story, enemies, power-up timers or world clocks run there.
+            // Drain the opening MENU/MAP finger across the await so it cannot
+            // re-fire a click inside the modal loop and immediately dismiss it.
             next_frame().await;
+            input.suppress();
+            crate::touch::drain_active_touches();
             let action = escape_menu
                 .run(&mut preferences, &mut audio, &store, pos, yaw, &mut input)
                 .await;
@@ -924,18 +1006,17 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                     } else if !stats.alive() {
                         "Retry or load a game before saving".into()
                     } else {
-                        match store.write_with_preview(
-                            slot,
-                            &game_snapshot!(),
-                            save_frame.preview().as_ref(),
-                        ) {
-                            Ok(()) => {
-                                retry.remember(game_snapshot!());
-                                played = true;
-                                format!("Game saved in {}", slot.title())
-                            }
-                            Err(e) => format!("Save failed: {e:#}"),
-                        }
+                        // Defer to the next frame so the 3D world renders once
+                        // more before we grab_screen() — otherwise the thumbnail
+                        // shows the menu (or is black on Android where per-frame
+                        // capture is disabled). The modal menu frame loop cannot
+                        // set `pending_save_slot` directly because that variable
+                        // lives in the per-frame scope below, so we carry the
+                        // request out through `menu_save_pending`.
+                        menu_save_pending = Some(slot);
+                        escape_menu.close();
+                        paused = false;
+                        format!("Saving to {}...", slot.title())
                     };
                 }
                 Action::Load(slot) => {
@@ -1050,12 +1131,19 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
         let mut console_restart = false;
         let mut console_fly = false;
         let mut summon_cat = false;
-        let mut save_requested =
-            focused && !console_input && input.key(&preferences, KeyCode::F5, true);
+        // pending_save_slot collects every save trigger that must fire at end-of-frame
+        // (after the world has been re-rendered so the thumbnail is fresh). This covers:
+        //   - F5 quick save
+        //   - autosave transitions (level load / checkpoint)
+        //   - the pause menu's "Save to slot N" (carried over from the modal loop
+        //     via `menu_save_pending` so we capture a clean in-game frame)
+        let mut pending_save_slot: Option<Slot> = menu_save_pending.take();
+        if focused && !console_input && input.key(&preferences, KeyCode::F5, true) {
+            pending_save_slot = Some(Slot::Quick);
+        }
         let mut load_requested =
             (focused && !console_input && input.key(&preferences, KeyCode::F9, true))
                 .then_some(Slot::Quick);
-        let mut autosave_requested = false;
         if toggle_console || (console.open && focused && input.ui(KeyCode::Escape)) {
             console.open = !console.open;
             menu = false;
@@ -1174,7 +1262,11 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                         console_restart = true;
                         console.open = false;
                     }
-                    Ok(Command::Save) => save_requested = true,
+                    Ok(Command::Save) => {
+                        if pending_save_slot.is_none() {
+                            pending_save_slot = Some(Slot::Quick);
+                        }
+                    }
                     Ok(Command::Load(slot)) => load_requested = Some(slot),
                     Ok(Command::Noclip) => {
                         console_fly = true;
@@ -1298,30 +1390,60 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             next_frame().await;
             continue;
         }
-        let pressed = |key| focused && !console_input && input.key(&preferences, key, true);
-        let held = |key| focused && !console_input && input.key(&preferences, key, false);
-        if input.ui(KeyCode::Escape) && !console_input {
+        // Overlay toggles (MAP / inventory / Escape-back) are handled BEFORE
+        // defining the `pressed`/`held` closures so we can mutably call
+        // input.suppress()+drain here without fighting the borrow checker.
+        let edge = |key: KeyCode| -> bool { focused && !console_input && input.key(&preferences, key, true) };
+        let mut opening_map = false;
+        let mut opening_inv = false;
+        // Ignore Escape-close of MAP/inventory during the opening grace period
+        // (time-based: 400 ms).
+        let in_overlay_grace = get_time() < overlay_grace_until;
+        let esc_pressed = input.ui(KeyCode::Escape)
+            || is_key_pressed(KeyCode::Back);
+        if esc_pressed && !console_input && !in_overlay_grace {
             if inventory_menu {
                 inventory_menu = false;
             } else if menu {
                 menu = false;
             }
         }
-        if pressed(KeyCode::Tab) {
+        if edge(KeyCode::Tab) {
             menu = !menu;
             inventory_menu = false;
             help_until = 0.0;
+            if menu {
+                opening_map = true;
+                clock.pause();
+                overlay_grace_until = get_time() + 0.40;
+            }
             chapters.open(
                 crate::campaign::choice_position(&level_choices, current, entry_spawn.as_deref()),
                 level_choices.len(),
             );
         }
-        if pressed(KeyCode::I) && focused {
+        if edge(KeyCode::I) && focused {
             inventory_menu = !inventory_menu;
             menu = false;
             help_until = 0.;
             clock.pause();
+            if inventory_menu {
+                opening_inv = true;
+                overlay_grace_until = get_time() + 0.40;
+            }
         }
+        // Drain the finger that just opened MAP/inventory so it can't click
+        // through onto the new overlay on its first frame.
+        if opening_map || opening_inv {
+            input.suppress();
+            crate::touch::drain_active_touches();
+        }
+
+        // Edge/held helpers for the rest of the frame. These closures borrow
+        // `input` immutably but are only used after the suppress() block above.
+        let pressed = |key: KeyCode| -> bool { focused && !console_input && input.key(&preferences, key, true) };
+        let held    = |key: KeyCode| -> bool { focused && !console_input && input.key(&preferences, key, false) };
+
         let mut audio_changed = false;
         if pressed(KeyCode::M) {
             audio.settings.muted = !audio.settings.muted;
@@ -1332,11 +1454,15 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                 notice = format!("Could not save sound settings: {e}");
             }
         }
+        let mut help_toggle = false;
         if (pressed(KeyCode::H) || pressed(KeyCode::F1))
             && !menu
             && !inventory_menu
             && !console_input
         {
+            help_toggle = true;
+        }
+        if help_toggle {
             help_until = if get_time() < help_until {
                 0.0
             } else {
@@ -1356,15 +1482,20 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             clock.pause();
         }
         let was_paused = paused;
+        let (pointer_pos, pointer_pressed, _) = crate::touch::pointer_state();
         if paused
             && focused
             && !menu
             && !inventory_menu
             && !console_input
-            && (is_mouse_button_pressed(MouseButton::Left) || input.pad_pressed("A"))
+            && get_time() >= help_until
+            && (pointer_pressed || input.pad_pressed("A"))
         {
-            let (mx, my) = mouse_position();
-            if mx >= 0. && my >= 0. && mx < screen_width() && my < screen_height() {
+            if pointer_pos.x >= 0.
+                && pointer_pos.y >= 0.
+                && pointer_pos.x < screen_width()
+                && pointer_pos.y < screen_height()
+            {
                 paused = false;
                 clock.pause();
             }
@@ -1388,11 +1519,13 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                 && !inventory_menu
                 && !console_input
                 && !scripted_view
+                && !input.using_touch
                 && stats.alive(),
             &mut yaw,
             &mut pitch,
         );
         hud.update(dt);
+        let inv_grace = in_overlay_grace && inventory_menu;
         if focused && !console_input && stats.alive() && !menu && (inventory_menu || !paused) {
             let keys = [
                 KeyCode::Key1,
@@ -1406,24 +1539,33 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                 KeyCode::Key9,
                 KeyCode::Key0,
             ];
-            let selected = keys.iter().position(|&k| pressed(k)).or_else(|| {
-                if inventory_menu {
-                    hud.inventory_hit()
-                } else {
-                    None
-                }
-            });
+            let selected = if inv_grace {
+                None
+            } else {
+                keys.iter().position(|&k| pressed(k)).or_else(|| {
+                    if inventory_menu {
+                        hud.inventory_hit()
+                    } else {
+                        None
+                    }
+                })
+            };
             if let Some(i) = selected {
                 if stats.select(i) {
                     hud.selected(&stats);
+                    if inventory_menu && input.using_touch {
+                        inventory_menu = false;
+                    }
                 } else {
                     hud.announce(format!("Not yet available: {}", inventory::WEAPONS[i].1));
                 }
+            } else if inventory_menu && !inv_grace && hud.inventory_close_hit() {
+                inventory_menu = false;
             }
             let previous = input.action(&preferences, "Wheel Up", true)
-                || (inventory_menu && (input.ui(KeyCode::Up) || input.ui(KeyCode::Left)));
+                || (inventory_menu && !inv_grace && (input.ui(KeyCode::Up) || input.ui(KeyCode::Left)));
             let next = input.action(&preferences, "Wheel Down", true)
-                || (inventory_menu && (input.ui(KeyCode::Down) || input.ui(KeyCode::Right)));
+                || (inventory_menu && !inv_grace && (input.ui(KeyCode::Down) || input.ui(KeyCode::Right)));
             if previous || next {
                 stats.cycle(if next { 1 } else { -1 });
                 hud.selected(&stats);
@@ -1511,7 +1653,9 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                 && focused
                 && !flying
                 && stats.alive(),
-            held(KeyCode::Enter) || input.pad_held("A"),
+            held(KeyCode::Enter)
+                || input.pad_held("A")
+                || (skip_id.is_some() && input.touch.any_touch_down()),
             dt,
         );
         if skip_requested {
@@ -1668,7 +1812,15 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             let mut chapter_action = None;
             if menu && !console_map {
                 if focused && !console_input {
-                    chapter_action = chapters.update(&input, level_choices.len(), &mut options.difficulty);
+                    if in_overlay_grace {
+                        // During grace, ignore pointer/tab-originated clicks in
+                        // the chapter chooser so the opening finger doesn't
+                        // immediately select a chapter or hit Back. Keyboard
+                        // navigation is OK, but we already suppress input above.
+                        chapters.update_ignore_pointer(&input, level_choices.len(), &mut options.difficulty);
+                    } else {
+                        chapter_action = chapters.update(&input, level_choices.len(), &mut options.difficulty);
+                    }
                 }
                 let choice = &level_choices[chapters.selected];
                 selected = choice.map;
@@ -1676,7 +1828,7 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             }
             if chapter_action == Some(crate::chapters::Hit::Back) {
                 menu = false;
-            } else if input.ui(KeyCode::Enter)
+            } else if (input.ui(KeyCode::Enter) && !in_overlay_grace)
                 || chapter_action == Some(crate::chapters::Hit::Begin)
                 || console_map
             {
@@ -1758,6 +1910,9 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                 let look = input.look(&preferences);
                 yaw -= look.x * dt * 2.5;
                 pitch += look.y * dt * 2.;
+                let touch_look = input.touch_look(&preferences);
+                yaw -= touch_look.x;
+                pitch += touch_look.y;
             }
             if !scripted_view && held(KeyCode::Left) {
                 yaw += dt * 1.3;
@@ -1794,10 +1949,10 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             if flying {
                 player.release_rope();
             }
-            if flying && held(KeyCode::E) {
+            if flying && (held(KeyCode::E) || (input.using_touch && held(KeyCode::Space))) {
                 movement.z += 1.;
             }
-            if flying && held(KeyCode::Q) {
+            if flying && (held(KeyCode::Q) || (input.using_touch && held(KeyCode::LeftControl))) {
                 movement.z -= 1.;
             }
             let speed = if held(KeyCode::LeftShift) { 800. } else { 220. };
@@ -1829,7 +1984,11 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                         .prompt(&scene.world, player.eye(), aim)
                         .is_some(),
                 );
-                let use_pressed = pressed(KeyCode::E);
+                let use_pressed = pressed(KeyCode::E)
+                    || (owner == UseOwner::Dialogue
+                        && input.using_touch
+                        && pointer_pressed
+                        && pointer_pos.y > screen_height() * 0.72);
                 advance_dialogue = use_pressed && owner == UseOwner::Dialogue;
                 let mut events = interaction::Events::default();
                 if use_pressed && owner == UseOwner::Talk {
@@ -2294,7 +2453,9 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                     weapon_buttons.block();
                     level_art = next.art;
                     skip_scene = crate::cinematic::Skip::default();
-                    autosave_requested = options.frames.is_none();
+                    if options.frames.is_none() {
+                        pending_save_slot = Some(Slot::Auto);
+                    }
                     retry.remember(game_snapshot!());
                     let visit = crate::campaign::choice_position(&level_choices, current, entry_spawn.as_deref());
                     hud.announce(&level_choices[visit].title);
@@ -2879,23 +3040,25 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                     .map(|r| (r.model, player.feet + Vec3::Z * 40.))
             });
         scene.update_ropes(world_dt, rope_hand, &transforms);
-        steam.animate(environment_clock);
-        steam.sync(&interactions.event_world);
         steam.collected(&pickups, &stats);
-        if interactions
-            .school
-            .as_ref()
-            .is_some_and(|s| s.theatre_finished())
-        {
-            steam.stop();
+        if paused || menu || inventory_menu || console_input || !focused || !stats.alive() {
+            steam.animate(environment_clock);
+            steam.sync(&interactions.event_world);
+            if interactions
+                .school
+                .as_ref()
+                .is_some_and(|s| s.theatre_finished())
+            {
+                steam.stop();
+            }
+            if let Some(v) = &interactions.village {
+                v.place_particles(&mut steam);
+            }
+            if let Some(p) = &interactions.pandemonium {
+                p.gate_particles(&mut steam);
+            }
+            interactions.place_level_particles(&mut steam);
         }
-        if let Some(v) = &interactions.village {
-            v.place_particles(&mut steam);
-        }
-        if let Some(p) = &interactions.pandemonium {
-            p.gate_particles(&mut steam);
-        }
-        interactions.place_level_particles(&mut steam);
         let mut lights = steam.lights();
         lights.extend(alice.lights());
         lights.extend(npcs.lights());
@@ -2908,6 +3071,13 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             &scene.atmosphere,
             fullbright,
         );
+        // If a save is pending, flag the preview grabber so the next update()
+        // (called right after the world finishes drawing this frame) captures a
+        // fresh screenshot instead of using a stale one or returning None on
+        // Android where per-frame capture is throttled.
+        if saves_enabled && pending_save_slot.is_some() {
+            save_frame.request();
+        }
         scene.draw(camera, environment_clock, fullbright, false, &transforms);
         if show_alice && stats.invisible <= 0. {
             crate::lighting::shadow(&scene.world, player.feet, 22.);
@@ -3077,7 +3247,9 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             .or_else(|| help.then(|| story.objective().map(str::to_owned)).flatten());
         let show_details = help || menu;
         if paused && !menu && !inventory_menu && !console_input && !help {
-            ui.paused(&if input.using_pad {
+            ui.paused(&if input.using_touch {
+                "Tap screen to resume".into()
+            } else if input.using_pad {
                 "A or Start to resume".into()
             } else {
                 format!("{} or click to resume", input.label(&preferences, "P"))
@@ -3105,7 +3277,9 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                     );
                 }
             }
-            let movement = if input.using_pad {
+            let movement = if input.using_touch {
+                "Left stick: move   Jump/Rise: jump or swim up   Dive: crouch or dive".into()
+            } else if input.using_pad {
                 format!(
                     "Left stick: move   {}: jump / rise   {}: dive",
                     input.label(&preferences, "Space"),
@@ -3126,7 +3300,9 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                 movement,
                 format!(
                     "{}: look   {}: change view",
-                    if input.using_pad {
+                    if input.using_touch {
+                        "Right side drag"
+                    } else if input.using_pad {
                         "Right stick"
                     } else {
                         "Mouse / look keys"
@@ -3134,7 +3310,7 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                     input.label(&preferences, "V")
                 ),
                 format!(
-                    "{} / {}: primary / alternate attack",
+                    "{} / {}: primary / alternate attack (drag to aim)",
                     input.label(&preferences, "Mouse 1"),
                     input.label(&preferences, "Mouse 2")
                 ),
@@ -3155,7 +3331,13 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
                 ),
                 format!(
                     "{}: menus   {}: chapters   {}: help",
-                    if input.using_pad { "Start" } else { "Esc" },
+                    if input.using_touch {
+                        "Menu"
+                    } else if input.using_pad {
+                        "Start"
+                    } else {
+                        "Esc"
+                    },
                     input.label(&preferences, "Tab"),
                     input.label(&preferences, "H")
                 ),
@@ -3185,6 +3367,9 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             if !paused && !inventory_menu && !console_input && stats.alive() {
                 hud.draw_notice();
             }
+        }
+        if input.using_touch && !menu && !console_input {
+            input.touch.draw(&ui, &preferences);
         }
         if !menu && !inventory_menu && !console_input && stats.alive() {
             let cover = camera_handoff.overlay();
@@ -3288,7 +3473,9 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             {
                 skip_scene.draw(
                     &ui,
-                    &if input.using_pad {
+                    &if input.using_touch {
+                        "Screen".into()
+                    } else if input.using_pad {
                         "A".into()
                     } else {
                         input.label(&preferences, "Enter")
@@ -3303,47 +3490,47 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             ui.toast(&notice, 74.);
         }
         show_mouse(!focused);
-        if focused && (menu || inventory_menu || paused) {
+        if focused
+            && (menu || inventory_menu || paused)
+            && !input.using_touch
+            && !crate::android::is_android()
+        {
             ui.cursor();
         }
         console.draw(&ui);
-        if save_requested || autosave_requested {
-            if !saves_enabled {
-                if save_requested {
-                    hud.announce("Saving is unavailable in a staged preview");
-                }
+        if let Some(slot) = pending_save_slot {
+            let save_result: Result<(), String> = if !saves_enabled {
+                Err("Saving is unavailable in a staged preview".into())
             } else if !stats.alive() {
-                if save_requested {
-                    hud.announce("Retry or load a game before saving");
-                }
+                Err("Retry or load a game before saving".into())
             } else {
-                let slot = if save_requested {
-                    Slot::Quick
-                } else {
-                    Slot::Auto
-                };
-                match store.write_with_preview(
-                    slot,
-                    &game_snapshot!(),
-                    save_frame.preview().as_ref(),
-                ) {
-                    Ok(()) => {
-                        retry.remember(game_snapshot!());
-                        played = true;
-                        hud.announce(if slot == Slot::Quick {
-                            "Game saved / F9 to load"
-                        } else {
-                            "Progress saved"
-                        });
-                        if save_requested {
-                            console.print("Game saved / F9 to load");
-                        }
+                store
+                    .write_with_preview(
+                        slot,
+                        &game_snapshot!(),
+                        save_frame.preview().as_ref(),
+                    )
+                    .map_err(|e| format!("{e:#}"))
+            };
+            match save_result {
+                Ok(()) => {
+                    retry.remember(game_snapshot!());
+                    played = true;
+                    let msg = match slot {
+                        Slot::Quick => "Game saved / F9 to load",
+                        Slot::Auto => "Progress saved",
+                        _ => "Game saved",
+                    };
+                    hud.announce(msg);
+                    if slot == Slot::Quick {
+                        console.print("Game saved / F9 to load");
+                    } else if matches!(slot, Slot::One | Slot::Two | Slot::Three | Slot::Four) {
+                        console.print(format!("Game saved to {}", slot.title()));
                     }
-                    Err(e) => {
-                        let message = format!("Save failed: {e:#}");
-                        hud.announce(&message);
-                        console.print(message);
-                    }
+                }
+                Err(message) => {
+                    hud.announce(&format!("Save failed: {message}"));
+                    console.print(format!("Save failed: {message}"));
                 }
             }
         }
@@ -3363,9 +3550,14 @@ pub async fn run(mut assets: Assets, mut options: Options) -> Result<()> {
             }
             break;
         }
-        if context_before != (menu, inventory_menu, console.open, paused) {
-            input.suppress();
-        }
+        // NOTE: we intentionally do NOT call input.suppress() here when the
+        // overlay state changes. Suppressing here (at END of the same frame
+        // where the MENU/MAP press edge was just raised) clears `self.pressed`
+        // before the next input.update() even sees the edge, so short taps
+        // never register — the player has to hold the button long enough for
+        // a second frame of press to leak through. Each transition point that
+        // needs to drain the opening finger (escape menu / chapters / inv)
+        // suppresses+drain_active_touches explicitly at the right moment.
         next_frame().await;
     }
     if saves_enabled && played && stats.alive() && options.frames.is_none() && !post_game {

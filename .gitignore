@@ -38,3 +38,24 @@ __pycache__/
 *.pem
 *.key
 *.log
+
+# Android: artefatos e material de assinatura
+*.apk
+*.aab
+*.idsig
+*.so
+*.jks
+*.keystore
+*.p12
+*.pfx
+keystore.properties
+*.lg-orig
+
+# Artefatos e dados locais
+/dist/
+/private/
+/target/
+*.apk
+*.pk3
+*.7z
+*.patch

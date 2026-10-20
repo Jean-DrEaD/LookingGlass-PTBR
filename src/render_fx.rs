@@ -50,6 +50,7 @@ struct Frame {
     dropped: usize,
     retained: Vec<(Rc<Material>, Option<Texture2D>)>,
     projection: Option<Mat4>,
+    last_configured: std::cell::Cell<Option<(*const Material, bool, bool)>>,
 }
 thread_local! {
     static FRAME: RefCell<Frame> = RefCell::default();
@@ -142,15 +143,21 @@ fn draw_pass(p: &Pass, indices: Option<&[u16]>) {
     FRAME.with(|f| {
         let f = f.borrow();
         let m = &p.material;
-        f.atmosphere.apply(m, f.camera);
-        m.set_uniform("Fullbright", if f.fullbright { 1_f32 } else { 0. });
+        let lit_active = !f.fullbright && p.lit;
+        let config_key = (Rc::as_ptr(m), p.model, lit_active);
+        if !crate::android::is_android() || f.last_configured.get() != Some(config_key) {
+            f.atmosphere.apply(m, f.camera);
+            m.set_uniform("Fullbright", if f.fullbright { 1_f32 } else { 0. });
+            m.set_uniform("SkyFade", 0_f32);
+            crate::lighting::apply(m, p.model, lit_active);
+            f.last_configured.set(Some(config_key));
+        }
         m.set_uniform("Lit", if p.lit { 1_f32 } else { 0. });
         m.set_uniform("ClampUV", if p.clamp { 1_f32 } else { 0. });
         m.set_uniform("Cutout", p.cutout);
         m.set_uniform("CutoutReference", p.cutout_reference);
         m.set_uniform("Gain", p.gain);
         m.set_uniform("FogMode", p.fog);
-        m.set_uniform("SkyFade", 0_f32);
         m.set_uniform("FxModel", if p.model { 1_f32 } else { 0. });
         m.set_uniform(
             "FxAppearance",
@@ -161,7 +168,6 @@ fn draw_pass(p: &Pass, indices: Option<&[u16]>) {
                 p.filter_fade,
             ),
         );
-        crate::lighting::apply(m, p.model, !f.fullbright && p.lit);
         gl_use_material(m);
         if let Some(indices) = indices {
             // Interleaved surfaces can contribute just one triangle per run.
@@ -185,6 +191,7 @@ pub fn submit(passes: Vec<Pass>, transparent: bool) {
         return;
     }
     if !transparent {
+        FRAME.with(|f| f.borrow().last_configured.set(None));
         for p in &passes {
             draw_pass(p, None);
         }
@@ -209,6 +216,7 @@ pub fn submit(passes: Vec<Pass>, transparent: bool) {
 pub fn finish() -> (usize, usize) {
     let (groups, camera, direction, dropped, projection) = FRAME.with(|f| {
         let mut f = f.borrow_mut();
+        f.last_configured.set(None);
         (
             std::mem::take(&mut f.groups),
             f.camera,
@@ -348,12 +356,22 @@ fn pass_at(
     Ok(Pass {
         mesh,
         material: crate::render::world_material(
-            crate::render::blend_index(stage.blend)
-                + if stage.depth_equal {
-                    crate::render::BLEND_COUNT
-                } else {
-                    0
-                },
+            if crate::android::is_android()
+                && stage.blend == Blend::Opaque
+                && !stage.depth_equal
+                && stage.alpha_test == 0
+                && appearance.dissolve <= 0.
+                && !appearance.ghost
+            {
+                crate::render::SOLID_OPAQUE_MATERIAL
+            } else {
+                crate::render::blend_index(stage.blend)
+                    + if stage.depth_equal {
+                        crate::render::BLEND_COUNT
+                    } else {
+                        0
+                    }
+            },
         )?,
         lit,
         clamp: stage.clamp,
@@ -497,20 +515,25 @@ pub fn register(
             let Some(path) = texture::resolve(assets, name, &BTreeMap::new()) else {
                 continue;
             };
-            let image = texture::decode(assets, &path)?;
-            let tex = Texture2D::from_rgba8(image.width, image.height, &image.pixels);
-            tex.set_filter(FilterMode::Linear);
-            // Model shaders tile too (notably the Queen's tentacle and base).
-            // CPU UV modifiers may leave [0,1]; clamping samples one edge texel.
-            if !stage.clamp {
-                unsafe {
-                    get_internal_gl().quad_context.texture_set_wrap(
-                        tex.raw_miniquad_id(),
-                        macroquad::miniquad::TextureWrap::Repeat,
-                        macroquad::miniquad::TextureWrap::Repeat,
-                    );
+            let tex = if crate::android::is_android() {
+                texture::load_gpu(assets, &path, !stage.clamp, true)?
+            } else {
+                let image = texture::decode(assets, &path)?;
+                let tex = Texture2D::from_rgba8(image.width, image.height, &image.pixels);
+                tex.set_filter(FilterMode::Linear);
+                // Model shaders tile too (notably the Queen's tentacle and base).
+                // CPU UV modifiers may leave [0,1]; clamping samples one edge texel.
+                if !stage.clamp {
+                    unsafe {
+                        get_internal_gl().quad_context.texture_set_wrap(
+                            tex.raw_miniquad_id(),
+                            macroquad::miniquad::TextureWrap::Repeat,
+                            macroquad::miniquad::TextureWrap::Repeat,
+                        );
+                    }
                 }
-            }
+                tex
+            };
             textures.push(tex);
         }
         if textures.len() == stage.images.len() {
@@ -612,15 +635,39 @@ fn skin_timed(mesh: &Mesh, clock: Option<f32>, alpha: f32) {
             }]
             .clone(),
         );
-        for v in &mut copy.vertices {
-            let n = v.normal.truncate().normalize_or_zero();
-            v.uv = layer.stage.view_uv(v.uv, v.position, n, camera, time);
-            v.color[3] = (255.
-                * alpha
-                * layer
-                    .stage
-                    .opacity(n, (camera - v.position).normalize_or_zero(), v.color[3]))
-                as u8;
+        let needs_normal = layer.stage.environment || layer.stage.dot_alpha.is_some();
+        let needs_eye_dir = layer.stage.dot_alpha.is_some();
+        let static_uv = layer.stage.vector_uv.is_none()
+            && !layer.stage.environment
+            && layer.stage.mods.is_empty();
+        if static_uv && !needs_eye_dir {
+            if alpha < 1. || !layer.stage.vertex_alpha {
+                for v in &mut copy.vertices {
+                    let base_a = if layer.stage.vertex_alpha {
+                        v.color[3] as f32 / 255.
+                    } else {
+                        1.
+                    };
+                    v.color[3] = (255. * (alpha * base_a).clamp(0., 1.)) as u8;
+                }
+            }
+        } else {
+            for v in &mut copy.vertices {
+                let n = if needs_normal {
+                    v.normal.truncate().normalize_or_zero()
+                } else {
+                    Vec3::ZERO
+                };
+                if !static_uv {
+                    v.uv = layer.stage.view_uv(v.uv, v.position, n, camera, time);
+                }
+                let eye_dir = if needs_eye_dir {
+                    (camera - v.position).normalize_or_zero()
+                } else {
+                    Vec3::ZERO
+                };
+                v.color[3] = (255. * alpha * layer.stage.opacity(n, eye_dir, v.color[3])) as u8;
+            }
         }
         let mut stage = layer.stage.clone();
         if clock.is_none() && alpha < 1. {
