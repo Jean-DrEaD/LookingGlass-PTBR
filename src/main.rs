@@ -93,7 +93,7 @@ mod save_legacy_check;
 mod save_preview;
 mod school;
 mod school2;
-mod school2_quest;
+use lg_core::school2_quest;
 mod school2_route;
 mod school_return;
 mod school_return_route;
