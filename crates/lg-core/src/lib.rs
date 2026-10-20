@@ -3,3 +3,4 @@
 extern crate alloc;
 pub mod time;
 pub mod entity;
+pub mod weapon_rules;

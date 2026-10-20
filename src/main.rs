@@ -118,7 +118,7 @@ mod village_route;
 mod visibility;
 mod water;
 mod water_art;
-mod weapon_rules;
+use lg_core::weapon_rules;
 mod weapons;
 mod wildlife;
 
