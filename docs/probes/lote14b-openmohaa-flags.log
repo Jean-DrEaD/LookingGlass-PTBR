@@ -1,0 +1,111 @@
+# Probe 14b 2026-10-21 13:58 @ a2f3401
+## cmake/libraries/all.cmake:
+  1: include(libraries/curl)
+  2: include(libraries/freetype)
+  3: include(libraries/jpeg)
+  4: include(libraries/ogg)
+  5: include(libraries/opus)
+  6: include(libraries/openal)
+  7: include(libraries/sdl)
+  8: include(libraries/vorbis)
+  9: include(libraries/zlib)
+  10: include(libraries/libmad)
+  11: include(libraries/flex_bison)
+  12: include(libraries/recastnavigation)
+## cmake/libraries/sdl.cmake (1-70):
+  1: if(NOT BUILD_CLIENT)
+  2:     return()
+  3: endif()
+  4: 
+  5: if(EMSCRIPTEN)
+  6:     # Emscripten provides its own self contained SDL setup
+  7:     list(APPEND CLIENT_COMPILE_OPTIONS -sUSE_SDL=2)
+  8:     list(APPEND CLIENT_LINK_OPTIONS -sUSE_SDL=2)
+  9:     return()
+  10: endif()
+  11: 
+  12: set(INTERNAL_SDL_DIR ${SOURCE_DIR}/thirdparty/SDL2-2.32.8)
+  13: 
+  14: include(utils/arch)
+  15: 
+  16: if(WIN32 OR APPLE)
+  17:     # On Windows and macOS we have internal SDL binaries we can use
+  18:     set(HAVE_INTERNAL_SDL true)
+  19: endif()
+  20: 
+  21: if(USE_INTERNAL_SDL AND HAVE_INTERNAL_SDL)
+  22:     set(SDL2_INCLUDE_DIRS ${INTERNAL_SDL_DIR}/include)
+  23:     list(APPEND CLIENT_DEFINITIONS USE_INTERNAL_SDL_HEADERS)
+  24:     list(APPEND RENDERER_DEFINITIONS USE_INTERNAL_SDL_HEADERS)
+  25: 
+  26:     if(WIN32)
+  27:         if(ARCH STREQUAL "x86_64")
+  28:             set(LIB_DIR ${SOURCE_DIR}/thirdparty/libs/win64)
+  29:         elseif(ARCH STREQUAL "x86")
+  30:             set(LIB_DIR ${SOURCE_DIR}/thirdparty/libs/win32)
+  31:         else()
+  32:             message(FATAL_ERROR "Unknown ARCH")
+  33:         endif()
+  34: 
+  35:         if(MINGW)
+  36:             set(SDL2_LIBRARIES
+  37:                 ${LIB_DIR}/libSDL2main.a
+  38:                 ${LIB_DIR}/libSDL2.dll.a)
+  39:         elseif(MSVC)
+  40:             set(SDL2_LIBRARIES
+  41:                 ${LIB_DIR}/SDL2main.lib
+  42:                 ${LIB_DIR}/SDL2.lib)
+  43:         endif()
+  44: 
+  45:         list(APPEND CLIENT_DEPLOY_LIBRARIES ${LIB_DIR}/SDL2.dll)
+  46:     elseif(APPLE)
+  47:         set(SDL2_LIBRARIES
+  48:             ${SOURCE_DIR}/thirdparty/libs/macos/libSDL2main.a
+  49:             ${SOURCE_DIR}/thirdparty/libs/macos/libSDL2-2.0.0.dylib)
+  50:         list(APPEND CLIENT_DEPLOY_LIBRARIES
+  51:             ${SOURCE_DIR}/thirdparty/libs/macos/libSDL2-2.0.0.dylib)
+  52:     else()
+  53:         message(FATAL_ERROR "HAVE_INTERNAL_SDL set incorrectly; file a bug")
+  54:     endif()
+  55: else()
+  56:     find_package(SDL2 REQUIRED)
+  57: endif()
+  58: 
+  59: list(APPEND CLIENT_LIBRARIES ${SDL2_LIBRARIES})
+  60: list(APPEND CLIENT_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS})
+  61: list(APPEND CLIENT_COMPILE_OPTIONS ${SDL2_CFLAGS_OTHER})
+  62: list(APPEND RENDERER_LIBRARIES ${SDL2_LIBRARIES})
+  63: list(APPEND RENDERER_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS})
+  64: list(APPEND RENDERER_COMPILE_OPTIONS ${SDL2_CFLAGS_OTHER})
+## Onde o servidor usa SDL (code/sys):
+  code\sys\new\sys_main_new.c:147: if ((cliptext = SDL_GetClipboardText()) != NULL) {
+  code\sys\sys_loadlib.h:38: #	ifdef USE_INTERNAL_SDL_HEADERS
+  code\sys\sys_local.h:31: #ifdef USE_INTERNAL_SDL_HEADERS
+  code\sys\sys_main.c:39: #ifdef USE_INTERNAL_SDL_HEADERS
+## CMake configure dedicado v2 (nxdk):
+-- The C compiler identification is Clang 20.1.6 with GNU-like command-line
+-- The CXX compiler identification is Clang 20.1.6 with GNU-like command-line
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/src/nxdk/bin/nxdk-cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/src/nxdk/bin/nxdk-cxx - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The ASM compiler identification is Clang with GNU-like command-line
+-- Found assembler: /usr/src/nxdk/bin/nxdk-cc
+CMake Error at /usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:233 (message):
+  Could NOT find BISON (missing: BISON_EXECUTABLE) (Required is at least
+  version "3")
+Call Stack (most recent call first):
+  /usr/share/cmake/Modules/FindPackageHandleStandardArgs.cmake:603 (_FPHSA_FAILURE_MESSAGE)
+  /usr/share/cmake/Modules/FindBISON.cmake:306 (FIND_PACKAGE_HANDLE_STANDARD_ARGS)
+  cmake/libraries/flex_bison.cmake:17 (find_package)
+  cmake/libraries/all.cmake:11 (include)
+  CMakeLists.txt:73 (include)
+
+
+-- Configuring incomplete, errors occurred!
