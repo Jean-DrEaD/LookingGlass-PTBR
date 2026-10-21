@@ -1,0 +1,103 @@
+# Probe 14d 2026-10-21 17:05 @ a2f3401
+## Macros do nxdk:
+#define NXDK 1
+#define _MSC_VER 1933
+#define _WIN32 1
+#define __i386__ 1
+## nxdk tem winsock/lwip/stat?
+/usr/src/nxdk/lib/net/lwip/contrib/ports/unix/posixlib/include/posix/sockets.h
+/usr/src/nxdk/lib/net/lwip/src/include/lwip/sockets.h
+/usr/src/nxdk/lib/xboxrt/libc_extensions/stat.h
+## Quem inclui winsock.h:
+grep: unrecognized option: include=*.c
+BusyBox v1.37.0 (2025-05-26 20:04:45 UTC) multi-call binary.
+
+Usage: grep [-HhnlLoqvsrRiwFE] [-m N] [-A|B|C N] { PATTERN | -e PATTERN... | -f FILE... } [FILE]...
+
+Search for PATTERN in FILEs (or stdin)
+
+	-H	Add 'filename:' prefix
+	-h	Do not add 'filename:' prefix
+	-n	Add 'line_no:' prefix
+	-l	Show only names of files that match
+	-L	Show only names of files that don't match
+	-c	Show only count of matching lines
+	-o	Show only the matching part of line
+	-q	Quiet. Return 0 if PATTERN is found, 1 otherwise
+	-v	Select non-matching lines
+	-s	Suppress open and read errors
+	-r	Recurse
+	-R	Recurse and dereference symlinks
+	-i	Ignore case
+	-w	Match whole words only
+	-x	Match whole lines only
+	-F	PATTERN is a literal (not regexp)
+	-E	PATTERN is an extended regexp
+	-m N	Match up to N times per file
+	-A N	Print N lines of trailing context
+	-B N	Print N lines of leading context
+	-C N	Same as '-A N -B N'
+	-e PTRN	Pattern to match
+	-f FILE	Read pattern from file
+## Quem inclui sys/stat.h:
+code/client/libmumblelink.c
+code/fgame/scriptmaster.cpp
+code/fgame/scriptthread.cpp
+code/gamespy/GP/gpiTransfer.c
+code/qcommon/common.c
+code/qcommon/files.cpp
+code/sys/sys_main.c
+code/sys/sys_unix.c
+code/tools/asm/cmdlib.c
+code/tools/lcc/cpp/unix.c
+## str operator[] / conversao:
+109:    char  operator[](intptr_t index) const;
+110:    char& operator[](intptr_t index);
+144:    operator const char *() const;
+184:inline char str::operator[](intptr_t index) const
+445:inline char& str::operator[](intptr_t index)
+685:inline str::operator const char *(void) const
+## throw sites:
+411
+BUILD_EXIT=2
+## Objetos ok / falhos:
+280
+196
+## Primeiros erros por arquivo:
+code/gamespy/common/gsPlatform.h:74:12: fatal error: 'winsock.h' file not found
+code/gamespy/common/../common/gsPlatform.h:74:12: fatal error: 'winsock.h' file not found
+code/corepp/listener.cpp:857:17: error: use of overloaded operator '[]' is ambiguous (with operand types 'const str' and 'int')
+code/corepp/str.cpp:667:11: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/bg_voteoptions.cpp:456:26: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/actor.cpp:11559:32: error: use of overloaded operator '[]' is ambiguous (with operand types 'const str' and 'int')
+code/fgame/../corepp/../corepp/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/characterstate.cpp:107:22: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/debuglines.cpp:449:17: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/doors.cpp:1246:45: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/entity.cpp:2002:25: error: use of overloaded operator '[]' is ambiguous (with operand types 'const str' and 'int')
+code/fgame/g_spawn.cpp:114:36: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/gamescript.cpp:187:37: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/level.cpp:1576:23: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/../corepp/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/object.cpp:152:41: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/player.cpp:10169:18: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/player_util.cpp:506:14: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/fgame/scriptmaster.cpp:40:14: fatal error: 'sys/stat.h' file not found
+code/fgame/scriptthread.cpp:52:14: fatal error: 'sys/stat.h' file not found
+code/fgame/vehicle.cpp:3463:48: error: use of overloaded operator '[]' is ambiguous (with operand types 'const str' and 'int')
+code/fgame/viewthing.cpp:404:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/parser/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/script/../corepp/../corepp/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/script/../fgame/../corepp/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/script/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/corepp/../corepp/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/corepp/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/corepp/../script/../corepp/../corepp/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+code/corepp/../corepp/../corepp/../fgame/g_utils.h:295:21: error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+## Top mensagens:
+    358 error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+     23 fatal error: 'winsock.h' file not found
+     12 fatal error: too many errors emitted, stopping now [-ferror-limit=]
+      5 error: use of overloaded operator '[]' is ambiguous (with operand types 'const str' and 'int')
+      2 fatal error: 'sys/stat.h' file not found
