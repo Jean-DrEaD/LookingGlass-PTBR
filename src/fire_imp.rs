@@ -6,7 +6,7 @@ use crate::{
     skeletal::Transform,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 #[cfg(test)]
 mod tests;
 

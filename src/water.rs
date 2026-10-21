@@ -1,7 +1,7 @@
 //! Liquid membership and provisional swimming support, independent of original game code.
 use crate::{collision::World, movement::EYE_HEIGHT};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Liquid {

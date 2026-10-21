@@ -82,3 +82,4 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [fix] KB dos CSVs auditados estavam 10x (parse pt-BR). Real: MISTO facil ~1.297 KB, MISTO API ~2.361 KB.
 - [nota] regex de API pegou funcoes proprias (draw_pose, load_levels...). API real: Camera3D, set_camera, clear_background, Texture2D, is_key_*, screen_*, draw_text/line/rectangle, load_texture.
 - [ok] lg_core::math criado (re-export glam). Lote 1: 24 arquivos migrados de macroquad::prelude.
+- [ok] math ampliado (Quat/Vec4/Mat3/EulerRot). Lote 1b: 23 arquivos. [nota] pais com filhos 'use super::*' precisam manter macroquad ate migrar os filhos.

@@ -6,7 +6,7 @@ use crate::{
     combat::{self, DamageKind, Feedback, Hit, Opponents, Recoil, Target},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 pub const MODEL: &str = "c_magmamen";
 const DT: f32 = 1. / 120.;
 pub const CLIPS: &[&str] = &[

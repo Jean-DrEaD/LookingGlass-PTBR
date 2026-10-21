@@ -3,7 +3,7 @@ use crate::{
     skeletal::Transform,
     weapons::{Action, Actions},
 };
-use macroquad::prelude::*;
+use lg_core::math::*;
 
 #[derive(Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct ViewModel {

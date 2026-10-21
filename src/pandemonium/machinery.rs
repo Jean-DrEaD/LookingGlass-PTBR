@@ -4,7 +4,7 @@
 use super::{fraction, point};
 use crate::{bsp::Bsp, entity::Id, skeletal::Transform};
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 
 pub(super) struct Machinery {
     widget: [Vec3; 3],

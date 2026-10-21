@@ -5,7 +5,7 @@ use crate::{
     skeletal::Transform,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use serde::{Deserialize, Serialize};
 
 pub(crate) const WALL_BASE: usize = 800_000_000;

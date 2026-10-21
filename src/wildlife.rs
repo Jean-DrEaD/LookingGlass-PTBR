@@ -6,7 +6,7 @@ use crate::{
     combat::{self, DamageKind, Feedback, Hit, Opponents, Target},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 pub const DT: f32 = 1. / 120.;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Kind {

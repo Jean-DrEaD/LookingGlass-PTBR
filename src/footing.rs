@@ -3,7 +3,7 @@ use crate::{
     collision::World,
     skeletal::{Skeleton, Transform},
 };
-use macroquad::prelude::*;
+use lg_core::math::*;
 #[derive(Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct State {
     offsets: [f32; 2],

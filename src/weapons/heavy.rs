@@ -7,7 +7,7 @@ use crate::{
     skeletal::Transform,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use serde::{Deserialize, Serialize};
 
 pub(super) const CHARGE: &str = "sound/weapon/staff/charge1.wav";

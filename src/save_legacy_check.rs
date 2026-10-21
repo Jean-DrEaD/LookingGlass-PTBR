@@ -21,7 +21,7 @@ use crate::{
     weapons::Actions,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use serde::Serialize;
 use std::{fs, path::Path};
 

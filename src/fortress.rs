@@ -10,7 +10,7 @@ use crate::{
     movement::Player,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::BTreeMap;
 
 pub fn supported(e: &BTreeMap<String, String>) -> bool {

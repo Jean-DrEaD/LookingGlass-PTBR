@@ -1,7 +1,7 @@
 //! Observed TAN version 2 vertex animation format; bounded, read-only decoding.
 use crate::skeletal::Bytes;
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::BTreeMap;
 
 pub struct Surface {

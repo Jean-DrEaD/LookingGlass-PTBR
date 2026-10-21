@@ -5,7 +5,7 @@ use crate::{
     combat::{self, DamageKind, Feedback, Hit, Opponents, Target},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 #[cfg(test)]
 mod tests;
 pub const STEP: f32 = 1. / 120.;

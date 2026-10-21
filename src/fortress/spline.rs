@@ -1,6 +1,6 @@
 //! Scene-local cubic path playback. Native rules researched privately; independent
 //! implementation. Immutable time tables make seeking and save/resume repeatable.
-use macroquad::prelude::*;
+use lg_core::math::*;
 
 pub(crate) struct Spline {
     points: Vec<(Vec3, Quat, f32)>,

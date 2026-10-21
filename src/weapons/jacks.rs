@@ -4,7 +4,7 @@ use crate::{
     combat::{self, Context, Hit, Target},
     skeletal::Transform,
 };
-use macroquad::prelude::*;
+use lg_core::math::*;
 use serde::{Deserialize, Serialize};
 
 pub(super) const TOSS: &str = "sound/weapon/jacks/jacks_toss.wav";

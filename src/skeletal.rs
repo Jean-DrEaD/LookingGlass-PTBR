@@ -1,7 +1,7 @@
 //! Checked readers for the observed SKL/SKAN version 2 and 3 files. See docs/CHARACTER.md.
 use crate::{assets::Assets, bsp::tokens};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) struct Bytes<'a>(pub(crate) &'a [u8]);

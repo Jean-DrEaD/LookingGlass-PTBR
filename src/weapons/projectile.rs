@@ -5,7 +5,7 @@ use crate::{
     combat::{self, Context, Hit},
     skeletal::Transform,
 };
-use macroquad::prelude::*;
+use lg_core::math::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]

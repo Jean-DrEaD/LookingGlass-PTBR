@@ -1,7 +1,7 @@
 //! Reviewed presentation commands from original map scripts. No script execution.
 use crate::{assets::Assets, bsp::Bsp};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::BTreeMap;
 
 pub fn body(text: &str, name: &str) -> String {

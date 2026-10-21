@@ -7,7 +7,7 @@ use crate::{
     tan,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use serde::{Deserialize, Serialize};
 
 pub(super) const MUSIC: &str = "sound/weapon/jackbomb/jackbomb_music.wav";
