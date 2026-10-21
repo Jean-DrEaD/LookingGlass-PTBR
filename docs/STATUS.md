@@ -64,3 +64,5 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - Pendente: FS_XboxStockVM sem checksums Alice; modulos ainda q3 (cgame/ui/qagame)
 - [ok] Removido LEGACY_PROTOCOL do bloco STANDALONEALICE
 - Proximo: teste no xemu/console com pasta base\ ao lado do default.xbe
+- [teste] alice no ioq3: pk3 montam e default.cfg carrega, mas UI q3 sem assets (tela azul). Engine do Alice e Ritual/FAKK2 (TIKI, BSP FAKK, .urc), incompativel com ioq3. Branch alice congelado.
+- Proximo: decidir entre portar o engine Rust para nxdk ou avaliar um engine C/C++ da linha FAKK2 (ex. OpenMoHAA)
