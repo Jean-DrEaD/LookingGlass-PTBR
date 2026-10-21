@@ -15,3 +15,7 @@ compile_error!("Ative um backend: backend-macroquad ou backend-xbox");
 compile_error!("Ative apenas UM backend");
 
 pub mod math;
+
+/// Converte Rect portavel para o `source` do backend.
+#[cfg(feature = "backend-macroquad")]
+pub fn src_rect(r: impl Into<macroquad::math::Rect>) -> Option<macroquad::math::Rect> { Some(r.into()) }

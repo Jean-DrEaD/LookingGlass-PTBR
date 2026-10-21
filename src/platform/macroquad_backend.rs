@@ -45,3 +45,10 @@ pub mod window {
 pub mod prelude {
     pub use crate::platform::{math::*, gfx::*, gl::*, input::*, window::*};
 }
+
+impl From<crate::platform::math::Rect> for macroquad::math::Rect {
+    fn from(r: crate::platform::math::Rect) -> Self { Self::new(r.x, r.y, r.w, r.h) }
+}
+impl From<macroquad::math::Rect> for crate::platform::math::Rect {
+    fn from(r: macroquad::math::Rect) -> Self { Self::new(r.x, r.y, r.w, r.h) }
+}

@@ -221,7 +221,7 @@ impl BitmapFont {
                     color,
                     DrawTextureParams {
                         dest_size: Some(dest.size()),
-                        source: Some(glyph),
+                        source: crate::platform::src_rect(glyph),
                         ..Default::default()
                     },
                 );
@@ -303,7 +303,7 @@ impl Ui {
                     WHITE,
                     DrawTextureParams {
                         dest_size: Some(vec2(w, h)),
-                        source: Some(Rect::new(0., 0., w / size * 64., h / size * 64.)),
+                        source: crate::platform::src_rect(Rect::new(0., 0., w / size * 64., h / size * 64.)),
                         ..Default::default()
                     },
                 );
@@ -438,7 +438,7 @@ fn nine(t: &Texture2D, r: Rect, b: f32) {
                 WHITE,
                 DrawTextureParams {
                     dest_size: Some(vec2(x[col + 1] - x[col], y[row + 1] - y[row])),
-                    source: Some(Rect::new(
+                    source: crate::platform::src_rect(Rect::new(
                         sx[col],
                         sy[row],
                         sx[col + 1] - sx[col],

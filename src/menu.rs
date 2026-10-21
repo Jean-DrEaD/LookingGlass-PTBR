@@ -860,7 +860,7 @@ impl Menu {
                 WHITE,
                 DrawTextureParams {
                     dest_size: Some(r.size()),
-                    source: Some(Rect::new(source.x, source.y, source_size.x, source_size.y)),
+                    source: crate::platform::src_rect(Rect::new(source.x, source.y, source_size.x, source_size.y)),
                     ..Default::default()
                 },
             );
