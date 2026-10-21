@@ -147,7 +147,7 @@ pub struct Options {
     pub npc_preview: bool,
     pub combat_preview: bool,
     pub larva_preview: bool,
-    pub start_at: Option<macroquad::prelude::Vec3>,
+    pub start_at: Option<crate::platform::math::Vec3>,
     pub story_preview: Option<String>,
     pub shelf_preview: bool,
 }
@@ -192,23 +192,23 @@ fn run() -> Result<()> {
         shelf_preview: false,
     };
     if android::is_android() {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             android::install_panic_hook();
-            macroquad::miniquad::info!("LG: aguardando dados em {:?}", o.data);
+            crate::platform::mq::miniquad::info!("LG: aguardando dados em {:?}", o.data);
             let assets = match android::wait_for_data(o.data.clone()).await {
                 Ok(assets) => assets,
                 Err(e) => {
-                    macroquad::miniquad::error!("LG Setup aborted: {:#}", e);
-                    macroquad::miniquad::window::request_quit();
+                    crate::platform::mq::miniquad::error!("LG Setup aborted: {:#}", e);
+                    crate::platform::mq::miniquad::window::request_quit();
                     return;
                 }
             };
-            macroquad::miniquad::info!("LG: dados ok, iniciando viewer");
+            crate::platform::mq::miniquad::info!("LG: dados ok, iniciando viewer");
             match viewer::run(assets, o).await {
-                Ok(()) => { macroquad::miniquad::info!("LG: viewer terminou normalmente"); }
-                Err(e) => { macroquad::miniquad::error!("LG Viewer failed: {:#}", e); }
+                Ok(()) => { crate::platform::mq::miniquad::info!("LG: viewer terminou normalmente"); }
+                Err(e) => { crate::platform::mq::miniquad::error!("LG Viewer failed: {:#}", e); }
             }
-            macroquad::miniquad::window::request_quit();
+            crate::platform::mq::miniquad::window::request_quit();
             // On Android `request_quit()` only stops the render loop; it does
             // not always tear the GL surface down, leaving a black window when
             // the player picks "Quit" from the menu. Explicitly finish the
@@ -538,7 +538,7 @@ fn run() -> Result<()> {
     let mut assets = match Assets::open(&o.data) {
         Ok(assets) => assets,
         Err(_err) if mode == "view" && android::is_android() => {
-            macroquad::Window::from_config(viewer::config(), async move {
+            crate::platform::mq::Window::from_config(viewer::config(), async move {
                 match android::wait_for_data(o.data.clone()).await {
                     Ok(assets) => {
                         if let Err(e) = viewer::run(assets, o).await {
@@ -557,7 +557,7 @@ fn run() -> Result<()> {
         Err(err) => return Err(err),
     };
     if mode == "campaign-playtest" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = campaign_playtest::run(&mut assets, chain, o.difficulty).await {
                 eprintln!("Full campaign playtest failed: {e:#}");
                 std::process::exit(1);
@@ -569,7 +569,7 @@ fn run() -> Result<()> {
         return match check.run {
             levels::Run::Headless(run) => run(&mut assets),
             levels::Run::Windowed(run) => {
-                macroquad::Window::from_config(viewer::config(), async move {
+                crate::platform::mq::Window::from_config(viewer::config(), async move {
                     if let Err(e) = run(&mut assets).await {
                         eprintln!("{} failed: {e:#}", check.flag);
                         std::process::exit(1);
@@ -658,7 +658,7 @@ fn run() -> Result<()> {
         return ledge::check(&mut assets);
     }
     if mode == "targeting-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = targeting::render_check(&mut assets).await {
                 eprintln!("Aim marker render failed: {e:#}");
                 std::process::exit(1);
@@ -667,7 +667,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "ledge-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = ledge::render_check(&mut assets).await {
                 eprintln!("Ledge render failed: {e:#}");
                 std::process::exit(1);
@@ -721,7 +721,7 @@ fn run() -> Result<()> {
         mode,
         "potears1-render" | "potears1-save-write" | "potears1-save-read"
     ) {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             let result = if mode == "potears1-render" {
                 pool::route::render(&mut assets).await
             } else {
@@ -770,7 +770,7 @@ fn run() -> Result<()> {
         return dismember::check(&mut assets);
     }
     if mode == "animation-runtime-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             let result = async {
                 character::render_movement(&mut assets).await?;
                 dismember::render_check(&mut assets).await?;
@@ -817,7 +817,7 @@ fn run() -> Result<()> {
         return npc::wildlife_check::check(&mut assets);
     }
     if mode == "wildlife-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = npc::wildlife_check::native(&mut assets).await {
                 eprintln!("Creature check failed: {e:#}");
                 std::process::exit(1);
@@ -843,7 +843,7 @@ fn run() -> Result<()> {
             | "snark-save-write"
             | "snark-save-read"
     ) {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = npc::resident_check::native(&mut assets, mode).await {
                 eprintln!("Resident check failed: {e:#}");
                 std::process::exit(1);
@@ -858,7 +858,7 @@ fn run() -> Result<()> {
         mode,
         "clock-render" | "clock-save-write" | "clock-save-read"
     ) {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = npc::clock_check::native(&mut assets, mode).await {
                 eprintln!("Clockwork check failed: {e:#}");
                 std::process::exit(1);
@@ -870,7 +870,7 @@ fn run() -> Result<()> {
         return npc::imp_check::check(&mut assets);
     }
     if matches!(mode, "imp-render" | "imp-save-write" | "imp-save-read") {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = npc::imp_check::native(&mut assets, mode).await {
                 eprintln!("Fire Imp check failed: {e:#}");
                 std::process::exit(1);
@@ -885,7 +885,7 @@ fn run() -> Result<()> {
         mode,
         "chess-render" | "chess-save-write" | "chess-save-read"
     ) {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = npc::chess_check::native(&mut assets, mode).await {
                 eprintln!("Chess check failed: {e:#}");
                 std::process::exit(1);
@@ -894,7 +894,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if matches!(mode, "ant-render" | "ant-save-write" | "ant-save-read") {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = npc::ant_check::native(&mut assets, mode).await {
                 eprintln!("Ant check failed: {e:#}");
                 std::process::exit(1);
@@ -906,7 +906,7 @@ fn run() -> Result<()> {
         return npc::check_combat(&mut assets);
     }
     if mode == "blade-cards-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = weapons::check::render(&mut assets).await {
                 eprintln!("Blade/Cards render failed: {e:#}");
                 std::process::exit(1);
@@ -915,7 +915,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "dice-watch-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = weapons::dice_watch_check::render(&mut assets).await {
                 eprintln!("Dice/Watch render failed: {e:#}");
                 std::process::exit(1);
@@ -924,7 +924,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "heavy-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = weapons::heavy_check::render(&mut assets).await {
                 eprintln!("Staff/Blunderbuss render failed: {e:#}");
                 std::process::exit(1);
@@ -933,7 +933,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "swim-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = water_art::check(&mut assets).await {
                 eprintln!("Swimming presentation check failed: {e:#}");
                 std::process::exit(1);
@@ -942,7 +942,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "ice-jacks-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = weapons::ice_jacks_check::render(&mut assets).await {
                 eprintln!("Ice/Jacks render failed: {e:#}");
                 std::process::exit(1);
@@ -951,7 +951,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "mallet-jack-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = weapons::mallet_jack_check::render(&mut assets).await {
                 eprintln!("Mallet/Jackbomb render failed: {e:#}");
                 std::process::exit(1);
@@ -979,7 +979,7 @@ fn run() -> Result<()> {
     }
     let maps = assets.maps();
     if mode == "save-preview" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = save_preview::check(&mut assets).await {
                 eprintln!("Save preview check failed: {e:#}");
                 std::process::exit(1);
@@ -988,7 +988,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "animation-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = character::render_animations(&mut assets).await {
                 eprintln!("Animation render failed: {e:#}");
                 std::process::exit(1);
@@ -997,7 +997,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "presentation-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = character::render_presentation(&mut assets).await {
                 eprintln!("Presentation render failed: {e:#}");
                 std::process::exit(1);
@@ -1006,7 +1006,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "facial-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = facial::render(&mut assets).await {
                 eprintln!("Facial render failed: {e:#}");
                 std::process::exit(1);
@@ -1015,7 +1015,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "village-gesture-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = village::cinema::gnome3::render(&mut assets).await {
                 eprintln!("Village gesture check failed: {e:#}");
                 std::process::exit(1);
@@ -1024,7 +1024,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "opening-audit" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = npc::opening_check::check(&mut assets).await {
                 eprintln!("Opening audit failed: {e:#}");
                 std::process::exit(1);
@@ -1033,7 +1033,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "npc-placement-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = npc::render_placement(&mut assets).await {
                 eprintln!("Actor placement render failed: {e:#}");
                 std::process::exit(1);
@@ -1042,7 +1042,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "duchess-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = duchess_check::render(&mut assets).await {
                 eprintln!("Duchess render failed: {e:#}");
                 std::process::exit(1);
@@ -1054,7 +1054,7 @@ fn run() -> Result<()> {
         return console::gameplay::check(&mut assets);
     }
     if mode == "pandemonium-machinery-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = pandemonium_render::check_machinery(&mut assets).await {
                 eprintln!("Pandemonium machinery render failed: {e:#}");
                 std::process::exit(1);
@@ -1063,7 +1063,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "beyond-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = beyond_render::check(&mut assets).await {
                 eprintln!("Beyond render failed: {e:#}");
                 std::process::exit(1);
@@ -1072,7 +1072,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "pool-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = pool_check::render(&mut assets).await {
                 eprintln!("Pool render failed: {e:#}");
                 std::process::exit(1);
@@ -1081,7 +1081,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "fortress-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = render::Scene::fortress_check(&mut assets).await {
                 eprintln!("Fortress render failed: {e:#}");
                 std::process::exit(1);
@@ -1090,7 +1090,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "pandemonium-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = pandemonium_render::check(&mut assets).await {
                 eprintln!("Pandemonium render failed: {e:#}");
                 std::process::exit(1);
@@ -1099,7 +1099,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "ladybug-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = ladybug::render_check(&mut assets).await {
                 eprintln!("Ladybug render check failed: {e:#}");
                 std::process::exit(1);
@@ -1108,7 +1108,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "dice-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = dice::render_check(&mut assets).await {
                 eprintln!("Dice render check failed: {e:#}");
                 std::process::exit(1);
@@ -1120,7 +1120,7 @@ fn run() -> Result<()> {
         mode,
         "campaign-save-chain-write" | "campaign-save-chain-read"
     ) {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) =
                 campaign_chain::save_chain_check(&mut assets, mode == "campaign-save-chain-write")
                     .await
@@ -1132,7 +1132,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if matches!(mode, "save-write" | "save-read") {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = save_check::check(&mut assets, mode == "save-write").await {
                 eprintln!("Save check failed: {e:#}");
                 std::process::exit(1);
@@ -1141,7 +1141,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "visibility-check" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             let result = async {
                 character::check_visibility(&mut assets).await?;
                 viewer::check_level_entry(&mut assets, &o).await?;
@@ -1171,7 +1171,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "cheshire-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = cheshire::check::render(&mut assets).await {
                 eprintln!("Cheshire render failed: {e:#}");
                 std::process::exit(1);
@@ -1180,7 +1180,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "village-cinematic-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = village::cinema::render_check(&mut assets).await {
                 eprintln!("Village cinema render failed: {e:#}");
                 std::process::exit(1);
@@ -1189,9 +1189,9 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "story-movie" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             let result = async {
-                macroquad::prelude::prevent_quit();
+                crate::platform::window::prevent_quit();
                 let ui = ui::Ui::load(&mut assets)?;
                 let mut audio = audio::Audio::new(o.no_audio, o.audio_capture.clone());
                 let mut input = input::Input::default();
@@ -1215,7 +1215,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "fortress-cinematic-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = fortress::check::render_check(&mut assets).await {
                 eprintln!("Fortress cinema render failed: {e:#}");
                 std::process::exit(1);
@@ -1224,7 +1224,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "village-machinery-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = village::machinery_render::check(&mut assets).await {
                 eprintln!("Village machinery render failed: {e:#}");
                 std::process::exit(1);
@@ -1233,7 +1233,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "progression-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = progression_render::check(&mut assets).await {
                 eprintln!("Progression render failed: {e:#}");
                 std::process::exit(1);
@@ -1242,7 +1242,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "school2-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = school2::check_render(&mut assets).await {
                 eprintln!("School two render check failed: {e:#}");
                 std::process::exit(1);
@@ -1251,7 +1251,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "school-return-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = school_return::render_check(&mut assets).await {
                 eprintln!("Return render failed: {e:#}");
                 std::process::exit(1);
@@ -1260,7 +1260,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "school-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = school::check_render(&mut assets).await {
                 eprintln!("School render check failed: {e:#}");
                 std::process::exit(1);
@@ -1269,7 +1269,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "death-retry" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = recovery::retry_check::check(&mut assets).await {
                 eprintln!("Death retry check failed: {e:#}");
                 std::process::exit(1);
@@ -1278,7 +1278,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "level-swap" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = viewer::check_level_swaps(&mut assets, &o).await {
                 eprintln!("Level swap check failed: {e:#}");
                 std::process::exit(1);
@@ -1300,7 +1300,7 @@ fn run() -> Result<()> {
         if mode == "sky-performance" {
             config.miniquad_conf.platform.swap_interval = Some(0);
         }
-        macroquad::Window::from_config(config, async move {
+        crate::platform::mq::Window::from_config(config, async move {
             let result = if mode == "sky-performance" {
                 sky_performance_check::check(&mut assets).await
             } else if mode == "water-render" {
@@ -1324,7 +1324,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "render" {
-        macroquad::Window::from_config(viewer::config(), async {
+        crate::platform::mq::Window::from_config(viewer::config(), async {
             if let Err(e) = render::check_depth().await {
                 eprintln!("Render check failed: {e:#}");
                 std::process::exit(1);
@@ -1333,7 +1333,7 @@ fn run() -> Result<()> {
         return Ok(());
     }
     if mode == "loot-render" {
-        macroquad::Window::from_config(viewer::config(), async move {
+        crate::platform::mq::Window::from_config(viewer::config(), async move {
             if let Err(e) = loot_art::check(&mut assets).await {
                 eprintln!("Dropped item render check failed: {e:#}");
                 std::process::exit(1);
@@ -1402,7 +1402,7 @@ fn run() -> Result<()> {
         println!("Map: {}\nFormat: FAKK 42\nArchives: {}\nVertices: {}\nSurfaces: {} (world: {})\nEntities: {}\nLightmaps: {}\nSpawn: {:?}",o.map,assets.pack_count(),map.vertices.len(),map.surfaces.len(),map.world_surfaces.len(),map.entities.len(),map.lightmaps.len()/49152,map.spawn());
         return Ok(());
     }
-    macroquad::Window::from_config(viewer::config(), async move {
+    crate::platform::mq::Window::from_config(viewer::config(), async move {
         if let Err(e) = viewer::run(assets, o).await {
             eprintln!("Viewer failed: {e:#}");
             std::process::exit(1);

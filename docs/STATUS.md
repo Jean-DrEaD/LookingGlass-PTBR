@@ -86,3 +86,4 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [ok] Lote 2: crate::platform como fachada unica do macroquad (128 arquivos).
 - [ok] Lote 3: prelude explicito (math/gfx/gl/input/window).
 - [ok] Lote 4: codigo usa crate::platform::prelude (sem macroquad direto).
+- [ok] Lote 5: main.rs sem macroquad:: direto (via platform::mq).
