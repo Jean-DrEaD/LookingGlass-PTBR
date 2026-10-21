@@ -92,3 +92,5 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [ok] Lote 7: features backend-macroquad (default) / backend-xbox (stub).
 - [ok] Lote 8: platform::math via glam (Rect ainda do macroquad).
 - [ok] Lote 9: Rect proprio; platform::math 100% portavel; src_rect() no backend.
+- [ok] Lote 9 concluido (940bb15): Rect proprio, src_rect(), .gitattributes.
+- [..] Lote 10: mapear usos diretos de macroquad fora de src/platform.
