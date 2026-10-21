@@ -1,0 +1,124 @@
+# Probe 14p (diagnostico link) 2026-10-21 19:16 @ a2f3401
+## NM: /usr/bin/llvm-nm
+## Libs nxdk:
+lib/SDL2_test.lib
+lib/libSDL2.lib
+lib/libSDL2_image.lib
+lib/libSDL_ttf.lib
+lib/libc++.lib
+lib/libfreetype.lib
+lib/libjpeg.lib
+lib/libnxdk.lib
+lib/libnxdk_automount_d.lib
+lib/libnxdk_hal.lib
+lib/libnxdk_net.lib
+lib/libpbkit.lib
+lib/libpdclib.lib
+lib/libpng.lib
+lib/libwinapi.lib
+lib/libxboxrt.lib
+lib/libzlib.lib
+lib/nxdk_usb.lib
+lib/sdl/SDL_ttf/VisualC/external/lib/x64/libfreetype-6.lib
+lib/sdl/SDL_ttf/VisualC/external/lib/x86/libfreetype-6.lib
+lib/winmm.lib
+lib/xboxkrnl/libxboxkrnl.lib
+## Quem define cada simbolo:
+lwip_socket -> lib/libnxdk_net.lib
+ipaddr_addr -> lib/libnxdk_net.lib
+in6addr_any -> lib/libnxdk_net.lib
+## Toolchain (libs/link):
+23:set(CMAKE_C_COMPILER_RANLIB "llvm-ranlib")
+24:set(CMAKE_C_STANDARD_LIBRARIES "${NXDK_DIR}/lib/libwinapi.lib ${NXDK_DIR}/lib/xboxkrnl/libxboxkrnl.lib ${NXDK_DIR}/lib/libxboxrt.lib  ${NXDK_DIR}/lib/libpdclib.lib ${NXDK_DIR}/lib/libnxdk_hal.lib ${NXDK_DIR}/lib/libnxdk.lib ${NXDK_DIR}/lib/nxdk_usb.lib") #"${CMAKE_CXX_STANDARD_LIBRARIES_INIT}"
+25:set(CMAKE_C_LINK_EXECUTABLE "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-link <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -out:<TARGET> <LINK_LIBRARIES>")
+28:        "${NXDK_DIR}/lib"
+29:        "${NXDK_DIR}/lib/xboxrt/libc_extensions"
+30:        "${NXDK_DIR}/lib/pdclib/include"
+31:        "${NXDK_DIR}/lib/pdclib/platform/xbox/include"
+32:        "${NXDK_DIR}/lib/winapi"
+33:        "${NXDK_DIR}/lib/xboxrt/vcruntime"
+37:set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_C_STANDARD_LIBRARIES} ${NXDK_DIR}/lib/libc++.lib")
+38:set(CMAKE_CXX_LINK_EXECUTABLE "${NXDK_DIR}/bin/${TOOLCHAIN_PREFIX}-link <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -out:<TARGET> <LINK_LIBRARIES>")
+41:        "${NXDK_DIR}/lib/libcxx/include"
+42:        "${NXDK_DIR}/lib"
+43:        "${NXDK_DIR}/lib/xboxrt/libc_extensions"
+44:        "${NXDK_DIR}/lib/pdclib/include"
+45:        "${NXDK_DIR}/lib/pdclib/platform/xbox/include"
+46:        "${NXDK_DIR}/lib/winapi"
+47:        "${NXDK_DIR}/lib/xboxrt/vcruntime"
+50:set(CMAKE_STATIC_LIBRARY_SUFFIX ".lib")
+51:set(CMAKE_STATIC_LIBRARY_SUFFIX_C ".lib")
+52:set(CMAKE_STATIC_LIBRARY_SUFFIX_CXX ".lib")
+## CMake sys/con:
+/src/cmake/platforms/unix.cmake:7:list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/sys_unix.c)
+/src/cmake/platforms/unix.cmake:10:    list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_passive.c)
+/src/cmake/platforms/unix.cmake:12:    list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_tty.c)
+/src/cmake/platforms/unix.cmake:24:list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/new/sys_unix_new.c)
+/src/cmake/platforms/windows.cmake:8:    ${SOURCE_DIR}/sys/sys_win32.c
+/src/cmake/platforms/windows.cmake:12:list(APPEND CLIENT_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_passive.c)
+/src/cmake/platforms/windows.cmake:13:list(APPEND SERVER_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_win32.c)
+/src/cmake/platforms/windows.cmake:59:    list(REMOVE_ITEM CLIENT_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_passive.c)
+/src/cmake/platforms/windows.cmake:60:    list(APPEND CLIENT_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_win32.c)
+/src/cmake/platforms/windows.cmake:64:list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/new/sys_win32_new.c)
+/src/cmake/shared_sources.cmake:46:    ${SOURCE_DIR}/sys/con_log.c
+/src/cmake/shared_sources.cmake:48:    ${SOURCE_DIR}/sys/sys_main.c
+/src/cmake/shared_sources.cmake:65:    ${SOURCE_DIR}/sys/new/sys_main_new.c
+## Arquivos code/sys:
+con_log.c
+con_passive.c
+con_tty.c
+con_win32.c
+new
+sys_autoupdater.c
+sys_curl.c
+sys_curl.h
+sys_loadlib.h
+sys_local.h
+sys_main.c
+sys_osx.m
+sys_unix.c
+sys_update_checker.cpp
+sys_update_checker.h
+sys_win32.c
+win_bounds.cpp
+win_localization.cpp
+win_localization.h
+win_manifest.xml
+win_resource.h
+win_resource.rc
+## Onde Sys_* sao definidos (win32):
+87:void Sys_SetFloatEnv(void)
+97:static char *Sys_DefaultHomePath( void )
+123:char *Sys_DefaultHomeConfigPath(void) { return Sys_DefaultHomePath(); }
+124:char *Sys_DefaultHomeDataPath(void)   { return Sys_DefaultHomePath(); }
+125:char *Sys_DefaultHomeStatePath(void)  { return Sys_DefaultHomePath(); }
+132:char *Sys_SteamPath( void )
+191:char *Sys_GogPath( void )
+230:char* Sys_MicrosoftStorePath(void)
+265:int Sys_Milliseconds (void)
+284:qboolean Sys_RandomBytes( byte *string, int len )
+307:char *Sys_GetCurrentUser( void )
+330:qboolean Sys_LowPhysicalMemory( void )
+342:const char *Sys_Basename( char *path )
+372:const char *Sys_Dirname( char *path )
+393:FILE *Sys_FOpen( const char *ospath, const char *mode ) {
+410:qboolean Sys_Mkdir( const char *path )
+427:FILE *Sys_Mkfifo( const char *ospath )
+437:char *Sys_Cwd( void ) {
+451:char *Sys_BinaryPathRelative(const char *relative)
+480:void Sys_ListFilteredFiles(
+586:char **Sys_ListFiles(const char *directory, const char *extension, const char *filter, int *numfiles, qboolean wantsubs)
+708:void Sys_FreeFileList( char **list )
+731:void Sys_Sleep( int msec )
+757:void Sys_ErrorDialog( const char *error )
+800:dialogResult_t Sys_Dialog( dialogType_t type, const char *message, const char *title )
+831:void Sys_GLimpSafeInit( void )
+842:void Sys_GLimpInit( void )
+853:void Sys_PlatformInit( void )
+888:void Sys_PlatformExit( void )
+903:void Sys_SetEnv(const char *name, const char *value)
+916:int Sys_PID( void )
+926:qboolean Sys_PIDIsRunning( int pid )
+954:qboolean Sys_DllExtension( const char *name ) {
+963:qboolean Sys_OpenFolderInPlatformFileManager( const char *path )
+973:qboolean Sys_SetMaxFileLimit( void )

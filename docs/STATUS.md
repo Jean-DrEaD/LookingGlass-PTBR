@@ -1,8 +1,9 @@
 <!-- FLUXO-INICIO -->
 ## >>> FLUXO ATUAL (manter no topo) <<<
 - Lote aberto: **14** (build OpenMoHAA nxdk)
-- 14n: compilacao 100% (378 ok); falha so no LINK (lwip, C++ EH, Sys_*, atof)
-- 14o: linker sem limite de erros -> **analisar lista completa de simbolos**
+- 14o: lista completa do link: lwip (~22), C++ EH (3), Sys_*/CON_* (~35), atof
+- 14p: diagnostico (libs nxdk + sys/con do CMake) -> **analisar log 14p**
+- Proximo (14q): linkar libs certas + sys_xbox.c/con_xbox.c + atof
 - Build: `.\tools\probe.ps1 -Lote <id> -Nome <nome> -Nota "(+patches)"`
 - Regra: comandos sempre completos, prontos para copiar e colar
 <!-- FLUXO-FIM -->
@@ -45,6 +46,7 @@
 | 14 | .. | | OpenMoHAA dedicado no nxdk: flags corrigidas, SDL condicional |
 
 ## Problemas em aberto
+- [build] 14o: link omohaaded.exe falha: lwip, CxxFrameHandler3/CxxThrowException, Sys_*/CON_*, atof. 14p: diagnostico de libs.
 - [build] 14n: compila tudo; link falha (lwip, CxxFrameHandler3, Sys_*, atof). 14o: /errorlimit:0 p/ lista completa.
 - [build] 14m: 9 falhos (zlib, FAR). 14n: FAR/NEAR vazios; script tools/probe.ps1.
 - [build] 14l: 6 falhos; regressao libgame/libcgame (near/far do windows.h via lg_compat). 14m: LEAN_AND_MEAN/NOMINMAX + undef near/far; rmdir/errno; net_ip socklen_t (patch 0002) + stubs getnameinfo.
@@ -66,6 +68,7 @@
 - `_aligned_malloc` do lg-xbox: existe no RXDK/MSVC; verificar no nxdk se for o caminho A ou C.
 - `-sse2` no i686 (rust#116344): fixar a toolchain do build Xbox.
 - Dependencias comportamentais do macroquad: render.rs:303, viewer.rs:1088, look.rs:21/67, character.rs:1406.
+
 
 
 
