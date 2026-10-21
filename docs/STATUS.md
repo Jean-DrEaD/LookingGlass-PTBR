@@ -97,3 +97,5 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [ok] Lote 10: nenhum uso direto de macroquad fora de src/platform.
 - [nota] Dependências comportamentais de macroquad em render.rs:303, viewer.rs:1088, look.rs:21/67, character.rs:1406 — revisar ao trocar backend.
 - [..] Lote 11: levantar plano (lookingglass-xbox.md) e artefatos Xbox ja compilados antes do backend-xbox.
+- [ok] Lote 11 (8814e2f): auditoria; tools\status-check.ps1; plano corrigido p/ Xbox original.
+- [..] Lote 12: limpar STATUS (duplicatas 5/9/10) e auditar lg-xbox (simbolos, tamanho, deps).
