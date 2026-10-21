@@ -37,3 +37,36 @@ static inline int MessageBoxA(void *h, const char *t, const char *c, unsigned in
 #ifndef _atoi64
 #define _atoi64(s) strtoll((s), NULL, 10)
 #endif
+
+/* LG-WIN32-STUBS */
+#include <windows.h>
+#include <string.h>
+#ifndef CreateSemaphoreA
+#define CreateSemaphoreA CreateSemaphore
+#endif
+static inline BOOL lg_TerminateThread(HANDLE h, DWORD c) { (void)h; (void)c; return FALSE; }
+#define TerminateThread lg_TerminateThread
+#ifndef MAKEWORD
+#define MAKEWORD(a,b) ((unsigned short)(((unsigned char)(a)) | ((unsigned short)((unsigned char)(b))) << 8))
+#endif
+#define MB_ABORTRETRYIGNORE 0x00000002L
+#define MB_ICONHAND         0x00000010L
+#define MB_TASKMODAL        0x00002000L
+#define MB_SETFOREGROUND    0x00010000L
+#define IDABORT 3
+#define IDRETRY 4
+#define IDIGNORE 5
+static inline int lg_gethostname(char *n, int l) { if (!n || l < 5) return -1; strcpy(n, "xbox"); return 0; }
+#define gethostname lg_gethostname
+typedef void *HKEY, **PHKEY;
+#define HKEY_CURRENT_USER  ((HKEY)(uintptr_t)0x80000001)
+#define HKEY_LOCAL_MACHINE ((HKEY)(uintptr_t)0x80000002)
+#define REG_SZ 1
+#ifndef KEY_READ
+#define KEY_READ 0x20019
+#endif
+static inline LONG RegOpenKeyExA(HKEY k, const char *s, DWORD o, DWORD m, PHKEY r)
+{ (void)k; (void)s; (void)o; (void)m; if (r) *r = NULL; return 2; }
+static inline LONG RegQueryValueExA(HKEY k, const char *n, DWORD *r, DWORD *t, unsigned char *d, DWORD *c)
+{ (void)k; (void)n; (void)r; (void)t; (void)d; (void)c; return 2; }
+static inline LONG RegCloseKey(HKEY k) { (void)k; return 0; }

@@ -1,0 +1,24 @@
+# Probe 14h 2026-10-21 17:47 @ a2f3401 (+0001)
+BUILD_EXIT=2
+## Objetos ok / falhos:
+280
+2
+## Erros por arquivo:
+code/gamespy/common/gsAssert.c:82:6: error: call to undeclared function 'DebugBreak'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+code/gamespy/common/gsPlatformUtil.c:1829:51: error: use of undeclared identifier 'KEY_ALL_ACCESS'
+## Top mensagens:
+      2 error: use of undeclared identifier 'KEY_ALL_ACCESS'
+      1 error: use of undeclared identifier 'REG_OPTION_NON_VOLATILE'
+      1 error: use of undeclared identifier 'LPBYTE'
+      1 error: type specifier missing, defaults to 'int'; ISO C and later do not support implicit int [-Wimplicit-int]
+      1 error: expected ')'
+      1 error: call to undeclared function 'RegSetValueExA'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'RegCreateKeyExA'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'DebugBreak'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+## Linker:
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
