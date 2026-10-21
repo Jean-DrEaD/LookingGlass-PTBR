@@ -42,7 +42,7 @@
 | 11 | ok | 8814e2f | status-check.ps1, plano corrigido |
 | 12 | ok | 4f94f87 | limpeza do STATUS, auditoria |
 | 13 | ok | 89bf9eb | prova: toolchain nxdk ok; bloqueios SDL2/curl/qgl (docs/probes) |
-| 14 | .. | | OpenMoHAA dedicado no nxdk: flags corrigidas, SDL condicional |
+| 14 | ok | 5686da0 | OpenMoHAA dedicado no nxdk: link OK (378 obj) + default.xbe via cxbe |
 
 ## Problemas em aberto
 - [ok] 14q/14r: link OK (0cb5ed6) + XBE via cxbe. Pendente: EH real, ListFiles.
