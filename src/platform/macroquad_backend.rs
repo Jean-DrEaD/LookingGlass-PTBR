@@ -1,14 +1,6 @@
 //! Backend macroquad (desktop/Android).
 pub use macroquad as mq;
 
-/// Matematica (glam) - portavel, nao muda no Xbox.
-pub mod math {
-    pub use macroquad::prelude::{
-        Vec2, Vec3, Vec4, IVec3, Quat, Mat3, Mat4, EulerRot, Rect,
-        vec2, vec3, vec4, ivec3,
-    };
-    pub use macroquad::math::{Vec2Swizzles, Vec3Swizzles, Vec4Swizzles};
-}
 
 /// Desenho 2D/3D e cores.
 pub mod gfx {
@@ -51,5 +43,5 @@ pub mod window {
 }
 
 pub mod prelude {
-    pub use super::{math::*, gfx::*, gl::*, input::*, window::*};
+    pub use crate::platform::{math::*, gfx::*, gl::*, input::*, window::*};
 }

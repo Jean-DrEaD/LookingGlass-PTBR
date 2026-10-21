@@ -13,3 +13,5 @@ pub use xbox::*;
 compile_error!("Ative um backend: backend-macroquad ou backend-xbox");
 #[cfg(all(feature = "backend-macroquad", feature = "backend-xbox"))]
 compile_error!("Ative apenas UM backend");
+
+pub mod math;
