@@ -1,0 +1,54 @@
+# Probe 14r (XBE) 2026-10-21 19:27 @ a2f3401
+## EXE: 1176576 bytes
+Exe::Exe: Opening Exe file...OK
+Exe::Exe: Reading DOS stub...Found, Ignoring...OK
+Exe::Exe: Reading PE header...OK
+Exe::Exe: Reading Optional Header...OK
+Exe::Exe: Reading Section Headers...
+Exe::Exe: Reading Section Header 0x0000...OK 0
+Exe::Exe: Reading Section Header 0x0001...OK 1
+Exe::Exe: Reading Section Header 0x0002...OK 2
+Exe::Exe: Reading Section Header 0x0003...OK 3
+Exe::Exe: Reading Sections...
+Exe::Exe: Reading Section 0x0000...OK
+Exe::Exe: Reading Section 0x0001...OK
+Exe::Exe: Reading Section 0x0002...OK
+Exe::Exe: Reading Section 0x0003...OK
+Exe::Exe: Exe build-xbox/Release/omohaaded.exe was successfully opened.
+Xbe::Xbe: Pass 1 (Simple Pass)...OK
+Xbe::Xbe: Pass 2 (Calculating Requirements)...OK
+Xbe::Xbe: Pass 3 (Generating Xbe)...
+Xbe::Xbe: Encoding Retail Entry Point...OK (0xA8ECE56B)
+Xbe::Xbe: Relocating TLS directory...OK (0x00111668)
+Xbe::Xbe: Found Extra Header Bytes...OK
+Xbe::Xbe: Generating Section Headers...
+Xbe::Xbe: Generating Section Header 0000...OK
+Xbe::Xbe: Generating Section Header 0001...OK
+Xbe::Xbe: Generating Section Header 0002...OK
+Xbe::Xbe: Generating Section Header 0003...OK
+Xbe::Xbe: Generating Logo Bitmap...OK (default)
+Xbe::Xbe: Generating Sections...
+Xbe::Xbe: Generating Section 0000...OK
+Xbe::Xbe: Generating Section 0001...OK
+Xbe::Xbe: Generating Section 0002...OK
+Xbe::Xbe: Generating Section 0003...OK
+Xbe::Xbe: Pass 4 (Finalizing)...
+Xbe::Xbe: Relocating to Base 0x00010000...OK (0 Fixups)
+Xbe::Export: Writing Xbe file...OK
+Xbe::Export: Writing Image Header...OK
+Xbe::Export: Writing Image Header Extra Bytes...OK
+Xbe::Export: Writing Certificate...OK
+Xbe::Export: Writing Section Headers...
+Xbe::Export: Writing Section Header 0x0000...OK
+Xbe::Export: Writing Section Header 0x0001...OK
+Xbe::Export: Writing Section Header 0x0002...OK
+Xbe::Export: Writing Section Header 0x0003...OK
+Xbe::Export: Writing Sections...
+Xbe::Export: Writing Section 0x0000 (.text)...OK
+Xbe::Export: Writing Section 0x0001 (.rdata)...OK
+Xbe::Export: Writing Section 0x0002 (.data)...OK
+Xbe::Export: Writing Section 0x0003 (.tls)...OK
+Xbe::Export: Writing Zero Padding...OK
+## CXBE ok
+total 1160
+-rw-r--r--    1 root     root       1187840 Oct 21 22:27 default.xbe
