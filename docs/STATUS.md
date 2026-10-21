@@ -60,3 +60,5 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - Icone alice: fonte em icons\alice\icon128.png -> icons\alice\TitleImage.xbx
 - [ok] Build alice: build_xbox_alice\default.xbe com icone e TitleID 414C0001 (modulos ainda baseq3, provisorio)
 - Proximo: blocos STANDALONEALICE (BASEGAME base, sem CD key) em q_shared.h, qcommon.h, common.c, files.c, xbox_launch.c
+- [ok] STANDALONEALICE: BASEGAME base, com_standalone=1, sem FS_CheckPak0, sem launcher TA. Icone commitado com git add -f (icons/ esta no .gitignore)
+- Pendente: FS_XboxStockVM sem checksums Alice; modulos ainda q3 (cgame/ui/qagame)
