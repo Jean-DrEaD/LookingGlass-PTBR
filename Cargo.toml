@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "crates/lg-core"]
+members = [".", "crates/lg-core", "crates/lg-xbox"]
 
 [package]
 name = "looking-glass"
@@ -39,6 +39,7 @@ opt-level = 1
 
 [profile.release]
 lto = "thin"
+panic = "abort"
 
 [package.metadata.android]
 package_name = "lookingglass.ptbr"

@@ -1,3 +1,5 @@
+## Regras fixas
+- Sempre enviar tudo em codigos completos prontos para colar no PowerShell 7 (sem passos manuais, sem trechos soltos).
 # STATUS — Alice (LookingGlass-PTBR) → Xbox Original
 
 > Anexe este arquivo no início de todo chat. Atualize e faça commit no fim de cada sessão.
@@ -70,3 +72,4 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [ok] lg-core compila no_std (x86_64-unknown-none, --no-default-features).
 - [medicao] app usa macroquad 329x, std::fs 288x, image 21x, rodio 16x, zip 6x, std::thread 5x -> vira frontend C++ (D3D8 + DirectSound + XAPI arquivos).
 - Proximo: crate lg-xbox (staticlib no_std, i686, target-cpu=pentium3) + FFI C para o frontend RXDK.
+- [wip] crate lg-xbox (staticlib no_std, i686, pentium3) criado.

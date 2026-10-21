@@ -1,0 +1,11 @@
+[package]
+name = "lg-xbox"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+lg-core = { path = "../lg-core", default-features = false }
