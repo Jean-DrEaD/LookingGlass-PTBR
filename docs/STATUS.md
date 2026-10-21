@@ -62,3 +62,5 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - Proximo: blocos STANDALONEALICE (BASEGAME base, sem CD key) em q_shared.h, qcommon.h, common.c, files.c, xbox_launch.c
 - [ok] STANDALONEALICE: BASEGAME base, com_standalone=1, sem FS_CheckPak0, sem launcher TA. Icone commitado com git add -f (icons/ esta no .gitignore)
 - Pendente: FS_XboxStockVM sem checksums Alice; modulos ainda q3 (cgame/ui/qagame)
+- [ok] Removido LEGACY_PROTOCOL do bloco STANDALONEALICE
+- Proximo: teste no xemu/console com pasta base\ ao lado do default.xbe
