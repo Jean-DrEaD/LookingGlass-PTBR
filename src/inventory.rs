@@ -5,7 +5,7 @@ use crate::{
     collision::World,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::BTreeSet;
 
 pub const WEAPONS: [(&str, &str); 10] = [

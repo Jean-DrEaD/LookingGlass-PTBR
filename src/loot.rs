@@ -4,7 +4,7 @@ use crate::{
     inventory::{Pickup, PickupKind, Stats},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 

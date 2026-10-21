@@ -1,7 +1,7 @@
 //! Reviewed ambient clip bindings from the original map scripts.
 use crate::{assets::Assets, bsp::Bsp, skeletal::Definition, tan};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::BTreeMap;
 
 pub fn clip<'a>(map: &str, entity: &'a BTreeMap<String, String>) -> Option<&'a str> {

@@ -635,6 +635,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "lg-xbox"
+version = "0.1.0"
+dependencies = [
+ "lg-core",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.189"
 source = "registry+https://github.com/rust-lang/crates.io-index"

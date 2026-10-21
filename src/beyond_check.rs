@@ -3,7 +3,7 @@ use crate::{
     assets::Assets, bsp::Bsp, collision::World, interaction::Interactions, movement::Player,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 pub fn check_rage(assets: &mut Assets) -> Result<()> {
     let mut map = Bsp::parse(&assets.read("maps/fortress2.bsp")?)?;
     let catalog = crate::inventory::Catalog::load(assets)?;

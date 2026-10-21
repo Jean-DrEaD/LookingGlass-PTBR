@@ -284,7 +284,7 @@ mod tests {
             synthetic::{self, Saved, Synthetic},
         },
     };
-    use macroquad::prelude::*;
+    use lg_core::math::*;
 
     fn json(i: &Interactions) -> serde_json::Value {
         serde_json::to_value(i.snapshot()).unwrap()

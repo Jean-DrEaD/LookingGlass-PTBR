@@ -1,6 +1,6 @@
 //! Bounded deterministic flight routing using swept body clearance.
 use crate::collision::World;
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::{
     cmp::Reverse,
     collections::{BTreeMap, BinaryHeap},

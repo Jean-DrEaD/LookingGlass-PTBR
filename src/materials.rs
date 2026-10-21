@@ -1,7 +1,7 @@
 //! Bounded, declarative subset of the shipped material language. Never executes scripts.
 use crate::texture::MaterialSpec;
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::BTreeMap;
 
 /// Sides retained by a material's `cull` declaration. TAN front winding is clockwise.

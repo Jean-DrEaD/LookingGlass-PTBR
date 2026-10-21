@@ -5,7 +5,7 @@ use crate::{
     movement::{Player, EYE_HEIGHT},
     water::Immersion,
 };
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::VecDeque;
 
 pub(crate) mod retry_check;

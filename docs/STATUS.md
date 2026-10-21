@@ -79,3 +79,6 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [medicao] PURO 190 arq/1.821 KB, MISTO 195/3.982 KB, PLATAFORMA 78/1.689 KB.
 - [auditoria] MISTO facil: 94 arq | MISTO com API: 101 arq | PURO contaminado: 76 arq.
 - Plano: lg-core exporta Vec2/Color/Rect proprios (glam + struct Color) para substituir macroquad::prelude nos MISTO faceis.
+- [fix] KB dos CSVs auditados estavam 10x (parse pt-BR). Real: MISTO facil ~1.297 KB, MISTO API ~2.361 KB.
+- [nota] regex de API pegou funcoes proprias (draw_pose, load_levels...). API real: Camera3D, set_camera, clear_background, Texture2D, is_key_*, screen_*, draw_text/line/rectangle, load_texture.
+- [ok] lg_core::math criado (re-export glam). Lote 1: 24 arquivos migrados de macroquad::prelude.

@@ -1627,7 +1627,7 @@ mod tests {
             "difficulty": "Normal",
             "stats": serde_json::to_value(Stats::for_level("skool1", None)).unwrap(),
             "ledger": { "levels": {}, "completed": [] },
-            "player": serde_json::to_value(crate::movement::Player::new(macroquad::prelude::Vec3::ZERO)).unwrap(),
+            "player": serde_json::to_value(crate::movement::Player::new(lg_core::math::Vec3::ZERO)).unwrap(),
             "level": serde_json::to_value(&level).unwrap(),
             "route": {
                 "ticks": 7, "jumps": 1, "shots": 0, "swings": 0, "cards": 0, "damage": 0.0, "teleports": 0,

@@ -2,8 +2,8 @@
 use crate::collision::World;
 use crate::water::Immersion;
 #[cfg(test)]
-use macroquad::prelude::vec3;
-use macroquad::prelude::{Vec2, Vec3};
+use lg_core::math::vec3;
+use lg_core::math::{Vec2, Vec3};
 
 /// Sprint speed for this build: the Android port runs a little slower than desktop.
 pub fn run_speed() -> f32 {

@@ -1,6 +1,6 @@
 //! Bounded, independently implemented obstruction and early reflections.
 use crate::collision::World;
-use macroquad::prelude::*;
+use lg_core::math::*;
 use rodio::Source;
 use std::{
     sync::{

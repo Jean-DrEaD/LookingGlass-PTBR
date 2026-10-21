@@ -18,7 +18,7 @@ use crate::{
     route::{fight::THROW_RANGE, Route},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 
 /// A diagnostic line for `LOOKING_GLASS_ROUTE_TRACE=1` runs: where the route stands, what it has
 /// left, the machinery's clocks and the enemies that are awake.

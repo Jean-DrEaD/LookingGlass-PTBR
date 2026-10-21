@@ -9,7 +9,7 @@ use crate::{
     movement::{Player, FIXED_DT},
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 pub fn check(assets: &mut Assets) -> Result<()> {
     village(assets)?;
     let map = Bsp::parse(&assets.read("maps/skool1.bsp")?)?;

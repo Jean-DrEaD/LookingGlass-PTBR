@@ -1,6 +1,6 @@
 use crate::{assets::Assets, route::Route};
 use anyhow::Result;
-use macroquad::prelude::*;
+use lg_core::math::*;
 pub fn check(assets: &mut Assets) -> Result<()> {
     crate::school_return::check_gates(assets)?;
     for skip in [false, true] {

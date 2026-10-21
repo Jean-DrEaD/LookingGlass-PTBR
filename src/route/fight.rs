@@ -22,7 +22,7 @@ use crate::{
     movement::{Controls, Player},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use std::collections::{BTreeMap, BTreeSet};
 
 /// Thrown Blade launch speed and drop (`weapons/projectile.rs`).

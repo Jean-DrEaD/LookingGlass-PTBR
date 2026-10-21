@@ -1,6 +1,6 @@
 //! Responsive orbit with collision-safe retraction and a damped return from obstacles.
 use crate::collision::World;
-use macroquad::prelude::*;
+use lg_core::math::*;
 
 mod handoff;
 pub use handoff::Handoff;

@@ -1,6 +1,6 @@
 //! Audio follows the same mover clocks used by collision and saves.
 use super::LoopCue;
-use macroquad::prelude::Vec3;
+use lg_core::math::Vec3;
 use std::collections::BTreeMap;
 
 pub struct Clock {

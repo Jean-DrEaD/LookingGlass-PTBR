@@ -1,7 +1,7 @@
 //! Live normal-start input route; authored cinematic transfers are counted explicitly.
 use crate::{assets::Assets, route::Route};
 use anyhow::Result;
-use macroquad::prelude::*;
+use lg_core::math::*;
 pub fn check(assets: &mut Assets, skip: bool) -> Result<()> {
     let mut r = Route::new(assets, "pandemonium", None)?;
     r.skip_cinematics = skip;

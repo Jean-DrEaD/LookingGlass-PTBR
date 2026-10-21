@@ -1,7 +1,7 @@
 //! Continuous movement and combat through both Fortress of Doors visits.
 use crate::{assets::Assets, interaction::Interactions, movement::Controls, route::Route};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use lg_core::math::*;
 /// Plan and walk to `goal`, then deal with whatever woke up on the way.
 fn go(r: &mut Route, goal: Vec3) -> Result<()> {
     r.navigate(goal)?;

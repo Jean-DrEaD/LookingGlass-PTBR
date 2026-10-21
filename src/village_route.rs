@@ -1,7 +1,7 @@
 //! Continuous village traversal using ordinary walking, jumping, combat and triggers.
 use crate::{assets::Assets, route::Route};
 use anyhow::Result;
-use macroquad::prelude::*;
+use lg_core::math::*;
 pub fn check(assets: &mut Assets) -> Result<()> {
     let mut r = Route::new(assets, "gvillage", None)?;
     drive(&mut r)?;

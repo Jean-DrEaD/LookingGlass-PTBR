@@ -10,7 +10,7 @@ use crate::{
     route::Route,
 };
 use anyhow::Result;
-use macroquad::prelude::*;
+use lg_core::math::*;
 
 pub fn check(assets: &mut Assets) -> Result<()> {
     complete(assets).map(|_| ())

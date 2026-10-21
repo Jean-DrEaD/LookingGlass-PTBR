@@ -19,3 +19,5 @@ pub mod difficulty;
 pub mod visibility;
 pub mod levels_wchess1_waves;
 pub mod levels_wchess1_graph;
+
+pub mod math;

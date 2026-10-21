@@ -1,6 +1,6 @@
 //! One-shot radius damage from the original Explosion/RadiusDamage rules.
 use crate::combat::{Context, DamageKind, Hit, Target};
-use macroquad::prelude::*;
+use lg_core::math::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]

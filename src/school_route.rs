@@ -1,7 +1,7 @@
 //! Normal first-school input route, with live combat and progression.
 use crate::{assets::Assets, route::Route};
 use anyhow::Result;
-use macroquad::prelude::*;
+use lg_core::math::*;
 pub fn check(assets: &mut Assets, secret: bool) -> Result<()> {
     let mut r = crate::route::Route::new(assets, "skool1", None)?;
     run(&mut r, secret)?;
