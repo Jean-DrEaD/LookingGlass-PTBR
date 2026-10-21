@@ -1,0 +1,29 @@
+# Probe 14j 2026-10-21 17:58 @ a2f3401 (+0001)
+## off_t/ssize_t no nxdk:
+/usr/src/nxdk/lib/pdclib/platform/example/functions/_PDCLIB/_PDCLIB_fillbuffer.c:19:typedef long ssize_t;
+grep: /usr/src/nxdk/lib/libcxx/test/std/pstl: No such file or directory
+grep: /usr/src/nxdk/lib/libcxx/test/std/input.output/filesystems/Inputs/static_test_env/bad_symlink: No such file or directory
+/usr/src/nxdk/lib/pdclib/platform/example/functions/_PDCLIB/_PDCLIB_flushbuffer.c:20:typedef long ssize_t;
+/usr/src/nxdk/lib/net/lwip/contrib/ports/win32/check/config.h:8:typedef int ssize_t;
+/usr/src/nxdk/lib/net/lwip/src/include/lwip/arch.h:202:typedef int ssize_t;
+/usr/src/nxdk/lib/sdl/SDL2_image/external/tiff-4.0.9/html/internals.html:423:<TD>typedef int32 toff_t;</TD>		<TD>file offset (should be off_t)</TD>
+    lld: warning: ignoring unknown argument '-I/usr/src/nxdk/lib/xboxrt/libc_extensions'
+    lld: warning: ignoring unknown argument '-I/usr/src/nxdk/lib/net/lwip/src/include'
+    lld: warning: ignoring unknown argument '-I/usr/src/nxdk/lib/net/nforceif/include'
+    lld: warning: ignoring unknown argument '-ferror-limit=20'
+    lld: warning: .edata=.rdata: already merged into .edataxb
+    lld: error: /shims/lg_compat.h: unknown file type
+    gmake[1]: *** [CMakeFiles/cmTC_708cf.dir/build.make:103: cmTC_708cf.exe] Error 1
+    gmake[1]: Leaving directory '/src/build-xbox/CMakeFiles/CMakeScratch/TryCompile-lICbOK'
+    gmake: *** [Makefile:134: cmTC_708cf/fast] Error 2
+    
+    
+
+  
+
+  CMake will not be able to correctly generate this project.
+Call Stack (most recent call first):
+  CMakeLists.txt:12 (project)
+
+
+-- Configuring incomplete, errors occurred!
