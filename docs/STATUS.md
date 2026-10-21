@@ -66,3 +66,7 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - Proximo: teste no xemu/console com pasta base\ ao lado do default.xbe
 - [teste] alice no ioq3: pk3 montam e default.cfg carrega, mas UI q3 sem assets (tela azul). Engine do Alice e Ritual/FAKK2 (TIKI, BSP FAKK, .urc), incompativel com ioq3. Branch alice congelado.
 - Proximo: decidir entre portar o engine Rust para nxdk ou avaliar um engine C/C++ da linha FAKK2 (ex. OpenMoHAA)
+- [decisao] Toolchain Xbox: RXDK (Team-Resurgent, GPLv3, D3D8/DirectSound/MSVC). nxdk descartado para este port.
+- [ok] lg-core compila no_std (x86_64-unknown-none, --no-default-features).
+- [medicao] app usa macroquad 329x, std::fs 288x, image 21x, rodio 16x, zip 6x, std::thread 5x -> vira frontend C++ (D3D8 + DirectSound + XAPI arquivos).
+- Proximo: crate lg-xbox (staticlib no_std, i686, target-cpu=pentium3) + FFI C para o frontend RXDK.
