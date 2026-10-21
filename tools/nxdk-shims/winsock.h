@@ -70,3 +70,18 @@ static inline LONG RegOpenKeyExA(HKEY k, const char *s, DWORD o, DWORD m, PHKEY 
 static inline LONG RegQueryValueExA(HKEY k, const char *n, DWORD *r, DWORD *t, unsigned char *d, DWORD *c)
 { (void)k; (void)n; (void)r; (void)t; (void)d; (void)c; return 2; }
 static inline LONG RegCloseKey(HKEY k) { (void)k; return 0; }
+
+/* LG-WIN32-STUBS2 */
+typedef unsigned char BYTE_LG, *LPBYTE;
+static inline void DebugBreak(void) {}
+#ifndef KEY_ALL_ACCESS
+#define KEY_ALL_ACCESS 0xF003F
+#endif
+#ifndef KEY_WRITE
+#define KEY_WRITE 0x20006
+#endif
+#define REG_OPTION_NON_VOLATILE 0
+static inline LONG RegCreateKeyExA(HKEY k, const char *s, DWORD r, char *c, DWORD o, DWORD m, void *sa, PHKEY res, DWORD *d)
+{ (void)k; (void)s; (void)r; (void)c; (void)o; (void)m; (void)sa; if (res) *res = NULL; if (d) *d = 0; return 2; }
+static inline LONG RegSetValueExA(HKEY k, const char *n, DWORD r, DWORD t, const unsigned char *d, DWORD c)
+{ (void)k; (void)n; (void)r; (void)t; (void)d; (void)c; return 2; }

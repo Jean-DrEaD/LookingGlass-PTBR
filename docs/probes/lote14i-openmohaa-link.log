@@ -1,0 +1,44 @@
+# Probe 14i 2026-10-21 17:54 @ a2f3401 (+0001)
+BUILD_EXIT=2
+## Objetos ok / falhos:
+378
+17
+## Erros por arquivo:
+code/corepp/tiki_script.cpp:357:14: error: use of undeclared identifier 'strcasecmp'
+code/qcommon/common.c:330:25: error: call to undeclared function 'localtime_r'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+code/qcommon/net_ip.c:28:11: fatal error: 'ws2tcpip.h' file not found
+code/skeletor/bonetable.cpp:71:21: error: use of undeclared identifier 'strcasecmp'
+code/sys/sys_main.c:26:10: fatal error: 'sys/types.h' file not found
+code/thirdparty/zlib-1.3.1/zconf.h:446:14: fatal error: 'sys/types.h' file not found
+code/tiki/tiki_anim.cpp:204:20: error: use of undeclared identifier 'strncasecmp'
+code/tiki/tiki_files.cpp:404:30: error: use of undeclared identifier 'strncasecmp'
+code/tiki/tiki_surface.cpp:42:14: error: use of undeclared identifier 'strcasecmp'
+## Top mensagens:
+     10 fatal error: 'sys/types.h' file not found
+      7 error: use of undeclared identifier 'strcasecmp'
+      2 error: use of undeclared identifier 'strncasecmp'
+      1 fatal error: 'wstcpip.h' file not found
+      1 error: call to undeclared function 'localtime_r'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'gmtime_r'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+## Linking:
+[  8%] Linking CXX static library libDetour.lib
+[ 11%] Linking CXX static library libRecast.lib
+[ 19%] Linking CXX static library libDetourCrowd.lib
+[ 19%] Linking C static library libgcd_common.lib
+[ 22%] Linking C static library libgcd_natneg.lib
+[ 27%] Linking C static library libgcd_qr2.lib
+[ 31%] Linking C static library libgcd_key.lib
+[ 32%] Linking CXX static library Release/libcgame.lib
+[ 99%] Linking CXX static library Release/libgame.lib
+## Linker (simbolos):
+## Linker (outros):
+## Alvos:
+build-xbox/libgcd_common.lib
+build-xbox/libgcd_key.lib
+build-xbox/libgcd_natneg.lib
+build-xbox/libgcd_qr2.lib
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
