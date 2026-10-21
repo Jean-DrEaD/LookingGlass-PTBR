@@ -9,7 +9,7 @@ use crate::{
     movement::{Player, FIXED_DT},
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 fn reload(assets: &mut Assets, map: &Bsp, name: &str, snapshot: &Snapshot) -> Result<Interactions> {
     let bytes = serde_json::to_vec(snapshot)?;

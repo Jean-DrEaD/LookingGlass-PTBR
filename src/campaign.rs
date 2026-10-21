@@ -13,7 +13,7 @@ use crate::{
     story::Story,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::Vec3;
+use crate::platform::prelude::Vec3;
 use std::sync::OnceLock;
 
 // Repeated maps are distinct visits. None means that map's normal first entrance.
@@ -486,7 +486,7 @@ mod tests {
     }
     #[test]
     fn an_obstructed_entrance_fails_the_exit_instead_of_falling_back_to_flight() {
-        use macroquad::prelude::vec3;
+        use crate::platform::prelude::vec3;
         // A slab of floor with a solid block standing where Alice would arrive.
         let floor = (vec3(-200., -200., -32.), vec3(200., 200., 0.));
         let clear = World::fixture(&[floor]);

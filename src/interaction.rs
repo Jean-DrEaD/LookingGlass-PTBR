@@ -9,7 +9,7 @@ use crate::{
     event::{self, Action, Condition, Effect, Event, Facts, Input, Rule, Runtime},
 };
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
 type Entity = BTreeMap<String, String>;
 mod exits;

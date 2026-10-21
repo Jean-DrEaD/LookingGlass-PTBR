@@ -3,7 +3,7 @@ use crate::{
     movement::Controls,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 pub fn check(assets: &mut crate::assets::Assets) -> Result<()> {
     crate::duchess::check_intro(assets)?;
     if std::env::var_os("LOOKING_GLASS_DUCHESS_INTRO_ONLY").is_some() {

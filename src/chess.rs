@@ -6,7 +6,7 @@ use crate::{
     combat::{DamageKind, Feedback, Hit, Opponents, Recoil, Target},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 #[cfg(test)]
 mod tests;
 

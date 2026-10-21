@@ -5,7 +5,7 @@ use crate::{
     texture,
 };
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 const METER_SCALE: f32 = 0.78;
 

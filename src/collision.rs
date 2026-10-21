@@ -4,8 +4,8 @@ pub mod model_shape;
 use crate::bsp::{Bsp, Plane};
 use anyhow::{ensure, Result};
 #[cfg(test)]
-use macroquad::prelude::vec3;
-use macroquad::prelude::{Quat, Vec3};
+use crate::platform::prelude::vec3;
+use crate::platform::prelude::{Quat, Vec3};
 
 pub const SKIN: f32 = 0.03125;
 pub const PLAYER_HALF: Vec3 = Vec3::new(15., 15., 28.);

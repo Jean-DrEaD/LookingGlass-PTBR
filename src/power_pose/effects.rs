@@ -33,8 +33,8 @@ impl Aura {
         unsafe {
             get_internal_gl().quad_context.texture_set_wrap(
                 texture.raw_miniquad_id(),
-                macroquad::miniquad::TextureWrap::Repeat,
-                macroquad::miniquad::TextureWrap::Repeat,
+                crate::platform::mq::miniquad::TextureWrap::Repeat,
+                crate::platform::mq::miniquad::TextureWrap::Repeat,
             );
         }
         Ok(Self {
@@ -118,8 +118,8 @@ impl Pickup {
             unsafe {
                 get_internal_gl().quad_context.texture_set_wrap(
                     texture.raw_miniquad_id(),
-                    macroquad::miniquad::TextureWrap::Repeat,
-                    macroquad::miniquad::TextureWrap::Repeat,
+                    crate::platform::mq::miniquad::TextureWrap::Repeat,
+                    crate::platform::mq::miniquad::TextureWrap::Repeat,
                 );
             }
             layers.push((stage, texture));

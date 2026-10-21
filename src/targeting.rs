@@ -1,7 +1,7 @@
 //! Cosmetic world-space aim marker using the supplied target emitter.
 use crate::{assets::Assets, combat, environment::Atmosphere, particles::Attached};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 #[derive(Clone, Copy)]
 struct Rule {

@@ -5,7 +5,7 @@ use crate::{
     save::{Game, Slot, Store, View},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 pub async fn run(a: &mut Assets, write: bool) -> Result<()> {
     let fingerprint = a.fingerprint()?;

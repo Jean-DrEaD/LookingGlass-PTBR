@@ -508,38 +508,38 @@ const GL_TEXTURE_BINDING_2D: u32 = 0x8069;
 fn upload_etc2_mipchain(
     chain: &Etc2Mipchain,
     repeat: bool,
-) -> Option<macroquad::prelude::Texture2D> {
-    use macroquad::prelude::*;
+) -> Option<crate::platform::prelude::Texture2D> {
+    use crate::platform::prelude::*;
     unsafe {
         let gl = get_internal_gl();
         let wrap = if repeat {
-            macroquad::miniquad::TextureWrap::Repeat
+            crate::platform::mq::miniquad::TextureWrap::Repeat
         } else {
-            macroquad::miniquad::TextureWrap::Clamp
+            crate::platform::mq::miniquad::TextureWrap::Clamp
         };
         let id = gl.quad_context.new_texture(
-            macroquad::miniquad::TextureAccess::Static,
-            macroquad::miniquad::TextureSource::Empty,
-            macroquad::miniquad::TextureParams {
-                format: macroquad::miniquad::TextureFormat::RGBA8,
+            crate::platform::mq::miniquad::TextureAccess::Static,
+            crate::platform::mq::miniquad::TextureSource::Empty,
+            crate::platform::mq::miniquad::TextureParams {
+                format: crate::platform::mq::miniquad::TextureFormat::RGBA8,
                 wrap,
                 min_filter: FilterMode::Linear,
                 mag_filter: FilterMode::Linear,
                 mipmap_filter: if chain.levels.len() > 1 {
-                    macroquad::miniquad::MipmapFilterMode::Linear
+                    crate::platform::mq::miniquad::MipmapFilterMode::Linear
                 } else {
-                    macroquad::miniquad::MipmapFilterMode::None
+                    crate::platform::mq::miniquad::MipmapFilterMode::None
                 },
                 width: chain.orig_width as u32,
                 height: chain.orig_height as u32,
                 ..Default::default()
             },
         );
-        let macroquad::miniquad::RawId::OpenGl(raw) = gl.quad_context.texture_raw_id(id);
+        let crate::platform::mq::miniquad::RawId::OpenGl(raw) = gl.quad_context.texture_raw_id(id);
         let mut prev_tex: i32 = 0;
-        macroquad::miniquad::gl::glGetIntegerv(GL_TEXTURE_BINDING_2D, &mut prev_tex);
-        macroquad::miniquad::gl::glBindTexture(macroquad::miniquad::gl::GL_TEXTURE_2D, raw);
-        while macroquad::miniquad::gl::glGetError() != 0 {}
+        crate::platform::mq::miniquad::gl::glGetIntegerv(GL_TEXTURE_BINDING_2D, &mut prev_tex);
+        crate::platform::mq::miniquad::gl::glBindTexture(crate::platform::mq::miniquad::gl::GL_TEXTURE_2D, raw);
+        while crate::platform::mq::miniquad::gl::glGetError() != 0 {}
 
         let internal_format = if chain.has_alpha {
             GL_COMPRESSED_RGBA8_ETC2_EAC
@@ -547,19 +547,19 @@ fn upload_etc2_mipchain(
             GL_COMPRESSED_RGB8_ETC2
         };
         let last_level = (chain.levels.len() - 1) as i32;
-        macroquad::miniquad::gl::glTexParameteri(
-            macroquad::miniquad::gl::GL_TEXTURE_2D,
-            macroquad::miniquad::gl::GL_TEXTURE_BASE_LEVEL,
+        crate::platform::mq::miniquad::gl::glTexParameteri(
+            crate::platform::mq::miniquad::gl::GL_TEXTURE_2D,
+            crate::platform::mq::miniquad::gl::GL_TEXTURE_BASE_LEVEL,
             0,
         );
-        macroquad::miniquad::gl::glTexParameteri(
-            macroquad::miniquad::gl::GL_TEXTURE_2D,
-            macroquad::miniquad::gl::GL_TEXTURE_MAX_LEVEL,
+        crate::platform::mq::miniquad::gl::glTexParameteri(
+            crate::platform::mq::miniquad::gl::GL_TEXTURE_2D,
+            crate::platform::mq::miniquad::gl::GL_TEXTURE_MAX_LEVEL,
             last_level,
         );
         for (idx, level) in chain.levels.iter().enumerate() {
-            macroquad::miniquad::gl::glCompressedTexImage2D(
-                macroquad::miniquad::gl::GL_TEXTURE_2D,
+            crate::platform::mq::miniquad::gl::glCompressedTexImage2D(
+                crate::platform::mq::miniquad::gl::GL_TEXTURE_2D,
                 idx as i32,
                 internal_format,
                 level.width as i32,
@@ -569,9 +569,9 @@ fn upload_etc2_mipchain(
                 level.bytes.as_ptr() as *const _,
             );
         }
-        let err = macroquad::miniquad::gl::glGetError();
-        macroquad::miniquad::gl::glBindTexture(
-            macroquad::miniquad::gl::GL_TEXTURE_2D,
+        let err = crate::platform::mq::miniquad::gl::glGetError();
+        crate::platform::mq::miniquad::gl::glBindTexture(
+            crate::platform::mq::miniquad::gl::GL_TEXTURE_2D,
             prev_tex as u32,
         );
         if err != 0 {
@@ -586,8 +586,8 @@ fn upload_rgba8_fallback(
     image: &RgbaImage,
     repeat: bool,
     mipmaps: bool,
-) -> macroquad::prelude::Texture2D {
-    use macroquad::prelude::*;
+) -> crate::platform::prelude::Texture2D {
+    use crate::platform::prelude::*;
     let t = Texture2D::from_rgba8(image.width, image.height, &image.pixels);
     t.set_filter(FilterMode::Linear);
     unsafe {
@@ -595,8 +595,8 @@ fn upload_rgba8_fallback(
         if repeat {
             gl.quad_context.texture_set_wrap(
                 t.raw_miniquad_id(),
-                macroquad::miniquad::TextureWrap::Repeat,
-                macroquad::miniquad::TextureWrap::Repeat,
+                crate::platform::mq::miniquad::TextureWrap::Repeat,
+                crate::platform::mq::miniquad::TextureWrap::Repeat,
             );
         }
         if mipmaps {
@@ -604,7 +604,7 @@ fn upload_rgba8_fallback(
             gl.quad_context.texture_set_min_filter(
                 t.raw_miniquad_id(),
                 FilterMode::Linear,
-                macroquad::miniquad::MipmapFilterMode::Linear,
+                crate::platform::mq::miniquad::MipmapFilterMode::Linear,
             );
         }
     }
@@ -617,7 +617,7 @@ pub fn upload_gpu_unscaled(
     image: RgbaImage,
     repeat: bool,
     mipmaps: bool,
-) -> macroquad::prelude::Texture2D {
+) -> crate::platform::prelude::Texture2D {
     upload_gpu_with_limit(
         cache_key,
         image,
@@ -633,7 +633,7 @@ pub fn upload_gpu(
     image: RgbaImage,
     repeat: bool,
     mipmaps: bool,
-) -> macroquad::prelude::Texture2D {
+) -> crate::platform::prelude::Texture2D {
     let max_dim = crate::android::active_preset().max_texture_size();
     upload_gpu_with_limit(cache_key, image, repeat, mipmaps, max_dim)
 }
@@ -644,7 +644,7 @@ fn upload_gpu_with_limit(
     repeat: bool,
     mipmaps: bool,
     max_dim: u16,
-) -> macroquad::prelude::Texture2D {
+) -> crate::platform::prelude::Texture2D {
     if !crate::android::is_android() || (image.width < 4 && image.height < 4) {
         return upload_rgba8_fallback(&image, repeat, mipmaps);
     }
@@ -672,7 +672,7 @@ fn upload_gpu_with_limit(
 }
 
 thread_local! {
-    static GPU_CACHE: std::cell::RefCell<BTreeMap<(String, u16, bool, bool), macroquad::prelude::Texture2D>> =
+    static GPU_CACHE: std::cell::RefCell<BTreeMap<(String, u16, bool, bool), crate::platform::prelude::Texture2D>> =
         const { std::cell::RefCell::new(BTreeMap::new()) };
 }
 
@@ -683,7 +683,7 @@ pub fn load_gpu(
     path: &str,
     repeat: bool,
     mipmaps: bool,
-) -> Result<macroquad::prelude::Texture2D> {
+) -> Result<crate::platform::prelude::Texture2D> {
     if crate::android::is_android() {
         let max_dim = crate::android::active_preset().max_texture_size();
         let mem_key = (path.to_owned(), max_dim, repeat, mipmaps);

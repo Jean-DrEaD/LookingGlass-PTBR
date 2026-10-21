@@ -9,7 +9,7 @@
 //! release. If none of the candidates can be read, Russian text falls back to
 //! the built-in font and may show boxes.
 
-use macroquad::text::{load_ttf_font_from_bytes, Font};
+use crate::platform::mq::text::{load_ttf_font_from_bytes, Font};
 use std::cell::{Cell, RefCell};
 
 /// True when the launcher should show Russian text.

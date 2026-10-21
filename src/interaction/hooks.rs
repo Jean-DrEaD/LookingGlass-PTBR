@@ -21,7 +21,7 @@ use crate::{
     story::Story,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
 
 /// A read-only view of a trigger for the controllers.

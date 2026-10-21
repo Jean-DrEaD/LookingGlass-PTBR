@@ -8,7 +8,7 @@ use crate::{
     skeletal::Transform,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 pub mod cinema;
 pub mod cinema_check;

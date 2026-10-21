@@ -1,7 +1,7 @@
 //! Portal viewpoints are data references, not executable map scripts.
 use crate::{assets::Assets, bsp::Bsp};
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeSet;
 
 /// Remaster presentation: carry the existing vortex into Fortress 1's outer void.

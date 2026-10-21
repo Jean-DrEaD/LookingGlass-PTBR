@@ -7,7 +7,7 @@ use crate::{
     movement::{Controls, Player, FIXED_DT},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 fn load(assets: &mut Assets, map: &Bsp) -> Result<Interactions> {
     let mut i = Interactions::load(map)?;
     i.set_entry(assets, map, "potears1", None)?;

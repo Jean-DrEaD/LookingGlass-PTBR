@@ -21,7 +21,7 @@ pub(crate) mod encounters;
 pub(crate) mod potion_check;
 pub(crate) mod rage_hint;
 pub const ENEMY_BASE: usize = 1_000_000;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 
 const INLINE: &[&str] = &[

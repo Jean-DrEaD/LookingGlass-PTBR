@@ -9,7 +9,7 @@ use crate::{
     skeletal::{Animation, Definition, Skeleton, Transform},
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeSet;
 pub const BASE: usize = 3_000_000;
 #[derive(Clone, serde::Serialize, serde::Deserialize)]

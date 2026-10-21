@@ -105,7 +105,7 @@ pub async fn run(a: &mut Assets, args: campaign_chain::Args, difficulty: Difficu
         r = r.depart(a, true)?;
         ensure!(campaign::visit_index(&r.level().map,r.level().entry.as_deref()) == Some(i+1), "Wrong campaign destination");
         if r.level().map != "utemple" { ensure!(serde_json::to_value(&r.stats)? == before,"Unexpected resource grant at transition"); }
-        macroquad::prelude::next_frame().await;
+        crate::platform::prelude::next_frame().await;
     }
     println!("PASS requested native campaign segment; remaining visits are not certified");
     Ok(())

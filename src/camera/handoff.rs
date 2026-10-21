@@ -1,6 +1,6 @@
 //! Presentation-only return to gameplay; authored cuts inside scenes stay exact.
 use crate::{cinematic::Camera, collision::World};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 struct Return {
     from: Camera,

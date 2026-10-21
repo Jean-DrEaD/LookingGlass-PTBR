@@ -21,7 +21,7 @@ use crate::{
 };
 use anyhow::{ensure, Context, Result};
 pub(crate) use check::stage_native;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::any::Any;
 

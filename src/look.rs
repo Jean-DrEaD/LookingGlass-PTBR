@@ -1,5 +1,5 @@
 //! Relative mouse-look; movement is measured in counts, never scaled by frame time.
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 const SENSITIVITY: f32 = 0.0025;
 

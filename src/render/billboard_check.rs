@@ -85,7 +85,7 @@ fn audit(assets: &mut Assets) -> Result<serde_json::Value> {
 }
 
 fn pixel_at(frame: &Image, camera: &Camera3D, point: Vec3) -> Color {
-    use macroquad::camera::Camera;
+    use crate::platform::mq::camera::Camera;
     let clip = camera.matrix() * point.extend(1.);
     let ndc = clip.truncate() / clip.w;
     // GPU readback is bottom-up; the capture helper flips rows for PNGs.

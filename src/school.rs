@@ -17,7 +17,7 @@ use crate::{
     weapons::Prop,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 
 const RETURN_OBJECTS: &[&str] = &[

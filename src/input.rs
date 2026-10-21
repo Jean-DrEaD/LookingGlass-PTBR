@@ -1,7 +1,7 @@
 //! Gameplay bindings and Windows XInput. Menu controls remain fixed and usable
 //! even when every gameplay action has been rebound. No original DLL is loaded.
 use crate::preferences::Preferences;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::HashSet;
 
 pub const KEYS: &[(&str, KeyCode)] = &[

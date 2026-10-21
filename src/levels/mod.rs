@@ -160,7 +160,7 @@ pub type OwnsNpc = fn(&str, &str) -> bool;
 pub type BoxFuture<'a> = Pin<Box<dyn Future<Output = Result<()>> + 'a>>;
 /// A check that returns before any window exists.
 pub type HeadlessFn = fn(&mut Assets) -> Result<()>;
-/// A check that needs the window (`macroquad::Window::from_config`), so it runs in Anode.
+/// A check that needs the window (`crate::platform::mq::Window::from_config`), so it runs in Anode.
 /// Write it as `fn run(a: &mut Assets) -> BoxFuture<'_> { Box::pin(async move { ... }) }`.
 pub type WindowedFn = for<'a> fn(&'a mut Assets) -> BoxFuture<'a>;
 /// Stage a save case's state on a freshly restored visit before the writer saves it.

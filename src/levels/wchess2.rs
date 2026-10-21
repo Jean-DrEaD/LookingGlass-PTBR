@@ -21,7 +21,7 @@ use crate::{
     story::{BeatSpec, Story},
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 pub use save::stage;
 use serde::{Deserialize, Serialize};
 use std::{any::Any, collections::BTreeSet};

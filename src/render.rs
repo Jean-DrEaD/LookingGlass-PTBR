@@ -8,7 +8,7 @@ use crate::{
     texture,
 };
 use anyhow::{Context, Result};
-use macroquad::{
+use crate::platform::mq::{
     miniquad::{
         BlendFactor, BlendState, BlendValue, Comparison, Equation, PipelineParams, ShaderSource,
     },
@@ -221,15 +221,15 @@ fn upload(image: texture::RgbaImage) -> Texture2D {
         let gl = get_internal_gl();
         gl.quad_context.texture_set_wrap(
             t.raw_miniquad_id(),
-            macroquad::miniquad::TextureWrap::Repeat,
-            macroquad::miniquad::TextureWrap::Repeat,
+            crate::platform::mq::miniquad::TextureWrap::Repeat,
+            crate::platform::mq::miniquad::TextureWrap::Repeat,
         );
         gl.quad_context
             .texture_generate_mipmaps(t.raw_miniquad_id());
         gl.quad_context.texture_set_min_filter(
             t.raw_miniquad_id(),
             FilterMode::Linear,
-            macroquad::miniquad::MipmapFilterMode::Linear,
+            crate::platform::mq::miniquad::MipmapFilterMode::Linear,
         );
     }
     t
@@ -1768,7 +1768,7 @@ impl Scene {
                 });
                 clear_view_depth();
                 if let Some(texture) = &mut self.sky_backdrop {
-                    let (width, height) = macroquad::miniquad::window::screen_size();
+                    let (width, height) = crate::platform::mq::miniquad::window::screen_size();
                     if texture.width() != width || texture.height() != height {
                         *texture = Texture2D::from_image(&Image::gen_image_color(
                             width as u16,
@@ -1842,13 +1842,13 @@ impl Scene {
 pub fn depth_read_only(draw: impl FnOnce()) {
     unsafe {
         get_internal_gl().flush();
-        macroquad::miniquad::gl::glDepthMask(0);
+        crate::platform::mq::miniquad::gl::glDepthMask(0);
     }
     struct Restore;
     impl Drop for Restore {
         fn drop(&mut self) {
             unsafe {
-                macroquad::miniquad::gl::glDepthMask(1);
+                crate::platform::mq::miniquad::gl::glDepthMask(1);
             }
         }
     }
@@ -1873,8 +1873,8 @@ pub fn depth_pipeline(color_blend: Option<BlendState>) -> PipelineParams {
 pub fn clear_view_depth() {
     unsafe {
         get_internal_gl().flush();
-        macroquad::miniquad::gl::glDepthMask(1);
-        macroquad::miniquad::gl::glClear(macroquad::miniquad::gl::GL_DEPTH_BUFFER_BIT);
+        crate::platform::mq::miniquad::gl::glDepthMask(1);
+        crate::platform::mq::miniquad::gl::glClear(crate::platform::mq::miniquad::gl::GL_DEPTH_BUFFER_BIT);
     }
 }
 

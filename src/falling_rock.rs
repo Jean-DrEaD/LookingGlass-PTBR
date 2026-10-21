@@ -6,7 +6,7 @@ use crate::{
     interaction::vector,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeSet;
 
 #[derive(Clone)]

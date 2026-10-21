@@ -1,7 +1,7 @@
 //! Bounded original-declaration lights, occluded flares and projected contact shadows.
 use crate::{assets::Assets, collision::World, texture};
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::cell::RefCell;
 
 #[derive(Clone, Copy, Debug)]

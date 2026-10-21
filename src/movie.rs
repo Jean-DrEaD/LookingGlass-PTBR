@@ -3,7 +3,7 @@
 //! owns two RGBA frames and decodes the small vector codebooks directly.
 use crate::{assets::Assets, audio::Audio, input::Input, preferences::Preferences, ui::Ui};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::sync::Arc;
 
 fn word(b: &[u8], at: usize) -> Result<u16> {

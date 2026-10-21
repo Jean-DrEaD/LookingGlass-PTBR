@@ -6,7 +6,7 @@ use crate::{
     texture,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 
 #[derive(Clone, Default)]

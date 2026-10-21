@@ -35,7 +35,7 @@ use crate::{
     save::{self, Campaign, Game, Level, Restored, Slot, Store, View},
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::Serialize;
 use std::{fs, path::Path};
 

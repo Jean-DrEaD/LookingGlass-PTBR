@@ -13,7 +13,7 @@ use crate::{
     story::Story,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 fn capture(r: &Restored) -> Game {
     let mut game = r.game.clone();

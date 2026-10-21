@@ -5,7 +5,7 @@ use super::{
 };
 use crate::{assets::Assets, interaction::Interactions, movement::Controls, route::Route};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 pub fn check(assets: &mut Assets) -> Result<()> {
     let mut r = Route::new(assets, "fortress1", None)?;

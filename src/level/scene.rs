@@ -78,7 +78,7 @@ impl SceneRunner<'_> {
     pub fn capture(&mut self, player: &Player) {
         self.state.home.get_or_insert(Transform {
             translation: player.feet,
-            rotation: macroquad::prelude::Quat::from_rotation_z(player.script_facing),
+            rotation: crate::platform::prelude::Quat::from_rotation_z(player.script_facing),
         });
     }
     /// Owners pass zero while paused. No clock, cue or retry advances then.
@@ -150,14 +150,14 @@ impl SceneRunner<'_> {
         ensure!(world.body_clear(home.translation), "Scene home obstructed");
         let half = crate::collision::PLAYER_HALF;
         let center = home.translation + crate::collision::PLAYER_CENTER;
-        let floor = world.sweep(center, center - macroquad::prelude::Vec3::Z * 8., half);
+        let floor = world.sweep(center, center - crate::platform::prelude::Vec3::Z * 8., half);
         ensure!(
             floor.fraction < 1. && floor.normal.z > 0.65,
             "Scene home has no remaining support"
         );
         player.feet = home.translation;
-        player.velocity = macroquad::prelude::Vec3::ZERO;
-        player.script_facing = home.rotation.to_euler(macroquad::prelude::EulerRot::ZYX).0;
+        player.velocity = crate::platform::prelude::Vec3::ZERO;
+        player.script_facing = home.rotation.to_euler(crate::platform::prelude::EulerRot::ZYX).0;
         player.script_motion = 0;
         player.cancel_climb();
         player.release_rope();
@@ -190,7 +190,7 @@ impl SceneRunner<'_> {
 mod tests {
     use super::*;
     use crate::level::spec::{EndSpec, ShotSpec};
-    use macroquad::prelude::*;
+    use crate::platform::prelude::*;
     const SPEC: SceneSpec = SceneSpec {
         id: "fixture",
         version: 1,

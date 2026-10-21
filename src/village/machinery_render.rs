@@ -1,7 +1,7 @@
 //! Staged inspection of the reported village mechanisms, separate from route proof.
 use crate::{assets::Assets, interaction::Interactions, movement::Player, render::Scene};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 pub async fn check(assets: &mut Assets) -> Result<()> {
     for (name, eye, target, frames) in [

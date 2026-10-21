@@ -23,7 +23,7 @@ use crate::{
     save::{Campaign, Level},
 };
 use anyhow::{bail, ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 

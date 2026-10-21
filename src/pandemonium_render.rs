@@ -7,7 +7,7 @@ use crate::{
     render::Scene,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 pub async fn check(assets: &mut Assets) -> Result<()> {
     check_machinery(assets).await?;
     check_cast(assets).await

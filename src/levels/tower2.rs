@@ -18,7 +18,7 @@ use crate::{
     story::{BeatSpec, Story},
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::any::Any;
 const INTRO: &str = "Tower2_Start";

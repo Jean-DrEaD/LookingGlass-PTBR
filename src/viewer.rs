@@ -11,11 +11,11 @@ use crate::{
     Options,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
-pub fn config() -> macroquad::conf::Conf {
+pub fn config() -> crate::platform::mq::conf::Conf {
     let android = crate::android::is_android();
-    macroquad::conf::Conf {
+    crate::platform::mq::conf::Conf {
         miniquad_conf: Conf {
             window_title: "Looking Glass".into(),
             window_width: 1200,

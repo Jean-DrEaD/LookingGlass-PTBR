@@ -1,7 +1,7 @@
 //! Original-data camera pairs and deterministic presentation regressions.
 use crate::{assets::Assets, render::Scene};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 fn draw(scene: &mut Scene, camera: &Camera3D, time: f32, transforms: &[(usize, Vec3, Quat)]) {
     clear_background(scene.atmosphere.background());

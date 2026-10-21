@@ -9,7 +9,7 @@ use crate::{
     weapons::{Action, Actions, Visuals},
 };
 use anyhow::{Context, Result};
-use macroquad::{
+use crate::platform::mq::{
     miniquad::{Comparison, PipelineParams, ShaderSource},
     prelude::*,
 };

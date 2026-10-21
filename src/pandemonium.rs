@@ -11,7 +11,7 @@ use crate::{
 };
 use anyhow::{ensure, Context, Result};
 use cinema::Beat;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 

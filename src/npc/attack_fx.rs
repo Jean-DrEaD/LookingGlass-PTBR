@@ -4,7 +4,7 @@ use crate::{
     texture,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::{collections::BTreeMap, rc::Rc};
 
 pub struct Art {

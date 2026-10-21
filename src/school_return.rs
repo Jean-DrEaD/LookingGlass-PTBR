@@ -32,7 +32,7 @@ pub struct State {
     pub time: f32,
     pub star: bool,
     pub potion: bool,
-    pub position: macroquad::prelude::Vec3,
+    pub position: crate::platform::prelude::Vec3,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scene: Option<crate::school::return_cinema::State>,
 }
@@ -106,7 +106,7 @@ impl State {
 }
 
 use crate::{npc::Puppet, skeletal::Transform, weapons::Prop};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 pub struct Art {
     globe: Vec<Prop>,
     star: Prop,

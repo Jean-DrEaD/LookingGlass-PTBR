@@ -7,7 +7,7 @@ use crate::{
     weapons::{Prop, UNARMED},
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 
 pub const IDLE_FAMILIES: [&str; 11] = [

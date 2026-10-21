@@ -31,7 +31,7 @@ use crate::{
     story::Story,
 };
 use anyhow::Result;
-use macroquad::prelude::{Color, Quat, Vec3};
+use crate::platform::prelude::{Color, Quat, Vec3};
 use std::{any::Any, collections::BTreeSet};
 
 /// The width of every visit's hit-ID range: `[target_base, target_base + HIT_RANGE)`.
@@ -168,7 +168,7 @@ pub trait LevelController: Any {
     fn teleport_destination(&self, _destination: Vec3) -> Option<Vec3> { None }
     fn sky_origin(&self) -> Option<Vec3> { None }
     /// Extra brush poses drawn only in a mirror, and ordinary poses omitted from it.
-    fn reflection(&self) -> (Vec<(usize, Vec3, macroquad::prelude::Quat)>, Vec<usize>) { (vec![], vec![]) }
+    fn reflection(&self) -> (Vec<(usize, Vec3, crate::platform::prelude::Quat)>, Vec<usize>) { (vec![], vec![]) }
     fn reflection_actor(&self) -> Option<ReflectionActor> { None }
     /// Entities that accept activation messages from `Action::Send`.
     fn receivers(&self, _registry: &Registry) -> Vec<Id> {
@@ -236,7 +236,7 @@ pub trait LevelController: Any {
     /// Current-visit migration may classify the saved position before world collision is synced.
     fn restore_position(&mut self, _player: &Player, _map: &Bsp) -> Result<()> { Ok(()) }
     /// A scene may use an authored atmosphere temporarily, without changing world time.
-    fn scene_fog(&self) -> Option<macroquad::prelude::Vec4> { None }
+    fn scene_fog(&self) -> Option<crate::platform::prelude::Vec4> { None }
     /// Commit an existing presentation thread through the same fog/sky owner as a trigger.
     fn take_presentation_event(&mut self) -> Option<&'static str> { None }
     /// Authored emitter visibility and binding; server breath points are independent.
@@ -498,7 +498,7 @@ pub fn step_controllers(slots: &mut [Slot], combat: &mut Combat<'_>) -> Feedback
 mod tests {
     use super::*;
     use crate::levels::{Entity, Registration};
-    use macroquad::prelude::vec3;
+    use crate::platform::prelude::vec3;
 
     /// Publishes configurable targets and combat feedback, so aggregation can be observed.
     struct Fake {

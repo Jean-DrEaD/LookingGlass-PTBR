@@ -1,6 +1,6 @@
 //! A clean game frame stays on the GPU until a save needs a small JPEG preview.
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 
 const MAX_BYTES: usize = 128 * 1024;
@@ -246,7 +246,7 @@ impl Frame {
         {
             return;
         }
-        let (w, h) = macroquad::miniquad::window::screen_size();
+        let (w, h) = crate::platform::mq::miniquad::window::screen_size();
         if w < 1. || h < 1. {
             return;
         }
@@ -262,14 +262,14 @@ impl Frame {
             let (w, h) = (w as usize, h as usize);
             let mut bytes = vec![0_u8; w * h * 4];
             unsafe {
-                macroquad::miniquad::gl::glReadPixels(
+                crate::platform::mq::miniquad::gl::glReadPixels(
                     0,
                     0,
                     w as i32,
                     h as i32,
-                    macroquad::miniquad::gl::GL_RGBA,
-                    macroquad::miniquad::gl::GL_UNSIGNED_BYTE,
-                    bytes.as_mut_ptr() as *mut macroquad::miniquad::gl::GLvoid,
+                    crate::platform::mq::miniquad::gl::GL_RGBA,
+                    crate::platform::mq::miniquad::gl::GL_UNSIGNED_BYTE,
+                    bytes.as_mut_ptr() as *mut crate::platform::mq::miniquad::gl::GLvoid,
                 );
             }
             self.image = Some(Image {

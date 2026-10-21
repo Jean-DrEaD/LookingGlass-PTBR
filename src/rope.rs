@@ -1,7 +1,7 @@
 //! Flexible presentation for the shared and controller-owned climbing ropes.
 //! The player's checked pendulum supplies the grip; the free tail keeps inertia.
 use crate::{collision::World, traversal::Rope};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 /// Swept, frictionless contact for a strand particle. Keep the tangential part
 /// of both the remaining displacement and its inertia when it touches a wall.

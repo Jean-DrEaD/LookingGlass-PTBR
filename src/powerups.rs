@@ -163,7 +163,7 @@ pub fn check(assets: &mut crate::assets::Assets) -> Result<()> {
 
 fn check_watch_world(assets: &mut crate::assets::Assets) -> Result<()> {
     use crate::{bsp::Bsp, collision::World, inventory::Stats, movement::Player, school2::School2};
-    use macroquad::prelude::*;
+    use crate::platform::prelude::*;
     let map = Bsp::parse(&assets.read("maps/skool2.bsp")?)?;
     let initial = School2::load(assets, &map)?;
     for fps in [30, 60, 144] {
@@ -216,7 +216,7 @@ pub struct Art {
     material: crate::character::SkinMaterial,
     essence: crate::loot_art::Art,
     collection_fx: std::collections::BTreeMap<String, crate::pickup_effects::Effect>,
-    collected: Vec<(String, macroquad::prelude::Vec3, f32)>,
+    collected: Vec<(String, crate::platform::prelude::Vec3, f32)>,
 }
 impl Art {
     pub fn load(assets: &mut crate::assets::Assets) -> Result<Self> {
@@ -263,10 +263,10 @@ impl Art {
         stats: &crate::inventory::Stats,
         visit: &str,
         atmosphere: &crate::environment::Atmosphere,
-        camera: macroquad::prelude::Vec3,
+        camera: crate::platform::prelude::Vec3,
         clock: f32,
     ) {
-        use macroquad::prelude::*;
+        use crate::platform::prelude::*;
         self.material.atmosphere(atmosphere, camera);
         self.material.bind();
         let mut essences = Vec::new();
@@ -438,7 +438,7 @@ mod tests {
             collision::World,
             movement::{Controls, Player},
         };
-        use macroquad::prelude::*;
+        use crate::platform::prelude::*;
         let world = World::fixture(&[(vec3(-2000., -2000., -100.), vec3(2000., 2000., 0.))]);
         let mut ordinary = Player::new(vec3(0., 0., 0.1));
         let mut tea = ordinary.clone();

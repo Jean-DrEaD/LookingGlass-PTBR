@@ -8,7 +8,7 @@ use crate::{
     skeletal::{Animation, Definition, Skeleton, Transform},
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 
 const STEP: f32 = 1. / 120.;

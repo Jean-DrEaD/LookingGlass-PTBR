@@ -21,7 +21,7 @@ use crate::{
 };
 use anyhow::{ensure, Context, Result};
 use data::Data;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::{any::Any, collections::BTreeSet};
 const BASE: usize = 8_100_000;

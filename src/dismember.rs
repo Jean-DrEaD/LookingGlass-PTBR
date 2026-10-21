@@ -1,7 +1,7 @@
 //! Saved, bounded detached pieces using the Club Guard's authored knife deaths.
 use crate::{collision::World, skeletal::Transform};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 pub mod burst;
 pub mod card;
 pub const CUT_FRAME_TIME: f32 = 0.05;

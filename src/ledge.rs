@@ -5,7 +5,7 @@ use crate::{
     water::Immersion,
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 
 pub const PULL_TIME: f32 = 2.35;

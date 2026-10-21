@@ -8,7 +8,7 @@ use crate::{
     movement::{Controls, Player, FIXED_DT},
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 pub mod fight;
 mod foes;

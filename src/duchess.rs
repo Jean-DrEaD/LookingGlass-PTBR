@@ -10,7 +10,7 @@ use crate::{
     story::Story,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 mod intro_check;
 pub use intro_check::{check as check_intro, render as render_intro};

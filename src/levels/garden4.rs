@@ -24,7 +24,7 @@ use crate::{
 };
 use anyhow::{ensure, Context, Result};
 pub use check::stage;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::any::Any;
 pub const START: &str = "Garden4_StartCinema1";

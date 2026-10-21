@@ -29,7 +29,7 @@ use crate::{
     story::Story,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use scene::{Kind, Scene};
 use serde::{Deserialize, Serialize};
 use std::{any::Any, collections::BTreeMap};

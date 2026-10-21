@@ -13,7 +13,7 @@ use crate::{
     movement::Player,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 
 pub fn supported(e: &BTreeMap<String, String>) -> bool {

@@ -6,7 +6,7 @@ pub mod regression;
 pub mod world;
 use crate::{assets::Assets, bsp::Bsp, collision::World};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::{vec3, Vec3};
+use crate::platform::prelude::{vec3, Vec3};
 use rodio::{dynamic_mixer, Decoder, OutputStream, Sink, Source};
 use std::{
     collections::{BTreeMap, BTreeSet},

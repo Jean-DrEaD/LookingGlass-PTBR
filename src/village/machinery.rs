@@ -3,7 +3,7 @@
 use super::{sample, Village};
 use crate::{assets::Assets, bsp::Bsp, entity::Id, interaction::vector, skeletal::Transform};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 pub(super) struct Attachment {
     id: Id,

@@ -2,7 +2,7 @@
 use crate::collision::World;
 use crate::combat::{DamageKind, Feedback, Hit, Opponents, Recoil, Target};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 pub trait Timing {
     fn duration(&self, model: &str, clip: &str) -> f32;
     fn frame(&self, model: &str, clip: &str) -> f32;

@@ -1,6 +1,6 @@
 //! Chapter chooser: stable mouse rows, bounded wheel scrolling and keyboard selection.
 use crate::{campaign::LevelChoice, powerups::Difficulty, ui};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 const VISIBLE: usize = 11;
 const LIST: Rect = Rect::new(24., 98., 580., 297.);

@@ -7,7 +7,7 @@ use crate::{
     assets::Assets, environment::Atmosphere, particles::Attached, skeletal::Transform, texture,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
 struct BeamRig {
     skeleton: crate::skeletal::Skeleton,
@@ -43,8 +43,8 @@ impl BeamRig {
                 unsafe {
                     get_internal_gl().quad_context.texture_set_wrap(
                         texture.raw_miniquad_id(),
-                        macroquad::miniquad::TextureWrap::Repeat,
-                        macroquad::miniquad::TextureWrap::Repeat,
+                        crate::platform::mq::miniquad::TextureWrap::Repeat,
+                        crate::platform::mq::miniquad::TextureWrap::Repeat,
                     );
                 }
             }

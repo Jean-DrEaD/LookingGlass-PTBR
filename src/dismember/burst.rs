@@ -1,7 +1,7 @@
 //! Card Guards' occasional whole-body death, with saved cosmetic debris.
 use crate::{assets::Assets, collision::World, skeletal::Transform, texture, weapons::Prop};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 

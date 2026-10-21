@@ -12,7 +12,7 @@
 use super::draw_text_fit;
 use crate::input::PAD_BUTTONS;
 use crate::preferences::{Preferences, BINDINGS, PAD_LAYOUT_VERSION};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 const ROWS_PER_PAGE: usize = 8;
 const LIST_ROW_PITCH: f32 = 36.;

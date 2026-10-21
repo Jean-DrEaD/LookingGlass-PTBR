@@ -1,6 +1,6 @@
 //! The archive camera's layers and shutter timing, independent of save actions.
 use super::*;
-use macroquad::miniquad::{
+use crate::platform::mq::miniquad::{
     BlendFactor, BlendState, BlendValue, Equation, PipelineParams, ShaderSource,
 };
 

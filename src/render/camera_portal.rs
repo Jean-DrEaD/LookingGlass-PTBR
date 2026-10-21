@@ -7,7 +7,7 @@ use crate::{
     weapons::Prop,
 };
 use anyhow::ensure;
-use macroquad::camera::Camera;
+use crate::platform::mq::camera::Camera;
 
 pub(super) struct Portal {
     pub surface: usize,

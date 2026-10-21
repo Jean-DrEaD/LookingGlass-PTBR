@@ -4,7 +4,7 @@ use crate::{
     assets::Assets, environment::Atmosphere, particles::Attached, skeletal::Transform, texture,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 fn shell_frame(age: f32) -> (usize, f32) {
     if age >= 8. {

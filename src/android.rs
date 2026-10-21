@@ -1,7 +1,7 @@
 //! Android platform paths, PK3 data discovery, guided setup screen and mobile performance presets.
 use crate::assets::Assets;
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::{
     cell::Cell,
@@ -22,7 +22,7 @@ pub fn init_runtime() {
         static INIT: std::sync::Once = std::sync::Once::new();
         INIT.call_once(|| unsafe {
             std::env::set_var("RUST_MIN_STACK", "16777216");
-            use macroquad::miniquad::native::android::{attach_jni_env, ndk_sys, ACTIVITY};
+            use crate::platform::mq::miniquad::native::android::{attach_jni_env, ndk_sys, ACTIVITY};
             let env = attach_jni_env();
             if !env.is_null() && !ACTIVITY.is_null() {
                 let mut vm: *mut ndk_sys::JavaVM = std::ptr::null_mut();
@@ -51,7 +51,7 @@ pub fn install_panic_hook() {
             let _ = fs::write(&crash_path, &msg);
             if let Ok(c_msg) = std::ffi::CString::new(msg.replace('\0', " ")) {
                 unsafe {
-                    macroquad::miniquad::native::android::console_error(c_msg.as_ptr());
+                    crate::platform::mq::miniquad::native::android::console_error(c_msg.as_ptr());
                 }
             }
             report_native_crash_to_java(&msg);
@@ -67,7 +67,7 @@ pub fn install_panic_hook() {
 #[cfg(target_os = "android")]
 fn report_native_crash_to_java(message: &str) {
     unsafe {
-        use macroquad::miniquad::native::android::{attach_jni_env, ACTIVITY};
+        use crate::platform::mq::miniquad::native::android::{attach_jni_env, ACTIVITY};
         let env = attach_jni_env();
         if env.is_null() || ACTIVITY.is_null() {
             return;
@@ -126,7 +126,7 @@ fn report_native_crash_to_java(message: &str) {
 pub fn finish_activity() {
     #[cfg(target_os = "android")]
     unsafe {
-        use macroquad::miniquad::native::android::{attach_jni_env, ACTIVITY};
+        use crate::platform::mq::miniquad::native::android::{attach_jni_env, ACTIVITY};
         let env = attach_jni_env();
         if env.is_null() || ACTIVITY.is_null() {
             return;
@@ -835,7 +835,7 @@ fn copy_dir_missing(src: &Path, dst: &Path) {
 #[cfg(target_os = "android")]
 fn call_activity_void(method_name: &str) -> bool {
     unsafe {
-        use macroquad::miniquad::native::android::{attach_jni_env, ACTIVITY};
+        use crate::platform::mq::miniquad::native::android::{attach_jni_env, ACTIVITY};
         let env = attach_jni_env();
         if env.is_null() || ACTIVITY.is_null() {
             return false;
@@ -1161,7 +1161,7 @@ pub async fn wait_for_data(initial: PathBuf) -> Result<Assets> {
     // running in the small buffer it was tuned for, so switch before it starts.
     if enter_game_render_mode() {
         let start = std::time::Instant::now();
-        while macroquad::prelude::screen_width().min(macroquad::prelude::screen_height()) > 600.
+        while crate::platform::prelude::screen_width().min(crate::platform::prelude::screen_height()) > 600.
             && start.elapsed() < std::time::Duration::from_millis(2500)
         {
             clear_background(BLACK);
@@ -1692,7 +1692,7 @@ async fn wait_for_data_inner(initial: PathBuf) -> Result<Assets> {
                 || pointer_pressed && scan_btn.contains(pointer_pos);
             let trigger_quit = is_key_pressed(KeyCode::Escape) || is_key_pressed(KeyCode::Back);
             if trigger_quit {
-                macroquad::miniquad::window::request_quit();
+                crate::platform::mq::miniquad::window::request_quit();
                 anyhow::bail!("Closed from data setup screen");
             }
             if trigger_scan {

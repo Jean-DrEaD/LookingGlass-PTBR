@@ -1,6 +1,6 @@
 //! Local in-game command console. Commands never invoke a shell or original scripts.
 pub mod gameplay;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::VecDeque;
 
 const COMMANDS: &[&str] = &[

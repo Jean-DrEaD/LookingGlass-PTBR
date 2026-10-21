@@ -4,7 +4,7 @@ use crate::{
     assets::Assets, environment::Atmosphere, particles::Attached, skeletal::Transform, texture,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(super) struct Art {

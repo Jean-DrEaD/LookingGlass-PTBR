@@ -1,7 +1,7 @@
 //! Ordinary entrance-to-exit movement; diagnostic inputs never edit player/world state.
 use crate::{assets::Assets, movement::Controls, route::Route};
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 #[path = "route_input.rs"]
 mod route_input;
 

@@ -1,7 +1,7 @@
 //! Original archive lettering and artwork shared by menus and gameplay overlays.
 use crate::{assets::Assets, bsp, texture};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::{
     cell::RefCell,
     rc::{Rc, Weak},

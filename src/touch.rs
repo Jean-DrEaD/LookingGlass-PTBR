@@ -1,6 +1,6 @@
 //! Multi-touch virtual joystick, relative touch-look trackpad and context-aware HUD controls.
 use crate::{preferences::Preferences, ui::Ui};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BTreeSet};

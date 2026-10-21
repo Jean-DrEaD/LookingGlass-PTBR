@@ -1,7 +1,7 @@
 //! Authored distance atmosphere and bounded fog volumes; the density curve is provisional.
 use crate::{assets::Assets, bsp::Bsp, texture::MaterialSpec};
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 
 #[derive(Clone, Copy, Debug)]

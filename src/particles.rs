@@ -1,7 +1,7 @@
 //! Bounded declarative emitters from local TIKI definitions. No client script VM.
 use crate::{assets::Assets, bsp::Bsp, collision::World, environment::Atmosphere, texture};
 use anyhow::Result;
-use macroquad::{
+use crate::platform::mq::{
     miniquad::{BlendFactor, BlendState, BlendValue, Equation, ShaderSource},
     prelude::*,
 };

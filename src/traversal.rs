@@ -10,7 +10,7 @@ use crate::{
     movement::{Player, GRAVITY},
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 #[derive(Clone, Debug)]
 pub struct Push {

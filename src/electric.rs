@@ -1,7 +1,7 @@
 //! Short, pose-following electrical shell using the original shock material.
 use crate::{assets::Assets, render_fx, texture};
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::{collections::BTreeMap, rc::Rc};
 pub const LIFE: f32 = 0.5;
 pub fn inactive(value: &f32) -> bool {

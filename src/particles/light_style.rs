@@ -1,7 +1,7 @@
 //! Image-backed light colours sampled on the saved presentation clock.
 use crate::{assets::Assets, texture};
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 #[derive(Clone)]
 pub(super) struct Style(Vec<Vec3>);

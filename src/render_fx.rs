@@ -7,7 +7,7 @@ use crate::{
     texture,
 };
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::{
     cell::RefCell,
     collections::BTreeMap,
@@ -55,7 +55,7 @@ struct Frame {
 thread_local! {
     static FRAME: RefCell<Frame> = RefCell::default();
     static SKIN_OPACITY: std::cell::Cell<f32> = const { std::cell::Cell::new(1.) };
-    static SURFACES: RefCell<Vec<(macroquad::miniquad::TextureId, Weak<Surface>)>> = RefCell::default();
+    static SURFACES: RefCell<Vec<(crate::platform::mq::miniquad::TextureId, Weak<Surface>)>> = RefCell::default();
 }
 const MAX_VERTICES: usize = 1_000_000;
 pub fn copy_mesh(m: &Mesh) -> Mesh {
@@ -112,7 +112,7 @@ pub fn begin(camera: Vec3, direction: Vec3, time: f32, atmosphere: &Atmosphere, 
     });
 }
 pub fn begin_view(camera: &Camera3D, time: f32, atmosphere: &Atmosphere, fullbright: bool) {
-    use macroquad::camera::Camera;
+    use crate::platform::mq::camera::Camera;
     begin(
         camera.position,
         camera.target - camera.position,
@@ -527,8 +527,8 @@ pub fn register(
                     unsafe {
                         get_internal_gl().quad_context.texture_set_wrap(
                             tex.raw_miniquad_id(),
-                            macroquad::miniquad::TextureWrap::Repeat,
-                            macroquad::miniquad::TextureWrap::Repeat,
+                            crate::platform::mq::miniquad::TextureWrap::Repeat,
+                            crate::platform::mq::miniquad::TextureWrap::Repeat,
                         );
                     }
                 }
@@ -1057,7 +1057,7 @@ pub async fn check(assets: &mut Assets) -> Result<()> {
                 ensure!(dropped == 0, "Queue budget exceeded in {name}");
                 unsafe {
                     get_internal_gl().flush();
-                    macroquad::miniquad::gl::glFinish();
+                    crate::platform::mq::miniquad::gl::glFinish();
                 }
                 if i > 1 {
                     let ms = start.elapsed().as_secs_f64() * 1000.;

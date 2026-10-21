@@ -1,7 +1,7 @@
 //! Staged visual fixtures; continuous movement proof lives in the route checks.
 use crate::{assets::Assets, interaction::Interactions, movement::Player, render::Scene};
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 pub async fn check(assets: &mut Assets) -> Result<()> {
     let mut scene = Scene::load(assets, "gvillage")?;
     let mut i = Interactions::load(&scene.map)?;

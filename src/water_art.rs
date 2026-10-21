@@ -9,7 +9,7 @@ use crate::{
     weapons::Prop,
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::{cell::RefCell, collections::BTreeMap};
 
 pub struct Art {

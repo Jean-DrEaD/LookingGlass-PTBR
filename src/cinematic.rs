@@ -1,7 +1,7 @@
 //! Declarative camera paths from local assets. No script commands are executed.
 use crate::{assets::Assets, interaction::vector};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 /// Resolve only a small vertical support adjustment at the authored final pose.
 /// Never use the pre-scene location or search sideways through walls.

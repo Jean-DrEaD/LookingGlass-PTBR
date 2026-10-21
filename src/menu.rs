@@ -10,7 +10,7 @@ use crate::{
     ui::{Canvas, Ui},
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 mod save_screen;
 mod chapters;

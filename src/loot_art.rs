@@ -2,8 +2,8 @@
 //! Treating its first image as an opaque skin loses both colour and transparency.
 use crate::{assets::Assets, environment::Atmosphere, loot::Grade, materials::Blend, texture};
 use anyhow::{ensure, Context, Result};
-use macroquad::miniquad::{BlendFactor, BlendState, BlendValue, Equation};
-use macroquad::prelude::*;
+use crate::platform::mq::miniquad::{BlendFactor, BlendState, BlendValue, Equation};
+use crate::platform::prelude::*;
 use std::{
     cell::RefCell,
     collections::BTreeMap,

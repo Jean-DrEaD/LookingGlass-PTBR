@@ -6,7 +6,7 @@ use crate::{
     skeletal::{Animation, Definition, Skeleton},
 };
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum State {

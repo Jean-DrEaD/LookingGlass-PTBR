@@ -12,7 +12,7 @@ use crate::{
     story::Story,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
 
 pub const ARRIVAL: &str = "Fortress1_Start";

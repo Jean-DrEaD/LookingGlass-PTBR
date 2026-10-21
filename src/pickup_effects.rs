@@ -1,7 +1,7 @@
 //! Item particles use authored tags and clip events, independently of item grants.
 use crate::{assets::Assets, environment::Atmosphere, skeletal::Transform, texture};
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::BTreeMap;
 
 pub(crate) struct Effect {

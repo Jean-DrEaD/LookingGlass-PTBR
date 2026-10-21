@@ -12,7 +12,7 @@ use crate::{
     story::{self, Line, Story},
 };
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
 
 struct Region {

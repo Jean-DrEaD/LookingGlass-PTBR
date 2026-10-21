@@ -6,7 +6,7 @@ use crate::{
     skeletal::{Animation, Definition, Skeleton, Transform},
 };
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 
 // Stable reserved combat IDs also fit the save format's bounded numeric domain.

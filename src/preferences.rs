@@ -1,6 +1,6 @@
 //! Runtime preferences, independent of campaign saves and original engine cvars.
 use anyhow::{ensure, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 

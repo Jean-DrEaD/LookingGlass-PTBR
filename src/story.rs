@@ -1,7 +1,7 @@
 //! Selected dialogue beats read from the user's archives. Never executes game scripts.
 use crate::{assets::Assets, audio::Audio, bsp::Bsp};
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::io::Cursor;
 

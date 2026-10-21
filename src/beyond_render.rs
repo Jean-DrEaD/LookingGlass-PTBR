@@ -1,7 +1,7 @@
 //! Explicitly staged visual checks, separate from the continuous gameplay route.
 use crate::{assets::Assets, interaction::Interactions, render::Scene};
 use anyhow::Result;
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 pub async fn check(assets: &mut Assets) -> Result<()> {
     let mut scene = Scene::load(assets, "fortress2")?;
     let mut i = Interactions::load(&scene.map)?;

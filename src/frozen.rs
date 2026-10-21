@@ -1,7 +1,7 @@
 //! Original iceblock secondary shaders, shared across actors and the water shell.
 use crate::{assets::Assets, render_fx, texture};
 use anyhow::{Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::{collections::BTreeMap, rc::Rc};
 pub(crate) struct Art {
     textures: [Texture2D; 2],

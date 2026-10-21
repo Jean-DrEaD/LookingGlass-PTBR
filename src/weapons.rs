@@ -27,7 +27,7 @@ use crate::{
     tan, texture,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::{
+use crate::platform::mq::{
     miniquad::{BlendFactor, BlendState, Equation, ShaderSource},
     prelude::*,
 };
@@ -1405,7 +1405,7 @@ impl Visuals {
                 uniforms: crate::environment::uniforms(),
                 pipeline_params: crate::render::depth_pipeline(Some(BlendState::new(
                     Equation::Add,
-                    BlendFactor::Value(macroquad::miniquad::BlendValue::SourceAlpha),
+                    BlendFactor::Value(crate::platform::mq::miniquad::BlendValue::SourceAlpha),
                     BlendFactor::One,
                 ))),
                 ..Default::default()

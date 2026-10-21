@@ -58,7 +58,7 @@ use crate::{
     weapons::Prop,
 };
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use crate::platform::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
 
 type Entity = BTreeMap<String, String>;
