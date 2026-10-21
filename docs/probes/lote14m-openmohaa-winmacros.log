@@ -1,0 +1,34 @@
+# Probe 14m 2026-10-21 18:52 @ a2f3401 (+0002)
+BUILD_EXIT=2
+## Objetos ok / falhos:
+378
+9
+## Erros por arquivo:
+code/thirdparty/zlib-1.3.1/zconf.h:402:21: error: expected ';' after top level declarator
+code/thirdparty/zlib-1.3.1/zlib.h:81:18: error: type specifier missing, defaults to 'int'; ISO C99 and later do not support implicit int [-Wimplicit-int]
+## Top mensagens:
+     54 error: expected ';' after top level declarator
+     18 error: unknown type name 'Bytef'; did you mean 'Byte'?
+     16 error: type specifier missing, defaults to 'int'; ISO C and later do not support implicit int [-Wimplicit-int]
+     13 error: unknown type name 'voidpf'
+      9 fatal error: too many errors emitted, stopping now [-ferror-limit=]
+      9 error: typedef redefinition with different types ('void' vs 'Byte' (aka 'unsigned char'))
+      9 error: typedef redefinition with different types ('uLong' (aka 'unsigned long') vs 'Byte' (aka 'unsigned char'))
+      9 error: typedef redefinition with different types ('uInt' (aka 'unsigned int') vs 'Byte' (aka 'unsigned char'))
+      9 error: typedef redefinition with different types ('int' vs 'Byte' (aka 'unsigned char'))
+      9 error: typedef redefinition with different types ('char' vs 'Byte' (aka 'unsigned char'))
+      9 error: field has incomplete type 'struct internal_state'
+      9 error: expected ';' at end of declaration list
+      8 error: unknown type name 'alloc_func'
+      8 error: function cannot return function type 'int (int, uInt, uInt)' (aka 'int (int, unsigned int, unsigned int)')
+## Linker (simbolos):
+## Alvos:
+build-xbox/libgcd_common.lib
+build-xbox/libgcd_key.lib
+build-xbox/libgcd_natneg.lib
+build-xbox/libgcd_qr2.lib
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib

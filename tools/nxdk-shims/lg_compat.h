@@ -1,4 +1,13 @@
 #pragma once
+/* LookingGlass: prologo nxdk */
+#define LG_NXDK 1
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <errno.h>
 /* LookingGlass: compat POSIX para nxdk */
 #include <ctype.h>
 #include <string.h>
@@ -25,3 +34,17 @@ static inline struct tm *lg_gmtime_r(const time_t *t, struct tm *r) { struct tm 
 #define localtime_r lg_localtime_r
 #define gmtime_r    lg_gmtime_r
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+static inline int lg_rmdir(const char *p) { return RemoveDirectoryA(p) ? 0 : -1; }
+#ifdef __cplusplus
+}
+#endif
+#define rmdir lg_rmdir
+/* windows.h polui nomes usados pelo engine */
+#undef near
+#undef far
+#undef min
+#undef max
