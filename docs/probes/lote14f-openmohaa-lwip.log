@@ -1,0 +1,41 @@
+# Probe 14f 2026-10-21 17:22 @ a2f3401 (+0001)
+## lwipopts.h / arch/cc.h:
+/usr/src/nxdk/lib/net/nforceif/include/lwipopts.h
+/usr/src/nxdk/lib/net/nforceif/include/arch/cc.h
+/usr/src/nxdk/lib/net/lwip/contrib/ports/win32/include/arch/cc.h
+/usr/src/nxdk/lib/net/lwip/contrib/examples/example_app/lwipopts.h
+/usr/src/nxdk/lib/net/lwip/test/fuzz/lwipopts.h
+/usr/src/nxdk/lib/net/lwip/test/unit/lwipopts.h
+OPTS=/usr/src/nxdk/lib/net/nforceif/include
+ARCH=/usr/src/nxdk/lib/net/nforceif/include
+BUILD_EXIT=2
+## Objetos ok / falhos:
+280
+23
+## Primeiros erros por arquivo:
+code/fgame/scriptthread.cpp:6311:11: error: use of undeclared identifier 'mkdir'
+code/gamespy/common/../common/gsPlatformSocket.h:635:1: error: unknown type name 'HOSTENT'
+code/gamespy/common/gsAssert.c:74:17: error: call to undeclared function 'MessageBoxA'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+code/gamespy/common/gsAvailable.c:23:2: error: unknown type name 'SOCKADDR_IN'
+code/gamespy/common/gsPlatformSocket.c:337:1: error: unknown type name 'HOSTENT'
+code/gamespy/common/gsPlatformSocket.h:635:1: error: unknown type name 'HOSTENT'
+code/gamespy/common/win32/gsThreadWin32.c:26:30: error: call to undeclared function 'CreateSemaphoreA'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+code/gamespy/common/win32/gsUtilWin32.c:5:9: error: call to undeclared function '_atoi64'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+code/gamespy/gserverlist.c:291:35: error: use of undeclared identifier 'u_long'; did you mean 'long'?
+## Top mensagens:
+     23 error: unknown type name 'HOSTENT'
+     22 error: unknown type name 'IN_ADDR'
+      6 fatal error: too many errors emitted, stopping now [-ferror-limit=]
+      1 error: use of undeclared identifier 'u_long'; did you mean 'long'?
+      1 error: use of undeclared identifier 'rmdir'
+      1 error: use of undeclared identifier 'mkdir'
+      1 error: unknown type name 'SOCKADDR_IN'
+      1 error: call to undeclared function '_atoi'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'MessageBoxA'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'CreateSemaphoreA'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+## Headers ausentes:
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
