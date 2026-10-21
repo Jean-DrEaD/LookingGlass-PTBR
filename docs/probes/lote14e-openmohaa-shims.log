@@ -1,0 +1,33 @@
+# Probe 14e 2026-10-21 17:14 @ a2f3401 (+0001)
+BUILD_EXIT=2
+## Objetos ok / falhos:
+280
+217
+## Primeiros erros por arquivo:
+## Top mensagens:
+      5 error: :
+      5 error: 
+      2 error: use of overloaded operator '[]' is ambiguous (with operand types 'const str' and 'size_t' (aka 'unsigned int'))
+      2 error: candidate function
+      2 error: ;
+      2 error: )
+      2 error:   
+      1 fatal error: |           ^ea errorpt)(      | In file included from /src/code/cgame/cg_archive.cpp'lwipopts.h' file not found
+      1 fatal error: tri]:warning: unused function 'Q_GetLumpByVersion' [-Wunused-function]|                               ^                              ~~~~^~~~~~~~~~
+      1 fatal error: too many errors emitted, stopping now [-ferror-limit=]oc  se
+      1 fatal error: too many errors emitted, stopping now [-ferror-limit=] vats 
+      1 fatal error: t warning: a function declaration without a prototype is deprecated in all versions of C [-Wstrict-prototypes]unused variable 'delay' [-Wunused-variable]
+      1 fatal error: nt[  %] Building C object CMakeFiles/gcd_common.dir/code/gamespy/common/gsMemory.c.obj
+      1 fatal error: nlra: |  e   oi'lwipopts.h' file not found
+      1 fatal error: ax:
+      1 fatal error: : /usr/src/nxdk/lib/net/lwip/src/include/lwip/sockets.h:[  %] Building C object CMakeFiles/cgame.dir/code/cgame/cg_consolecmds.c.obj
+      1 fatal error: )(SP  ti|                                         void      | /src/code/cgame/cg_public.h:ssprevious declaration is here
+      1 fatal error: 'lwipopts.h' file not foundwi
+      1 fatal error: 'lwipopts.h' file not founde t(
+      1 fatal error: 'lwipopts.h' file not founddF:
+## Headers ausentes:
+     23 'lwipopts.h' file not found
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
