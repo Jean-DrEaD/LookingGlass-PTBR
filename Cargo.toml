@@ -9,10 +9,15 @@ rust-version = "1.86"
 publish = false
 description = "Local Rust compatibility research for user-supplied Alice game data"
 
+[features]
+default = ["backend-macroquad"]
+backend-macroquad = ["dep:macroquad"]
+backend-xbox = []
+
 [dependencies]
 lg-core = { path = "crates/lg-core" }
 anyhow = "1.0"
-macroquad = "=0.4.14"
+macroquad = { version = "=0.4.14", optional = true }
 zip = { version = "=0.6.6", default-features = false, features = ["deflate"] }
 image = { version = "=0.24.9", default-features = false, features = ["tga", "jpeg", "png"] }
 # Macroquad's newer fontdue patch needs a newer compiler than the user's Rust 1.86.

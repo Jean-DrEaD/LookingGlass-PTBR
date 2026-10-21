@@ -89,3 +89,4 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [ok] Lote 5: main.rs sem macroquad:: direto (via platform::mq).
 - [ok] Lote 5: main.rs via platform::mq.
 - [ok] Lote 6: tools/platform-guard.ps1 (trava de isolamento).
+- [ok] Lote 7: features backend-macroquad (default) / backend-xbox (stub).
