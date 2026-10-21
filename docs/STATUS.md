@@ -56,3 +56,5 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - Erro → colar as últimas 30 linhas do log/compilador.
 - Fim da sessão → "atualiza o STATUS" → commit `docs: status`.
 - Histórico longo em `docs/LOG.md` (só acréscimos no final; não precisa anexar).
+- Comandos sempre completos em blocos PowerShell prontos para colar (nada de trechos de arquivo soltos).
+- Icone alice: fonte em icons\alice\icon128.png -> icons\alice\TitleImage.xbx
