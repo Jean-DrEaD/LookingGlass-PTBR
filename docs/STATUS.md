@@ -95,3 +95,4 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [ok] Lote 9 concluido (940bb15): Rect proprio, src_rect(), .gitattributes.
 - [..] Lote 10: mapear usos diretos de macroquad fora de src/platform.
 - [ok] Lote 10: nenhum uso direto de macroquad fora de src/platform.
+- [nota] Dependências comportamentais de macroquad em render.rs:303, viewer.rs:1088, look.rs:21/67, character.rs:1406 — revisar ao trocar backend.
