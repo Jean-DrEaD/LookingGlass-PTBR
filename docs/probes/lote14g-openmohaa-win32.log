@@ -1,0 +1,62 @@
+# Probe 14g 2026-10-21 17:40 @ a2f3401 (+0001)
+## nxdk winapi (sync/thread/dir):
+CreateDirectoryA (
+CreateDirectoryA(
+CreateMutexA (
+CreateSemaphore (
+CreateThread (
+CreateThread(
+InitializeCriticalSection (
+InitializeCriticalSection(
+ReleaseSemaphore (
+RemoveDirectoryA (
+RemoveDirectoryA(
+WaitForSingleObject (
+WaitForSingleObject(
+## GameSpy no cmake:
+cmake/client.cmake:31:    ${SOURCE_DIR}/client/cl_uigamespy.cpp
+cmake/client.cmake:65:	${SOURCE_DIR}/gamespy/cl_gamespy.c
+cmake/gamespy.cmake:1:include_directories(${SOURCE_DIR}/gamespy/common)
+cmake/gamespy.cmake:2:include_directories(${SOURCE_DIR}/gamespy/gcdkey)
+cmake/gamespy.cmake:5:	${SOURCE_DIR}/gamespy/common/*.c
+cmake/gamespy.cmake:6:    ${SOURCE_DIR}/gamespy/darray.c
+cmake/gamespy.cmake:7:    ${SOURCE_DIR}/gamespy/gserver.c
+cmake/gamespy.cmake:8:    ${SOURCE_DIR}/gamespy/gserverlist.c
+cmake/gamespy.cmake:9:	${SOURCE_DIR}/gamespy/hashtable.c
+cmake/gamespy.cmake:10:	${SOURCE_DIR}/gamespy/md5c.c
+cmake/gamespy.cmake:11:	${SOURCE_DIR}/gamespy/gutil.c
+cmake/gamespy.cmake:14:file(GLOB SRCS_gcdkey
+cmake/gamespy.cmake:15:    ${SOURCE_DIR}/gamespy/gcdkey/*.c
+cmake/gamespy.cmake:19:    ${SOURCE_DIR}/gamespy/natneg/*.c
+cmake/gamespy.cmake:23:    ${SOURCE_DIR}/gamespy/qr2/*.c
+BUILD_EXIT=2
+## Objetos ok / falhos:
+280
+4
+## Primeiros erros por arquivo:
+code/gamespy/common/gsAssert.c:74:57: error: use of undeclared identifier 'MB_ABORTRETRYIGNORE'
+code/gamespy/common/gsPlatformSocket.c:572:2: error: call to undeclared function 'gethostname'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+code/gamespy/common/gsPlatformUtil.c:433:14: error: call to undeclared function 'MAKEWORD'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+code/gamespy/common/win32/gsThreadWin32.c:26:30: error: call to undeclared function 'CreateSemaphoreA'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+## Top mensagens:
+      2 fatal error: too many errors emitted, stopping now [-ferror-limit=]
+      1 error: use of undeclared identifier 'REG_SZ'
+      1 error: use of undeclared identifier 'MB_TASKMODAL'
+      1 error: use of undeclared identifier 'MB_SETFOREGROUND'
+      1 error: use of undeclared identifier 'MB_ICONHAND'
+      1 error: use of undeclared identifier 'MB_ABORTRETRYIGNORE'
+      1 error: use of undeclared identifier 'IDABORT'
+      1 error: use of undeclared identifier 'HKEY_CURRENT_USER'
+      1 error: use of undeclared identifier 'HKEY'
+      1 error: incompatible integer to pointer conversion initializing 'GSISemaphoreID' (aka 'void *') with an expression of type 'int' [-Wint-conversion]
+      1 error: call to undeclared function 'gethostname'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'TerminateThread'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'RegOpenKeyExA'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'MAKEWORD'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'CreateSemaphoreA'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
