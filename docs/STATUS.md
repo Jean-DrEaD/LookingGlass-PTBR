@@ -9,17 +9,50 @@
 - O código Rust (`LookingGlass-PTBR`) serve como **manual dos formatos** do Übertools/FAKK2
   (BSP FAKK, TIKI, .skb/.ska, shaders, scripts). Não roda no Xbox.
 - Descartado: Xbox Series/UWP/GDK, RXDK/D3D8, frontend Rust no_std, XDK 5849.
+  (commits `lg-core` no_std no branch `xbox` são legado desse caminho; manter como referência)
 - Assets nunca vão no repositório; o usuário fornece os PK3.
 
 ## Pastas
 | Local | O quê |
 |---|---|
-| `D:\ioQuake3-Xbox` | fork/clone do Mayo1970/ioQuake3-Xbox (base do port) ❓ repo próprio? |
+| `D:\ioQuake3-Xbox` | clone do Mayo1970/ioQuake3-Xbox (base do port) ❓ remote próprio? (`git remote -v`) |
 | `D:\LookingGlass-PTBR` (branch `xbox`) | motor Rust = referência de formatos + estes docs |
 
 ## Build e deploy
 ```powershell
 cd D:\ioQuake3-Xbox
+# ícone (opcional, se mudar icon.png → redimensionar p/ icon128.png antes)
+docker run --rm -v "${PWD}:/src" -w /src xboxdev/nxdk:latest sh -c "python3 tools/png2xbx.py icon128.png icons/oa/TitleImage.xbx"
+# build
 docker run --rm -v "${PWD}:/src" -w /src xboxdev/nxdk:latest sh -c "make -f Makefile.xbox oa -j8 DEBUG=y"
 # saída: build_xbox_oa\default.xbe → FileZilla → E:\Apps\<pasta>\
 # log (DEBUG=y): D:\ioquake3_oa.log no Xbox
+```
+
+## Validado ✅
+- Toolchain nxdk/Docker compila; o triângulo do RXDK rodou (ambiente ok).
+- OpenArena roda no console; 128 MB detectados no boot.
+- Desempenho ok (tearing → ativar VSync no port).
+- Ícone 128×128 embutido no XBE (`$$XTIMAGE`), aparece na UnleashX (XBMC4Gamers: usar `_resources`).
+- Title ID do XBE = `0x4F410001`; init flags `0x5 → 0x1`.
+- OA com 4 bots: erro de modelo sarge; com 3 bots ok → problema do OA, ignorar.
+
+## Etapa atual
+Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
+
+## Próximos passos (em ordem)
+1. Criar o sabor `alice` no `Makefile.xbox` (game dir base, nome do xbe, ícone `icons/alice/`, title ID próprio)
+2. Escalar o orçamento para 128 MB em `code/sys/xbox_boot.c` (hunk/zone/textura)
+3. Loader de BSP FAKK (referência: `bsp` no Rust)
+4. Modelos TIKI/skeletal (referência: `skeletal`)
+5. Shaders/scripts FAKK2
+6. Áudio, cutscenes, VSync
+
+## Problemas em aberto
+- (nenhum registrado)
+
+## Regras do fluxo
+- 1 sessão = 1 objetivo da lista acima.
+- Erro → colar as últimas 30 linhas do log/compilador.
+- Fim da sessão → "atualiza o STATUS" → commit `docs: status`.
+- Histórico longo em `docs/LOG.md` (só acréscimos no final; não precisa anexar).
