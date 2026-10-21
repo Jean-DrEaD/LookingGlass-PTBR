@@ -1,0 +1,13 @@
+
+Modulo           Status
+------           ------
+entity           MOVIDO (só std)
+dice_tests       ignorado (tem submódulos ou não é raiz)
+weapon_rules     MOVIDO (só std)
+school2_quest    MOVIDO (só std)
+registry_check   depende do app
+animation_events depende do app
+campaign_route   depende do app
+i18n             MOVIDO (só std)
+event            depende do app
+
