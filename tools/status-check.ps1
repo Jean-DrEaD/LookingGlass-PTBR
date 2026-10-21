@@ -17,7 +17,7 @@ Check "arvore limpa" (-not $dirty) "($(@($dirty).Count) alteracoes)"
 
 Add ""; Add "## STATUS.md"
 $st = Get-Content docs\STATUS.md; $lotes = [ordered]@{}
-foreach($l in $st){ if($l -match '^\s*-\s*\[(ok|\.\.)\]\s*Lote\s*(\d+\w?)'){ $lotes[$matches[2]] = $matches[1] } }
+foreach($l in $st){ if($l -match '^\|\s*(\d+)\s*\|\s*(ok|\.\.)\s*\|'){ $lotes[$matches[1]] = $matches[2] } }
 $abertos = @($lotes.Keys | ? { $lotes[$_] -eq '..' })
 Check "no maximo 1 lote aberto" ($abertos.Count -le 1) "(abertos: $($abertos -join ', '))"
 $dups = $st | Select-String '^\s*-\s*\[ok\]\s*Lote\s*(\d+\w?)' | % { $_.Matches[0].Groups[1].Value } | group | ? Count -gt 1 | % Name
@@ -30,6 +30,12 @@ Add ""; Add "## Plano"
 $plano = Get-Content lookingglass-xbox.md -Raw
 Check "plano aponta Xbox original" ($plano -match 'Xbox original')
 
+
+Add ""; Add "## Coerencia"
+$dec = @($st | Select-String '^- Toolchain:')
+Check "decisao de toolchain unica" ($dec.Count -eq 1) "($($dec.Line))"
+Check "decisao definida" (-not ($dec.Line -match 'A DEFINIR')) "(bloqueia backend-xbox)"
+Check "RAM 128 MB no plano" ((Get-Content lookingglass-xbox.md -Raw) -notmatch '64 MB RAM')
 Add ""; Add "## Isolamento e builds"
 if(Test-Path tools\platform-guard.ps1){ & .\tools\platform-guard.ps1 *> $null; Check "platform-guard" ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) }
 if(-not $NoBuild){
@@ -43,3 +49,4 @@ if(Test-Path $lib){ Add "- [info] lg_xbox.lib: $([math]::Round((Get-Item $lib).L
 Add ""; Add "**Resultado: $(if($script:fail){"$($script:fail) FALHA(S)"}else{'TUDO OK'})**"
 $r | Set-Content docs\AUDIT.md -Encoding utf8
 exit $script:fail
+

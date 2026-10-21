@@ -1,0 +1,42 @@
+
+## Arquivo do STATUS ate o Lote 12 (2026-10-21)
+- Icone alice: fonte em icons\alice\icon128.png -> icons\alice\TitleImage.xbx
+- [ok] Build alice: build_xbox_alice\default.xbe com icone e TitleID 414C0001 (modulos ainda baseq3, provisorio)
+- Proximo: blocos STANDALONEALICE (BASEGAME base, sem CD key) em q_shared.h, qcommon.h, common.c, files.c, xbox_launch.c
+- [ok] STANDALONEALICE: BASEGAME base, com_standalone=1, sem FS_CheckPak0, sem launcher TA. Icone commitado com git add -f (icons/ esta no .gitignore)
+- Pendente: FS_XboxStockVM sem checksums Alice; modulos ainda q3 (cgame/ui/qagame)
+- [ok] Removido LEGACY_PROTOCOL do bloco STANDALONEALICE
+- Proximo: teste no xemu/console com pasta base\ ao lado do default.xbe
+- [teste] alice no ioq3: pk3 montam e default.cfg carrega, mas UI q3 sem assets (tela azul). Engine do Alice e Ritual/FAKK2 (TIKI, BSP FAKK, .urc), incompativel com ioq3. Branch alice congelado.
+- Proximo: decidir entre portar o engine Rust para nxdk ou avaliar um engine C/C++ da linha FAKK2 (ex. OpenMoHAA)
+- [decisao] Toolchain Xbox: RXDK (Team-Resurgent, GPLv3, D3D8/DirectSound/MSVC). nxdk descartado para este port.
+- [ok] lg-core compila no_std (x86_64-unknown-none, --no-default-features).
+- [medicao] app usa macroquad 329x, std::fs 288x, image 21x, rodio 16x, zip 6x, std::thread 5x -> vira frontend C++ (D3D8 + DirectSound + XAPI arquivos).
+- Proximo: crate lg-xbox (staticlib no_std, i686, target-cpu=pentium3) + FFI C para o frontend RXDK.
+- [wip] crate lg-xbox (staticlib no_std, i686, pentium3) criado.
+- [ok] lg_xbox.lib gerada (i686-pc-windows-msvc, pentium3, ~3,2 MB antes do link).
+- [medicao] lg-core 172 KB vs app 7.492 KB (~2% portavel hoje). Mapa em docs/xbox-port-map.csv.
+- [risco] -sse2 no i686 gera warning que vira hard error futuro (rust#116344): fixar toolchain do build Xbox.
+- [medicao] PURO 190 arq/1.821 KB, MISTO 195/3.982 KB, PLATAFORMA 78/1.689 KB.
+- [auditoria] MISTO facil: 94 arq | MISTO com API: 101 arq | PURO contaminado: 76 arq.
+- Plano: lg-core exporta Vec2/Color/Rect proprios (glam + struct Color) para substituir macroquad::prelude nos MISTO faceis.
+- [fix] KB dos CSVs auditados estavam 10x (parse pt-BR). Real: MISTO facil ~1.297 KB, MISTO API ~2.361 KB.
+- [nota] regex de API pegou funcoes proprias (draw_pose, load_levels...). API real: Camera3D, set_camera, clear_background, Texture2D, is_key_*, screen_*, draw_text/line/rectangle, load_texture.
+- [ok] lg_core::math criado (re-export glam). Lote 1: 24 arquivos migrados de macroquad::prelude.
+- [ok] math ampliado (Quat/Vec4/Mat3/EulerRot). Lote 1b: 23 arquivos. [nota] pais com filhos 'use super::*' precisam manter macroquad ate migrar os filhos.
+- [ok] Lote 2: crate::platform como fachada unica do macroquad (128 arquivos).
+- [ok] Lote 3: prelude explicito (math/gfx/gl/input/window).
+- [ok] Lote 4: codigo usa crate::platform::prelude (sem macroquad direto).
+- [ok] Lote 5: main.rs sem macroquad:: direto (via platform::mq).
+- [ok] Lote 5: main.rs via platform::mq.
+- [ok] Lote 6: tools/platform-guard.ps1 (trava de isolamento).
+- [ok] Lote 7: features backend-macroquad (default) / backend-xbox (stub).
+- [ok] Lote 8: platform::math via glam (Rect ainda do macroquad).
+- [ok] Lote 9: Rect proprio; platform::math 100% portavel; src_rect() no backend.
+- [ok] Lote 9 concluido (940bb15): Rect proprio, src_rect(), .gitattributes.
+- [..] Lote 10: mapear usos diretos de macroquad fora de src/platform.
+- [ok] Lote 10: nenhum uso direto de macroquad fora de src/platform.
+- [nota] Dependências comportamentais de macroquad em render.rs:303, viewer.rs:1088, look.rs:21/67, character.rs:1406 — revisar ao trocar backend.
+- [..] Lote 11: levantar plano (lookingglass-xbox.md) e artefatos Xbox ja compilados antes do backend-xbox.
+- [ok] Lote 11 (8814e2f): auditoria; tools\status-check.ps1; plano corrigido p/ Xbox original.
+- [..] Lote 12: limpar STATUS (duplicatas 5/9/10) e auditar lg-xbox (simbolos, tamanho, deps).

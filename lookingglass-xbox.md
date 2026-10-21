@@ -1,4 +1,4 @@
-> **ALVO ATUAL: Xbox original (2001).** Pentium III 733 MHz, 64 MB RAM, NV2A (DX8), toolchain RXDK/nxdk, target Rust `i686-pc-windows-msvc`, `lg-core` em `no_std`, `lg-xbox` como staticlib. As secoes sobre UWP/Series abaixo sao historicas.
+> **ALVO ATUAL: Xbox original (2001).** Pentium III 733 MHz, 128 MB RAM (CerBios), NV2A (DX8), toolchain A DEFINIR (ver STATUS), target Rust `i686-pc-windows-msvc`, `lg-core` em `no_std`, `lg-xbox` como staticlib. As secoes sobre UWP/Series abaixo sao historicas.
 > Fluxo obrigatorio: `tools\status-check.ps1` antes e depois de cada lote; o lote abre com `[..]` e fecha com `[ok] <hash>`; relatorio em `docs\AUDIT.md`.
 # LookingGlass-PTBR → Xbox: plano de ação
 
@@ -189,4 +189,5 @@ Get-ChildItem src -Recurse -Filter *.rs | % {
 1. `cargo tree -i glam`, para descobrir a versão.
 2. Rodar o script 6.2 para `visibility` e `powerups`.
 3. Criar o workspace e migrar `collision` e `bsp` (Fase 1).
+
 

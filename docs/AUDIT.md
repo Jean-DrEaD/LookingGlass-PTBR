@@ -1,9 +1,9 @@
-# Auditoria 2026-10-21 13:19
+# Auditoria 2026-10-21 13:22
 
 ## Git
-- [ok] branch xbox (xbox @ 8814e2f)
-- [FALHA] sincronizado com remoto (ahead 1 / behind 0)
-- [FALHA] arvore limpa (1 alteracoes)
+- [ok] branch xbox (xbox @ 7169ae5)
+- [ok] sincronizado com remoto (ahead 0 / behind 0)
+- [ok] arvore limpa (0 alteracoes)
 
 ## STATUS.md
 - [ok] no maximo 1 lote aberto (abertos: 12)
@@ -16,9 +16,6 @@
 
 ## Isolamento e builds
 - [ok] platform-guard 
-- [ok] lg-core no_std (i686) 
-- [ok] lg-xbox staticlib (i686) 
-- [ok] desktop (macroquad) 
 - [info] lg_xbox.lib: 3.22 MB
 
-**Resultado: 2 FALHA(S)**
+**Resultado: TUDO OK**
