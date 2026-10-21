@@ -12,7 +12,7 @@
 - Xbox original, CerBios, **128 MB**, IP 192.168.1.100, FTP via FileZilla. Pentium III 733 MHz, NV2A.
 
 ## Decisao de arquitetura
-- Toolchain: **A DEFINIR** (ver Problemas em aberto). Nao iniciar backend-xbox antes disso.
+- Toolchain: **C** - OpenMoHAA (C/C++) sobre nxdk (Docker xboxdev/nxdk); renderer NV2A reaproveitado do ioQuake3-Xbox; Rust = referencia dos formatos Alice/FAKK2.
 
 ## Pastas
 | Local | O que |
@@ -33,9 +33,11 @@
 | 10 | ok | - | zero macroquad fora de src/platform |
 | 11 | ok | 8814e2f | status-check.ps1, plano corrigido |
 | 12 | ok | 4f94f87 | limpeza do STATUS, auditoria |
+| 13 | .. | | decisao C + prova OpenMoHAA no nxdk |
 
 ## Problemas em aberto
-- [BLOQUEANTE] Decisao contraditoria no historico: (A) fork ioq3/nxdk com Rust so como referencia de formatos x (B) RXDK + lg-xbox Rust staticlib x (C) engine FAKK2 em C/C++ (OpenMoHAA) sobre nxdk. Escolher uma.
+- [risco] Formatos MOHAA (.skd/.skc, TIKI v2) != Alice (.skb/.ska, BSP FAKK): diferencas a mapear usando o Rust como referencia.
 - `_aligned_malloc` do lg-xbox: existe no RXDK/MSVC; verificar no nxdk se for o caminho A ou C.
 - `-sse2` no i686 (rust#116344): fixar a toolchain do build Xbox.
 - Dependencias comportamentais do macroquad: render.rs:303, viewer.rs:1088, look.rs:21/67, character.rs:1406.
+
