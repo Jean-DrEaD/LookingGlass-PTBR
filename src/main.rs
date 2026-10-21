@@ -36,7 +36,7 @@ mod electric;
 mod encounters;
 use lg_core::entity;
 mod environment;
-mod event;
+pub use lg_core::event;
 mod event_check;
 mod facial;
 mod falling_rock;

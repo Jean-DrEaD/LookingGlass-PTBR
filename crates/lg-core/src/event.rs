@@ -1,9 +1,11 @@
 //! Deterministic, bounded world events. Rules are code-owned; saves contain only state.
+#[allow(unused_imports)]
+use crate::prelude::*;
 use crate::entity::{Id, Registry};
 use anyhow::{ensure, Context, Result};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use std::collections::{BTreeMap, BTreeSet};
+use alloc::collections::{BTreeMap, BTreeSet};
 
 const BUDGET: usize = 512;
 const QUEUE_LIMIT: usize = 512;
@@ -370,7 +372,7 @@ impl Runtime {
                         self.initial
                             .0
                             .get(k)
-                            .is_some_and(|w| std::mem::discriminant(v) == std::mem::discriminant(w))
+                            .is_some_and(|w| core::mem::discriminant(v) == core::mem::discriminant(w))
                     }),
                 }
                 && previous
@@ -594,7 +596,7 @@ impl Runtime {
         Ok(())
     }
     pub fn take_outputs(&mut self) -> Vec<Effect> {
-        std::mem::take(&mut self.state.outbox)
+        core::mem::take(&mut self.state.outbox)
     }
     /// v1 saves had already-consumed triggers/dialogue in their component state.
     pub fn import_consumed(&mut self, key: &str) {
@@ -647,7 +649,7 @@ fn same_fact_types(a: &Facts, b: &Facts) -> bool {
     a.0.len() == b.0.len()
         && a.0.iter().all(|(k, v)| {
             b.0.get(k)
-                .is_some_and(|w| std::mem::discriminant(v) == std::mem::discriminant(w))
+                .is_some_and(|w| core::mem::discriminant(v) == core::mem::discriminant(w))
         })
 }
 fn validate_event(e: &Event, r: &Registry) -> Result<()> {
