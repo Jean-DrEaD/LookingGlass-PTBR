@@ -85,3 +85,4 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [ok] math ampliado (Quat/Vec4/Mat3/EulerRot). Lote 1b: 23 arquivos. [nota] pais com filhos 'use super::*' precisam manter macroquad ate migrar os filhos.
 - [ok] Lote 2: crate::platform como fachada unica do macroquad (128 arquivos).
 - [ok] Lote 3: prelude explicito (math/gfx/gl/input/window).
+- [ok] Lote 4: codigo usa crate::platform::prelude (sem macroquad direto).
