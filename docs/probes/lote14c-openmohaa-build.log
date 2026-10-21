@@ -1,0 +1,84 @@
+# Probe 14c 2026-10-21 14:04 @ a2f3401
+CONFIGURE_EXIT=0
+  The repository was not detected as a Git working directory.  Git
+  information will not be available in the game version number.
+Call Stack (most recent call first):
+  CMakeLists.txt:76 (include)
+
+
+CMake Warning (dev) at cmake/basegame.cmake:78 (add_library):
+  ADD_LIBRARY called with SHARED option but the target platform does not
+  support dynamic linking.  Building a STATIC library instead.  This may lead
+  to problems.
+Call Stack (most recent call first):
+  CMakeLists.txt:82 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at cmake/basegame.cmake:90 (add_library):
+  ADD_LIBRARY called with SHARED option but the target platform does not
+  support dynamic linking.  Building a STATIC library instead.  This may lead
+  to problems.
+Call Stack (most recent call first):
+  CMakeLists.txt:82 (include)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Configuring done (10.2s)
+-- Generating done (4.6s)
+-- Build files have been written to: /src/build-xbox
+BUILD_EXIT=2
+## Top erros (mensagem):
+     31 error: 
+     13 error: :
+      5 error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+      4 error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int'):
+      4 error: candidate function
+      3 error: built-in candidate operator[](const volatile char *, int)
+      3 error: )
+      2 error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')previous declaration is here
+      2 error: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')candidate function
+      2 error: too many errors emitted, stopping now [-ferror-limit=]
+      2 error: previous declaration is here
+      2 error: cannot use 'throw' with exceptions disabled:
+      2 error: cannot use 'throw' with exceptions disabled
+      2 error: built-in candidate operator[](const char *, int)
+      2 error: at:
+      2 error:  note: 
+      2 error:         ^
+      2 error:           alloced()
+      2 error:   
+      1 error: | ssIn file included from /src/code/fgame/g_main.cppatst, at/src/code/fgame/g_utils.h::use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+      1 error: | :|                                              ^  )  [ %] Building CXX object CMakeFiles/game.dir/code/fgame/ipfilter.cpp.obj
+      1 error: |           alloced()built-in candidate operator[](const char *, int)
+      1 error: |            ^attr/src/code/fgame/scriptslave.cpp:ntst                ~~ ~~~~~~~~~~~~~~~~~~~~~~~~~
+      1 error: |                      ^taVe:
+      1 error: |                                              ^/src/code/fgame/../corepp/safeptr.h:/src/code/fgame/g_utils.h:warning: declaration shadows a field of 'SafePtrBase' [-Wshadow]evAderror: use of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')::                                               ^
+      1 error: |                                                  ^ note: ss)nn    t>Cmuse of overloaded operator '[]' is ambiguous (with operand types 'str' and 'int')
+      1 error: ze'winsock.h' file not found
+      1 error: yS                                         ^
+      1 error: warning: declaration shadows a local variable [-Wshadow] |   t i:
+      1 error: warning: declaration shadows a field of 'SafePtrBase' [-Wshadow]  d e cannot use 'throw' with exceptions disabled
+## Top arquivos com erro:
+     52  error
+     16 
+     11  note
+     10 21
+      7 9
+      6 error
+      6 /src/code/fgame/g_utils.h
+      6 /src/code/corepp/str.cpp
+      6        error
+      6       
+      5 fatal error
+      5       error
+      4 In file included from  error
+      4    error
+      3 note
+      3 5
+      3  fatal error
+      2 e  error
+      2 at error
+      2 44
+## Headers ausentes:
+     23 'winsock.h' file not found
+      2 'sys/stat.h' file not found
+## Alvos gerados:
