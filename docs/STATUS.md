@@ -73,3 +73,6 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [medicao] app usa macroquad 329x, std::fs 288x, image 21x, rodio 16x, zip 6x, std::thread 5x -> vira frontend C++ (D3D8 + DirectSound + XAPI arquivos).
 - Proximo: crate lg-xbox (staticlib no_std, i686, target-cpu=pentium3) + FFI C para o frontend RXDK.
 - [wip] crate lg-xbox (staticlib no_std, i686, pentium3) criado.
+- [ok] lg_xbox.lib gerada (i686-pc-windows-msvc, pentium3, ~3,2 MB antes do link).
+- [medicao] lg-core 172 KB vs app 7.492 KB (~2% portavel hoje). Mapa em docs/xbox-port-map.csv.
+- [risco] -sse2 no i686 gera warning que vira hard error futuro (rust#116344): fixar toolchain do build Xbox.
