@@ -1,9 +1,10 @@
 <!-- FLUXO-INICIO -->
 ## >>> FLUXO ATUAL (manter no topo) <<<
 - Lote aberto: **14** (build OpenMoHAA nxdk)
-- 14o: lista completa do link: lwip (~22), C++ EH (3), Sys_*/CON_* (~35), atof
-- 14p: diagnostico (libs nxdk + sys/con do CMake) -> **analisar log 14p**
-- Proximo (14q): linkar libs certas + sys_xbox.c/con_xbox.c + atof
+- 14p: lwip em libnxdk_net.lib; nxdk SEM runtime C++ EH e sem atof; CMake nao escolhe sys_*/con_* p/ Xbox
+- 14q: lib propria tools/nxdk-shims/xboxsys (Sys_*/CON_*/atof/stubs EH) + libnxdk_net -> **analisar log 14q**
+- RISCO: stubs EH abortam em qualquer throw (script engine usa) -> lote dedicado
+- TODO: Sys_ListFiles real (FindFirstFileA) p/ carregar .pk3
 - Build: `.\tools\probe.ps1 -Lote <id> -Nome <nome> -Nota "(+patches)"`
 - Regra: comandos sempre completos, prontos para copiar e colar
 <!-- FLUXO-FIM -->
@@ -46,6 +47,7 @@
 | 14 | .. | | OpenMoHAA dedicado no nxdk: flags corrigidas, SDL condicional |
 
 ## Problemas em aberto
+- [build] 14q: lg_xboxsys.lib (Sys_*/CON_*/atof/EH stub) + libnxdk_net. RISCO: C++ EH ausente no nxdk.
 - [build] 14o: link omohaaded.exe falha: lwip, CxxFrameHandler3/CxxThrowException, Sys_*/CON_*, atof. 14p: diagnostico de libs.
 - [build] 14n: compila tudo; link falha (lwip, CxxFrameHandler3, Sys_*, atof). 14o: /errorlimit:0 p/ lista completa.
 - [build] 14m: 9 falhos (zlib, FAR). 14n: FAR/NEAR vazios; script tools/probe.ps1.
@@ -68,6 +70,7 @@
 - `_aligned_malloc` do lg-xbox: existe no RXDK/MSVC; verificar no nxdk se for o caminho A ou C.
 - `-sse2` no i686 (rust#116344): fixar a toolchain do build Xbox.
 - Dependencias comportamentais do macroquad: render.rs:303, viewer.rs:1088, look.rs:21/67, character.rs:1406.
+
 
 
 
