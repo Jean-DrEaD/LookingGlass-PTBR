@@ -1,3 +1,11 @@
+<!-- FLUXO-INICIO -->
+## >>> FLUXO ATUAL (manter no topo) <<<
+- Lote aberto: **14** (build OpenMoHAA nxdk)
+- 14m: libgame/libcgame voltaram; 9 falhos = zlib (FAR virou `far`)
+- 14n: `FAR`/`NEAR` vazios no lg_compat.h; probe rodado -> **analisar log 14n**
+- Build agora: `.\tools\probe.ps1 -Lote <id> -Nome <nome> -Nota "(+patches)"`
+- Regra: comandos sempre completos, prontos para copiar e colar
+<!-- FLUXO-FIM -->
 # STATUS - Alice (LookingGlass-PTBR) -> Xbox Original
 > Anexe no inicio de todo chat. Historico completo: docs/LOG.md. Auditoria: docs/AUDIT.md.
 > Ultima atualizacao: 2026-10-21
@@ -37,6 +45,7 @@
 | 14 | .. | | OpenMoHAA dedicado no nxdk: flags corrigidas, SDL condicional |
 
 ## Problemas em aberto
+- [build] 14m: 9 falhos (zlib, FAR). 14n: FAR/NEAR vazios; script tools/probe.ps1.
 - [build] 14l: 6 falhos; regressao libgame/libcgame (near/far do windows.h via lg_compat). 14m: LEAN_AND_MEAN/NOMINMAX + undef near/far; rmdir/errno; net_ip socklen_t (patch 0002) + stubs getnameinfo.
 - [build] 14k: 17->4 falhos (io.h, wspiapi.h, fcntl.h, stat). 14l: shims io/fcntl/sys-stat/wspiapi.
 - [build] 14j: configure falhou (nxdk repassa CFLAGS ao lld; '-include <arq>' virou input). 14k: -include junto; ssize_t=int (igual lwIP).
@@ -56,6 +65,8 @@
 - `_aligned_malloc` do lg-xbox: existe no RXDK/MSVC; verificar no nxdk se for o caminho A ou C.
 - `-sse2` no i686 (rust#116344): fixar a toolchain do build Xbox.
 - Dependencias comportamentais do macroquad: render.rs:303, viewer.rs:1088, look.rs:21/67, character.rs:1406.
+
+
 
 
 

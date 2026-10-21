@@ -48,3 +48,9 @@ static inline int lg_rmdir(const char *p) { return RemoveDirectoryA(p) ? 0 : -1;
 #undef far
 #undef min
 #undef max
+
+/* FAR/NEAR vazios (zlib); near/far minusculos continuam livres */
+#undef FAR
+#define FAR
+#undef NEAR
+#define NEAR

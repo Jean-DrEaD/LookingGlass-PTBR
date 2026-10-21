@@ -1,0 +1,59 @@
+# Probe 14n 2026-10-21 19:06 @ a2f3401 (+0002)
+BUILD_EXIT=2
+## Objetos ok / falhos:
+378
+1
+## Erros por arquivo:
+## Top mensagens:
+      1 error: undefined symbol: _lwip_socket
+      1 error: undefined symbol: _lwip_sendto
+      1 error: undefined symbol: _lwip_select
+      1 error: undefined symbol: _lwip_recvfrom
+      1 error: undefined symbol: _lwip_htons
+      1 error: undefined symbol: _lwip_htonl
+      1 error: undefined symbol: _lwip_getsockname
+      1 error: undefined symbol: _lwip_gethostbyname
+      1 error: undefined symbol: _lwip_close
+      1 error: undefined symbol: _lwip_bind
+      1 error: undefined symbol: _ipaddr_addr
+      1 error: undefined symbol: _atof
+      1 error: undefined symbol: ___std_terminate
+      1 error: undefined symbol: ___CxxFrameHandler
+      1 error: undefined symbol: _Sys_Sleep
+      1 error: undefined symbol: _Sys_SetEnv
+      1 error: undefined symbol: _Sys_Milliseconds
+      1 error: undefined symbol: _Sys_DebugPrint
+      1 error: undefined symbol: _SetNormalThreadPriority
+      1 error: undefined symbol: _SetBelowNormalThreadPriority
+      1 error: too many errors emitted, stopping now (use /errorlimit: to see all errors)
+## Linker (simbolos):
+      1 undefined symbol: _lwip_socket
+      1 undefined symbol: _lwip_sendto
+      1 undefined symbol: _lwip_select
+      1 undefined symbol: _lwip_recvfrom
+      1 undefined symbol: _lwip_htons
+      1 undefined symbol: _lwip_htonl
+      1 undefined symbol: _lwip_getsockname
+      1 undefined symbol: _lwip_gethostbyname
+      1 undefined symbol: _lwip_close
+      1 undefined symbol: _lwip_bind
+      1 undefined symbol: _ipaddr_addr
+      1 undefined symbol: _atof
+      1 undefined symbol: ___std_terminate
+      1 undefined symbol: ___CxxFrameHandler3
+      1 undefined symbol: _Sys_Sleep
+      1 undefined symbol: _Sys_SetEnv
+      1 undefined symbol: _Sys_Milliseconds
+      1 undefined symbol: _Sys_DebugPrint
+      1 undefined symbol: _SetNormalThreadPriority
+      1 undefined symbol: _SetBelowNormalThreadPriority
+## Alvos:
+build-xbox/libgcd_common.lib
+build-xbox/libgcd_key.lib
+build-xbox/libgcd_natneg.lib
+build-xbox/libgcd_qr2.lib
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
