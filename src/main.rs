@@ -64,7 +64,7 @@ mod loot_art;
 mod magma;
 mod materials;
 mod menu;
-mod model_detail;
+use lg_core::model_detail;
 mod movement;
 mod movie;
 mod npc;

@@ -1,5 +1,6 @@
 //! Source collapse maps, constrained by a conservative all-frame displacement bound.
-use macroquad::prelude::*;
+use crate::prelude::*;
+use glam::Vec3;
 #[derive(Clone)]
 pub struct Level {
     pub indices: Vec<u16>,

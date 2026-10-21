@@ -11,7 +11,7 @@ std = ["serde/std", "glam/std", "anyhow/std"]
 
 [dependencies]
 serde = { version = "=1.0.228", default-features = false, features = ["derive", "alloc"] }
-glam = { version = "=0.27.0", default-features = false, features = ["libm", "serde"] }
+glam = { version = "0.27", default-features = false, features = ["libm", "serde"] }
 anyhow = { version = "1.0", default-features = false }
 sha2 = { version = "0.10", default-features = false }
 serde_json = { version = "=1.0.145", default-features = false, features = ["alloc"] }

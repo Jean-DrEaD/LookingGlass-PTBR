@@ -13,3 +13,4 @@ pub mod weapon_rules;
 pub mod school2_quest;
 pub mod i18n;
 pub mod event;
+pub mod model_detail;
