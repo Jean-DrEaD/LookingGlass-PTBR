@@ -2,14 +2,7 @@
 use anyhow::{ensure, Result};
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub enum Difficulty {
-    Easy,
-    #[default]
-    Normal,
-    Hard,
-    Nightmare,
-}
+pub use lg_core::difficulty::Difficulty;
 impl Difficulty {
     pub const ALL: [Self; 4] = [Self::Easy, Self::Normal, Self::Hard, Self::Nightmare];
     pub fn parse(s: &str) -> Result<Self> {

@@ -1,6 +1,8 @@
+#[allow(unused_imports)]
+use crate::prelude::*;
 use anyhow::{bail, ensure, Context, Result};
-use macroquad::prelude::{vec2, vec3, Vec2, Vec3};
-use std::collections::BTreeMap;
+use glam::{vec2, vec3, Vec2, Vec3};
+use alloc::collections::BTreeMap;
 
 #[derive(Clone, Debug)]
 pub struct MapVertex {
@@ -23,7 +25,7 @@ pub struct Plane {
 }
 #[derive(Debug)]
 pub struct MapBrush {
-    pub sides: std::ops::Range<usize>,
+    pub sides: core::ops::Range<usize>,
     pub shader: usize,
 }
 #[derive(Debug)]
@@ -42,8 +44,8 @@ pub struct Surface {
 pub struct Model {
     pub min: Vec3,
     pub max: Vec3,
-    pub surfaces: std::ops::Range<usize>,
-    pub brushes: std::ops::Range<usize>,
+    pub surfaces: core::ops::Range<usize>,
+    pub brushes: core::ops::Range<usize>,
 }
 #[derive(Debug)]
 pub struct Fog {
@@ -53,7 +55,7 @@ pub struct Fog {
 #[derive(Debug)]
 pub struct Bsp {
     pub visibility: crate::visibility::Visibility,
-    pub difficulty: crate::powerups::Difficulty,
+    pub difficulty: crate::difficulty::Difficulty,
     pub models: Vec<Model>,
     pub fogs: Vec<Fog>,
     pub shaders: Vec<Shader>,
@@ -62,11 +64,11 @@ pub struct Bsp {
     pub surfaces: Vec<Surface>,
     pub lightmaps: Vec<u8>,
     pub entities: Vec<BTreeMap<String, String>>,
-    pub world_surfaces: std::ops::Range<usize>,
+    pub world_surfaces: core::ops::Range<usize>,
     pub planes: Vec<Plane>,
     pub side_planes: Vec<usize>,
     pub brushes: Vec<MapBrush>,
-    pub world_brushes: std::ops::Range<usize>,
+    pub world_brushes: core::ops::Range<usize>,
     pub world_min: Vec3,
     pub world_max: Vec3,
 }
@@ -88,7 +90,7 @@ fn f32_at(b: &[u8], o: usize) -> Result<f32> {
 fn vec_at(b: &[u8], o: usize) -> Result<Vec3> {
     Ok(vec3(f32_at(b, o)?, f32_at(b, o + 4)?, f32_at(b, o + 8)?))
 }
-fn records(b: &[u8], stride: usize) -> Result<std::slice::ChunksExact<'_, u8>> {
+fn records(b: &[u8], stride: usize) -> Result<core::slice::ChunksExact<'_, u8>> {
     ensure!(
         b.len() % stride == 0,
         "Lump length {} is not a multiple of {stride}",
@@ -96,7 +98,7 @@ fn records(b: &[u8], stride: usize) -> Result<std::slice::ChunksExact<'_, u8>> {
     );
     Ok(b.chunks_exact(stride))
 }
-fn bounded(first: usize, size: usize, total: usize) -> Result<std::ops::Range<usize>> {
+fn bounded(first: usize, size: usize, total: usize) -> Result<core::ops::Range<usize>> {
     let end = first.checked_add(size).context("BSP range overflow")?;
     ensure!(end <= total, "BSP range {first}..{end} exceeds {total}");
     Ok(first..end)
@@ -131,7 +133,7 @@ impl Bsp {
             .map(|s| {
                 let n = s[..64].iter().position(|&b| b == 0).unwrap_or(64);
                 Ok(Shader {
-                    name: std::str::from_utf8(&s[..n])?.to_owned(),
+                    name: core::str::from_utf8(&s[..n])?.to_owned(),
                     flags: i32_at(s, 64)?,
                     contents: i32_at(s, 68)?,
                 })
@@ -265,12 +267,12 @@ impl Bsp {
                     "Invalid fog side"
                 );
                 Ok(Fog {
-                    shader: std::str::from_utf8(&f[..end])?.to_ascii_lowercase(),
+                    shader: core::str::from_utf8(&f[..end])?.to_ascii_lowercase(),
                     brush,
                 })
             })
             .collect::<Result<Vec<_>>>()?;
-        let entity_text = std::str::from_utf8(lumps[14])?.trim_end_matches('\0');
+        let entity_text = core::str::from_utf8(lumps[14])?.trim_end_matches('\0');
         let entities = parse_entities(entity_text)?;
         let visibility = crate::visibility::Visibility::parse(
             lumps[9],

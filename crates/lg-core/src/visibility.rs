@@ -1,7 +1,9 @@
+#[allow(unused_imports)]
+use crate::prelude::*;
 //! Checked FAKK leaf/PVS data. Unknown or solid viewpoints deliberately fail open.
 use crate::bsp::Plane;
 use anyhow::{ensure, Context, Result};
-use macroquad::prelude::*;
+use glam::*;
 
 #[derive(Debug)]
 struct Node {
