@@ -1,4 +1,6 @@
 //! Ordered, idempotent school-two quest rules shared by play and diagnostics.
+#[allow(unused_imports)]
+use crate::prelude::*;
 #[derive(Clone, Copy, Default, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum Stage {
     #[default]

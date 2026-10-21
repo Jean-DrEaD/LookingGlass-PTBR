@@ -1,6 +1,8 @@
 //! Source-derived action rules, separate from projectile/AI availability.
 //! Frame times come from Alice TIKI/SKA and the Blunderbuss TAN. Staff native
 //! effects and funded pulses are implemented by the custom heavy-weapon state.
+#[allow(unused_imports)]
+use crate::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -74,8 +76,8 @@ impl Buttons {
         self.blocked = true;
     }
     pub fn sample(&mut self, down: [bool; 2], enabled: bool) -> Option<bool> {
-        self.pressed = std::array::from_fn(|i| down[i] && !self.previous[i]);
-        self.released = std::array::from_fn(|i| !down[i] && self.previous[i]);
+        self.pressed = core::array::from_fn(|i| down[i] && !self.previous[i]);
+        self.released = core::array::from_fn(|i| !down[i] && self.previous[i]);
         self.previous = down;
         if !enabled {
             self.blocked = true;

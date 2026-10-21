@@ -1,3 +1,5 @@
+#[allow(unused_imports)]
+use crate::prelude::*;
 use alloc::{format, string::String};
 
 /// Exibido no horário de Brasília (UTC-3, sem horário de verão desde 2019).

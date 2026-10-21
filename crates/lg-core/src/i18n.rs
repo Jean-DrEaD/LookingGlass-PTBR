@@ -1,5 +1,7 @@
 //! Tradução PT-BR da interface, aplicada ao desenhar o texto (ui::BitmapFont).
-use std::borrow::Cow;
+#[allow(unused_imports)]
+use crate::prelude::*;
+use alloc::borrow::Cow;
 
 static EXACT: &[(&str, &str)] = &[
     ("Gnome", "Gnomo"),

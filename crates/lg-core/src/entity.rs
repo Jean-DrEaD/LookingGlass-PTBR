@@ -1,7 +1,9 @@
 //! Stable identities within one BSP/visit. Names are groups, never unique identities.
+#[allow(unused_imports)]
+use crate::prelude::*;
 use anyhow::{ensure, Result};
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use alloc::collections::BTreeMap;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct Id(pub usize);
