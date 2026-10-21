@@ -1,25 +1,25 @@
-# Auditoria 2026-10-21 13:25
+# Auditoria 2026-10-21 13:58
 
 ## Git
-- [ok] branch xbox (xbox @ 9e5cbeb)
+- [ok] branch xbox (xbox @ 206b15b)
 - [ok] sincronizado com remoto (ahead 0 / behind 0)
 - [ok] arvore limpa (0 alteracoes)
 
 ## STATUS.md
-- [ok] no maximo 1 lote aberto (abertos: )
+- [ok] no maximo 1 lote aberto (abertos: 14)
 - [info] lotes [ok] sem hash: 0
-- [info] ultimo lote: 12 = ok
+- [info] ultimo lote: 14 = ..
 
 ## Plano
 - [ok] plano aponta Xbox original 
 
 ## Coerencia
-- [ok] decisao de toolchain unica (- Toolchain: **A DEFINIR** (ver Problemas em aberto). Nao iniciar backend-xbox antes disso.)
-- [FALHA] decisao definida (bloqueia backend-xbox)
+- [ok] decisao de toolchain unica (- Toolchain: **C** - OpenMoHAA (C/C++) sobre nxdk (Docker xboxdev/nxdk); renderer NV2A reaproveitado do ioQuake3-Xbox; Rust = referencia dos formatos Alice/FAKK2.)
+- [ok] decisao definida (bloqueia backend-xbox)
 - [ok] RAM 128 MB no plano 
 
 ## Isolamento e builds
 - [ok] platform-guard 
 - [info] lg_xbox.lib: 3.22 MB
 
-**Resultado: 1 FALHA(S)**
+**Resultado: TUDO OK**

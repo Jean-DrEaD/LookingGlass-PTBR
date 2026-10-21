@@ -1,0 +1,74 @@
+# Probe 2026-10-21 13:26 @ a2f3401
+## Tamanho: 2115 arquivos, 33.4 MB
+## find_package / deps no CMake:
+  CMakeLists.txt:23: option(USE_OPENAL "OpenAL audio" ON)
+  CMakeLists.txt:24: option(USE_OPENAL_DLOPEN "Dynamically load OpenAL" ON)
+  CMakeLists.txt:34: option(USE_INTERNAL_SDL "Use internal SDL binary (if available)" ${USE_INTERNAL_LIBS})
+  CMakeLists.txt:35: option(USE_INTERNAL_ZLIB "Use internal copy of zlib" ${USE_INTERNAL_LIBS})
+  CMakeLists.txt:36: option(USE_INTERNAL_JPEG "Use internal copy of libjpeg" ${USE_INTERNAL_LIBS})
+  CMakeLists.txt:5: if(NOT SDL2_ROOT_DIR)
+  CMakeLists.txt:7: set(SDL2_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Contrib/SDL")
+  CMakeLists.txt:9: set(SDL2_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Bin")
+  CMakeLists.txt:13: find_package(OpenGL REQUIRED)
+  CMakeLists.txt:15: find_library(SDL2_LIBRARY
+  CMakeLists.txt:16: NAMES SDL2
+  CMakeLists.txt:17: PATHS ${SDL2_ROOT_DIR}
+  CMakeLists.txt:20: find_package(SDL2 REQUIRED)
+  CMakeLists.txt:23: include_directories(SYSTEM ${OPENGL_INCLUDE_DIR})
+  CMakeLists.txt:32: include_directories(Contrib/SDL/include)
+  CMakeLists.txt:34: include_directories(${SDL2_LIBRARY}/Headers)
+  CMakeLists.txt:49: COMMAND ${CMAKE_COMMAND} -E copy "${SDL2_RUNTIME_LIBRARY}" ${CMAKE_BINARY_DIR}/RecastDemo/$(ConfigurationName)/
+  CMakeLists.txt:57: COMMAND ${CMAKE_COMMAND} -E copy "${SDL2_RUNTIME_LIBRARY}" ${CMAKE_BINARY_DIR}/RecastDemo/
+  CMakeLists.txt:72: target_link_libraries(RecastDemo ${OPENGL_LIBRARIES} ${SDL2_LIBRARY} DebugUtils Detour DetourCrowd DetourTileCache Recast)
+  CMakeLists.txt:74: target_link_libraries(RecastDemo ${OPENGL_LIBRARIES} SDL2::SDL2main DebugUtils Detour DetourCrowd DetourTileCache Recast)
+  CMakeLists.txt:86: install(FILES "${SDL2_RUNTIME_LIBRARY}" DESTINATION bin)
+  CMakeLists.txt:13: find_package(Catch2 QUIET)
+## Uso de APIs problematicas no nxdk:
+  qgl\w+ : 1721
+  SDL_\w+ : 10243
+  pthread_\w+ : 115
+  dlopen : 32
+  std::thread : 2
+  fork\( : 5
+## CMake configure (nxdk):
+/usr/bin/cmake
+Perhaps you should add the directory containing `libcurl.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'libcurl' not found
+Package libcurl was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libcurl.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'libcurl' not found
+Package libcurl was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libcurl.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'libcurl' not found
+Package libcurl was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libcurl.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'libcurl' not found
+Package libcurl was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libcurl.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'libcurl' not found
+CMake Error at cmake/libraries/sdl.cmake:56 (find_package):
+  By not providing "FindSDL2.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "SDL2", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "SDL2" with any of
+  the following names:
+
+    SDL2Config.cmake
+    sdl2-config.cmake
+
+  Add the installation prefix of "SDL2" to CMAKE_PREFIX_PATH or set
+  "SDL2_DIR" to a directory containing one of the above files.  If "SDL2"
+  provides a separate development package or SDK, be sure it has been
+  installed.
+Call Stack (most recent call first):
+  cmake/libraries/all.cmake:7 (include)
+  CMakeLists.txt:73 (include)
+
+
+-- Configuring incomplete, errors occurred!
