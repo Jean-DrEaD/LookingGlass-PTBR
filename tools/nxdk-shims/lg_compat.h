@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
+#include <sys/stat.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -23,3 +24,4 @@ static inline struct tm *lg_gmtime_r(const time_t *t, struct tm *r) { struct tm 
 #define strncasecmp lg_strncasecmp
 #define localtime_r lg_localtime_r
 #define gmtime_r    lg_gmtime_r
+

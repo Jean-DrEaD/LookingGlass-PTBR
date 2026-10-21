@@ -1,0 +1,31 @@
+# Probe 14l 2026-10-21 18:32 @ a2f3401 (+0001)
+BUILD_EXIT=2
+## Objetos ok / falhos:
+378
+6
+## Erros por arquivo:
+code/fgame/scriptthread.cpp:6339:11: error: use of undeclared identifier 'rmdir'
+code/qcommon/files.cpp:4492:19: error: use of undeclared identifier 'errno'
+code/qcommon/net_ip.c:42:13: error: typedef redefinition with different types ('int' vs 'u32_t' (aka 'unsigned int'))
+code/qcommon/q_math.c:3324:14: error: expected expression
+## Top mensagens:
+     57 error: expected expression
+      3 fatal error: too many errors emitted, stopping now [-ferror-limit=]
+      3 error: indirection requires pointer operand ('vec_t' (aka 'float') invalid)
+      1 error: use of undeclared identifier 'rmdir'
+      1 error: use of undeclared identifier 'errno'
+      1 error: use of undeclared identifier 'NI_NUMERICHOST'
+      1 error: use of undeclared identifier 'IPV_MULTICAST_IF'
+      1 error: typedef redefinition with different types ('unsigned short' vs 'u_t' (aka 'unsigned char'))
+      1 error: typedef redefinition with different types ('int' vs 'u_t' (aka 'unsigned int'))
+      1 error: call to undeclared function 'getnameinfo'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+      1 error: call to undeclared function 'gai_strerror'; ISO C and later do not support implicit function declarations [-Wimplicit-function-declaration]
+## Linker (simbolos):
+## Alvos:
+build-xbox/libgcd_common.lib
+build-xbox/libgcd_key.lib
+build-xbox/libgcd_natneg.lib
+build-xbox/libgcd_qr2.lib
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
