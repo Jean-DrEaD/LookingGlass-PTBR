@@ -32,7 +32,7 @@
 | 9 | ok | 940bb15 | Rect proprio, src_rect() |
 | 10 | ok | - | zero macroquad fora de src/platform |
 | 11 | ok | 8814e2f | status-check.ps1, plano corrigido |
-| 12 | .. | | limpeza do STATUS, auditoria |
+| 12 | ok | 4f94f87 | limpeza do STATUS, auditoria |
 
 ## Problemas em aberto
 - [BLOQUEANTE] Decisao contraditoria no historico: (A) fork ioq3/nxdk com Rust so como referencia de formatos x (B) RXDK + lg-xbox Rust staticlib x (C) engine FAKK2 em C/C++ (OpenMoHAA) sobre nxdk. Escolher uma.
