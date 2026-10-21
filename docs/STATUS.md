@@ -76,3 +76,6 @@ Base OA estável no console. Ainda não existe o sabor `alice` nem código FAKK.
 - [ok] lg_xbox.lib gerada (i686-pc-windows-msvc, pentium3, ~3,2 MB antes do link).
 - [medicao] lg-core 172 KB vs app 7.492 KB (~2% portavel hoje). Mapa em docs/xbox-port-map.csv.
 - [risco] -sse2 no i686 gera warning que vira hard error futuro (rust#116344): fixar toolchain do build Xbox.
+- [medicao] PURO 190 arq/1.821 KB, MISTO 195/3.982 KB, PLATAFORMA 78/1.689 KB.
+- [auditoria] MISTO facil: 94 arq | MISTO com API: 101 arq | PURO contaminado: 76 arq.
+- Plano: lg-core exporta Vec2/Color/Rect proprios (glam + struct Color) para substituir macroquad::prelude nos MISTO faceis.
