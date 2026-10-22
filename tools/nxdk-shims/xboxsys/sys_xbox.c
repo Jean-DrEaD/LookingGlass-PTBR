@@ -125,3 +125,20 @@ char **Sys_ListFiles(const char *dir, const char *ext, char *filter, int *num, i
     debugPrint("LG: ListFiles %s (%s) = %d\n", dir, ext ? ext : "", n); return list; }
 }
 void Sys_FreeFileList(char **list) { int i; if (!list) return; for (i = 0; list[i]; i++) free(list[i]); free(list); }
+
+/* ---- lote 15q: lg_fopen ---- */
+#undef fopen
+FILE *fopen(const char *p, const char *m);
+FILE *lg_fopen(const char *p, const char *m) {
+  static int n = 0; char b[512]; char *w = b; const char *r = p; FILE *f;
+  if (!p) return NULL;
+  while (*r && w < b + sizeof(b) - 1) {
+    char ch = (*r == '/') ? '\\' : *r; r++;
+    if (ch == '\\' && w > b && w[-1] == '\\') continue;
+    *w++ = ch;
+  }
+  *w = 0;
+  f = fopen(b, m);
+  if (n++ < 12) debugPrint("LG: fopen %s [%s] = %d\n", b, m, f != NULL);
+  return f;
+}

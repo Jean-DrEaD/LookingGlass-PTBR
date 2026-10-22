@@ -66,3 +66,13 @@ float  lg_strtof(const char *s, char **end);
 #define FAR
 #undef NEAR
 #define NEAR
+
+/* ---- lote 15q: fopen com caminho normalizado ---- */
+#ifdef __cplusplus
+extern "C" {
+#endif
+struct _iobuf; 
+#ifdef __cplusplus
+}
+#endif
+#define fopen lg_fopen
