@@ -140,3 +140,7 @@
 - 15q xemu: FS OK! 8 pk3 / 22738 arquivos; default.cfg executado; omconfig_server.cfg lido
 - 15q: novo assert strtod (nxdk stdlib_ext_.c:91) -> chamada fora do macro (libc interna ou TU sem lg_compat)
 - 15r: strtod/strtof/strtold definidos como simbolo real em sys_xbox.c -> lg_strtod
+
+## Lote 15s (2026-10-21 22:06)
+- 15r xemu: strtod OK (q_shared + libcxx); cfgs executados; fatal FS_CreatePath 'D:\main' (DVD read-only, .pid)
+- 15s: mount E:->Harddisk0\Partition1; homepath E:\LG\omohaa; Sys_Mkdir aceita pasta existente

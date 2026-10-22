@@ -33,7 +33,6 @@ const char *Sys_Dirname(char *p) {
 /* ---- arquivos ---- */
 FILE *Sys_FOpen(const char *p, const char *m) { return fopen(p, m); }
 FILE *Sys_Mkfifo(const char *p) { (void)p; return NULL; }
-qboolean Sys_Mkdir(const char *p) { return CreateDirectoryA(p, NULL) || GetLastError() == ERROR_ALREADY_EXISTS; }
 /* TODO(lote 15): listar via FindFirstFileA (necessario para .pk3) */
 
 /* ---- processo / plataforma ---- */
@@ -87,6 +86,9 @@ void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPri
 static void lg_probe_d(void) {
   static int done = 0; WIN32_FIND_DATAA fd; HANDLE h; int n = 0;
   if (done) return; done = 1;
+  if (!nxIsDriveMounted('E')) debugPrint("LG: mount E->HD P1 = %d\n", nxMountDrive('E', "\\Device\\Harddisk0\\Partition1\\"));
+  CreateDirectoryA("E:\\LG", NULL); CreateDirectoryA("E:\\LG\\omohaa", NULL);
+  debugPrint("LG: attr E:\\LG\\omohaa = %lx\n", (unsigned long)GetFileAttributesA("E:\\LG\\omohaa"));
   debugPrint("LG: D mounted=%d\n", nxIsDriveMounted('D'));
   if (!nxIsDriveMounted('D')) debugPrint("LG: mount D->CdRom0 = %d\n", nxMountDrive('D', "\\Device\\CdRom0\\"));
   debugPrint("LG: attr D:\\default.xbe = %lx\n", (unsigned long)GetFileAttributesA("D:\\default.xbe"));
@@ -150,3 +152,14 @@ double lg_strtod(const char *s, char **e);
 double strtod(const char *s, char **e) { return lg_strtod(s, e); }
 float strtof(const char *s, char **e) { return (float)lg_strtod(s, e); }
 long double strtold(const char *s, char **e) { return (long double)lg_strtod(s, e); }
+/* ---- lote 15s: homepath no HD + Sys_Mkdir tolerante ---- */
+char *Sys_DefaultHomePath(void) { return "E:\\LG\\omohaa"; }
+int Sys_Mkdir(const char *p) {
+  char b[512]; char *w = b; const char *r = p; DWORD a;
+  if (!p) return 0;
+  while (*r && w < b + sizeof(b) - 1) { char ch = (*r == '/') ? '\\' : *r; r++; if (ch == '\\' && w > b && w[-1] == '\\') continue; *w++ = ch; }
+  *w = 0;
+  if (CreateDirectoryA(b, NULL)) return 1;
+  a = GetFileAttributesA(b);
+  return a != INVALID_FILE_ATTRIBUTES && (a & FILE_ATTRIBUTE_DIRECTORY);
+}
