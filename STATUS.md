@@ -1,12 +1,13 @@
 <!-- FLUXO-INICIO -->
 ## >>> FLUXO ATUAL (manter no topo) <<<
-- 15l: PRIMEIRO BOOT xemu OK (texto debugPrint 'LG: OpenMoHAA Xbox boot'); trava antes do Com_Init
-- 15m: Sys_Dirname NULL guard + EH stubs mostram na tela; investigando main()
+- 15m: Com_Init roda (versao impressa); Sys_Dirname(NULL) confirmado e tratado
+- 15n: nxdk strtod = assert(0) -> lg_strtod em sys_xbox.c + #define strtod/strtof em lg_compat.h
 - ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\xbe-out G:\xemu\alice-test.iso (ja no lote)
-- Depois: Sys_ListFiles (FindFirstFileA), remover /FORCE:MULTIPLE (dups restantes = COMDAT), enxugar xbe-out (sem exe/dll PC)
+- Depois: outros stubs assert(0) do nxdk, Sys_ListFiles (FindFirstFileA), remover /FORCE:MULTIPLE, enxugar xbe-out
 - Inicio de chat: & D:\LookingGlass-PTBR\tools\lg-status.ps1 -Show
 - Regra: comandos sempre completos
-<!-- FLUXO-FIM --># STATUS - Alice (LookingGlass-PTBR) -> Xbox Original
+<!-- FLUXO-FIM -->
+# STATUS - Alice (LookingGlass-PTBR) -> Xbox Original
 > Anexe no inicio de todo chat. Historico completo: docs/LOG.md. Auditoria: docs/AUDIT.md.
 > Ultima atualizacao: 2026-10-21
 
@@ -103,3 +104,8 @@
 - 15l: build OK, XBE 4.771.840; xemu mostra 'LG: OpenMoHAA Xbox boot' -> 1o boot real
 - Trava apos Sys_PlatformInit e antes do Com_Init (sem print de versao); hipotese argv[0] NULL -> Sys_Dirname
 - 15m: guard NULL em Sys_Dirname; __std_terminate/_CxxThrowException -> debugPrint + loop
+
+## Lote 15n (2026-10-21 21:26)
+- 15m xemu: boot -> Sys_Dirname(NULL) -> Common Initialization -> versao -> assert strtod (nxdk stdlib_ext_.c:91)
+- 15n: lg_strtod/lg_strtof proprios; atof usa lg_strtod; define global via lg_compat.h
+- git openmohaa: lg-status agora commita code/ e .gitignore (logs, xbe-out, build-xbox ignorados)

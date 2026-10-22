@@ -41,6 +41,18 @@ extern "C" {
 static inline int lg_rmdir(const char *p) { return RemoveDirectoryA(p) ? 0 : -1; }
 #ifdef __cplusplus
 }
+/* lote 15n: nxdk strtod = assert(0) */
+#include <stdlib.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+double lg_strtod(const char *s, char **end);
+float  lg_strtof(const char *s, char **end);
+#ifdef __cplusplus
+}
+#endif
+#define strtod lg_strtod
+#define strtof lg_strtof
 #endif
 #define rmdir lg_rmdir
 /* windows.h polui nomes usados pelo engine */

@@ -11,6 +11,6 @@ Add-Content $f "`n## Lote $Lote ($(Get-Date -Format 'yyyy-MM-dd HH:mm'))`n$Texto
 git -C $repo add -A STATUS.md docs tools
 git -C $repo commit -q -m "lote ${Lote}: status + probes"
 git -C $repo push -q 2>$null
-git -C D:\openmohaa add -A CMakeLists.txt tools
+git -C D:\openmohaa add -A CMakeLists.txt tools code .gitignore
 git -C D:\openmohaa commit -q -m "LG lote ${Lote}" 2>$null
 "STATUS lote $Lote registrado e commitado."

@@ -62,7 +62,25 @@ char *CON_Input(void) { return NULL; }
 void  CON_Print(const char *m) { OutputDebugStringA(m); debugPrint("%s", m); }
 
 /* ---- libc ausente ---- */
-double atof(const char *s) { return strtod(s, NULL); }
+/* ---- strtod proprio (nxdk strtod = assert(0)) ---- */
+#include <ctype.h>
+double lg_strtod(const char *s, char **end) {
+  const char *p = s; double v = 0.0, f; int neg = 0, e = 0, en = 0, any = 0;
+  while (isspace((unsigned char)*p)) p++;
+  if (*p == '-' || *p == '+') neg = (*p++ == '-');
+  while (*p >= '0' && *p <= '9') { v = v * 10.0 + (*p++ - '0'); any = 1; }
+  if (*p == '.') { p++; f = 0.1; while (*p >= '0' && *p <= '9') { v += (*p++ - '0') * f; f *= 0.1; any = 1; } }
+  if (any && (*p == 'e' || *p == 'E')) {
+    const char *q = p + 1; if (*q == '-' || *q == '+') en = (*q++ == '-');
+    if (*q >= '0' && *q <= '9') { while (*q >= '0' && *q <= '9') e = e * 10 + (*q++ - '0'); p = q;
+      while (e--) v = en ? v / 10.0 : v * 10.0; }
+  }
+  if (!any) p = s;
+  if (end) *end = (char *)p;
+  return neg ? -v : v;
+}
+float lg_strtof(const char *s, char **end) { return (float)lg_strtod(s, end); }
+double atof(const char *s) { return lg_strtod(s, NULL); }
 
 /* ---- runtime C++ EH (STUB: throw aborta) ---- */
 void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1000); }
