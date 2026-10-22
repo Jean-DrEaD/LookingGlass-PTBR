@@ -25,7 +25,7 @@ char *Sys_MicrosoftStorePath(void) { return ""; }
 char *Sys_Cwd(void)                { return lg_home; }
 char *Sys_GetCurrentUser(void)     { return "player"; }
 const char *Sys_Dirname(char *p) {
-  static char d[260]; size_t n; strncpy(d, p, 259); d[259] = 0;
+  static char d[260]; size_t n; if (!p) { d[0] = 0; debugPrint("LG: Sys_Dirname(NULL)\n"); return d; } strncpy(d, p, 259); d[259] = 0;
   n = strlen(d); while (n > 0 && d[n-1] != '\\' && d[n-1] != '/') n--;
   if (n > 0) n--; d[n] = 0; return d;
 }
@@ -65,6 +65,6 @@ void  CON_Print(const char *m) { OutputDebugStringA(m); debugPrint("%s", m); }
 double atof(const char *s) { return strtod(s, NULL); }
 
 /* ---- runtime C++ EH (STUB: throw aborta) ---- */
-void __std_terminate(void) { abort(); }
+void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1000); }
 int  __CxxFrameHandler3(void *a, void *b, void *c, void *d) { (void)a; (void)b; (void)c; (void)d; return 1; /* ContinueSearch */ }
-void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; OutputDebugStringA("LG: C++ throw sem runtime EH\n"); abort(); }
+void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPrint("LG: C++ throw sem runtime EH\n"); for(;;) Sleep(1000); }

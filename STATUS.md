@@ -1,12 +1,12 @@
 <!-- FLUXO-INICIO -->
 ## >>> FLUXO ATUAL (manter no topo) <<<
-- Lote 14 FECHADO: omohaaded.exe linka (378 obj, 0 falhas) + default.xbe (14r)
-- Proximo (15): boot no xemu + Sys_ListFiles real (FindFirstFileA) p/ .pk3
-- RISCO: stubs C++ EH abortam em qualquer throw (script engine) -> lote 16
-- Build: `.\tools\probe.ps1 -Lote <id> -Nome <nome> -Nota "(+patches)"`
-- Regra: comandos sempre completos, prontos para copiar e colar
-<!-- FLUXO-FIM -->
-# STATUS - Alice (LookingGlass-PTBR) -> Xbox Original
+- 15l: PRIMEIRO BOOT xemu OK (texto debugPrint 'LG: OpenMoHAA Xbox boot'); trava antes do Com_Init
+- 15m: Sys_Dirname NULL guard + EH stubs mostram na tela; investigando main()
+- ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\xbe-out G:\xemu\alice-test.iso (ja no lote)
+- Depois: Sys_ListFiles (FindFirstFileA), remover /FORCE:MULTIPLE (dups restantes = COMDAT), enxugar xbe-out (sem exe/dll PC)
+- Inicio de chat: & D:\LookingGlass-PTBR\tools\lg-status.ps1 -Show
+- Regra: comandos sempre completos
+<!-- FLUXO-FIM --># STATUS - Alice (LookingGlass-PTBR) -> Xbox Original
 > Anexe no inicio de todo chat. Historico completo: docs/LOG.md. Auditoria: docs/AUDIT.md.
 > Ultima atualizacao: 2026-10-21
 
@@ -98,3 +98,8 @@
 - 15k: dups reais 142 -> 7 (fmod/move/macro/__xmm = COMDAT ok)
 - ISO testada no 15k usava XBE antigo (23:52 UTC) -> sem boot; agora a trava exige XBE com menos de 10 min
 - Pendente: XBE novo -> alice-test.iso -> xemu (esperado texto debugPrint); remover /FORCE:MULTIPLE
+
+## Lote 15m (2026-10-21 21:22)
+- 15l: build OK, XBE 4.771.840; xemu mostra 'LG: OpenMoHAA Xbox boot' -> 1o boot real
+- Trava apos Sys_PlatformInit e antes do Com_Init (sem print de versao); hipotese argv[0] NULL -> Sys_Dirname
+- 15m: guard NULL em Sys_Dirname; __std_terminate/_CxxThrowException -> debugPrint + loop
