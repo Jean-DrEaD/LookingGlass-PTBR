@@ -144,3 +144,8 @@
 ## Lote 15s (2026-10-21 22:06)
 - 15r xemu: strtod OK (q_shared + libcxx); cfgs executados; fatal FS_CreatePath 'D:\main' (DVD read-only, .pid)
 - 15s: mount E:->Harddisk0\Partition1; homepath E:\LG\omohaa; Sys_Mkdir aceita pasta existente
+
+## Lote 15t (2026-10-21 22:11)
+- 15s xemu: homepath E: OK; passa .pid; Localization 0 (sem global\); Winsock Initialized; trava apos 'Hostname: xbox'
+- Hipotese: gethostbyname sem nxNetInit (lwIP sem netif/DHCP) bloqueia
+- 15t: homepath E:\TDATA\4c470001 (+UDATA), cxbe -TITLEID:4C470001; nxNetInit(NULL) no probe com debugPrint

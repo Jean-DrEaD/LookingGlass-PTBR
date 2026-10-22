@@ -81,14 +81,22 @@ void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1
 int  __CxxFrameHandler3(void *a, void *b, void *c, void *d) { (void)a; (void)b; (void)c; (void)d; return 1; /* ContinueSearch */ }
 void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPrint("LG: C++ throw sem runtime EH\n"); for(;;) Sleep(1000); }
 
+/* ---- lote 15t: rede (lwIP) antes do NET_Init ---- */
+#include <nxdk/net.h>
+static void lg_net_init(void) {
+  int r;
+  debugPrint("LG: nxNetInit...\n");
+  r = nxNetInit(NULL);
+  debugPrint("LG: nxNetInit = %d\n", r);
+}
 /* ---- lote 15p: probe/mount D: ---- */
 #include <nxdk/mount.h>
 static void lg_probe_d(void) {
   static int done = 0; WIN32_FIND_DATAA fd; HANDLE h; int n = 0;
   if (done) return; done = 1;
   if (!nxIsDriveMounted('E')) debugPrint("LG: mount E->HD P1 = %d\n", nxMountDrive('E', "\\Device\\Harddisk0\\Partition1\\"));
-  CreateDirectoryA("E:\\LG", NULL); CreateDirectoryA("E:\\LG\\omohaa", NULL);
-  debugPrint("LG: attr E:\\LG\\omohaa = %lx\n", (unsigned long)GetFileAttributesA("E:\\LG\\omohaa"));
+  CreateDirectoryA("E:\\TDATA", NULL); CreateDirectoryA("E:\\TDATA\\4c470001", NULL); CreateDirectoryA("E:\\UDATA", NULL); CreateDirectoryA("E:\\UDATA\\4c470001", NULL); lg_net_init();
+  debugPrint("LG: attr E:\\TDATA\\4c470001 = %lx\n", (unsigned long)GetFileAttributesA("E:\\TDATA\\4c470001"));
   debugPrint("LG: D mounted=%d\n", nxIsDriveMounted('D'));
   if (!nxIsDriveMounted('D')) debugPrint("LG: mount D->CdRom0 = %d\n", nxMountDrive('D', "\\Device\\CdRom0\\"));
   debugPrint("LG: attr D:\\default.xbe = %lx\n", (unsigned long)GetFileAttributesA("D:\\default.xbe"));
@@ -153,7 +161,7 @@ double strtod(const char *s, char **e) { return lg_strtod(s, e); }
 float strtof(const char *s, char **e) { return (float)lg_strtod(s, e); }
 long double strtold(const char *s, char **e) { return (long double)lg_strtod(s, e); }
 /* ---- lote 15s: homepath no HD + Sys_Mkdir tolerante ---- */
-char *Sys_DefaultHomePath(void) { return "E:\\LG\\omohaa"; }
+char *Sys_DefaultHomePath(void) { return "E:\\TDATA\\4c470001"; }
 int Sys_Mkdir(const char *p) {
   char b[512]; char *w = b; const char *r = p; DWORD a;
   if (!p) return 0;
