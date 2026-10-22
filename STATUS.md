@@ -126,3 +126,7 @@
 ## Lote 15o4 (2026-10-21 21:47)
 - 15o3: build OK, XBE novo, mas sem print 'LG: ListFiles' -> outra definicao vence (FORCE:MULTIPLE) ou FindFirstFileA falha (D:\\main)
 - 15o4: colapsa barras duplas; debugPrint sempre (pat/ok/err) para diagnostico
+
+## Lote 15p (2026-10-21 21:51)
+- 15o4 xemu: nossa Sys_ListFiles roda; FindFirstFileA('D:\main\*') err=3 (PATH_NOT_FOUND) -> suspeita D: nao montado
+- 15p: lg_probe_d: nxIsDriveMounted('D'), mount D->\Device\CdRom0\ se preciso, lista raiz D:

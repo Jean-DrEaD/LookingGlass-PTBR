@@ -82,6 +82,19 @@ void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1
 int  __CxxFrameHandler3(void *a, void *b, void *c, void *d) { (void)a; (void)b; (void)c; (void)d; return 1; /* ContinueSearch */ }
 void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPrint("LG: C++ throw sem runtime EH\n"); for(;;) Sleep(1000); }
 
+/* ---- lote 15p: probe/mount D: ---- */
+#include <nxdk/mount.h>
+static void lg_probe_d(void) {
+  static int done = 0; WIN32_FIND_DATAA fd; HANDLE h; int n = 0;
+  if (done) return; done = 1;
+  debugPrint("LG: D mounted=%d\n", nxIsDriveMounted('D'));
+  if (!nxIsDriveMounted('D')) debugPrint("LG: mount D->CdRom0 = %d\n", nxMountDrive('D', "\\Device\\CdRom0\\"));
+  debugPrint("LG: attr D:\\default.xbe = %lx\n", (unsigned long)GetFileAttributesA("D:\\default.xbe"));
+  h = FindFirstFileA("D:\\*", &fd);
+  debugPrint("LG: D:\\* ok=%d err=%lu\n", h != INVALID_HANDLE_VALUE, h == INVALID_HANDLE_VALUE ? (unsigned long)GetLastError() : 0UL);
+  if (h != INVALID_HANDLE_VALUE) { do { if (n++ < 6) debugPrint("LG:  %s\n", fd.cFileName); } while (FindNextFileA(h, &fd)); FindClose(h); }
+}
+
 /* ---- lote 15o: Sys_ListFiles real (FindFirstFileA) ---- */
 #include <windows.h>
 #include <string.h>
@@ -90,7 +103,7 @@ void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPri
 char **Sys_ListFiles(const char *dir, const char *ext, char *filter, int *num, int wantsubs) {
   WIN32_FIND_DATAA fd; HANDLE h; char pat[300]; char *found[LG_MAXFOUND]; int n = 0, i;
   int dirsOnly = (ext && ext[0] == '/' && ext[1] == 0); size_t el = (ext && !dirsOnly) ? strlen(ext) : 0;
-  (void)filter; *num = 0;
+  (void)filter; *num = 0; lg_probe_d();
   _snprintf(pat, sizeof(pat), "%s\\*", dir); pat[sizeof(pat)-1] = 0;
   for (i = 0; pat[i]; i++) if (pat[i] == '/') pat[i] = '\\';
   { char *r = pat, *w = pat; while (*r) { if (*r == '\\' && r[1] == '\\') { r++; continue; } *w++ = *r++; } *w = 0; }
