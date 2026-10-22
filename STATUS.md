@@ -159,3 +159,7 @@
 - 15u xemu: 'LG: rede desativada (NXDK)' OK; fatal FS_CreatePath 'D:\main\configs' -> homepath ainda = basepath
 - Causa: Sys_DefaultHomePath nosso perde no /FORCE:MULTIPLE (.pid so passou pq Sys_Mkdir aceita D:\main existente)
 - 15v: files.c forca fs_homepath=E:\TDATA\4c470001 sob NXDK; remocao lwIP/gcd do link adiada p/ 15w
+
+## Lote 15v2 (2026-10-21 22:26)
+- CORRECAO 15v: files.c nao existe (OpenMoHAA = files.cpp); nada aplicado, sem build
+- 15v2: Cvar_Get fs_homepath substituido sob NXDK (Cvar_Set seria recusado: CVAR_INIT)
