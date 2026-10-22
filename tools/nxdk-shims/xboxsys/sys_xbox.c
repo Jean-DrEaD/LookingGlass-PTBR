@@ -37,7 +37,15 @@ FILE *Sys_Mkfifo(const char *p) { (void)p; return NULL; }
 
 /* ---- processo / plataforma ---- */
 qboolean Sys_RandomBytes(unsigned char *s, int n) { int i; for (i = 0; i < n; i++) s[i] = (unsigned char)(GetTickCount() * 2654435761u >> (i & 24)); return 0; }
-void Sys_PlatformInit(void) { XVideoSetMode(640, 480, 32, REFRESH_DEFAULT); debugPrint("LG: OpenMoHAA Xbox boot\n"); }
+/* LG 15w: montar drives antes do FS */
+#include <nxdk/mount.h>
+static void lg_mount_drives(void)
+{
+if (!nxIsDriveMounted('E')) debugPrint("LG: early mount E = %d\n", (int)nxMountDrive('E', "\\Device\\Harddisk0\\Partition1\\"));
+if (!nxIsDriveMounted('D')) debugPrint("LG: early mount D = %d\n", (int)nxMountDrive('D', "\\Device\\CdRom0\\"));
+}
+void Sys_PlatformInit(void) {
+	lg_mount_drives(); XVideoSetMode(640, 480, 32, REFRESH_DEFAULT); debugPrint("LG: OpenMoHAA Xbox boot\n"); }
 void Sys_PlatformExit(void) {}
 void Sys_SetEnv(const char *n, const char *v) { (void)n; (void)v; }
 int  Sys_PID(void) { return 1; }

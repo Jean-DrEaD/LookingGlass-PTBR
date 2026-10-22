@@ -168,3 +168,8 @@
 - CORRECAO 15v2: regex nao casou ('cvar_t *' antes de fs_homepath); XBE igual, nada commitado
 - Causa raiz: engine usa Sys_DefaultHome{Data,Config,State}Path do sys_win32.c (static Sys_DefaultHomePath); o nosso nunca e chamado
 - 15v3: sys_win32.c retorna E:\TDATA\4c470001 sob NXDK + files.cpp Cvar_Get com default E:; build so se os 2 patches entrarem
+
+## Lote 15w (2026-10-21 22:48)
+- 15v3 xemu: 'LG: fs_homepath = E:\TDATA\4c470001' OK; fatal FS_CreatePath 'E:\TDATA' -> E: montado so depois (no probe)
+- 15w: lg_mount_drives() (E:->Harddisk0\Partition1, D:->CdRom0) no inicio do Sys_PlatformInit
+- 15x (planejado): remover lwIP/libnxdk_net/gcd_*/winsock shim do link
