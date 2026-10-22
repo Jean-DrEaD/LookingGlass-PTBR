@@ -135,3 +135,8 @@
 - 15p xemu: D: NAO vinha montado; mount D->\Device\CdRom0\ OK; ListFiles acha 8 pk3, mas FS carrega 0 (fopen com D:\\main\\x.pk3)
 - 15q: fopen -> lg_fopen global (lg_compat.h): / -> \ e colapsa barras; debugPrint das 12 primeiras aberturas
 - TODO: mover mount do D: para Sys_PlatformInit
+
+## Lote 15r (2026-10-21 22:01)
+- 15q xemu: FS OK! 8 pk3 / 22738 arquivos; default.cfg executado; omconfig_server.cfg lido
+- 15q: novo assert strtod (nxdk stdlib_ext_.c:91) -> chamada fora do macro (libc interna ou TU sem lg_compat)
+- 15r: strtod/strtof/strtold definidos como simbolo real em sys_xbox.c -> lg_strtod

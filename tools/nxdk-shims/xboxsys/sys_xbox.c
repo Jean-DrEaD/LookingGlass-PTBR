@@ -142,3 +142,11 @@ FILE *lg_fopen(const char *p, const char *m) {
   if (n++ < 12) debugPrint("LG: fopen %s [%s] = %d\n", b, m, f != NULL);
   return f;
 }
+/* ---- lote 15r: sobrescreve os simbolos strtod/strtof/strtold do nxdk ---- */
+#undef strtod
+#undef strtof
+#undef strtold
+double lg_strtod(const char *s, char **e);
+double strtod(const char *s, char **e) { return lg_strtod(s, e); }
+float strtof(const char *s, char **e) { return (float)lg_strtod(s, e); }
+long double strtold(const char *s, char **e) { return (long double)lg_strtod(s, e); }
