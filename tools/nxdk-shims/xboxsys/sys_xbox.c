@@ -35,11 +35,9 @@ FILE *Sys_FOpen(const char *p, const char *m) { return fopen(p, m); }
 FILE *Sys_Mkfifo(const char *p) { (void)p; return NULL; }
 qboolean Sys_Mkdir(const char *p) { return CreateDirectoryA(p, NULL) || GetLastError() == ERROR_ALREADY_EXISTS; }
 /* TODO(lote 15): listar via FindFirstFileA (necessario para .pk3) */
-char **Sys_ListFiles(const char *dir, const char *ext, const char *filter, int *num, qboolean subs) {
   char **l = (char **)calloc(1, sizeof(char *)); (void)dir; (void)ext; (void)filter; (void)subs;
   *num = 0; return l;
 }
-void Sys_FreeFileList(char **l) { int i; if (!l) return; for (i = 0; l[i]; i++) free(l[i]); free(l); }
 
 /* ---- processo / plataforma ---- */
 qboolean Sys_RandomBytes(unsigned char *s, int n) { int i; for (i = 0; i < n; i++) s[i] = (unsigned char)(GetTickCount() * 2654435761u >> (i & 24)); return 0; }
@@ -86,3 +84,32 @@ double atof(const char *s) { return lg_strtod(s, NULL); }
 void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1000); }
 int  __CxxFrameHandler3(void *a, void *b, void *c, void *d) { (void)a; (void)b; (void)c; (void)d; return 1; /* ContinueSearch */ }
 void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPrint("LG: C++ throw sem runtime EH\n"); for(;;) Sleep(1000); }
+
+/* ---- lote 15o: Sys_ListFiles real (FindFirstFileA) ---- */
+#include <windows.h>
+#include <string.h>
+#include <stdlib.h>
+#define LG_MAXFOUND 4096
+char **Sys_ListFiles(const char *dir, const char *ext, char *filter, int *num, int wantsubs) {
+  WIN32_FIND_DATAA fd; HANDLE h; char pat[300]; char *found[LG_MAXFOUND]; int n = 0, i;
+  int dirsOnly = (ext && ext[0] == '/' && ext[1] == 0); size_t el = (ext && !dirsOnly) ? strlen(ext) : 0;
+  (void)filter; *num = 0;
+  _snprintf(pat, sizeof(pat), "%s\\*", dir); pat[sizeof(pat)-1] = 0;
+  for (i = 0; pat[i]; i++) if (pat[i] == '/') pat[i] = '\\';
+  h = FindFirstFileA(pat, &fd);
+  if (h == INVALID_HANDLE_VALUE) return NULL;
+  do {
+    int isDir = (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0; size_t nl = strlen(fd.cFileName);
+    if (!strcmp(fd.cFileName, ".") || !strcmp(fd.cFileName, "..")) continue;
+    if (dirsOnly && !isDir) continue;
+    if (!dirsOnly && isDir && !wantsubs) continue;
+    if (el && (nl < el || _stricmp(fd.cFileName + nl - el, ext))) continue;
+    if (n < LG_MAXFOUND - 1) { found[n] = (char *)malloc(nl + 1); memcpy(found[n], fd.cFileName, nl + 1); n++; }
+  } while (FindNextFileA(h, &fd));
+  FindClose(h);
+  if (!n) return NULL;
+  { char **list = (char **)malloc((n + 1) * sizeof(char *));
+    for (i = 0; i < n; i++) list[i] = found[i]; list[n] = NULL; *num = n;
+    debugPrint("LG: ListFiles %s (%s) = %d\n", dir, ext ? ext : "", n); return list; }
+}
+void Sys_FreeFileList(char **list) { int i; if (!list) return; for (i = 0; list[i]; i++) free(list[i]); free(list); }

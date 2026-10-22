@@ -1,9 +1,9 @@
 <!-- FLUXO-INICIO -->
 ## >>> FLUXO ATUAL (manter no topo) <<<
-- 15m: Com_Init roda (versao impressa); Sys_Dirname(NULL) confirmado e tratado
-- 15n: nxdk strtod = assert(0) -> lg_strtod em sys_xbox.c + #define strtod/strtof em lg_compat.h
-- ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\xbe-out G:\xemu\alice-test.iso (ja no lote)
-- Depois: outros stubs assert(0) do nxdk, Sys_ListFiles (FindFirstFileA), remover /FORCE:MULTIPLE, enxugar xbe-out
+- 15n: strtod OK; boot chega ao FS_Startup (search path D:\/main, 0 pk3, falta default.cfg)
+- 15o: Sys_ListFiles real (FindFirstFileA); ISO a partir de D:\openmohaa\iso-stage (default.xbe + main\ hardlinks de base\)
+- ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\iso-stage G:\xemu\alice-test.iso
+- Depois: Sys_Error sem lixo na tela, remover /FORCE:MULTIPLE, mbtowc/strtold (stubs assert do nxdk)
 - Inicio de chat: & D:\LookingGlass-PTBR\tools\lg-status.ps1 -Show
 - Regra: comandos sempre completos
 <!-- FLUXO-FIM -->
@@ -109,3 +109,8 @@
 - 15m xemu: boot -> Sys_Dirname(NULL) -> Common Initialization -> versao -> assert strtod (nxdk stdlib_ext_.c:91)
 - 15n: lg_strtod/lg_strtof proprios; atof usa lg_strtod; define global via lg_compat.h
 - git openmohaa: lg-status agora commita code/ e .gitignore (logs, xbe-out, build-xbox ignorados)
+
+## Lote 15o (2026-10-21 21:33)
+- 15n xemu: FS_Startup roda; search path D:\/main; 0 files in pk3; Couldn't load default.cfg; tela piscando = lixo pos-erro fatal
+- 15o: Sys_ListFiles/Sys_FreeFileList reais (FindFirstFileA, malloc); iso-stage com main\ (pk3/cfg do Alice via hardlink)
+- Stubs assert(0) restantes no nxdk: strtold, mbtowc (_byteswap_uint64 ok)
