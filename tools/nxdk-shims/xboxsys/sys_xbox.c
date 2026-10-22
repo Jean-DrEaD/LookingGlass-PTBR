@@ -1,5 +1,7 @@
 /* LookingGlass: camada de sistema Xbox (nxdk) para OpenMoHAA */
 #include <windows.h>
+#include <hal/debug.h>
+#include <hal/video.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,7 +43,7 @@ void Sys_FreeFileList(char **l) { int i; if (!l) return; for (i = 0; l[i]; i++) 
 
 /* ---- processo / plataforma ---- */
 qboolean Sys_RandomBytes(unsigned char *s, int n) { int i; for (i = 0; i < n; i++) s[i] = (unsigned char)(GetTickCount() * 2654435761u >> (i & 24)); return 0; }
-void Sys_PlatformInit(void) {}
+void Sys_PlatformInit(void) { XVideoSetMode(640, 480, 32, REFRESH_DEFAULT); debugPrint("LG: OpenMoHAA Xbox boot\n"); }
 void Sys_PlatformExit(void) {}
 void Sys_SetEnv(const char *n, const char *v) { (void)n; (void)v; }
 int  Sys_PID(void) { return 1; }
@@ -49,15 +51,15 @@ qboolean Sys_PIDIsRunning(int pid) { (void)pid; return 0; }
 qboolean Sys_DllExtension(const char *n) { (void)n; return 0; }
 qboolean Sys_OpenFolderInPlatformFileManager(const char *p) { (void)p; return 0; }
 qboolean Sys_SetMaxFileLimit(void) { return 1; }
-void Sys_ErrorDialog(const char *e) { OutputDebugStringA(e); }
-void Sys_DebugPrint(const char *m) { OutputDebugStringA(m); }
+void Sys_ErrorDialog(const char *e) { OutputDebugStringA(e); debugPrint("ERRO: %s\n", e); }
+void Sys_DebugPrint(const char *m) { OutputDebugStringA(m); debugPrint("%s", m); }
 void Sys_PrintBackTrace(void) {}
 
 /* ---- console ---- */
 void  CON_Init(void) {}
 void  CON_Shutdown(void) {}
 char *CON_Input(void) { return NULL; }
-void  CON_Print(const char *m) { OutputDebugStringA(m); }
+void  CON_Print(const char *m) { OutputDebugStringA(m); debugPrint("%s", m); }
 
 /* ---- libc ausente ---- */
 double atof(const char *s) { return strtod(s, NULL); }
