@@ -114,3 +114,7 @@
 - 15n xemu: FS_Startup roda; search path D:\/main; 0 files in pk3; Couldn't load default.cfg; tela piscando = lixo pos-erro fatal
 - 15o: Sys_ListFiles/Sys_FreeFileList reais (FindFirstFileA, malloc); iso-stage com main\ (pk3/cfg do Alice via hardlink)
 - Stubs assert(0) restantes no nxdk: strtold, mbtowc (_byteswap_uint64 ok)
+
+## Lote 15o2 (2026-10-21 21:39)
+- 15o: LGSYS nao compilou (corpo do ListFiles antigo ficou orfao, linhas 38-40); ISO saiu com XBE velho (Copy-Item preserva data)
+- 15o2: orfas removidas; trava da ISO agora = omohaaded.exe existe (apagado antes do build)
