@@ -35,9 +35,6 @@ FILE *Sys_FOpen(const char *p, const char *m) { return fopen(p, m); }
 FILE *Sys_Mkfifo(const char *p) { (void)p; return NULL; }
 qboolean Sys_Mkdir(const char *p) { return CreateDirectoryA(p, NULL) || GetLastError() == ERROR_ALREADY_EXISTS; }
 /* TODO(lote 15): listar via FindFirstFileA (necessario para .pk3) */
-  char **l = (char **)calloc(1, sizeof(char *)); (void)dir; (void)ext; (void)filter; (void)subs;
-  *num = 0; return l;
-}
 
 /* ---- processo / plataforma ---- */
 qboolean Sys_RandomBytes(unsigned char *s, int n) { int i; for (i = 0; i < n; i++) s[i] = (unsigned char)(GetTickCount() * 2654435761u >> (i & 24)); return 0; }

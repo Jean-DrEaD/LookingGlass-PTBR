@@ -118,3 +118,7 @@
 ## Lote 15o2 (2026-10-21 21:39)
 - 15o: LGSYS nao compilou (corpo do ListFiles antigo ficou orfao, linhas 38-40); ISO saiu com XBE velho (Copy-Item preserva data)
 - 15o2: orfas removidas; trava da ISO agora = omohaaded.exe existe (apagado antes do build)
+
+## Lote 15o3 (2026-10-21 21:42)
+- CORRECAO 15o2: nada foi removido (checagem rejeitou a linha 'char **l = ...('); build falhou de novo
+- 15o3: orfas removidas por conteudo exato (calloc / *num = 0 / chave)
