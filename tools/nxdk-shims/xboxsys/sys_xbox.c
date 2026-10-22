@@ -95,7 +95,7 @@ static void lg_probe_d(void) {
   static int done = 0; WIN32_FIND_DATAA fd; HANDLE h; int n = 0;
   if (done) return; done = 1;
   if (!nxIsDriveMounted('E')) debugPrint("LG: mount E->HD P1 = %d\n", nxMountDrive('E', "\\Device\\Harddisk0\\Partition1\\"));
-  CreateDirectoryA("E:\\TDATA", NULL); CreateDirectoryA("E:\\TDATA\\4c470001", NULL); CreateDirectoryA("E:\\UDATA", NULL); CreateDirectoryA("E:\\UDATA\\4c470001", NULL); lg_net_init();
+  CreateDirectoryA("E:\\TDATA", NULL); CreateDirectoryA("E:\\TDATA\\4c470001", NULL); CreateDirectoryA("E:\\UDATA", NULL); CreateDirectoryA("E:\\UDATA\\4c470001", NULL);
   debugPrint("LG: attr E:\\TDATA\\4c470001 = %lx\n", (unsigned long)GetFileAttributesA("E:\\TDATA\\4c470001"));
   debugPrint("LG: D mounted=%d\n", nxIsDriveMounted('D'));
   if (!nxIsDriveMounted('D')) debugPrint("LG: mount D->CdRom0 = %d\n", nxMountDrive('D', "\\Device\\CdRom0\\"));

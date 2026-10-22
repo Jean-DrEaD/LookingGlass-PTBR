@@ -149,3 +149,8 @@
 - 15s xemu: homepath E: OK; passa .pid; Localization 0 (sem global\); Winsock Initialized; trava apos 'Hostname: xbox'
 - Hipotese: gethostbyname sem nxNetInit (lwIP sem netif/DHCP) bloqueia
 - 15t: homepath E:\TDATA\4c470001 (+UDATA), cxbe -TITLEID:4C470001; nxNetInit(NULL) no probe com debugPrint
+
+## Lote 15u (2026-10-21 22:15)
+- 15t: cxbe rejeitou -TITLEID (saida oculta) -> sem XBE; ISO saiu com XBE velho (trava checava .exe)
+- 15u: jogo single player -> NET_Init no-op sob NXDK (net_ip.c), nxNetInit removido; trava ISO = default.xbe existe
+- 15v (planejado): remover lwIP/libnxdk_net/gcd_* /winsock shim do link
