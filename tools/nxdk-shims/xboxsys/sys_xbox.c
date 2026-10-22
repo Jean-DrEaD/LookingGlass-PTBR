@@ -93,7 +93,9 @@ char **Sys_ListFiles(const char *dir, const char *ext, char *filter, int *num, i
   (void)filter; *num = 0;
   _snprintf(pat, sizeof(pat), "%s\\*", dir); pat[sizeof(pat)-1] = 0;
   for (i = 0; pat[i]; i++) if (pat[i] == '/') pat[i] = '\\';
+  { char *r = pat, *w = pat; while (*r) { if (*r == '\\' && r[1] == '\\') { r++; continue; } *w++ = *r++; } *w = 0; }
   h = FindFirstFileA(pat, &fd);
+  debugPrint("LG: LF pat=%s ok=%d err=%lu\n", pat, h != INVALID_HANDLE_VALUE, h == INVALID_HANDLE_VALUE ? (unsigned long)GetLastError() : 0UL);
   if (h == INVALID_HANDLE_VALUE) return NULL;
   do {
     int isDir = (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0; size_t nl = strlen(fd.cFileName);

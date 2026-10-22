@@ -122,3 +122,7 @@
 ## Lote 15o3 (2026-10-21 21:42)
 - CORRECAO 15o2: nada foi removido (checagem rejeitou a linha 'char **l = ...('); build falhou de novo
 - 15o3: orfas removidas por conteudo exato (calloc / *num = 0 / chave)
+
+## Lote 15o4 (2026-10-21 21:47)
+- 15o3: build OK, XBE novo, mas sem print 'LG: ListFiles' -> outra definicao vence (FORCE:MULTIPLE) ou FindFirstFileA falha (D:\\main)
+- 15o4: colapsa barras duplas; debugPrint sempre (pat/ok/err) para diagnostico
