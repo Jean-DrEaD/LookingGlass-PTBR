@@ -163,3 +163,8 @@
 ## Lote 15v2 (2026-10-21 22:26)
 - CORRECAO 15v: files.c nao existe (OpenMoHAA = files.cpp); nada aplicado, sem build
 - 15v2: Cvar_Get fs_homepath substituido sob NXDK (Cvar_Set seria recusado: CVAR_INIT)
+
+## Lote 15v3 (2026-10-21 22:37)
+- CORRECAO 15v2: regex nao casou ('cvar_t *' antes de fs_homepath); XBE igual, nada commitado
+- Causa raiz: engine usa Sys_DefaultHome{Data,Config,State}Path do sys_win32.c (static Sys_DefaultHomePath); o nosso nunca e chamado
+- 15v3: sys_win32.c retorna E:\TDATA\4c470001 sob NXDK + files.cpp Cvar_Get com default E:; build so se os 2 patches entrarem
