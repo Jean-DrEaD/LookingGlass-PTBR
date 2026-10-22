@@ -173,3 +173,8 @@
 - 15v3 xemu: 'LG: fs_homepath = E:\TDATA\4c470001' OK; fatal FS_CreatePath 'E:\TDATA' -> E: montado so depois (no probe)
 - 15w: lg_mount_drives() (E:->Harddisk0\Partition1, D:->CdRom0) no inicio do Sys_PlatformInit
 - 15x (planejado): remover lwIP/libnxdk_net/gcd_*/winsock shim do link
+
+## Lote 15w (2026-10-21 22:50)
+- 15v3 xemu: 'LG: fs_homepath = E:\TDATA\4c470001' OK; fatal FS_CreatePath 'E:\TDATA' -> E: montado so depois (no probe)
+- 15w: lg_mount_drives() (E:->Harddisk0\Partition1, D:->CdRom0) no inicio do Sys_PlatformInit
+- 15x (planejado): remover lwIP/libnxdk_net/gcd_*/winsock shim do link
