@@ -312,3 +312,9 @@
 - 16i: stub _CxxThrowException so imprime e trava; toda ScriptException passa por CreateException(data)
 - 16i: ENTIDADES total=0 era bug do script (pipeline desmontou byte[]) -> corrigido com ,$ms.ToArray()
 - 16j: debugPrint 'LG: SE <msg>' em ScriptException::CreateException; entidades 403-409 em docs/probes/lote16j-ents.log
+
+## Lote 16k (2026-10-23 16:56)
+- 16j xemu: ScriptException = "Couldn't convert string to vector - malformed string '-32 1492 -410'" (le 407 info_waypoint, idx 407)
+- '96 1556 -410' e '-32.00 1668.00 -564.00' OK -> falha com inteiro negativo no inicio: bug lg_strtod ou sscanf %f do PDCLib
+- 16k: coleta conversor de vetor + lg_strtod + lg_compat (docs/probes/lote16k-vector.log), sem build
+- Regra PS: "$var:" dentro de string = escopo de unidade -> usar "${var}:"

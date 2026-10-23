@@ -1,0 +1,142 @@
+## D:\openmohaa\code\script\scriptvariable.cpp:1238
+1199: #else
+1200:             string = "class '" + str(m_data.listenerValue->Pointer()->getClassname()) + "'";
+1201:             return string;
+1202: #endif
+1203:         } else {
+1204:             return "NULL";
+1205:         }
+1206: 
+1207:     case VARIABLE_VECTOR:
+1208:         return str("( ") + str(m_data.vectorValue[0]) + str(" ") + str(m_data.vectorValue[1]) + str(" ")
+1209:              + str(m_data.vectorValue[2]) + str(" )");
+1210: 
+1211:     default:
+1212:         return "Type: '" + str(GetTypeName()) + "'";
+1213:     }
+1214: 
+1215:     return "";
+1216: }
+1217: 
+1218: Vector ScriptVariable::vectorValue(void) const
+1219: {
+1220:     const char *string;
+1221:     float       x = 0.f, y = 0.f, z = 0.f;
+1222: 
+1223:     switch (type) {
+1224:     case VARIABLE_VECTOR:
+1225:         return Vector(m_data.vectorValue);
+1226: 
+1227:     case VARIABLE_CONSTSTRING:
+1228:     case VARIABLE_STRING:
+1229:         string = stringValue();
+1230: 
+1231:         if (strcmp(string, "") == 0) {
+1232:             throw ScriptException("cannot cast empty string to vector");
+1233:         }
+1234: 
+1235:         if (*string == '(') {
+1236:             if (sscanf(string, "(%f %f %f)", &x, &y, &z) != 3) {
+1237:                 if (sscanf(string, "(%f, %f, %f)", &x, &y, &z) != 3) {
+1238:                     throw ScriptException("Couldn't convert string to vector - malformed string '%s'", string);
+1239:                 }
+1240:             }
+1241:         } else {
+1242:             if (sscanf(string, "%f %f %f", &x, &y, &z) != 3) {
+1243:                 if (sscanf(string, "%f, %f, %f", &x, &y, &z) != 3) {
+## D:\openmohaa\code\script\scriptvariable.cpp:1244
+1205:         }
+1206: 
+1207:     case VARIABLE_VECTOR:
+1208:         return str("( ") + str(m_data.vectorValue[0]) + str(" ") + str(m_data.vectorValue[1]) + str(" ")
+1209:              + str(m_data.vectorValue[2]) + str(" )");
+1210: 
+1211:     default:
+1212:         return "Type: '" + str(GetTypeName()) + "'";
+1213:     }
+1214: 
+1215:     return "";
+1216: }
+1217: 
+1218: Vector ScriptVariable::vectorValue(void) const
+1219: {
+1220:     const char *string;
+1221:     float       x = 0.f, y = 0.f, z = 0.f;
+1222: 
+1223:     switch (type) {
+1224:     case VARIABLE_VECTOR:
+1225:         return Vector(m_data.vectorValue);
+1226: 
+1227:     case VARIABLE_CONSTSTRING:
+1228:     case VARIABLE_STRING:
+1229:         string = stringValue();
+1230: 
+1231:         if (strcmp(string, "") == 0) {
+1232:             throw ScriptException("cannot cast empty string to vector");
+1233:         }
+1234: 
+1235:         if (*string == '(') {
+1236:             if (sscanf(string, "(%f %f %f)", &x, &y, &z) != 3) {
+1237:                 if (sscanf(string, "(%f, %f, %f)", &x, &y, &z) != 3) {
+1238:                     throw ScriptException("Couldn't convert string to vector - malformed string '%s'", string);
+1239:                 }
+1240:             }
+1241:         } else {
+1242:             if (sscanf(string, "%f %f %f", &x, &y, &z) != 3) {
+1243:                 if (sscanf(string, "%f, %f, %f", &x, &y, &z) != 3) {
+1244:                     throw ScriptException("Couldn't convert string to vector - malformed string '%s'", string);
+1245:                 }
+1246:             }
+1247:         }
+1248: 
+1249:         return Vector(x, y, z);
+## lg_strtod D:\LookingGlass-PTBR\tools\nxdk-shims\xboxsys\sys_xbox.c:69
+67: /* ---- strtod proprio (nxdk strtod = assert(0)) ---- */
+68: #include <ctype.h>
+69: double lg_strtod(const char *s, char **end) {
+70:   const char *p = s; double v = 0.0, f; int neg = 0, e = 0, en = 0, any = 0;
+71:   while (isspace((unsigned char)*p)) p++;
+72:   if (*p == '-' || *p == '+') neg = (*p++ == '-');
+73:   while (*p >= '0' && *p <= '9') { v = v * 10.0 + (*p++ - '0'); any = 1; }
+74:   if (*p == '.') { p++; f = 0.1; while (*p >= '0' && *p <= '9') { v += (*p++ - '0') * f; f *= 0.1; any = 1; } }
+75:   if (any && (*p == 'e' || *p == 'E')) {
+76:     const char *q = p + 1; if (*q == '-' || *q == '+') en = (*q++ == '-');
+77:     if (*q >= '0' && *q <= '9') { while (*q >= '0' && *q <= '9') e = e * 10 + (*q++ - '0'); p = q;
+78:       while (e--) v = en ? v / 10.0 : v * 10.0; }
+79:   }
+80:   if (!any) p = s;
+81:   if (end) *end = (char *)p;
+82:   return neg ? -v : v;
+83: }
+84: float lg_strtof(const char *s, char **end) { return (float)lg_strtod(s, end); }
+85: double atof(const char *s) { return lg_strtod(s, NULL); }
+86: 
+87: /* ---- runtime C++ EH (STUB: throw aborta) ---- */
+88: void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1000); }
+89: int  __CxxFrameHandler3(void *a, void *b, void *c, void *d) { (void)a; (void)b; (void)c; (void)d; return 1; /* ContinueSearch */ }
+90: void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPrint("LG: C++ throw sem runtime EH\n"); for(;;) Sleep(1000); }
+91: 
+92: /* ---- lote 15t: rede (lwIP) antes do NET_Init ---- */
+93: #include <nxdk/net.h>
+94: static void lg_net_init(void) {
+95:   int r;
+96:   debugPrint("LG: nxNetInit...\n");
+97:   r = nxNetInit(NULL);
+98:   debugPrint("LG: nxNetInit = %d\n", r);
+99: }
+100: /* ---- lote 15p: probe/mount D: ---- */
+101: #include <nxdk/mount.h>
+102: static void lg_probe_d(void) {
+103:   static int done = 0; WIN32_FIND_DATAA fd; HANDLE h; int n = 0;
+104:   if (done) return; done = 1;
+105:   if (!nxIsDriveMounted('E')) debugPrint("LG: mount E->HD P1 = %d\n", nxMountDrive('E', "\\Device\\Harddisk0\\Partition1\\"));
+106:   CreateDirectoryA("E:\\TDATA", NULL); CreateDirectoryA("E:\\TDATA\\4c470001", NULL); CreateDirectoryA("E:\\UDATA", NULL); CreateDirectoryA("E:\\UDATA\\4c470001", NULL);
+107:   debugPrint("LG: attr E:\\TDATA\\4c470001 = %lx\n", (unsigned long)GetFileAttributesA("E:\\TDATA\\4c470001"));
+108:   debugPrint("LG: D mounted=%d\n", nxIsDriveMounted('D'));
+109:   if (!nxIsDriveMounted('D')) debugPrint("LG: mount D->CdRom0 = %d\n", nxMountDrive('D', "\\Device\\CdRom0\\"));
+## D:\LookingGlass-PTBR\tools\nxdk-shims\lg_compat.h
+44: /* lote 15n: nxdk strtod = assert(0) */
+49: double lg_strtod(const char *s, char **end);
+50: float  lg_strtof(const char *s, char **end);
+54: #define strtod lg_strtod
+55: #define strtof lg_strtof
