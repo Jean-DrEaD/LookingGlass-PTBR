@@ -1,0 +1,87 @@
+## sv_init.c total=1470
+795: 	// set game dll map
+796: 	ge->SetMap( sv_mapname->string );
+797: 
+798: 	if( !keep_scripts ) {
+799: 		ge->Precache();
+800: 	}
+801: 
+802: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+803: 	UI_LoadResource( "*138" );
+804: 
+805: 	if( loadgame )
+806: 	{
+807: 		if( SV_ArchiveLevelFile( qtrue, qfalse ) )
+808: 		{
+809: 			if( differentmap && com_dedicated->integer )
+810: 			{
+811: 				Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+812: 				TIKI_FinishLoad();
+813: 			}
+814: 		}
+815: 		else
+816: 		{
+817: 			ge->Cleanup( keep_scripts );
+818: 			loadgame = qfalse;
+819: 		}
+820: 	}
+821: 
+822: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+823: 	UI_LoadResource( "*139" );
+824: 
+825: 	if( !loadgame )
+826: 	{
+827: 		// load and spawn all other entities
+828: 		svs.areabits_warning_time = 0;
+829: 		Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+830: 		UI_LoadResource( "*139a" );
+831: 
+832: 		// tell the game dll to spawn entities
+833: 		ge->SpawnEntities( CM_EntityString(), svs.time );
+834: 
+835: 		Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+836: 		UI_LoadResource( "*140" );
+837: 
+838: 		p = ge->errorMessage;
+839: 		if( p )
+840: 		{
+841: 			ge->errorMessage = NULL;
+842: 			Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+843: 			Com_Error(ERR_DROP, "%s", p);
+844: 		}
+845: 
+846: 		// save persistant structures
+847: 		if( bTransition ) {
+848: 			Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+849: 			SV_ArchivePersistantFile( qtrue );
+850: 		}
+851: 
+852: 		Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+853: 		UI_LoadResource( "*141" );
+854: 
+855: 		if( differentmap && com_dedicated->integer ) {
+856: 			Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+857: 			TIKI_FinishLoad();
+858: 		}
+859: 
+860: 		// don't allow a map_restart if game is modified
+861: 		g_gametype->modified = qfalse;
+862: 
+863: 		// run a few frames to allow everything to settle
+864: 		for( i = 0; i < 3; i++ )
+865: 		{
+866: 			svs.time += 100;
+867: 			ge->RunFrame( svs.time, 100 );
+868: 
+869: 			p = ge->errorMessage;
+870: 			if( p )
+871: 			{
+872: 				ge->errorMessage = NULL;
+873: 				Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+874: 				Com_Error(ERR_DROP, "%s", p);
+875: 			}
+876: 		}
+877: 
+878: 		svs.mapTime = svs.time - svs.startTime;
+879: 	}
+880: 

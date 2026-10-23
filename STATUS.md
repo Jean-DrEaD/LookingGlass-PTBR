@@ -273,3 +273,7 @@
 - 16a xemu: 'Stack overflow caught' apos fopen pak0.pk3 (request 0x1002c=64KB, livre ~50KB) -> pilha padrao do nxdk pequena; loader FAKK ainda nao exercitado
 - 16b 1a tentativa: probe.ps1 nao tem /FORCE:MULTIPLE (flags de link = CMAKE_EXE_LINKER_FLAGS '/errorlimit:0 ...'); nada aplicado
 - 16b: /STACK:4194304,4194304 apos /errorlimit:0 (reserve+commit; cxbe herda do PE)
+
+## Lote 16c (2026-10-23 15:49)
+- 16b xemu: stack 4MB OK (PE 4194304); passou do overflow e do CM_LoadMap FAKK; breadcrumbs ate 'sv 829 t=9104', depois nada (nem heartbeat)
+- 16c: coleta sv_init.c 795-880 (docs/probes/lote16c-sv829.log), sem build
