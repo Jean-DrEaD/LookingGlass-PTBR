@@ -1,6 +1,6 @@
 <!-- FLUXO-INICIO -->
 ## >>> FLUXO ATUAL (manter no topo) <<<
-- 15w: boot passa Com_Init completo (E: homepath OK, .pid gravado); para apos 'rede desativada (NXDK)'
+- 15x2: motor VIVO - Com_Frame estavel a 20 fps (40 frames/2s = sv_fps 20); nao ha trava
 - 15o: Sys_ListFiles real (FindFirstFileA); ISO a partir de D:\openmohaa\iso-stage (default.xbe + main\ hardlinks de base\)
 - ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\iso-stage G:\xemu\alice-test.iso
 - Depois: Sys_Error sem lixo na tela, remover /FORCE:MULTIPLE, mbtowc/strtold (stubs assert do nxdk)
@@ -15,6 +15,12 @@
 > Anexe no inicio de todo chat. Historico completo: docs/LOG.md. Auditoria: docs/AUDIT.md.
 > Ultima atualizacao: 2026-10-21
 
+## Projeto
+- Jogo: **American McGee's Alice** (single player) -> port para **Xbox Original**.
+- Base: LookingGlass-PTBR = traducao PT-BR das builds Windows e Android da recompilacao em Rust do LookingGlass.
+- Creditos: [skulitom/LookingGlass](https://github.com/skulitom/LookingGlass) (engine original); [Player124413](https://github.com/Player124413) (port Android).
+- Build atual = OpenMoHAA DEDICADO apenas como prova de boot (cliente exige SDL/GL/AL ausentes no nxdk).
+- Destino = build CLIENTE (renderer NV2A, audio/input Xbox) com servidor local por loopback (padrao Quake/FAKK2), SEM rede.
 ## Regras fixas
 - Comandos sempre completos, prontos para colar no PowerShell 7.
 - Todo lote: `status-check` antes -> abrir `[..]` -> trabalho -> commit+push -> fechar `[ok] <hash>` -> push -> `status-check` depois.
@@ -204,3 +210,8 @@
 ## Lote 15x2 (2026-10-23 12:01)
 - 15x xemu: Com_Init 2984 ms; Localization 0; 'LG: frame 1' aparece -> loop principal alcancado
 - Duvida: 600 frames a ~20fps sem mapa = ~30s; heartbeat agora por tempo (2s) com t=Sys_Milliseconds
+
+## Lote 15x2-resultado (2026-10-23 12:07)
+- xemu: 'LG: frame N t=...' a cada 2s, +40 frames/2s (20 fps) por 2+ min -> loop principal OK
+- Esclarecido: dedicado = prova de boot; alvo = cliente single player com servidor local (loopback), sem rede
+- Proximo 15y: remover lwIP/libnxdk_net/gcd_*/winsock do link; depois testar +map de um mapa do Alice (validar diferenca BSP FAKK x MOHAA)
