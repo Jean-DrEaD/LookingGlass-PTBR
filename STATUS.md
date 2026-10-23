@@ -364,3 +364,8 @@
 - 16s: chamador real de CurrentScriptClass = corepp\listener.cpp:4726 (fora de fgame); sem duplicatas (1 obj gamescript/scriptmaster)
 - Hipotese: Listener::CreateThreadInternal faz scriptClass->GetScript() sem checar NULL -> congelamento
 - 16t: coleta da funcao + chamadores em docs/probes/lote16t-listener.log, sem build
+
+## Lote 16u (2026-10-23 18:10)
+- 16t: confirmado listener.cpp:4727 scriptClass->GetScript() com NULL (CreateThreadInternal, label string sem thread ativa)
+- 16u: CTI retorna NULL + debugPrint 'LG: CTI sem thread label=X'; ExecuteThreadInternal/4668 saem se NULL (+4 -3)
+- Pendente: scriptslave.cpp:865 Register(0, NULL) nao protegido; correcao real = thread do level script ativa no spawn
