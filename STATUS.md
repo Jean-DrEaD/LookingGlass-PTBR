@@ -292,3 +292,8 @@
 - 16e xemu: 'se inicio/skill/parse' ok, 'se world' nunca -> trava no args.SpawnInternal() do worldspawn (level.cpp:1159, construtor World)
 - 16e: tela deu piscadas rapidas (possivel Com_Error/lixo pos-erro, ver 15o)
 - 16f: coleta SpawnArgs::SpawnInternal + World::World (docs/probes/lote16f-world.log), sem build
+
+## Lote 16g (2026-10-23 16:01)
+- 16f: SpawnInternal (g_spawn.cpp:337) e World::World (worldspawn.cpp:545) coletados
+- 16g: breadcrumbs 'LG: si' (inicio/getclass/cls ok) e 'LG: w' (ctor/move/cfgstr/soundtrack/fog/sky/soundman/target/bounds/fim)
+- 16g: resto do SpawnInternal 396-480 em docs/probes/lote16g-spawninternal.log

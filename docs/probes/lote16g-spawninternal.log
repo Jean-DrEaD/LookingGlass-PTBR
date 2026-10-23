@@ -1,0 +1,85 @@
+396:     if (checkInheritance(PathNode::classinfostatic(), cls)) {
+397:         // use the existing node that was loaded
+398:         obj = PathManager.GetSpawnNode(cls);
+399:     } else {
+400:         obj = (Listener *)cls->newInstance();
+401:     }
+402: 
+403:     for (int i = g_spawnlist.NumObjects(); i > 0; i--) {
+404:         if (g_spawnlist.ObjectAt(i) == NULL) {
+405:             g_spawnlist.RemoveObjectAt(i);
+406:         }
+407:     }
+408: 
+409:     g_spawnlist.AddObject(obj);
+410: 
+411:     // post spawnarg events
+412:     for (i = 0; i < NumArgs(); i++) {
+413:         key   = getKey(i);
+414:         value = getValue(i);
+415: 
+416:         if (*key == '#') {
+417:             // don't count the prefix
+418:             keyname = (key + 1);
+419: 
+420: #ifdef WITH_SCRIPT_ENGINE
+421:             // initialize the object vars
+422:             varList = obj->Vars();
+423: 
+424:             var = varList->GetVariable(keyname);
+425:             if (var) {
+426:                 Com_Printf(
+427:                     "^~^~^ variable '%s' already set with string value '%s' - failed to attempt to set with numeric "
+428:                     "value '%s'\n",
+429:                     keyname.c_str(),
+430:                     var->stringValue().c_str(),
+431:                     value
+432:                 );
+433: 
+434:                 continue;
+435:             }
+436: 
+437:             eventnum = Event::FindSetterEventNum(keyname);
+438: 
+439:             if (!eventnum || !(def = cls->GetDef(eventnum))) {
+440:                 if (strchr(keyname.c_str(), '.')) {
+441:                     // it's a float
+442:                     varList->SetVariable(keyname, (float)atof(value));
+443:                 } else {
+444:                     varList->SetVariable(keyname, atoi(value));
+445:                 }
+446:             } else if (def->type != EV_SETTER) {
+447:                 Com_Printf("^~^~^ Cannot set a read-only variable '%s'\n", keyname.c_str());
+448:             } else {
+449:                 ev = new Event(keyname, EV_SETTER);
+450: 
+451:                 if (strchr(keyname.c_str(), '.')) {
+452:                     ev->AddFloat(atof(value));
+453:                 } else {
+454:                     ev->AddInteger(atoi(value));
+455:                 }
+456: 
+457:                 obj->PostEvent(ev, EV_SPAWNARG);
+458:             }
+459: #endif
+460:         } else if (*key == '$') {
+461:             keyname = (key + 1);
+462: 
+463: #ifdef WITH_SCRIPT_ENGINE
+464:             varList = obj->Vars();
+465: 
+466:             var = varList->GetVariable(keyname);
+467:             if (var) {
+468:                 Com_Printf(
+469:                     "^~^~^ variable '%s' already set with string value '%s' - failed to attempt to set with string "
+470:                     "value '%s'\n",
+471:                     keyname.c_str(),
+472:                     var->stringValue().c_str(),
+473:                     value
+474:                 );
+475: 
+476:                 continue;
+477:             }
+478: 
+479:             eventnum = Event::FindSetterEventNum(keyname);
+480: 
