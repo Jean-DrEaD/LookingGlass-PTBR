@@ -1,6 +1,6 @@
 <!-- FLUXO-INICIO -->
 ## >>> FLUXO ATUAL (manter no topo) <<<
-- 15n: strtod OK; boot chega ao FS_Startup (search path D:\/main, 0 pk3, falta default.cfg)
+- 15w: boot passa Com_Init completo (E: homepath OK, .pid gravado); para apos 'rede desativada (NXDK)'
 - 15o: Sys_ListFiles real (FindFirstFileA); ISO a partir de D:\openmohaa\iso-stage (default.xbe + main\ hardlinks de base\)
 - ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\iso-stage G:\xemu\alice-test.iso
 - Depois: Sys_Error sem lixo na tela, remover /FORCE:MULTIPLE, mbtowc/strtold (stubs assert do nxdk)
@@ -176,11 +176,12 @@
 - 15w: lg_mount_drives() (E:->Harddisk0\Partition1, D:->CdRom0) no inicio do Sys_PlatformInit
 - 15x (planejado): remover lwIP/libnxdk_net/gcd_*/winsock shim do link
 
-## Lote 15w (2026-10-21 22:50)
-- 15v3 xemu: 'LG: fs_homepath = E:\TDATA\4c470001' OK; fatal FS_CreatePath 'E:\TDATA' -> E: montado so depois (no probe)
-- 15w: lg_mount_drives() (E:->Harddisk0\Partition1, D:->CdRom0) no inicio do Sys_PlatformInit
-- 15x (planejado): remover lwIP/libnxdk_net/gcd_*/winsock shim do link
-
 ## Lote 15w2 (2026-10-23 11:35)
 - 15w: 1a tentativa falhou (Docker Desktop fechado); 2a: build OK (378/0), omohaaded.exe 4.763.648, mas sem XBE
 - Causa: lote-15w.ps1 sem o passo cxbe (probe.ps1 so compila) -> pipeline completo registrado no FLUXO
+
+## Lote 15w3 (2026-10-23 11:40)
+- 15w xemu: early mount OK; attr E:\TDATA\4c470001=10; .pid gravado em E:; Common Initialization Complete 3770 ms
+- Localization 0 (sem main\global\ - esperado); para apos 'LG: rede desativada (NXDK)'
+- Hipoteses: (a) dedicado ocioso sem +map no Com_Frame; (b) NET_Sleep/select bloqueando sob NXDK
+- 15x: heartbeat no Com_Frame + NET_Sleep sob NXDK -> Sleep(1); remover lwIP/gcd do link
