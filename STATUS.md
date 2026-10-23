@@ -297,3 +297,7 @@
 - 16f: SpawnInternal (g_spawn.cpp:337) e World::World (worldspawn.cpp:545) coletados
 - 16g: breadcrumbs 'LG: si' (inicio/getclass/cls ok) e 'LG: w' (ctor/move/cfgstr/soundtrack/fog/sky/soundman/target/bounds/fim)
 - 16g: resto do SpawnInternal 396-480 em docs/probes/lote16g-spawninternal.log
+
+## Lote 16h (2026-10-23 16:19)
+- 16g xemu: si inicio/getclass/cls ok; w ctor..sky..soundman ok, 'w target' nunca -> trava em SoundMan.Load() (World::World)
+- 16h: SoundMan.Load sob #ifndef NXDK (contorno); corpo em docs/probes/lote16h-soundman.log p/ correcao real

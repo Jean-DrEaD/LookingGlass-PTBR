@@ -1,0 +1,32 @@
+## D:\openmohaa\code\fgame\soundman.cpp:1483
+1483: void SoundManager::Load(void)
+1484: {
+1485:     str      filename;
+1486:     intptr_t i;
+1487: 
+1488:     // get the name of the sound file from the world
+1489:     filename = "maps/";
+1490:     filename += level.mapname;
+1491:     for (i = filename.length() - 1; i >= 0; i--) {
+1492:         if (filename[i] == '.') {
+1493:             filename[i] = 0;
+1494:             break;
+1495:         }
+1496:     }
+1497: 
+1498:     filename += ".snd";
+1499: 
+1500:     // If there isn't a script with the same name as the map, then don't try to load script
+1501:     if (gi.FS_ReadFile(filename.c_str(), NULL, true) != -1) {
+1502:         Reset();
+1503: 
+1504:         Director.ExecuteThread(filename, "");
+1505:     }
+1506: }
+1507: 
+1508: void SoundManager::AddEntity(Entity *ent)
+1509: {
+1510:     if (ent) {
+1511:         soundList.AddUniqueObject(ent);
+1512:     }
+1513: }
