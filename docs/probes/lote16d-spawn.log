@@ -1,0 +1,232 @@
+## stub EH
+D:\LookingGlass-PTBR\tools\nxdk-shims\xboxsys\sys_xbox.c:88: void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1000); }
+D:\LookingGlass-PTBR\tools\nxdk-shims\xboxsys\sys_xbox.c:90: void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPrint("LG: C++ throw sem runtime EH\n"); for(;;) Sleep(1000); }
+## D:\openmohaa\code\fgame\g_main.cpp:318
+318: void G_SpawnEntities(char *entities, int svsTime)
+319: {
+320:     level.SpawnEntities(entities, svsTime);
+321: }
+322: 
+323: /*
+324: ===============
+325: G_UseLargeLightmap
+326: 
+327: Added in 2.0
+328: ===============
+329: */
+330: qboolean G_UseLargeLightmap(const char* mapName) {
+331: 	char buffer[MAX_QPATH];
+332: 
+333: 	Com_sprintf(buffer, sizeof(buffer), "maps/%s_sml.bsp", mapName);
+334: 
+335: 	if (gi.FS_ReadFile(buffer, NULL, qtrue) == -1) {
+336: 		return qtrue;
+337: 	}
+338: 
+339: 	return gi.Cvar_Get("r_largemap", "0", 0)->integer;
+340: }
+341: 
+342: /*
+343: =================
+344: G_ShutdownGame
+345: =================
+346: */
+347: void G_ShutdownGame()
+348: {
+349:     gi.Printf("==== ShutdownGame ====\n");
+350: 
+351:     // write all the client session data so we can get it back
+352:     G_WriteSessionData();
+353: 
+354:     ClosePlayerLogFile();
+355: 
+356:     level.CleanUp();
+357: 
+358:     L_ShutdownEvents();
+359: 
+360:     G_DeAllocGameData();
+361: }
+362: 
+363: //===================================================================
+364: 
+365: void QDECL Com_Error(int level, const char *error, ...)
+366: {
+367:     va_list argptr;
+368:     char    text[1024];
+369: 
+370:     va_start(argptr, error);
+371:     Q_vsnprintf(text, sizeof(text), error, argptr);
+372:     va_end(argptr);
+373: 
+374:     G_Error("%s", text);
+375: }
+376: 
+377: void QDECL Com_Printf(const char *msg, ...)
+378: {
+379:     va_list argptr;
+380:     char    text[1024];
+381: 
+382:     va_start(argptr, msg);
+383:     Q_vsnprintf(text, sizeof(text), msg, argptr);
+384:     va_end(argptr);
+385: 
+386:     gi.DPrintf("%s", text);
+387: }
+## D:\openmohaa\code\fgame\level.cpp:1123
+1123: void Level::SpawnEntities(char *entities, int svsTime)
+1124: {
+1125:     int         inhibit, radnum = 0, count = 0;
+1126:     const char *value;
+1127:     SpawnArgs   args;
+1128:     Listener   *listener;
+1129:     Entity     *ent;
+1130:     int         t1, t2;
+1131:     int         start, end;
+1132:     char        name[128];
+1133: 
+1134:     if (gi.Cvar_Get("g_invulnoverride", "0", 0)->integer == 1) {
+1135:         // Added in 2.30
+1136:         //  Clear the invulnerable override when loading
+1137:         gi.cvar_set("g_invulnoverride", "0");
+1138:     }
+1139: 
+1140:     Com_Printf("-------------------- Spawning Entities -----------------------\n");
+1141: 
+1142:     t1 = gi.Milliseconds();
+1143:     memset(skel_index, 0xff, sizeof(skel_index));
+1144: 
+1145:     // set up time so functions still have valid times
+1146:     setTime(svsTime);
+1147:     setFrametime(50);
+1148: 
+1149:     gi.LoadResource("*144");
+1150: 
+1151:     setSkill(skill->integer);
+1152: 
+1153:     // reset out count of the number of game traces
+1154:     sv_numtraces = 0;
+1155: 
+1156:     // parse world
+1157:     entities     = args.Parse(entities);
+1158:     spawn_entnum = ENTITYNUM_WORLD;
+1159:     args.SpawnInternal();
+1160: 
+1161:     gi.LoadResource("*147");
+1162: 
+1163:     // Set up for a new map
+1164:     PathManager.LoadNodes();
+1165: 
+1166:     gi.LoadResource("*147a");
+1167: 
+1168:     Com_Printf("-------------------- Actual Spawning Entities -----------------------\n");
+1169: 
+1170:     start = gi.Milliseconds();
+1171: 
+1172:     // parse ents
+1173:     inhibit = 0;
+1174: 
+1175:     for (entities = args.Parse(entities); entities != NULL; entities = args.Parse(entities)) {
+1176:         // remove things (except the world) from different skill levels or deathmatch
+1177:         spawnflags = 0;
+1178:         value      = args.getArg("spawnflags");
+1179: 
+1180:         if (value) {
+1181:             spawnflags = atoi(value);
+1182: 
+1183:             value = args.getArg("classname");
+1184:             if (!value || (Q_stricmp(value, "info_pathnode") && Q_stricmp(value, "info_patharea"))) {
+1185:                 if (inhibitEntity(spawnflags)) {
+1186:                     inhibit++;
+1187:                     continue;
+1188:                 }
+1189:             }
+1190:         }
+1191: 
+1192:         listener = args.SpawnInternal();
+## lump14 ofs=3034568 len=38830
+{
+"farplane_color" "0.000000 0.082353 0.168627"
+"farplane" "2500"
+"classname" "worldspawn"
+}
+{
+"origin" "857.00 -1653.00 -491.00"
+"model" "w_lookingglass.tik"
+"scale" "1.0"
+"classname" "Item_DarkenedLookingGlass"
+}
+{
+"classname" "Item_MetaEssence_Small"
+"scale" "1.0"
+"model" "w_me_small.tik"
+"origin" "352.00 1144.00 -368.00"
+}
+{
+"classname" "Item_MetaEssence_Small"
+"scale" "1.0"
+"model" "w_me_small.tik"
+"origin" "1360.00 2192.00 -768.00"
+"spawnflags" "1536"
+}
+{
+"classname" "func_spawn"
+"modelname" "c_armyant.tik"
+"angle" "135"
+"origin" "-64 5320 -576"
+"targetname" "ant_at_end2"
+}
+{
+"origin" "1200.00 1928.00 -496.00"
+"model" "w_me_medium.tik"
+"scale" "1.0"
+"classname" "Item_MetaEssence_Medium"
+}
+{
+"origin" "216 4920 -720"
+"classname" "info_pathnode"
+}
+{
+"origin" "1048 -1576 -448"
+"classname" "info_pathnode"
+}
+{
+"origin" "-112.00 704.00 -400.00"
+"model" "w_me_medium.tik"
+"scale" "1.0"
+"classname" "Item_MetaEssence_Medium"
+}
+{
+"classname" "info_waypoint"
+"targetname" "t45"
+"origin" "-320 3360 -440"
+}
+{
+"classname" "info_waypoint"
+"targetname" "t44"
+"origin" "1024 2864 -512"
+}
+{
+"classname" "info_waypoint"
+"origin" "864 1764 -410"
+"targetname" "t42"
+}
+{
+"classname" "info_waypoint"
+"targetname" "t41"
+"origin" "-592 252 -464"
+}
+{
+"classname" "info_waypoint"
+"targetname" "t40"
+"origin" "64 -164 -464"
+}
+{
+"classname" "info_waypoint"
+"targetname" "t35"
+"origin" "1136 -1560 -408"
+}
+{
+"origin" "80.00 2704.00 -608.00"
+"model" "w_me_medium.tik"
+"scale" "1.0"
+"classname" "Item_MetaEssence_

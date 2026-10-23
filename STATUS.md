@@ -277,3 +277,8 @@
 ## Lote 16c (2026-10-23 15:49)
 - 16b xemu: stack 4MB OK (PE 4194304); passou do overflow e do CM_LoadMap FAKK; breadcrumbs ate 'sv 829 t=9104', depois nada (nem heartbeat)
 - 16c: coleta sv_init.c 795-880 (docs/probes/lote16c-sv829.log), sem build
+
+## Lote 16d (2026-10-23 15:50)
+- 16c: trava REAL em ge->SpawnEntities (sv_init.c:833; 829 sim, 835 nunca), reproduzida 2x
+- Hipoteses: stub _CxxThrowException em loop (throw ScriptException) ou parse de entidades FAKK
+- 16d: coleta stub EH + G_SpawnEntities/Level::SpawnEntities + lump14 do centipede1 (docs/probes/lote16d-spawn.log)
