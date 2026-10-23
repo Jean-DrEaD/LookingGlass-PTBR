@@ -185,3 +185,7 @@
 - Localization 0 (sem main\global\ - esperado); para apos 'LG: rede desativada (NXDK)'
 - Hipoteses: (a) dedicado ocioso sem +map no Com_Frame; (b) NET_Sleep/select bloqueando sob NXDK
 - 15x: heartbeat no Com_Frame + NET_Sleep sob NXDK -> Sleep(1); remover lwIP/gcd do link
+
+## Lote 15w4 (2026-10-23 11:43)
+- Regra fixa: single player sem rede -> pilha de rede sera eliminada (15x)
+- openmohaa: fork Jean-DrEaD/openmohaa criado; origin=fork, upstream=oficial; commits LG na branch xbox
