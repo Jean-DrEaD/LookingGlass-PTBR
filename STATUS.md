@@ -234,3 +234,8 @@
 ## Lote 15y-d (2026-10-23 12:57)
 - 15y-c xemu: ultimo breadcrumb 'LG: sv 624 t=7587' (600 e 624 no mesmo ms) -> chamada da linha 624 nao retorna (loop/espera, nao I/O lento); 5 min parado
 - 15y-d: inspecao da linha 624 + definicao da funcao (docs/probes/lote15y-d-linha624.log), sem build
+
+## Lote 15y-e (2026-10-23 14:09)
+- CORRECAO 15y-c: script APAGOU 21 chamadas do SV_SpawnServer ($prev -match sobrescreveu $Matches) -> trava do 15y-c era artefato, diagnostico invalido
+- 15y-e: sv_init.c restaurado de 58dc852; breadcrumbs em linha propria; trava = git diff sem remocoes
+- Regra: nunca usar $Matches apos outro -match; preferir [regex]::Match e validar diff --numstat (-0)
