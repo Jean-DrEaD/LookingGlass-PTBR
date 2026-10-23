@@ -1,0 +1,48 @@
+## sv_init.c 595-640
+595: 
+596: 	sv.state = SS_LOADING;
+597: 	svs.autosave = qfalse;
+598: 	svs.soundsNeedLoad = qfalse;
+599: 
+600: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds()); 
+601: 	
+602: 	differentmap = qtrue;
+603: 
+604: 	if (svs.rawServerName != server) {
+605: 		// Fixed in OPM
+606: 		//  Make sure to not copy from the same string...
+607: 		strncpy( svs.rawServerName, server, sizeof( svs.rawServerName ) );
+608: 	}
+609: 
+610: 	// Added in 2.30
+611: 	Cvar_Set("g_netoptimize", "1");
+612: 
+613: 	// check for a spawn position
+614: 	spawnpos = strchr( server, '$' );
+615: 	if( spawnpos )
+616: 	{
+617: 		Q_strncpyz( mapname, server, spawnpos - server + 1 );
+618: 	}
+619: 	else
+620: 	{
+621: 		Q_strncpyz( mapname, server, sizeof(mapname) );
+622: 	}
+623: 
+624: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds()); 
+625: 
+626: 	if( svs.initialized )
+627: 	{
+628: 		if( ge && !Q_stricmp( last_mapname, mapname ) && ( restart || loadgame ) ) {
+629: 			differentmap = qfalse;
+630: 		}
+631: 
+632: 		if( sv_maxclients->modified
+633: 			&& differentmap // Fixed in OPM
+634: 			//  OG  doesn't check for different map when changing the max clients
+635: 			//  which means the snapshot entities memory isn't reallocated
+636: 			) {
+637: 			SV_ChangeMaxClients();
+638: 		}
+639: 	}
+640: 	else
+## chamada 624: '' -> funcao ''

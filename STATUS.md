@@ -230,3 +230,7 @@
 - 15y-b xemu: 'LG: auto map centipede1' -> 'Server Initialization' -> 'Server: centipede1' -> TRAVA (heartbeat para) dentro de SV_SpawnServer; sem erro de versao BSP
 - 15y-b: sem libnxdk_net faltam so 18 lwip_* (socket/bind/select/getaddrinfo/inet_ntop...) -> stubs -1 ou #ifdef NXDK no net_ip.c (15z)
 - 15y-c: breadcrumbs 'LG: sv <linha> t=' nas chamadas do SV_SpawnServer apos 'Server: %s'
+
+## Lote 15y-d (2026-10-23 12:57)
+- 15y-c xemu: ultimo breadcrumb 'LG: sv 624 t=7587' (600 e 624 no mesmo ms) -> chamada da linha 624 nao retorna (loop/espera, nao I/O lento); 5 min parado
+- 15y-d: inspecao da linha 624 + definicao da funcao (docs/probes/lote15y-d-linha624.log), sem build
