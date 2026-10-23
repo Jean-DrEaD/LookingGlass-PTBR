@@ -1,0 +1,47 @@
+## BSP 4562996 bytes; lump14 ofs=3034568 len=38830; ENTIDADES total=408
+## ent idx 402 (le 403)
+{
+"spawnflags" "768"
+"target" "t53"
+"origin" "96.00 1732.00 -564.00"
+"model" "c_evilmushroom.tik"
+"scale" "1.0"
+"classname" "Enemies_EvilMushroom"
+}
+## ent idx 403 (le 404)
+{
+"targetname" "t53"
+"classname" "info_waypoint"
+"origin" "96 1556 -410"
+}
+## ent idx 404 (le 405)
+{
+"spawnflags" "128"
+"classname" "info_splinepath"
+"origin" "592 1614 -109"
+"targetname" "t13b"
+"target" "t13"
+}
+## ent idx 405 (le 406)
+{
+"spawnflags" "128"
+"origin" "589 1739 -109"
+"classname" "info_splinepath"
+"targetname" "t48"
+"target" "t48b"
+}
+## ent idx 406 (le 407)
+{
+"spawnflags" "256"
+"classname" "Enemies_EvilMushroom"
+"scale" "1.0"
+"model" "c_evilmushroom.tik"
+"origin" "-32.00 1668.00 -564.00"
+"target" "t54"
+}
+## ent idx 407 (le 408)
+{
+"origin" "-32 1492 -410"
+"classname" "info_waypoint"
+"targetname" "t54"
+}

@@ -307,3 +307,8 @@
 - Hipotese: ScriptException (evento/spawnarg invalido); trava do SoundMan (Director.ExecuteThread) talvez fosse o mesmo throw
 - 16i: coleta stub EH + ScriptException + entidades 403-409 do centipede1 (docs/probes/lote16i-throw.log), sem build
 - Proximo: imprimir mensagem do ScriptException no stub; decidir EH real vs. try/catch-less (Com_Error)
+
+## Lote 16j (2026-10-23 16:35)
+- 16i: stub _CxxThrowException so imprime e trava; toda ScriptException passa por CreateException(data)
+- 16i: ENTIDADES total=0 era bug do script (pipeline desmontou byte[]) -> corrigido com ,$ms.ToArray()
+- 16j: debugPrint 'LG: SE <msg>' em ScriptException::CreateException; entidades 403-409 em docs/probes/lote16j-ents.log
