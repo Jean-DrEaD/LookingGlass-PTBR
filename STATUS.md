@@ -399,3 +399,8 @@
 - 16y: '%5.2f' vazio confirma printf %f do PDCLib quebrado (pendente)
 - Pendente: g_gametype 0 (single player) sob NXDK, depois de achar a trava
 - 16z: 5 breadcrumbs 'LG: sl' no SV_ServerLoaded (SetTime/Fixups/ServerSpawned antes+depois/errorMessage)
+
+## Lote 16z2 (2026-10-23 19:39)
+- 16z xemu: sl 1068/1070/1074/1076/1078 todos OK (ServerSpawned + Recast retornam); depois nada, sem heartbeat
+- Trava entre fim do SV_ServerLoaded e o 1o Com_Frame/SV_Frame/ge->RunFrame
+- 16z2: breadcrumbs sz (fim ServerLoaded), mp (pos SV_SpawnServer), cf (Com_Frame/SV_Frame), rf (ge->RunFrame), limitados a 3 frames
