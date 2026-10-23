@@ -1,0 +1,110 @@
+## centipede1.scr em pak0.pk3: 57 linhas
+## linhas com [ ] { }
+6: {
+12: 	{
+14: 		{
+19: 		}
+22: 	}
+23: }
+26: 	{
+28: 	}
+31: 	{
+36: 	}
+39: 	{
+41: 	}
+44: 	{
+57: 	}
+## primeiras 60 linhas
+1: #include "scripts/utils.scr"
+2: #include "scripts/cinematics.scr"
+3: #include "maps/cinematics/centipede1_cinematics.scr"
+4: 
+5: void ArmLadies()
+6: {
+7: 	string bugname;
+8: 	entity bug;
+9: 	float  i;
+10: 
+11: 	while (1)
+12: 	{
+13: 		for ( i=1; i<5; i++ )
+14: 		{
+15: 			bugname = "lady" + i;
+16: 			bug = getentity( bugname );
+17: 
+18: 			bug.checkreload();
+19: 		}
+20: 
+21: 		wait(2);
+22: 	}
+23: }
+24: 
+25: void Centipede1_Enemies_Init()
+26: 	{
+27: 		thread ArmLadies();
+28: 	}
+29: 
+30: void Centipede1_Move_Enemies()
+31: 	{
+32: 		$lady1.followspline( "$t9", "loop", "normalangles" );
+33: 		$lady2.followspline( "$t48", "loop", "normalangles" );
+34: 		$lady3.followspline( "$t18", "loop", "normalangles" );
+35: 		$lady4.followspline( "$t26", "loop", "normalangles" );
+36: 	}
+37: 
+38: void Centipede1_Pre_Init()
+39: 	{
+40: 		$c1_changelevel.nottriggerable();
+41: 	}
+42: 
+43: void main()
+44: 	{
+45: 		thread Centipede1_Enemies_Init();
+46: 		thread Func_Sound_Init();
+47: 		thread Centipede1_Cinematics_Init();
+48: 		thread Centipede1_Pre_Init();
+49: 		//thread Centipede1_World_Init();
+50: 		soundtrack( "sound/music/centipede1.mus" );
+51: 		drugview(0);
+52: 		waitForPlayer();
+53: 		//thread Centipede1_Move_Movers();
+54: 		thread Centipede1_Move_Enemies();
+55: 		music( "normal", "normal" );
+56: 		//thread Centipede1_Start();
+57: 	}
+## TOKEN_RIGHT_BRACKET
+parser\generated\yyLexer.cpp:1527: { BEGIN(CHECK_VAR); YYLEX(TOKEN_RIGHT_BRACKET); }
+parser\generated\yyParser.cpp:163: YYSYMBOL_TOKEN_RIGHT_BRACKET = 16,       /* TOKEN_RIGHT_BRACKET  */
+parser\generated\yyParser.cpp:675: "TOKEN_RIGHT_BRACKET", "TOKEN_LEFT_SQUARE_BRACKET",
+parser\generated\yyParser.cpp:2120: case 40: /* iteration_statement: TOKEN_FOR TOKEN_LEFT_BRACKET statement TOKEN_SEMICOLON expr TOKEN_SEMICOLON statement_list TOKEN_RIGHT_BRACKET statement_for_condition  */
+parser\generated\yyParser.cpp:2129: case 41: /* iteration_statement: TOKEN_FOR TOKEN_LEFT_BRACKET TOKEN_SEMICOLON expr TOKEN_SEMICOLON statement_list TOKEN_RIGHT_BRACKET statement_for_condition  */
+parser\generated\yyParser.cpp:2407: case 90: /* listener_identifier: TOKEN_LEFT_BRACKET expr TOKEN_RIGHT_BRACKET  */
+parser\generated\yyParser.cpp:2473: case 102: /* nonident_prim_expr_base: TOKEN_LEFT_BRACKET expr expr expr TOKEN_RIGHT_BRACKET  */
+parser\generated\yyParser.cpp:2485: case 104: /* nonident_prim_expr_base: TOKEN_LEFT_BRACKET expr TOKEN_RIGHT_BRACKET  */
+parser\generated\yyParser.cpp:2491: case 105: /* nonident_prim_expr_base: TOKEN_LEFT_BRACKET expr TOKEN_EOL TOKEN_RIGHT_BRACKET  */
+parser\lex.yy.cpp:73: "TOKEN_RIGHT_BRACKET",
+parser\lex.yy.cpp:144: TOKEN_RIGHT_BRACKET,
+## TOKEN_LEFT_BRACKET
+parser\generated\yyLexer.cpp:1522: { YYLEX(TOKEN_LEFT_BRACKET); }
+parser\generated\yyParser.cpp:162: YYSYMBOL_TOKEN_LEFT_BRACKET = 15,        /* TOKEN_LEFT_BRACKET  */
+parser\generated\yyParser.cpp:674: "TOKEN_LEFT_BRACES", "TOKEN_RIGHT_BRACES", "TOKEN_LEFT_BRACKET",
+parser\generated\yyParser.cpp:2120: case 40: /* iteration_statement: TOKEN_FOR TOKEN_LEFT_BRACKET statement TOKEN_SEMICOLON expr TOKEN_SEMICOLON statement_list TOKEN_RIGHT_BRACKET statement_for_condition  */
+parser\generated\yyParser.cpp:2129: case 41: /* iteration_statement: TOKEN_FOR TOKEN_LEFT_BRACKET TOKEN_SEMICOLON expr TOKEN_SEMICOLON statement_list TOKEN_RIGHT_BRACKET statement_for_condition  */
+parser\generated\yyParser.cpp:2407: case 90: /* listener_identifier: TOKEN_LEFT_BRACKET expr TOKEN_RIGHT_BRACKET  */
+parser\generated\yyParser.cpp:2473: case 102: /* nonident_prim_expr_base: TOKEN_LEFT_BRACKET expr expr expr TOKEN_RIGHT_BRACKET  */
+parser\generated\yyParser.cpp:2485: case 104: /* nonident_prim_expr_base: TOKEN_LEFT_BRACKET expr TOKEN_RIGHT_BRACKET  */
+parser\generated\yyParser.cpp:2491: case 105: /* nonident_prim_expr_base: TOKEN_LEFT_BRACKET expr TOKEN_EOL TOKEN_RIGHT_BRACKET  */
+parser\lex.yy.cpp:72: "TOKEN_LEFT_BRACKET",
+parser\lex.yy.cpp:143: TOKEN_LEFT_BRACKET,
+## was not properly loaded
+fgame\scriptmaster.cpp:903: throw ScriptException("Script '%s' was not properly loaded", filename.c_str());
+fgame\scriptmaster.cpp:922: throw ScriptException("Script '%s' was not properly loaded\n", filename.c_str());
+## parse error
+gamespy\GP\gpiUtility.c:308: CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Parse Error.");
+gamespy\GP\gpiUtility.c:313: CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Parse Error.");
+gamespy\GP\gpiUtility.c:315: CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Parse Error.");
+gamespy\GP\gpiUtility.c:323: CallbackFatalError(connection, GP_NETWORK_ERROR, GP_PARSE, "Parse Error.");
+gamespy\serverbrowsing\sb_server.c:687: "Split packet parse error, invalid key type! (%d)\r\n", keyType);
+gamespy\serverbrowsing\sb_server.c:761: "Split packet parse error, NULL byte expected!\r\n");
+parser\generated\yyParser.cpp:1333: /* Context of a parse error.  */
+script\scriptcompiler.cpp:1496: glbs.Printf("parse error:\n%s:\n", parsedata.exc.yytoken.c_str());

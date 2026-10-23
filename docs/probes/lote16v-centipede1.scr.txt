@@ -1,0 +1,57 @@
+#include "scripts/utils.scr"
+#include "scripts/cinematics.scr"
+#include "maps/cinematics/centipede1_cinematics.scr"
+
+void ArmLadies()
+{
+	string bugname;
+	entity bug;
+	float  i;
+
+	while (1)
+	{
+		for ( i=1; i<5; i++ )
+		{
+			bugname = "lady" + i;
+			bug = getentity( bugname );
+
+			bug.checkreload();
+		}
+
+		wait(2);
+	}
+}
+
+void Centipede1_Enemies_Init()
+	{
+		thread ArmLadies();
+	}
+
+void Centipede1_Move_Enemies()
+	{
+		$lady1.followspline( "$t9", "loop", "normalangles" );
+		$lady2.followspline( "$t48", "loop", "normalangles" );
+		$lady3.followspline( "$t18", "loop", "normalangles" );
+		$lady4.followspline( "$t26", "loop", "normalangles" );
+	}
+
+void Centipede1_Pre_Init()
+	{
+		$c1_changelevel.nottriggerable();
+	}
+
+void main()
+	{
+		thread Centipede1_Enemies_Init();
+		thread Func_Sound_Init();
+		thread Centipede1_Cinematics_Init();
+		thread Centipede1_Pre_Init();
+		//thread Centipede1_World_Init();
+		soundtrack( "sound/music/centipede1.mus" );
+		drugview(0);
+		waitForPlayer();
+		//thread Centipede1_Move_Movers();
+		thread Centipede1_Move_Enemies();
+		music( "normal", "normal" );
+		//thread Centipede1_Start();
+	}

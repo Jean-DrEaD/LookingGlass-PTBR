@@ -369,3 +369,9 @@
 - 16t: confirmado listener.cpp:4727 scriptClass->GetScript() com NULL (CreateThreadInternal, label string sem thread ativa)
 - 16u: CTI retorna NULL + debugPrint 'LG: CTI sem thread label=X'; ExecuteThreadInternal/4668 saem se NULL (+4 -3)
 - Pendente: scriptslave.cpp:865 Register(0, NULL) nao protegido; correcao real = thread do level script ativa no spawn
+
+## Lote 16v (2026-10-23 18:18)
+- 16u xemu: L_ProcessPendingEvents PASSOU; CTI sem thread: Centipede1_Talk1, Centipede1_Ambush_Cinema1; '0 teams with 0 entities'
+- Em seguida: parse error 'unexpected TOKEN_RIGHT_BRACKET' -> SE "Script 'maps/centipede1.scr' was not properly loaded" -> throw
+- Causa raiz do 'sem thread': level script (sintaxe FAKK2) nao compila no parser MOHAA -> sem thread do mapa
+- 16v: coleta .scr (pk3) + tokens lexer/gramatica em docs/probes/lote16v-scr.log, sem build
