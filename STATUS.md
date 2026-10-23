@@ -392,3 +392,10 @@
 - ubersound err=2 esperado (pasta MOHAA); 'Complete ------ seconds' sem numero -> printf %f do PDCLib suspeito
 - Apos 'No bots, skipping navigation' sem heartbeat no print (confirmar com 30 s de espera)
 - 16y: coleta sv_init pos-1029 + Recast + Q_vsnprintf (docs/probes/lote16y-pos-init.log), sem build
+
+## Lote 16z (2026-10-23 19:31)
+- 16y: 'sv 1036' impresso -> g_gametype != GT_SINGLE_PLAYER -> SV_ServerLoaded -> ge->ServerSpawned -> Recast (sv_maxbots=0, retorna OK)
+- 16y: trava esta APOS o Recast (fim do Level::ServerSpawned ou resto do SV_ServerLoaded)
+- 16y: '%5.2f' vazio confirma printf %f do PDCLib quebrado (pendente)
+- Pendente: g_gametype 0 (single player) sob NXDK, depois de achar a trava
+- 16z: 5 breadcrumbs 'LG: sl' no SV_ServerLoaded (SetTime/Fixups/ServerSpawned antes+depois/errorMessage)
