@@ -200,3 +200,7 @@
 - 2a: net_ip.c:1671 'extern __stdcall Sleep' conflita com windows.h do nxdk (sem calling convention) -> usar Sleep do windows.h
 - 15x: NET_Sleep -> Sleep(msec) sob NXDK (sem select); heartbeat 'LG: frame N' a cada 600 frames no Com_Frame
 - 15y (planejado): tirar libnxdk_net/lwIP do probe.ps1 + GameSpy do link
+
+## Lote 15x2 (2026-10-23 12:01)
+- 15x xemu: Com_Init 2984 ms; Localization 0; 'LG: frame 1' aparece -> loop principal alcancado
+- Duvida: 600 frames a ~20fps sem mapa = ~30s; heartbeat agora por tempo (2s) com t=Sys_Milliseconds
