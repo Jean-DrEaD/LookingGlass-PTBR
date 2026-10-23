@@ -239,3 +239,7 @@
 - CORRECAO 15y-c: script APAGOU 21 chamadas do SV_SpawnServer ($prev -match sobrescreveu $Matches) -> trava do 15y-c era artefato, diagnostico invalido
 - 15y-e: sv_init.c restaurado de 58dc852; breadcrumbs em linha propria; trava = git diff sem remocoes
 - Regra: nunca usar $Matches apos outro -match; preferir [regex]::Match e validar diff --numstat (-0)
+
+## Lote 15y-f (2026-10-23 14:17)
+- 15y-e xemu (breadcrumbs validos, +52 -0): sv 600/623/627/648 em 1 ms e para -> trava REAL na chamada apos linha 648 (antes do BSP)
+- 15y-f: inspecao da chamada 'SV_Startup' (linha 649) + definicao (docs/probes/lote15y-f-linha648.log), sem build

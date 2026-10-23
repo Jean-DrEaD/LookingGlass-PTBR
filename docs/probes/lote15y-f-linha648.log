@@ -1,0 +1,124 @@
+## sv_init.c 640-680
+640: 			) {
+641: 			Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+642: 			SV_ChangeMaxClients();
+643: 		}
+644: 	}
+645: 	else
+646: 	{
+647: 		keep_scripts = qfalse;
+648: 		Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+649: 		SV_Startup();
+650: 	}
+651: 
+652: 	// Added in 2.0
+653: 	SV_InitRadar();
+654: 
+655: 	sv.restarting = ( keep_scripts || !differentmap );
+656: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+657: 	strncpy( last_mapname, mapname, sizeof( last_mapname ) );
+658: 
+659: 	// if not running a dedicated server CL_MapLoading will connect the client to the server
+660: 	// also print some status stuff
+661: 	CL_MapLoading( differentmap, mapname );
+662: 
+663: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+664: 	UI_LoadResource( "*132" );
+665: 
+666: 	if( !loadgame )
+667: 	{
+668: 		svs.startTime = svs.time;
+669: 		svs.serverLagTime = svs.time;
+670: 	}
+671: 
+672: 	if( differentmap )
+673: 	{
+674: 		// shut down the existing game if it is running
+675: 		SV_ShutdownGameProgs();
+676: 
+677: 		// clear the whole hunk because we're (re)loading the server
+678: 		Hunk_Clear();
+679: 
+680: 		// init game imports
+## chamada suspeita: linha 649 -> 'SV_Startup'
+## def: code\server\sv_init.c:454
+454: void SV_Startup( void ) {
+455: 	if ( svs.initialized ) {
+456: 		Com_Error( ERR_FATAL, "SV_Startup: svs.initialized already set" );
+457: 	}
+458: 	SV_BoundMaxClients( 1 );
+459: 	SV_ClientsAlloc();
+460: 
+461: 	svs.initialized = qtrue;
+462: 	memset( last_mapname, 0, sizeof( last_mapname ) );
+463: 
+464: 	SV_InitGamespy();
+465: 	Cvar_Set( "sv_running", "1" );
+466: 	
+467: 	// Join the ipv6 multicast group now that a map is running so clients can scan for us on the local network.
+468: 	NET_JoinMulticast6();
+469: }
+470: 
+471: /*
+472: ==================
+473: SV_NumClients
+474: ==================
+475: */
+476: int SV_NumClients(void) {
+477: 	int i;
+478: 	int numClients = 0;
+479: 
+480: 	for (i = 0; i < svs.iNumClients; i++) {
+481: 		if (svs.clients[i].state > CS_FREE) {
+482: 			++numClients;
+483: 		}
+484: 	}
+485: 
+486: 	return numClients;
+487: }
+488: 
+489: /*
+490: ==================
+491: SV_ChangeMaxClients
+492: ==================
+493: */
+494: void SV_ChangeMaxClients( void ) {
+495: 	int		oldMaxClients;
+496: 	int		i;
+497: 	client_t	*oldClients;
+498: 	int		count;
+499: 
+500: 	// get the highest client number in use
+501: 	count = 0;
+502: 	for ( i = 0 ; i < svs.iNumClients ; i++ ) {
+503: 		if ( svs.clients[i].state >= CS_CONNECTED ) {
+504: 			if (i > count)
+505: 				count = i;
+506: 		}
+507: 	}
+508: 	count++;
+509: 
+510: 	oldMaxClients = sv_maxclients->integer;
+511: 	// never go below the highest client number in use
+512: 	SV_BoundMaxClients( count );
+513: 	// if still the same
+514: 	if ( sv_maxclients->integer == oldMaxClients ) {
+515: 		return;
+516: 	}
+517: 
+518: 	oldClients = svs.clients;
+519: 	SV_ClientsAlloc();
+520: 
+521: 	// copy the clients to hunk memory
+522: 	for ( i = 0 ; i < count ; i++ ) {
+523: 		if( oldClients[ i ].state >= CS_CONNECTED ) {
+524: 			svs.clients[ i ] = oldClients[ i ];
+525: 		}
+526: 	}
+527: 
+528: 	// free old clients arrays
+529: 	Z_Free( oldClients );
+530: 
+531: 	if( g_gametype->integer != GT_SINGLE_PLAYER ) {
+532: 		svs.numSnapshotEntities = svs.iNumClients * PACKET_BACKUP * MAX_CLIENTS;
+533: 	} else {
