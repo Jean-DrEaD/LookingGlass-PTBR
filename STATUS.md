@@ -380,3 +380,9 @@
 - 16v: centipede1.scr = linguagem C-like Ritual (void main(), tipos string/entity/float, for(;;), #include) -> INCOMPATIVEL com Morpheus (MOHAA); '()' vazio = TOKEN_RIGHT_BRACKET
 - Decisao: precisa interpretador proprio do script Alice (lote 17); 16x = pular level script sem throw
 - 16w: coleta scriptmaster 870-935 + chamadores + VM no Rust + inventario .scr (docs/probes/lote16w-script.log), sem build
+
+## Lote 16x (2026-10-23 19:03)
+- 16w: throw em scriptmaster.cpp:903 (compile falhou) e :922 (cache falho); disparo em level.cpp:1496-1501 (GetScript + ExecuteThread m_mapscript)
+- 16w: Rust NAO tem VM de script (so script_facts.rs + grafos por mapa, ex. levels_wchess1_graph.rs) -> lote 17 = interpretador proprio (73 .scr, 844 KB)
+- 16x: sob NXDK os 2 throws -> 'LG: scr falhou X' + NULL; level.cpp so executa se script != NULL (+8 -0 / +1 -1)
+- Risco: CreateThreadInternal (listener.cpp:4740) com scr NULL
