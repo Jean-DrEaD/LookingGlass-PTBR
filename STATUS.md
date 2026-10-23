@@ -329,3 +329,8 @@
 - 16l xemu: vetor OK (passa conversao); le 407 info_waypoint -> 'SE current thread is NULL' -> throw
 - Hipotese: spawnarg do 407 chama Director.CurrentScriptThread() sem thread ativa (level script/SoundMan nao rodaram)
 - 16m: coleta throw + chamadores + ent 407 + SpawnInternal (docs/probes/lote16m-thread.log), sem build
+
+## Lote 16n (2026-10-23 17:21)
+- 16m: throw em ScriptMaster::CurrentScriptThread (scriptmaster.cpp:1107); chamadores so scriptmaster.cpp:842 (CurrentScriptClass) e scriptslave.cpp:847 (Register)
+- 16m: ent 403 (info_waypoint+targetname) passou; 407 e a ULTIMA (408 total) -> throw no fim do SpawnInternal ou apos o laco
+- 16n: breadcrumbs 'si newinst ok', 'si fim', 'SM 842', 'SS 847' (linha -> bloco, diff +4 -4)
