@@ -321,3 +321,105 @@ int lg_vsnprintf(char *buf, size_t size, const char *fmt, va_list ap) {
   if (size) buf[o.k < size ? o.k : size - 1] = '\0';
   return (int)o.k;
 }
+
+/* ---- lote 16z6d: sscanf/vsscanf proprios (PDCLib do nxdk nao le %f) ---- */
+#include <stdarg.h>
+#include <stddef.h>
+#include <string.h>
+double lg_strtod(const char *s, char **end);
+static int lg_sp(int c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f'; }
+static int lg_dig(int c, int base) {
+  int v;
+  if (c >= '0' && c <= '9') v = c - '0';
+  else if (c >= 'a' && c <= 'z') v = c - 'a' + 10;
+  else if (c >= 'A' && c <= 'Z') v = c - 'A' + 10;
+  else return -1;
+  return v < base ? v : -1;
+}
+int lg_vsscanf(const char *str, const char *fmt, va_list ap) {
+  const char *s = str; int cnt = 0;
+  for (; *fmt; fmt++) {
+    int sup = 0, width = 0, lng = 0, hh = 0; char cv;
+    if (lg_sp((unsigned char)*fmt)) { while (lg_sp((unsigned char)*s)) s++; continue; }
+    if (*fmt != '%') { if (*s != *fmt) break; s++; continue; }
+    fmt++;
+    if (*fmt == '%') { while (lg_sp((unsigned char)*s)) s++; if (*s != '%') break; s++; continue; }
+    if (*fmt == '*') { sup = 1; fmt++; }
+    while (*fmt >= '0' && *fmt <= '9') width = width * 10 + (*fmt++ - '0');
+    for (;; fmt++) {
+      if (*fmt == 'l') lng++;
+      else if (*fmt == 'h') hh++;
+      else if (*fmt == 'L' || *fmt == 'q' || *fmt == 'j') lng = 2;
+      else if (*fmt == 'z' || *fmt == 't') ;
+      else break;
+    }
+    cv = *fmt; if (!cv) break;
+    if (cv == 'n') { if (!sup) *va_arg(ap, int *) = (int)(s - str); continue; }
+    if (cv != 'c' && cv != '[') while (lg_sp((unsigned char)*s)) s++;
+    if (!*s) return cnt ? cnt : -1;
+    if (cv == 'd' || cv == 'i' || cv == 'u' || cv == 'x' || cv == 'X' || cv == 'o' || cv == 'p') {
+      int base = (cv == 'd' || cv == 'u') ? 10 : (cv == 'o' ? 8 : (cv == 'i' ? 0 : 16));
+      int neg = 0, w = width ? width : (1 << 30); unsigned long long v = 0; const char *st;
+      if ((*s == '-' || *s == '+') && w > 0) { neg = *s == '-'; s++; w--; }
+      if ((base == 0 || base == 16) && w >= 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X') && lg_dig((unsigned char)s[2], 16) >= 0) { s += 2; w -= 2; base = 16; }
+      else if (base == 0) base = (*s == '0') ? 8 : 10;
+      st = s;
+      while (w > 0 && lg_dig((unsigned char)*s, base) >= 0) { v = v * (unsigned)base + (unsigned)lg_dig((unsigned char)*s, base); s++; w--; }
+      if (s == st) break;
+      if (neg) v = 0ULL - v;
+      if (!sup) {
+        if (cv == 'p') *va_arg(ap, void **) = (void *)(size_t)v;
+        else if (lng >= 2) *va_arg(ap, long long *) = (long long)v;
+        else if (lng == 1) *va_arg(ap, long *) = (long)v;
+        else if (hh >= 2) *va_arg(ap, char *) = (char)v;
+        else if (hh == 1) *va_arg(ap, short *) = (short)v;
+        else *va_arg(ap, int *) = (int)v;
+        cnt++;
+      }
+      continue;
+    }
+    if (cv == 'f' || cv == 'F' || cv == 'e' || cv == 'E' || cv == 'g' || cv == 'G' || cv == 'a') {
+      char nb[128]; char *ep; double d; int w = (width && width < 127) ? width : 127, k;
+      for (k = 0; k < w && s[k]; k++) nb[k] = s[k];
+      nb[k] = 0;
+      d = lg_strtod(nb, &ep);
+      if (ep == nb) break;
+      s += ep - nb;
+      if (!sup) { if (lng) *va_arg(ap, double *) = d; else *va_arg(ap, float *) = (float)d; cnt++; }
+      continue;
+    }
+    if (cv == 's') {
+      char *o = sup ? 0 : va_arg(ap, char *); int w = width ? width : (1 << 30);
+      while (*s && !lg_sp((unsigned char)*s) && w > 0) { if (o) *o++ = *s; s++; w--; }
+      if (o) { *o = 0; cnt++; }
+      continue;
+    }
+    if (cv == 'c') {
+      char *o = sup ? 0 : va_arg(ap, char *); int w = width ? width : 1, k;
+      for (k = 0; k < w && *s; k++) { if (o) o[k] = *s; s++; }
+      if (k == 0) break;
+      if (o) cnt++;
+      continue;
+    }
+    if (cv == '[') {
+      char set[256]; int inv = 0, k, w = width ? width : (1 << 30); char *o; const char *st = s;
+      memset(set, 0, sizeof set); fmt++;
+      if (*fmt == '^') { inv = 1; fmt++; }
+      if (*fmt == ']') { set[(unsigned char)']'] = 1; fmt++; }
+      while (*fmt && *fmt != ']') {
+        if (fmt[1] == '-' && fmt[2] && fmt[2] != ']') { for (k = (unsigned char)fmt[0]; k <= (unsigned char)fmt[2]; k++) set[k] = 1; fmt += 3; }
+        else { set[(unsigned char)*fmt] = 1; fmt++; }
+      }
+      if (!*fmt) break;
+      o = sup ? 0 : va_arg(ap, char *);
+      while (*s && w > 0 && (set[(unsigned char)*s] ^ inv)) { if (o) *o++ = *s; s++; w--; }
+      if (s == st) break;
+      if (o) { *o = 0; cnt++; }
+      continue;
+    }
+    break;
+  }
+  return cnt;
+}
+int vsscanf(const char *s, const char *f, va_list ap) { return lg_vsscanf(s, f, ap); }
+int sscanf(const char *s, const char *f, ...) { va_list ap; int r; va_start(ap, f); r = lg_vsscanf(s, f, ap); va_end(ap); return r; }

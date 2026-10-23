@@ -438,3 +438,11 @@
 - 16z6b xemu: printf OK - 'LG: fmt [ 3.14] [0.5] [1.234568e+04] [-42] [ok] [00a]' identico ao esperado
 - Efeito colateral: linha fmt repetia ~15x/2s e frame caiu (362 em t=35s) -> provavel if sem chaves no auto map (contexto em docs/probes/lote16z6c-automap.log)
 - 16z6c: linha fmt removida (+0 -1); proximo 16z6d = lg_sscanf (%f via lg_strtod)
+
+## Lote 16z6d (2026-10-23 20:42)
+- CORRECAO 16z6c: nao era if sem chaves; linha fmt estava no inicio do Com_Frame (todo frame) -> repeticao + queda de fps por debugPrint
+- 16z6c xemu: fmt sumiu; heartbeat +40/2s (82..202) -> 20 fps de volta
+- 'Server Initialization Complete' nao capturavel (rola rapido); %f coberto pelo mesmo caminho Com_Printf validado em 16z6b
+- 16z6d: sscanf/vsscanf definidos em sys_xbox.c (lg_vsscanf: d i u x o p f e g s c [ n %, *, largura, h/l/ll; float via lg_strtod) -> substitui PDCLib nos 47 usos
+- Teste one-shot apos 'frame 1': esperado 'LG: scan n=3 [-32] [1492.5] [ab]'
+- Proximo: se OK, remover teste + LG_ParseVec3 (16l) vira opcional; depois g_gametype 0 / limpeza de breadcrumbs
