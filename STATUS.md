@@ -243,3 +243,7 @@
 ## Lote 15y-f (2026-10-23 14:17)
 - 15y-e xemu (breadcrumbs validos, +52 -0): sv 600/623/627/648 em 1 ms e para -> trava REAL na chamada apos linha 648 (antes do BSP)
 - 15y-f: inspecao da chamada 'SV_Startup' (linha 649) + definicao (docs/probes/lote15y-f-linha648.log), sem build
+
+## Lote 15y-g (2026-10-23 14:21)
+- 15y-f: trava em SV_Startup (sv_init.c:454); suspeitos = SV_InitGamespy (sockets qr2 sem NET) e NET_JoinMulticast6
+- 15y-g: ambos sob #ifndef NXDK (regra SEM REDE) + breadcrumbs 'LG: st <linha>' em cada chamada do SV_Startup
