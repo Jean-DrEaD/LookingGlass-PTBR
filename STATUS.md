@@ -410,3 +410,9 @@
 - 1o ge->RunFrame RETORNA; trava apos ele no mesmo frame (resto do SV_Frame/snapshots/volta ao Com_Frame)
 - cf ausente: SV_Frame instrumentado no common.c nao e o caminho executado (outra chamada/ramo)
 - 16z3: coleta SV_Frame/RunFrame + contexto cf/rf/mp (docs/probes/lote16z3-frame.log), sem build
+
+## Lote 16z4 (2026-10-23 19:55)
+- 16z3: cf NAO faltou - imprimiu nos 3 primeiros frames do boot (antes do map no frame 40), saiu da tela; SV_Frame de common.c:2387 e o caminho certo
+- 16z3: trava apos ge->RunFrame (sv_main.c:1136): CheckTimeouts/SendClientMessages/MasterHeartbeat/ProcessGamespyQueries/HandleNonPVSSound
+- 16z4: SV_MasterHeartbeat + SV_ProcessGamespyQueries sob #ifndef NXDK (SEM REDE); 6 breadcrumbs 'LG: fr' so em SS_GAME (+10 -0)
+- Licao: breadcrumb limitado por contador gasta as impressoes antes do evento -> condicionar ao estado (sv.state)
