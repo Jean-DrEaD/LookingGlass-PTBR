@@ -282,3 +282,8 @@
 - 16c: trava REAL em ge->SpawnEntities (sv_init.c:833; 829 sim, 835 nunca), reproduzida 2x
 - Hipoteses: stub _CxxThrowException em loop (throw ScriptException) ou parse de entidades FAKK
 - 16d: coleta stub EH + G_SpawnEntities/Level::SpawnEntities + lump14 do centipede1 (docs/probes/lote16d-spawn.log)
+
+## Lote 16e (2026-10-23 15:54)
+- 16d: lump14 OK (texto worldspawn/Item_*/func_spawn/info_pathnode) -> remapeamento FAKK de entidades correto
+- 16d: print do stub EH nao apareceu -> provavelmente nao e throw; Com_Printf do game = gi.DPrintf (so com developer)
+- 16e: breadcrumbs gi.Printf no Level::SpawnEntities (inicio/skill/parse/world/nodes + 'LG: le N classname' por entidade)
