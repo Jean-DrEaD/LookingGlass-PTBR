@@ -1,6 +1,6 @@
 <!-- FLUXO-INICIO -->
 ## >>> FLUXO ATUAL (manter no topo) <<<
-- 15x2: motor VIVO - Com_Frame estavel a 20 fps (40 frames/2s = sv_fps 20); nao ha trava
+- 16z4: MARCO - centipede1 (BSP FAKK v42 + 408 ents) RODANDO em SS_GAME a 20 fps estavel no xemu
 - 15o: Sys_ListFiles real (FindFirstFileA); ISO a partir de D:\openmohaa\iso-stage (default.xbe + main\ hardlinks de base\)
 - ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\iso-stage G:\xemu\alice-test.iso
 - Depois: Sys_Error sem lixo na tela, remover /FORCE:MULTIPLE, mbtowc/strtold (stubs assert do nxdk)
@@ -416,3 +416,8 @@
 - 16z3: trava apos ge->RunFrame (sv_main.c:1136): CheckTimeouts/SendClientMessages/MasterHeartbeat/ProcessGamespyQueries/HandleNonPVSSound
 - 16z4: SV_MasterHeartbeat + SV_ProcessGamespyQueries sob #ifndef NXDK (SEM REDE); 6 breadcrumbs 'LG: fr' so em SS_GAME (+10 -0)
 - Licao: breadcrumb limitado por contador gasta as impressoes antes do evento -> condicionar ao estado (sv.state)
+
+## Lote 16z5 (2026-10-23 20:03)
+- 16z4 xemu: MARCO - heartbeat 'LG: frame N' +40/2s apos o map (798..1638+, t=56s..98s); servidor em SS_GAME estavel
+- Causa da trava pos-RunFrame: SV_MasterHeartbeat e/ou SV_ProcessGamespyQueries (rede ausente) -> fora sob NXDK (4ba0b42)
+- Proximos: (a) g_gametype 0 sob NXDK; (b) printf/sscanf %f do PDCLib (47 usos sscanf); (c) remover breadcrumbs LG: sv/sl/sz/mp/cf/rf/fr; (d) remover /FORCE:MULTIPLE; (e) lote 17 = interpretador do script Alice; (f) build cliente (NV2A/loopback)
