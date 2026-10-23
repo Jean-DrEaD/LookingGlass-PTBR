@@ -263,3 +263,8 @@
 - 15y-i (vazamento util): dheader_t = ident/version/checksum + 28 lumps; Q_GetLumpByVersion e static no qfiles.h (v<=18 desloca +1 apos BRUSHES)
 - Plano lote 16: ramo version==42 no Q_GetLumpByVersion + conversao de dshader/dleaf/dbrushside/dsurface; checagens em cm_load.c:894 e tr_bsp.c:2293
 - 15y-j: coleta do crates/lg-core/src/bsp.rs (ordem dos lumps e tamanhos FAKK)
+
+## Lote 16a (2026-10-23 15:14)
+- 15y-j: FAKK header 172 B = 12 + 20 lumps; ordem 0 shaders(76) 1 planes 2 lightmaps 3 surfaces(108=MOHAA) 4 verts(44=MOHAA) 5 indexes 6 leafbrushes 7 leafsurfaces 8 leafs 9 nodes 10 brushsides(8) 11 brushes(12) 12 fogs(72) 13 models(40) 14 entities 15 vis 16-19 lightgrid/entlights/lightdefs
+- 16a: cm_load.c sob NXDK: LG_Lump (mapa MOHAA->FAKK; sideeq/terrain/lightgrid vazios), repack shaders 76->140, brushsides 8->12, leafs 48->64 (premissa 48 = layout Q3, nao confirmada); aceita versao 42
+- Pendente: renderer tr_bsp.c (build cliente), lightgrid FAKK, fogs
