@@ -334,3 +334,8 @@
 - 16m: throw em ScriptMaster::CurrentScriptThread (scriptmaster.cpp:1107); chamadores so scriptmaster.cpp:842 (CurrentScriptClass) e scriptslave.cpp:847 (Register)
 - 16m: ent 403 (info_waypoint+targetname) passou; 407 e a ULTIMA (408 total) -> throw no fim do SpawnInternal ou apos o laco
 - 16n: breadcrumbs 'si newinst ok', 'si fim', 'SM 842', 'SS 847' (linha -> bloco, diff +4 -4)
+
+## Lote 16o (2026-10-23 17:35)
+- 16n xemu: TODAS as 408 entidades OK (407 'si fim' t=14059); ~4s depois 'SM 842 CurrentScriptClass' t=18244 -> 'current thread is NULL'
+- Throw vem de apos o laco de spawn (pos-spawn do Level), sem 'se nodes' antes
+- 16o: coleta chamadores CurrentScriptClass + level.cpp pos-laco (docs/probes/lote16o-scriptclass.log), sem build

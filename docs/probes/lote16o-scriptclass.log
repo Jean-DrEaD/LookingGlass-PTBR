@@ -1,0 +1,173 @@
+## chamadores CurrentScriptClass
+fgame\gamescript.cpp:267: scriptClass = Director.CurrentScriptClass();
+fgame\gamescript.cpp:1145: m_Script = Director.CurrentScriptClass()->GetScript();
+fgame\scriptmaster.cpp:840: ScriptClass *ScriptMaster::CurrentScriptClass(void)
+fgame\scriptmaster.h:110: ScriptClass  *CurrentScriptClass(void);
+## scriptmaster.cpp 825-850
+825: void ScriptMaster::SetTime(int time)
+826: {
+827:     timerList.SetTime(time);
+828: }
+829: 
+830: void ScriptMaster::AddTiming(ScriptThread *thread, int time)
+831: {
+832:     timerList.AddElement(thread, time);
+833: }
+834: 
+835: void ScriptMaster::RemoveTiming(ScriptThread *thread)
+836: {
+837:     timerList.RemoveElement(thread);
+838: }
+839: 
+840: ScriptClass *ScriptMaster::CurrentScriptClass(void)
+841: {
+842:     { gi.Printf("LG: SM 842 CurrentScriptClass t=%d\n", gi.Milliseconds()); /* LG16n SM 842 CurrentScriptClass */ return CurrentScriptThread()->GetScriptClass(); }
+843: }
+844: 
+845: void ScriptMaster::CloseGameScript(void)
+846: {
+847:     con_map_enum<const_str, GameScript *> en(m_GameScripts);
+848:     GameScript                          **g;
+849:     Container<GameScript *>               gameScripts;
+850: 
+## level.cpp a partir de 'LG: le' (linha 1197)
+1177:     // parse ents
+1178:     inhibit = 0;
+1179: 
+1180:     for (entities = args.Parse(entities); entities != NULL; entities = args.Parse(entities)) {
+1181:         // remove things (except the world) from different skill levels or deathmatch
+1182:         spawnflags = 0;
+1183:         value      = args.getArg("spawnflags");
+1184: 
+1185:         if (value) {
+1186:             spawnflags = atoi(value);
+1187: 
+1188:             value = args.getArg("classname");
+1189:             if (!value || (Q_stricmp(value, "info_pathnode") && Q_stricmp(value, "info_patharea"))) {
+1190:                 if (inhibitEntity(spawnflags)) {
+1191:                     inhibit++;
+1192:                     continue;
+1193:                 }
+1194:             }
+1195:         }
+1196: 
+1197:         { static int lgN = 0; const char *lgC = args.getArg("classname"); gi.Printf("LG: le %d %s t=%d\n", ++lgN, lgC ? lgC : "?", gi.Milliseconds()); }
+1198:         listener = args.SpawnInternal();
+1199: 
+1200:         if (listener) {
+1201:             radnum++;
+1202: 
+1203:             if (listener->isSubclassOf(Entity)) {
+1204:                 count++;
+1205: 
+1206:                 ent         = (Entity *)listener;
+1207:                 ent->radnum = radnum;
+1208: 
+1209:                 Q_strncpyz(ent->edict->entname, ent->getClassID(), sizeof(ent->edict->entname));
+1210: 
+1211:                 ent->PostEvent(EV_Entity_Start, -1.0, 0);
+1212:                 Com_sprintf(name, sizeof(name), "i%d", radnum);
+1213:                 gi.LoadResource(name);
+1214:             }
+1215:         }
+1216:     }
+1217: 
+1218:     end = gi.Milliseconds();
+1219: 
+1220:     Com_Printf("-------------------- Actual Spawning Entities Done ------------------ %i ms\n", end - start);
+1221: 
+1222:     gi.LoadResource("*147b");
+1223: 
+1224:     world->UpdateConfigStrings();
+1225: 
+1226:     Event *ev = new Event(EV_Level_PreSpawnSentient);
+1227:     PostEvent(ev, EV_SPAWNENTITIES);
+1228: 
+1229:     L_ProcessPendingEvents();
+1230: 
+1231:     gi.LoadResource("*148");
+1232: 
+1233:     if (g_gametype->integer != GT_SINGLE_PLAYER) {
+1234:         dmManager.InitGame();
+1235:     }
+1236: 
+1237:     gi.LoadResource("*148a");
+1238: 
+1239:     // Added in OPM
+1240:     //  Check for single-player before pre-creating a player instance
+1241:     if (game.maxclients == 1 && g_gametype->integer == GT_SINGLE_PLAYER) {
+1242:         spawn_entnum = 0;
+1243:         new Player;
+1244:     }
+1245: 
+1246:     gi.LoadResource("*148b");
+1247: 
+1248:     m_LoopProtection = false;
+1249:     RemoveWaitTill(STRING_PRESPAWN);
+1250:     Unregister(STRING_PRESPAWN);
+1251:     m_LoopProtection = true;
+1252: 
+1253:     gi.LoadResource("*150");
+1254: 
+1255:     t2 = gi.Milliseconds();
+1256: 
+1257:     Com_Printf("%i entities spawned\n", count);
+1258:     Com_Printf("%i simple entities spawned\n", radnum);
+1259:     Com_Printf("%i entities inhibited\n", inhibit);
+1260: 
+1261:     Com_Printf("-------------------- Spawning Entities Done ------------------ %i ms\n", t2 - t1);
+1262: 
+1263:     //
+1264:     // create landmarks
+1265:     //
+1266:     ComputeDMWaypoints();
+1267: }
+1268: 
+1269: void Level::ComputeDMWaypoints()
+1270: {
+1271:     qboolean shouldSetDefaultLandmark;
+1272:     float    startXDistMin, startXDistMax;
+1273:     float    startYDistMin, startYDistMax;
+1274:     int      i;
+1275: 
+1276:     if (g_gametype->integer == GT_SINGLE_PLAYER) {
+1277:         m_fLandmarkXDistMax = 1;
+1278:         m_fLandmarkYDistMax = 1;
+1279:         m_fLandmarkXDistMin = 0;
+1280:         m_fLandmarkYDistMin = 0.0;
+1281:         return;
+1282:     }
+1283: 
+1284:     shouldSetDefaultLandmark = qfalse;
+1285: 
+1286:     //
+1287:     // calculate the world bounds from entities
+1288:     //
+1289:     if (m_fLandmarkXDistMin == m_fLandmarkXDistMax && m_fLandmarkYDistMin == m_fLandmarkYDistMax
+1290:         && m_fLandmarkXDistMax == m_fLandmarkYDistMax) {
+1291:         shouldSetDefaultLandmark = qtrue;
+1292: 
+1293:         for (i = 0; i < game.maxentities; i++) {
+1294:             gentity_t *ent = &g_entities[i];
+1295: 
+1296:             if (ent->entity) {
+1297:                 AddLandmarkOrigin(ent->entity->origin);
+1298:                 shouldSetDefaultLandmark = qfalse;
+1299:             }
+1300:         }
+1301:     }
+1302: 
+1303:     if (shouldSetDefaultLandmark) {
+1304:         startXDistMax = 1;
+1305:         startYDistMax = 1;
+1306:         startXDistMin = 0;
+1307:         startYDistMin = 0;
+1308:     } else {
+1309:         startYDistMax = m_fLandmarkYDistMax;
+1310:         startYDistMin = m_fLandmarkYDistMin;
+1311:         startXDistMax = m_fLandmarkXDistMax;
+1312:         startXDistMin = m_fLandmarkXDistMin;
+1313:     }
+1314: 
+1315:     m_fLandmarkXDistMin = startXDistMin + (startXDistMax - startXDistMin) / 3.f;
+1316:     m_fLandmarkXDistMax = startXDistMin + (startXDistMax - startXDistMin) * 2.f / 3.f;
