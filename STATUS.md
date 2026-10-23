@@ -421,3 +421,8 @@
 - 16z4 xemu: MARCO - heartbeat 'LG: frame N' +40/2s apos o map (798..1638+, t=56s..98s); servidor em SS_GAME estavel
 - Causa da trava pos-RunFrame: SV_MasterHeartbeat e/ou SV_ProcessGamespyQueries (rede ausente) -> fora sob NXDK (4ba0b42)
 - Proximos: (a) g_gametype 0 sob NXDK; (b) printf/sscanf %f do PDCLib (47 usos sscanf); (c) remover breadcrumbs LG: sv/sl/sz/mp/cf/rf/fr; (d) remover /FORCE:MULTIPLE; (e) lote 17 = interpretador do script Alice; (f) build cliente (NV2A/loopback)
+
+## Lote 16z6a (2026-10-23 20:09)
+- Inicio do %f: PDCLib do nxdk imprime '%5.2f' vazio (16y) e sscanf '%f' falha (16k)
+- 16z6a: coleta Q_vsnprintf/Com_sprintf/va, lg_compat.h, lg_strtod, PDCLib print/scan, contagem de usos (docs/probes/lote16z6a-printf.log), sem build
+- Plano 16z6b: lg_vsnprintf (float proprio, resto delega ao PDCLib) + lg_vsscanf (%f via lg_strtod) ligados no Q_vsnprintf/lg_compat

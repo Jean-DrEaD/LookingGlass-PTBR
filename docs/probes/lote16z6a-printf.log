@@ -1,0 +1,232 @@
+## ^\s*(int|size_t)\s+Q_vsnprintf\s*\(
+qcommon\q_shared.c:1134: size_t Q_vsnprintf(char* str, size_t size, const char* format, va_list ap)
+   1134: size_t Q_vsnprintf(char* str, size_t size, const char* format, va_list ap)
+   1135: {
+   1136: 	int retval;
+   1137: 
+   1138: 	retval = _vsnprintf(str, size, format, ap);
+   1139: 
+   1140: 	if (retval < 0 || retval == size)
+   1141: 	{
+   1142: 		// Microsoft doesn't adhere to the C99 standard of vsnprintf,
+   1143: 		// which states that the return value must be the number of
+   1144: 		// bytes written if the output string had sufficient length.
+   1145: 		//
+   1146: 		// Obviously we cannot determine that value from Microsoft's
+   1147: 		// implementation, so we have no choice but to return size.
+   1148: 
+   1149: 		str[size - 1] = '\0';
+   1150: 		return size;
+   1151: 	}
+   1152: 
+   1153: 	return retval;
+   1154: }
+   1155: #endif
+   1156: 
+   1157: char* Q_strrchr( const char* string, int c )
+   1158: {
+   1159: 	char cc = c;
+qcommon\q_shared.h:192: size_t Q_vsnprintf(char *str, size_t size, const char *format, va_list ap) Q_PRINTF_FUNC(3, 0);
+   192:   size_t Q_vsnprintf(char *str, size_t size, const char *format, va_list ap) Q_PRINTF_FUNC(3, 0);
+   193: #else
+   194: #define Q_vsnprintf vsnprintf
+   195: #endif
+   196: 
+   197: #endif
+   198: 
+   199: #include "q_platform.h"
+   200: 
+   201: //=============================================================
+   202: 
+   203: typedef unsigned char 		byte;
+   204: typedef unsigned char		uchar;
+   205: 
+   206: enum { qfalse, qtrue };
+   207: 
+   208: typedef union {
+   209: 	float f;
+   210: 	int i;
+   211: 	unsigned int ui;
+   212: } floatint_t;
+   213: 
+   214: typedef int	qboolean;
+   215: 
+   216: typedef int		qhandle_t;
+   217: typedef int		sfxHandle_t;
+## ^\s*(int|void)\s+QDECL\s+Com_sprintf\s*\(
+## ^\s*char\s*\*\s*QDECL\s+va\s*\(
+## define\s+Q_vsnprintf
+qcommon\q_shared.h:194: #define Q_vsnprintf vsnprintf
+qcommon\qcommon.h:960: #define Q_vsnprintf _vsnprintf
+qcommon\qcommon.h:963: #define Q_vsnprintf vsnprintf
+## implementacoes proprias de printf no tree
+## lg_compat.h (D:\LookingGlass-PTBR\tools\nxdk-shims\lg_compat.h)
+   1: #pragma once
+   2: /* LookingGlass: prologo nxdk */
+   3: #define LG_NXDK 1
+   4: #ifndef WIN32_LEAN_AND_MEAN
+   5: #define WIN32_LEAN_AND_MEAN
+   6: #endif
+   7: #ifndef NOMINMAX
+   8: #define NOMINMAX
+   9: #endif
+   10: #include <errno.h>
+   11: /* LookingGlass: compat POSIX para nxdk */
+   12: #include <ctype.h>
+   13: #include <string.h>
+   14: #include <time.h>
+   15: #include <sys/stat.h>
+   16: #ifdef __cplusplus
+   17: extern "C" {
+   18: #endif
+   19: static inline int lg_strncasecmp(const char *a, const char *b, size_t n) {
+   20:   for (; n; --n, ++a, ++b) {
+   21:     int d = tolower((unsigned char)*a) - tolower((unsigned char)*b);
+   22:     if (d || !*a) return d;
+   23:   }
+   24:   return 0;
+   25: }
+   26: static inline int lg_strcasecmp(const char *a, const char *b) { return lg_strncasecmp(a, b, (size_t)-1); }
+   27: static inline struct tm *lg_localtime_r(const time_t *t, struct tm *r) { struct tm *p = localtime(t); if (!p) return 0; *r = *p; return r; }
+   28: static inline struct tm *lg_gmtime_r(const time_t *t, struct tm *r) { struct tm *p = gmtime(t); if (!p) return 0; *r = *p; return r; }
+   29: #ifdef __cplusplus
+   30: }
+   31: #endif
+   32: #define strcasecmp  lg_strcasecmp
+   33: #define strncasecmp lg_strncasecmp
+   34: #define localtime_r lg_localtime_r
+   35: #define gmtime_r    lg_gmtime_r
+   36: 
+   37: 
+   38: #ifdef __cplusplus
+   39: extern "C" {
+   40: #endif
+   41: static inline int lg_rmdir(const char *p) { return RemoveDirectoryA(p) ? 0 : -1; }
+   42: #ifdef __cplusplus
+   43: }
+   44: /* lote 15n: nxdk strtod = assert(0) */
+   45: #include <stdlib.h>
+   46: #ifdef __cplusplus
+   47: extern "C" {
+   48: #endif
+   49: double lg_strtod(const char *s, char **end);
+   50: float  lg_strtof(const char *s, char **end);
+   51: #ifdef __cplusplus
+   52: }
+   53: #endif
+   54: #define strtod lg_strtod
+   55: #define strtof lg_strtof
+   56: #endif
+   57: #define rmdir lg_rmdir
+   58: /* windows.h polui nomes usados pelo engine */
+   59: #undef near
+   60: #undef far
+   61: #undef min
+   62: #undef max
+   63: 
+   64: /* FAR/NEAR vazios (zlib); near/far minusculos continuam livres */
+   65: #undef FAR
+   66: #define FAR
+   67: #undef NEAR
+   68: #define NEAR
+   69: 
+   70: /* ---- lote 15q: fopen com caminho normalizado ---- */
+   71: #ifdef __cplusplus
+   72: extern "C" {
+   73: #endif
+   74: struct _iobuf; 
+   75: #ifdef __cplusplus
+   76: }
+   77: #endif
+   78: #define fopen lg_fopen
+## sys_xbox.c strtod (D:\LookingGlass-PTBR\tools\nxdk-shims\xboxsys\sys_xbox.c)
+   69: double lg_strtod(const char *s, char **end) {
+   84: float lg_strtof(const char *s, char **end) { return (float)lg_strtod(s, end); }
+   85: double atof(const char *s) { return lg_strtod(s, NULL); }
+   163: /* ---- lote 15r: sobrescreve os simbolos strtod/strtof/strtold do nxdk ---- */
+   165: #undef strtof
+   166: #undef strtold
+   167: double lg_strtod(const char *s, char **e);
+   168: double strtod(const char *s, char **e) { return lg_strtod(s, e); }
+   169: float strtof(const char *s, char **e) { return (float)lg_strtod(s, e); }
+   170: long double strtold(const char *s, char **e) { return (long double)lg_strtod(s, e); }
+## usos: printf-like com float=417 | sscanf com float=47
+## PDCLib (nxdk)
+   DIR=/usr/src/nxdk/lib/pdclib
+   PRINT=/usr/src/nxdk/lib/pdclib/functions/_PDCLIB/_PDCLIB_print.c
+   38:#define E_ldouble  (1u<<14)
+   199:            /* Lowercase letters. Same array used for strto...(). */ \
+   204:            /* Uppercase letters. Array only used here, only 0-F. */ \
+   420:            /* L -> long double */
+   421:            status->flags |= E_ldouble;
+   452:        case 'f':
+   454:        case 'e':
+   456:        case 'g':
+   SCAN=/usr/src/nxdk/lib/pdclib/functions/_PDCLIB/_PDCLIB_scan.c
+   30:#define E_ldouble    1<<14
+   213:            /* L -> long double */
+   214:            status->flags |= E_ldouble;
+   246:        case 'f':
+   248:        case 'e':
+   250:        case 'g':
+   486:                            /* in any case we have read a zero */
+   Readme.txt
+   _PDCLIB_atomax.c
+   _PDCLIB_atomax.c.d
+   _PDCLIB_atomax.obj
+   _PDCLIB_closeall.c
+   _PDCLIB_closeall.c.d
+   _PDCLIB_closeall.obj
+   _PDCLIB_digits.c
+   _PDCLIB_digits.c.d
+   _PDCLIB_digits.obj
+   _PDCLIB_filemode.c
+   _PDCLIB_filemode.c.d
+   _PDCLIB_filemode.obj
+   _PDCLIB_getstream.c
+   _PDCLIB_getstream.c.d
+   _PDCLIB_getstream.obj
+   _PDCLIB_is_leap.c
+   _PDCLIB_is_leap.c.d
+   _PDCLIB_is_leap.obj
+   _PDCLIB_load_lc_collate.c
+   _PDCLIB_load_lc_collate.c.d
+   _PDCLIB_load_lc_collate.obj
+   _PDCLIB_load_lc_ctype.c
+   _PDCLIB_load_lc_ctype.c.d
+   _PDCLIB_load_lc_ctype.obj
+   _PDCLIB_load_lc_messages.c
+   _PDCLIB_load_lc_messages.c.d
+   _PDCLIB_load_lc_messages.obj
+   _PDCLIB_load_lc_monetary.c
+   _PDCLIB_load_lc_monetary.c.d
+   _PDCLIB_load_lc_monetary.obj
+   _PDCLIB_load_lc_numeric.c
+   _PDCLIB_load_lc_numeric.c.d
+   _PDCLIB_load_lc_numeric.obj
+   _PDCLIB_load_lc_time.c
+   _PDCLIB_load_lc_time.c.d
+   _PDCLIB_load_lc_time.obj
+   _PDCLIB_load_lines.c
+   _PDCLIB_load_lines.c.d
+   _PDCLIB_load_lines.obj
+   _PDCLIB_prepread.c
+   _PDCLIB_prepread.c.d
+   _PDCLIB_prepread.obj
+   _PDCLIB_prepwrite.c
+   _PDCLIB_prepwrite.c.d
+   _PDCLIB_prepwrite.obj
+   _PDCLIB_print.c
+   _PDCLIB_print.c.d
+   _PDCLIB_print.obj
+   _PDCLIB_scan.c
+   _PDCLIB_scan.c.d
+   _PDCLIB_scan.obj
+   _PDCLIB_seed.c
+   _PDCLIB_seed.c.d
+   _PDCLIB_seed.obj
+   _PDCLIB_setstream.c
+   _PDCLIB_setstream.c.d
+   _PDCLIB_setstream.obj
+   _PDCLIB_strtok.c
+   _PDCLIB_strtok.c.d
