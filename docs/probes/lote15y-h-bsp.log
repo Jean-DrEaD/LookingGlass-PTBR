@@ -1,0 +1,1636 @@
+######## 1) checagens de versao BSP (engine)
+## D:\openmohaa\code\qcommon\cm_load.c:894
+891: 		((int *)&header)[i] = LittleLong ( ((int *)&header)[i]);
+892: 	}
+893: 
+894: 	if ( header.version < BSP_MIN_VERSION || header.version > BSP_MAX_VERSION ) {
+895: 		Com_Error (ERR_DROP, "CM_LoadMap: %s has wrong version number (%i should be between %i and %i)"
+896: 		, name, header.version, BSP_MIN_VERSION, BSP_MAX_VERSION );
+897: 	}
+898: 
+899: 	cmod_base = ( byte * )&header;
+900: 
+901: 	// load into heap
+902: 	_R( 0 );
+903: 	CM_LoadLump( h, Q_GetLumpByVersion( &header, LUMP_SHADERS ), &lump, 0);
+904: 	_R( 1 );
+905: 	CMod_LoadShaders( &lump, &shaderSubdivisions );
+## D:\openmohaa\code\qcommon\cm_load.c:895
+892: 	}
+893: 
+894: 	if ( header.version < BSP_MIN_VERSION || header.version > BSP_MAX_VERSION ) {
+895: 		Com_Error (ERR_DROP, "CM_LoadMap: %s has wrong version number (%i should be between %i and %i)"
+896: 		, name, header.version, BSP_MIN_VERSION, BSP_MAX_VERSION );
+897: 	}
+898: 
+899: 	cmod_base = ( byte * )&header;
+900: 
+901: 	// load into heap
+902: 	_R( 0 );
+903: 	CM_LoadLump( h, Q_GetLumpByVersion( &header, LUMP_SHADERS ), &lump, 0);
+904: 	_R( 1 );
+905: 	CMod_LoadShaders( &lump, &shaderSubdivisions );
+906: 	_R( 2 );
+## D:\openmohaa\code\qcommon\cm_load.c:896
+893: 
+894: 	if ( header.version < BSP_MIN_VERSION || header.version > BSP_MAX_VERSION ) {
+895: 		Com_Error (ERR_DROP, "CM_LoadMap: %s has wrong version number (%i should be between %i and %i)"
+896: 		, name, header.version, BSP_MIN_VERSION, BSP_MAX_VERSION );
+897: 	}
+898: 
+899: 	cmod_base = ( byte * )&header;
+900: 
+901: 	// load into heap
+902: 	_R( 0 );
+903: 	CM_LoadLump( h, Q_GetLumpByVersion( &header, LUMP_SHADERS ), &lump, 0);
+904: 	_R( 1 );
+905: 	CMod_LoadShaders( &lump, &shaderSubdivisions );
+906: 	_R( 2 );
+907: 	CM_FreeLump( &lump );
+## D:\openmohaa\code\qcommon\qfiles.h:358
+355: */
+356: 
+357: 
+358: #define BSP_IDENT	(('5'<<24)+('1'<<16)+('0'<<8)+'2')
+359: 		// little-endian "2015"
+360: 
+361: #define BSP_BETA_VERSION	17	// Beta Allied Assault
+362: #define BSP_MIN_VERSION		17	// Beta Allied Assault
+363: #define BSP_VERSION			19	// Allied Assault
+364: #define BSP_MAX_VERSION		21	// Breakthrough
+365: 
+366: 
+367: // there shouldn't be any problem with increasing these values at the
+368: // expense of more memory allocation in the utilities
+369: #define	MAX_MAP_MODELS			0x400
+## D:\openmohaa\code\qcommon\qfiles.h:362
+359: 		// little-endian "2015"
+360: 
+361: #define BSP_BETA_VERSION	17	// Beta Allied Assault
+362: #define BSP_MIN_VERSION		17	// Beta Allied Assault
+363: #define BSP_VERSION			19	// Allied Assault
+364: #define BSP_MAX_VERSION		21	// Breakthrough
+365: 
+366: 
+367: // there shouldn't be any problem with increasing these values at the
+368: // expense of more memory allocation in the utilities
+369: #define	MAX_MAP_MODELS			0x400
+370: #define	MAX_MAP_BRUSHES			0x8000
+371: #define	MAX_MAP_ENTITIES		0x2000		// 0x800 // su44: increased for t2l1.map
+372: #define	MAX_MAP_ENTSTRING		0x100000	//0x40000 // su44: increased for t2l1.map
+373: #define	MAX_MAP_SHADERS			0x400
+## D:\openmohaa\code\qcommon\qfiles.h:363
+360: 
+361: #define BSP_BETA_VERSION	17	// Beta Allied Assault
+362: #define BSP_MIN_VERSION		17	// Beta Allied Assault
+363: #define BSP_VERSION			19	// Allied Assault
+364: #define BSP_MAX_VERSION		21	// Breakthrough
+365: 
+366: 
+367: // there shouldn't be any problem with increasing these values at the
+368: // expense of more memory allocation in the utilities
+369: #define	MAX_MAP_MODELS			0x400
+370: #define	MAX_MAP_BRUSHES			0x8000
+371: #define	MAX_MAP_ENTITIES		0x2000		// 0x800 // su44: increased for t2l1.map
+372: #define	MAX_MAP_ENTSTRING		0x100000	//0x40000 // su44: increased for t2l1.map
+373: #define	MAX_MAP_SHADERS			0x400
+374: 
+## D:\openmohaa\code\qcommon\qfiles.h:364
+361: #define BSP_BETA_VERSION	17	// Beta Allied Assault
+362: #define BSP_MIN_VERSION		17	// Beta Allied Assault
+363: #define BSP_VERSION			19	// Allied Assault
+364: #define BSP_MAX_VERSION		21	// Breakthrough
+365: 
+366: 
+367: // there shouldn't be any problem with increasing these values at the
+368: // expense of more memory allocation in the utilities
+369: #define	MAX_MAP_MODELS			0x400
+370: #define	MAX_MAP_BRUSHES			0x8000
+371: #define	MAX_MAP_ENTITIES		0x2000		// 0x800 // su44: increased for t2l1.map
+372: #define	MAX_MAP_ENTSTRING		0x100000	//0x40000 // su44: increased for t2l1.map
+373: #define	MAX_MAP_SHADERS			0x400
+374: 
+375: #define	MAX_MAP_AREAS			0x100		// MAX_MAP_AREA_BYTES in q_shared must match!
+## D:\openmohaa\code\renderergl1\tr_bsp.c:2293
+2290:     c_gridVerts = 0;
+2291: 
+2292:     i = header.version;
+2293:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+2294:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+2295:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+2296:     }
+2297: 
+2298:     // load into heap
+2299:     // load into heap
+2300:     _R(53);
+2301:     numShaders = R_LoadLump(h, Q_GetLumpByVersion(&header, LUMP_SHADERS), &lump, sizeof(dshader_t));
+2302:     _R(54);
+2303:     R_LoadShaders(&lump);
+2304:     _R(55);
+## D:\openmohaa\code\renderergl1\tr_bsp.c:2294
+2291: 
+2292:     i = header.version;
+2293:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+2294:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+2295:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+2296:     }
+2297: 
+2298:     // load into heap
+2299:     // load into heap
+2300:     _R(53);
+2301:     numShaders = R_LoadLump(h, Q_GetLumpByVersion(&header, LUMP_SHADERS), &lump, sizeof(dshader_t));
+2302:     _R(54);
+2303:     R_LoadShaders(&lump);
+2304:     _R(55);
+2305:     R_FreeLump(&lump);
+## D:\openmohaa\code\renderergl1\tr_bsp.c:2295
+2292:     i = header.version;
+2293:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+2294:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+2295:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+2296:     }
+2297: 
+2298:     // load into heap
+2299:     // load into heap
+2300:     _R(53);
+2301:     numShaders = R_LoadLump(h, Q_GetLumpByVersion(&header, LUMP_SHADERS), &lump, sizeof(dshader_t));
+2302:     _R(54);
+2303:     R_LoadShaders(&lump);
+2304:     _R(55);
+2305:     R_FreeLump(&lump);
+2306:     _R(56);
+## D:\openmohaa\code\renderergl2\tr_bsp.c:3361
+3358: 
+3359: 	i = LittleLong (header->version);
+3360: #if 0
+3361: 	if ( i != BSP_VERSION ) {
+3362: 		ri.Error (ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be %i)", 
+3363: 			name, i, BSP_VERSION);
+3364: 	}
+3365: #endif
+3366: 	//
+3367: 	// OPENMOHAA-specific stuff
+3368: 	//=========================
+3369:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+3370:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+3371:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+3372:     }
+## D:\openmohaa\code\renderergl2\tr_bsp.c:3362
+3359: 	i = LittleLong (header->version);
+3360: #if 0
+3361: 	if ( i != BSP_VERSION ) {
+3362: 		ri.Error (ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be %i)", 
+3363: 			name, i, BSP_VERSION);
+3364: 	}
+3365: #endif
+3366: 	//
+3367: 	// OPENMOHAA-specific stuff
+3368: 	//=========================
+3369:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+3370:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+3371:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+3372:     }
+3373:     //=========================
+## D:\openmohaa\code\renderergl2\tr_bsp.c:3363
+3360: #if 0
+3361: 	if ( i != BSP_VERSION ) {
+3362: 		ri.Error (ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be %i)", 
+3363: 			name, i, BSP_VERSION);
+3364: 	}
+3365: #endif
+3366: 	//
+3367: 	// OPENMOHAA-specific stuff
+3368: 	//=========================
+3369:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+3370:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+3371:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+3372:     }
+3373:     //=========================
+3374: 
+## D:\openmohaa\code\renderergl2\tr_bsp.c:3369
+3366: 	//
+3367: 	// OPENMOHAA-specific stuff
+3368: 	//=========================
+3369:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+3370:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+3371:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+3372:     }
+3373:     //=========================
+3374: 
+3375: 	// swap all the lumps
+3376: 	for (i=0 ; i<sizeof(dheader_t)/4 ; i++) {
+3377: 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
+3378: 	}
+3379: 
+3380: 	//
+## D:\openmohaa\code\renderergl2\tr_bsp.c:3370
+3367: 	// OPENMOHAA-specific stuff
+3368: 	//=========================
+3369:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+3370:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+3371:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+3372:     }
+3373:     //=========================
+3374: 
+3375: 	// swap all the lumps
+3376: 	for (i=0 ; i<sizeof(dheader_t)/4 ; i++) {
+3377: 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
+3378: 	}
+3379: 
+3380: 	//
+3381: 	// OPENMOHAA-specific stuff
+## D:\openmohaa\code\renderergl2\tr_bsp.c:3371
+3368: 	//=========================
+3369:     if (i < BSP_MIN_VERSION || i > BSP_MAX_VERSION) {
+3370:         ri.Error(ERR_DROP, "RE_LoadWorldMap: %s has wrong version number (%i should be between %i and %i)",
+3371:             name, i, BSP_MIN_VERSION, BSP_MAX_VERSION);
+3372:     }
+3373:     //=========================
+3374: 
+3375: 	// swap all the lumps
+3376: 	for (i=0 ; i<sizeof(dheader_t)/4 ; i++) {
+3377: 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
+3378: 	}
+3379: 
+3380: 	//
+3381: 	// OPENMOHAA-specific stuff
+3382: 	//=========================
+## D:\openmohaa\code\tools\ommap\common\bspfile.c:232
+229: 	// swap the header
+230: 	SwapBlock( (int *)header, sizeof(*header) );
+231: 
+232: 	if ( header->ident != BSP_IDENT ) {
+233: 		Error( "%s is not a IBSP file", filename );
+234: 	}
+235: 	if ( header->version != BSP_VERSION ) {
+236: 		Error( "%s is version %i, not %i", filename, header->version, BSP_VERSION );
+237: 	}
+238: 
+239: 	numShaders = CopyLump( header, LUMP_SHADERS, dshaders, sizeof(dshader_t) );
+240: 	nummodels = CopyLump( header, LUMP_MODELS, dmodels, sizeof(dmodel_t) );
+241: 	numplanes = CopyLump( header, LUMP_PLANES, dplanes, sizeof(dplane_t) );
+242: 	numleafs = CopyLump( header, LUMP_LEAFS, dleafs, sizeof(dleaf_t) );
+243: 	numnodes = CopyLump( header, LUMP_NODES, dnodes, sizeof(dnode_t) );
+## D:\openmohaa\code\tools\ommap\common\bspfile.c:235
+232: 	if ( header->ident != BSP_IDENT ) {
+233: 		Error( "%s is not a IBSP file", filename );
+234: 	}
+235: 	if ( header->version != BSP_VERSION ) {
+236: 		Error( "%s is version %i, not %i", filename, header->version, BSP_VERSION );
+237: 	}
+238: 
+239: 	numShaders = CopyLump( header, LUMP_SHADERS, dshaders, sizeof(dshader_t) );
+240: 	nummodels = CopyLump( header, LUMP_MODELS, dmodels, sizeof(dmodel_t) );
+241: 	numplanes = CopyLump( header, LUMP_PLANES, dplanes, sizeof(dplane_t) );
+242: 	numleafs = CopyLump( header, LUMP_LEAFS, dleafs, sizeof(dleaf_t) );
+243: 	numnodes = CopyLump( header, LUMP_NODES, dnodes, sizeof(dnode_t) );
+244: 	numleafsurfaces = CopyLump( header, LUMP_LEAFSURFACES, dleafsurfaces, sizeof(dleafsurfaces[0]) );
+245: 	numleafbrushes = CopyLump( header, LUMP_LEAFBRUSHES, dleafbrushes, sizeof(dleafbrushes[0]) );
+246: 	numbrushes = CopyLump( header, LUMP_BRUSHES, dbrushes, sizeof(dbrush_t) );
+## D:\openmohaa\code\tools\ommap\common\bspfile.c:236
+233: 		Error( "%s is not a IBSP file", filename );
+234: 	}
+235: 	if ( header->version != BSP_VERSION ) {
+236: 		Error( "%s is version %i, not %i", filename, header->version, BSP_VERSION );
+237: 	}
+238: 
+239: 	numShaders = CopyLump( header, LUMP_SHADERS, dshaders, sizeof(dshader_t) );
+240: 	nummodels = CopyLump( header, LUMP_MODELS, dmodels, sizeof(dmodel_t) );
+241: 	numplanes = CopyLump( header, LUMP_PLANES, dplanes, sizeof(dplane_t) );
+242: 	numleafs = CopyLump( header, LUMP_LEAFS, dleafs, sizeof(dleaf_t) );
+243: 	numnodes = CopyLump( header, LUMP_NODES, dnodes, sizeof(dnode_t) );
+244: 	numleafsurfaces = CopyLump( header, LUMP_LEAFSURFACES, dleafsurfaces, sizeof(dleafsurfaces[0]) );
+245: 	numleafbrushes = CopyLump( header, LUMP_LEAFBRUSHES, dleafbrushes, sizeof(dleafbrushes[0]) );
+246: 	numbrushes = CopyLump( header, LUMP_BRUSHES, dbrushes, sizeof(dbrush_t) );
+247: 	numbrushsides = CopyLump( header, LUMP_BRUSHSIDES, dbrushsides, sizeof(dbrushside_t) );
+## D:\openmohaa\code\tools\ommap\common\bspfile.c:309
+306: 	
+307: 	SwapBSPFile();
+308: 
+309: 	header->ident = LittleLong( BSP_IDENT );
+310: 	header->version = LittleLong( BSP_VERSION );
+311: 	
+312: 	bspfile = SafeOpenWrite( filename );
+313: 	SafeWrite( bspfile, header, sizeof(dheader_t) );	// overwritten later
+314: 
+315: 	AddLump( bspfile, header, LUMP_SHADERS, dshaders, numShaders*sizeof(dshader_t) );
+316: 	AddLump( bspfile, header, LUMP_PLANES, dplanes, numplanes*sizeof(dplane_t) );
+317: 	AddLump( bspfile, header, LUMP_LEAFS, dleafs, numleafs*sizeof(dleaf_t) );
+318: 	AddLump( bspfile, header, LUMP_NODES, dnodes, numnodes*sizeof(dnode_t) );
+319: 	AddLump( bspfile, header, LUMP_BRUSHES, dbrushes, numbrushes*sizeof(dbrush_t) );
+320: 	AddLump( bspfile, header, LUMP_BRUSHSIDES, dbrushsides, numbrushsides*sizeof(dbrushside_t) );
+## D:\openmohaa\code\tools\ommap\common\bspfile.c:310
+307: 	SwapBSPFile();
+308: 
+309: 	header->ident = LittleLong( BSP_IDENT );
+310: 	header->version = LittleLong( BSP_VERSION );
+311: 	
+312: 	bspfile = SafeOpenWrite( filename );
+313: 	SafeWrite( bspfile, header, sizeof(dheader_t) );	// overwritten later
+314: 
+315: 	AddLump( bspfile, header, LUMP_SHADERS, dshaders, numShaders*sizeof(dshader_t) );
+316: 	AddLump( bspfile, header, LUMP_PLANES, dplanes, numplanes*sizeof(dplane_t) );
+317: 	AddLump( bspfile, header, LUMP_LEAFS, dleafs, numleafs*sizeof(dleaf_t) );
+318: 	AddLump( bspfile, header, LUMP_NODES, dnodes, numnodes*sizeof(dnode_t) );
+319: 	AddLump( bspfile, header, LUMP_BRUSHES, dbrushes, numbrushes*sizeof(dbrush_t) );
+320: 	AddLump( bspfile, header, LUMP_BRUSHSIDES, dbrushsides, numbrushsides*sizeof(dbrushside_t) );
+321: 	AddLump( bspfile, header, LUMP_LEAFSURFACES, dleafsurfaces, numleafsurfaces*sizeof(dleafsurfaces[0]) );
+## D:\openmohaa\code\tools\ommap\common\qfiles.h:313
+310: */
+311: 
+312: 
+313: #define BSP_IDENT	(('P'<<24)+('S'<<16)+('B'<<8)+'I')
+314: 		// little-endian "IBSP"
+315: 
+316: #define BSP_VERSION			46
+317: 
+318: 
+319: // there shouldn't be any problem with increasing these values at the
+320: // expense of more memory allocation in the utilities
+321: #define	MAX_MAP_MODELS		0x400
+322: #define	MAX_MAP_BRUSHES		0x8000
+323: #define	MAX_MAP_ENTITIES	0x800
+324: #define	MAX_MAP_ENTSTRING	0x40000
+## D:\openmohaa\code\tools\ommap\common\qfiles.h:316
+313: #define BSP_IDENT	(('P'<<24)+('S'<<16)+('B'<<8)+'I')
+314: 		// little-endian "IBSP"
+315: 
+316: #define BSP_VERSION			46
+317: 
+318: 
+319: // there shouldn't be any problem with increasing these values at the
+320: // expense of more memory allocation in the utilities
+321: #define	MAX_MAP_MODELS		0x400
+322: #define	MAX_MAP_BRUSHES		0x8000
+323: #define	MAX_MAP_ENTITIES	0x800
+324: #define	MAX_MAP_ENTSTRING	0x40000
+325: #define	MAX_MAP_SHADERS		0x400
+326: 
+327: #define	MAX_MAP_AREAS		0x100	// MAX_MAP_AREA_BYTES in q_shared must match!
+######## 2) header + lumps (qfiles.h)
+## D:\openmohaa\code\qcommon\cm_local.h:37
+34: #define CAPSULE_MODEL_HANDLE	510
+35: #define MAX_OBFUSCATIONS		1024
+36: 
+37: typedef struct {
+38: 	cplane_t	*plane;
+39: 	int			children[2];		// negative numbers are leafs
+40: } cNode_t;
+41: 
+42: typedef struct {
+## D:\openmohaa\code\qcommon\cm_local.h:42
+39: 	int			children[2];		// negative numbers are leafs
+40: } cNode_t;
+41: 
+42: typedef struct {
+43: 	int			cluster;
+44: 	int			area;
+45: 
+46: 	intptr_t	firstLeafBrush;
+47: 	int			numLeafBrushes;
+## D:\openmohaa\code\qcommon\cm_local.h:65
+62: 	struct cfencemask_s *pNext;
+63: } cfencemask_t;
+64: 
+65: typedef struct {
+66: 	char shader[ 64 ];
+67: 	int surfaceFlags;
+68: 	int contentFlags;
+69: 	cfencemask_t *mask;
+70: 	float obfuscationWidthDensity;
+## D:\openmohaa\code\qcommon\cm_local.h:79
+76: 	cLeaf_t		leaf;			// submodels don't reference the main tree
+77: } cmodel_t;
+78: 
+79: typedef struct {
+80: 	cplane_t			*plane;
+81: 	int					surfaceFlags;
+82: 	int					shaderNum;
+83: 
+84: 	dsideequation_t		*pEq;
+## D:\openmohaa\code\qcommon\cm_local.h:87
+84: 	dsideequation_t		*pEq;
+85: } cbrushside_t;
+86: 
+87: typedef struct {
+88: 	int			shaderNum;		// the shader that determined the contents
+89: 	int			contents;
+90: 	vec3_t		bounds[2];
+91: 	int			numsides;
+92: 	cbrushside_t	*sides;
+## D:\openmohaa\code\qcommon\cm_local.h:97
+94: } cbrush_t;
+95: 
+96: 
+97: typedef struct {
+98: 	int			checkcount;				// to avoid repeated testings
+99: 	int			surfaceFlags;
+100: 	int			contents;
+101: 
+102: 	int			shaderNum;
+## D:\openmohaa\code\qcommon\cm_local.h:108
+105: 	struct patchCollide_s	*pc;
+106: } cPatch_t;
+107: 
+108: typedef struct {
+109: 	int checkcount;
+110: 	int surfaceFlags;
+111: 	int contents;
+112: 	int shaderNum;
+113: 	terrainCollide_t tc;
+## D:\openmohaa\code\qcommon\cm_local.h:116
+113: 	terrainCollide_t tc;
+114: } cTerrain_t;
+115: 
+116: typedef struct {
+117: 	int			floodnum;
+118: 	int			floodvalid;
+119: } cArea_t;
+120: 
+121: // IneQuation
+## D:\openmohaa\code\qcommon\cm_local.h:122
+119: } cArea_t;
+120: 
+121: // IneQuation
+122: typedef struct {
+123: 	int			checkcount;				// to avoid repeated testings
+124: 
+125: 	struct terPatchCollide_s	*tc;
+126: } cterPatch_t;
+127: 
+## D:\openmohaa\code\qcommon\cm_local.h:128
+125: 	struct terPatchCollide_s	*tc;
+126: } cterPatch_t;
+127: 
+128: typedef struct {
+129: 	char			name[ MAX_QPATH ];
+130: 
+131: 	int				numShaders;
+132: 	cfencemask_t	*fencemasks;
+133: 	cshader_t		*shaders;
+## D:\openmohaa\code\qcommon\cm_local.h:196
+193: // cm_test.c
+194: 
+195: // Used for oriented capsule collision detection
+196: typedef struct
+197: {
+198: 	qboolean	use;
+199: 	float		radius;
+200: 	vec3_t		offset;
+201: } sphere_t;
+## D:\openmohaa\code\qcommon\cm_local.h:203
+200: 	vec3_t		offset;
+201: } sphere_t;
+202: 
+203: typedef struct {
+204: 	vec3_t		start;
+205: 	vec3_t		end;
+206: 	vec3_t		size[2];	// size of the box being swept through the model
+207: 	vec3_t		offsets[8];	// [signbits][x] = either size[0][x] or size[1][x]
+208: 	float		maxOffset;	// longest corner length from origin
+## D:\openmohaa\code\qcommon\cm_local.h:228
+225: 	void	(*storeLeafs)( struct leafList_s *ll, int nodenum );
+226: } leafList_t;
+227: 
+228: typedef struct {
+229:     char name[MAX_QPATH];
+230:     float widthDensity;
+231:     float heightDensity;
+232: } obfuscation_t;
+233: 
+## D:\openmohaa\code\qcommon\cm_patch.h:69
+66: //  between x86 and x64, more patch planes can appear in x64
+67: #define	MAX_PATCH_PLANES	6144
+68: 
+69: typedef struct {
+70: 	float	plane[4];
+71: 	int		signbits;		// signx + (signy<<1) + (signz<<2), used as lookup during collision
+72: } patchPlane_t;
+73: 
+74: typedef struct {
+## D:\openmohaa\code\qcommon\cm_patch.h:74
+71: 	int		signbits;		// signx + (signy<<1) + (signz<<2), used as lookup during collision
+72: } patchPlane_t;
+73: 
+74: typedef struct {
+75: 	int			surfacePlane;
+76: 	int			numBorders;		// 3 or four + 6 axial bevels + 4 or 3 * 4 edge bevels
+77: 	int			borderPlanes[4+6+16];
+78: 	int			borderInward[4+6+16];
+79: 	qboolean	borderNoAdjust[4+6+16];
+## D:\openmohaa\code\qcommon\cm_patch.h:93
+90: 
+91: #define	MAX_GRID_SIZE	129
+92: 
+93: typedef struct {
+94: 	int			width;
+95: 	int			height;
+96: 	qboolean	wrapWidth;
+97: 	qboolean	wrapHeight;
+98: 	vec3_t	points[MAX_GRID_SIZE][MAX_GRID_SIZE];	// [width][height]
+## D:\openmohaa\code\qcommon\cm_polylib.h:27
+24: 
+25: #pragma once
+26: 
+27: typedef struct
+28: {
+29: 	int		numpoints;
+30: 	vec3_t	p[4];		// variable sized
+31: } winding_t;
+32: 
+## D:\openmohaa\code\qcommon\cmd.c:32
+29: #define MAX_ALIAS_NAME	32
+30: #define MAX_ALIAS_COUNT	16
+31: 
+32: typedef struct {
+33: 	byte	*data;
+34: 	size_t	maxsize;
+35: 	size_t	cursize;
+36: } cmd_t;
+37: 
+## D:\openmohaa\code\qcommon\files.cpp:224
+221: 	struct	fileInPack_s*	next;		// next file in the hash
+222: } fileInPack_t;
+223: 
+224: typedef struct {
+225: 	char			pakPathname[MAX_OSPATH];	// c:\quake3\baseq3
+226: 	char			pakFilename[MAX_OSPATH];	// c:\quake3\baseq3\pak0.pk3
+227: 	char			pakBasename[MAX_OSPATH];	// pak0
+228: 	char			pakGamename[MAX_OSPATH];	// baseq3
+229: 	unzFile			handle;						// handle to zip file
+## D:\openmohaa\code\qcommon\files.cpp:239
+236: 	fileInPack_t*	buildBuffer;				// buffer with the filenames etc.
+237: } pack_t;
+238: 
+239: typedef struct {
+240:     char		path[MAX_OSPATH];		// c:\quake3
+241:     char		fullpath[MAX_OSPATH];		// c:\quake3\baseq3
+242: 	char		gamedir[MAX_OSPATH];	// baseq3
+243: } directory_t;
+244: 
+## D:\openmohaa\code\qcommon\files.cpp:290
+287: 	qboolean	unique;
+288: } qfile_ut;
+289: 
+290: typedef struct {
+291: 	qfile_ut	handleFiles;
+292: 	qboolean	handleSync;
+293: 	int			baseOffset;
+294: 	int			fileSize;
+295: 	int			zipFilePos;
+## D:\openmohaa\code\qcommon\msg.cpp:1469
+1466: 	simple
+1467: } netFieldType_t;
+1468: 
+1469: typedef struct {
+1470: 	const char *name;
+1471: 	size_t offset;
+1472: 	size_t size;
+1473: 	// bits: 0 = float
+1474: 	int bits;
+## D:\openmohaa\code\qcommon\net_chan.c:641
+638: // gamestate of maximum size
+639: #define	MAX_LOOPBACK	32
+640: 
+641: typedef struct {
+642: 	byte	data[MAX_PACKETLEN];
+643: 	size_t	datalen;
+644: } loopmsg_t;
+645: 
+646: typedef struct {
+## D:\openmohaa\code\qcommon\net_chan.c:646
+643: 	size_t	datalen;
+644: } loopmsg_t;
+645: 
+646: typedef struct {
+647: 	loopmsg_t	msgs[MAX_LOOPBACK];
+648: 	int			get, send;
+649: } loopback_t;
+650: 
+651: loopback_t	loopbacks[2];
+## D:\openmohaa\code\qcommon\net_ip.c:144
+141: 
+142: #define	MAX_IPS		32
+143: 
+144: typedef struct
+145: {
+146: 	char ifname[IF_NAMESIZE];
+147: 	
+148: 	netadrtype_t type;
+149: 	sa_family_t family;
+## D:\openmohaa\code\qcommon\q_shared.h:659
+656: #ifdef VectorCopy
+657: #undef VectorCopy
+658: // this is a little hack to get more efficient copies in our interpreter
+659: typedef struct {
+660: 	float	v[3];
+661: } vec3struct_t;
+662: #define VectorCopy(a,b)	(*(vec3struct_t *)b=*(vec3struct_t *)a)
+663: #endif
+664: #endif
+## D:\openmohaa\code\qcommon\q_shared.h:1102
+1099: //=============================================
+1100: 
+1101: 
+1102: typedef struct
+1103: {
+1104: 	qboolean        frameMemory;
+1105: 	int             currentElements;
+1106: 	int             maxElements;	// will reallocate and move when exceeded
+1107: 	void          **elements;
+## D:\openmohaa\code\qcommon\q_shared.h:1237
+1234: 
+1235: // 64-bit integers for global rankings interface
+1236: // implemented as a struct for qvm compatibility
+1237: typedef struct
+1238: {
+1239: 	byte	b0;
+1240: 	byte	b1;
+1241: 	byte	b2;
+1242: 	byte	b3;
+## D:\openmohaa\code\qcommon\q_shared.h:1364
+1361: 
+1362: // the modules that run in the virtual machine can't access the cvar_t directly,
+1363: // so they must ask for structured updates
+1364: typedef struct {
+1365: 	cvarHandle_t	handle;
+1366: 	int			modificationCount;
+1367: 	float		value;
+1368: 	int			integer;
+1369: 	char		string[MAX_CVAR_VALUE_STRING];
+## D:\openmohaa\code\qcommon\q_shared.h:1453
+1450: } hitloc_t;
+1451: 
+1452: // a trace is returned when a box is swept through the world
+1453: typedef struct {
+1454: 	qboolean	allsolid;	// if true, plane is not valid
+1455: 	qboolean	startsolid;	// if true, the initial point was in a solid area
+1456: 	float		fraction;	// time completed, 1.0 = didn't hit anything
+1457: 	vec3_t		endpos;		// final position
+1458: 	cplane_t	plane;		// surface normal at impact, transformed to world space
+## D:\openmohaa\code\qcommon\q_shared.h:1494
+1491: } savegamestruct_t;
+1492: 
+1493: // markfragments are returned by CM_MarkFragments()
+1494: typedef struct {
+1495: 	int		firstPoint;
+1496: 	int		numPoints;
+1497: 	int		iIndex;
+1498: } markFragment_t;
+1499: 
+## D:\openmohaa\code\qcommon\q_shared.h:1520
+1517: 	float		fEndAlpha;
+1518: } treadMark_t;
+1519: 
+1520: typedef struct {
+1521: 	vec3_t p;
+1522: 	quat_t q;
+1523: } bone_t;
+1524: 
+1525: typedef struct {
+## D:\openmohaa\code\qcommon\q_shared.h:1525
+1522: 	quat_t q;
+1523: } bone_t;
+1524: 
+1525: typedef struct {
+1526: 	vec3_t		origin;
+1527: 	vec3_t		axis[ 3 ];
+1528: } orientation_t;
+1529: 
+1530: //=====================================================================
+## D:\openmohaa\code\qcommon\q_shared.h:1694
+1691: #define	RESERVED_CONFIGSTRINGS	2	// game can't modify below this, only the system can
+1692: 
+1693: #define	MAX_GAMESTATE_CHARS	41952
+1694: typedef struct {
+1695: 	int			stringOffsets[MAX_CONFIGSTRINGS];
+1696: 	char		stringData[MAX_GAMESTATE_CHARS];
+1697: 	int			dataCount;
+1698: } gameState_t;
+1699: 
+## D:\openmohaa\code\qcommon\q_shared.h:1979
+1976: 	TR_LERP
+1977: } trType_t;
+1978: 
+1979: typedef struct {
+1980: 	int trTime;
+1981: 	vec3_t trDelta;
+1982: } trajectory_t;
+1983: 
+1984: #define NUM_BONE_CONTROLLERS 5
+## D:\openmohaa\code\qcommon\q_shared.h:2095
+2092: 	int		tm_isdst;
+2093: } qtime_t;
+2094: 
+2095: typedef struct {
+2096: 	float			start[ 3 ];
+2097: 	float			end[ 3 ];
+2098: 	float			color[ 3 ];
+2099: 	float			alpha;
+2100: 	float			width;
+## D:\openmohaa\code\qcommon\q_shared.h:2105
+2102: 	unsigned short	pattern;
+2103: } debugline_t;
+2104: 
+2105: typedef struct {
+2106: 	char	szText[ 64 ];
+2107: 	float	pos[ 3 ];
+2108: 	float	scale;
+2109: 	float	color[ 4 ];
+2110: } debugstring_t;
+## D:\openmohaa\code\qcommon\q_shared.h:2143
+2140: 	struct fontheader_s *pFont;
+2141: } hdelement_t;
+2142: 
+2143: typedef struct {
+2144: 	frameInfo_t	g_VMFrameInfo[MAX_FRAMEINFOS];
+2145: 
+2146: 	int			g_iLastVMAnim;
+2147: 	int			g_iLastVMAnimChanged;
+2148: 	int			g_iCurrentVMAnimSlot;
+## D:\openmohaa\code\qcommon\q_shared.h:2165
+2162: #define GLYPH_CHARSTART 32
+2163: #define GLYPH_CHAREND 127
+2164: #define GLYPHS_PER_FONT GLYPH_END - GLYPH_START + 1
+2165: typedef struct {
+2166:   int height;       // number of scan lines
+2167:   int top;          // top of glyph in buffer
+2168:   int bottom;       // bottom of glyph in buffer
+2169:   int pitch;        // width for copying
+2170:   int xSkip;        // x adjustment
+## D:\openmohaa\code\qcommon\q_shared.h:2181
+2178:   char shaderName[32];
+2179: } glyphInfo_t;
+2180: 
+2181: typedef struct {
+2182:   glyphInfo_t glyphs [GLYPHS_PER_FONT];
+2183:   float glyphScale;
+2184:   char name[MAX_QPATH];
+2185: } fontInfo_t;
+2186: 
+## D:\openmohaa\code\qcommon\q_shared.h:2223
+2220: //
+2221: // Radar system
+2222: //
+2223: typedef struct {
+2224: 	int time;
+2225: 	int lastSpeakTime;
+2226: 	int teamShader;
+2227: 	float origin[2];
+2228: 	float axis[2];
+## D:\openmohaa\code\qcommon\q_shared.h:2231
+2228: 	float axis[2];
+2229: } radarClient_t;
+2230: 
+2231: typedef struct {
+2232: 	int clientNum;
+2233: 	float x;
+2234: 	float y;
+2235: 	float yaw;
+2236: } radarUnpacked_t;
+## D:\openmohaa\code\qcommon\qcommon.h:218
+215: } netsrc_t;
+216: 
+217: #define NET_ADDRSTRMAXLEN 48	// maximum length of an IPv6 address string including trailing '\0'
+218: typedef struct {
+219:     netadrtype_t	type;
+220: 
+221:     byte	ip[4];
+222:     byte	ip6[16];
+223:     byte	ipx[10];
+## D:\openmohaa\code\qcommon\qcommon.h:265
+262: Netchan handles packet fragmentation and out of order / duplicate suppression
+263: */
+264: 
+265: typedef struct {
+266: 	netsrc_t	sock;
+267: 
+268: 	int			dropped;			// between last packet and previous
+269: 
+270: 	netadr_t	remoteAddress;
+## D:\openmohaa\code\qcommon\qcommon.h:308
+305: 
+306: #define NETPROX_MAX_PACKETS       64
+307: 
+308: typedef struct {
+309: 	int updateTime;
+310: 	int size;
+311: 	int flags;
+312: } netprofpacket_t;
+313: 
+## D:\openmohaa\code\qcommon\qcommon.h:314
+311: 	int flags;
+312: } netprofpacket_t;
+313: 
+314: typedef struct {
+315: 	int updateTime;
+316: 	int index;
+317: 	netprofpacket_t packets[NETPROX_MAX_PACKETS];
+318: 
+319: 	// Timing
+## D:\openmohaa\code\qcommon\qcommon.h:344
+341: 	float latency;
+342: } netprofpacketlist_t;
+343: 
+344: typedef struct {
+345: 	qboolean initialized;
+346: 	int rate;
+347: 	netprofpacketlist_t downstream;
+348: 	netprofpacketlist_t upstream;
+349: } netprofclient_t;
+## D:\openmohaa\code\qcommon\qcommon.h:914
+911: */
+912: 
+913: #define	MAX_EDIT_LINE	256
+914: typedef struct {
+915: 	int		cursor;
+916: 	int		scroll;
+917: 	int		widthInChars;
+918: 	char	buffer[MAX_EDIT_LINE];
+919: } field_t;
+## D:\openmohaa\code\qcommon\qcommon.h:1342
+1339: 	SE_PACKET	// evPtr is a netadr_t followed by data bytes to evPtrLength
+1340: } sysEventType_t;
+1341: 
+1342: typedef struct {
+1343: 	int				evTime;
+1344: 	sysEventType_t	evType;
+1345: 	int				evValue, evValue2;
+1346: 	size_t			evPtrLength;	// bytes of data pointed to by evPtr, for journaling
+1347: 	void			*evPtr;			// this must be manually freed if not NULL
+## D:\openmohaa\code\qcommon\qcommon.h:1510
+1507: 
+1508: #define HMAX 256 /* Maximum symbol */
+1509: 
+1510: typedef struct {
+1511: 	int			blocNode;
+1512: 	int			blocPtrs;
+1513: 
+1514: 	node_t*		tree;
+1515: 	node_t*		lhead;
+## D:\openmohaa\code\qcommon\qcommon.h:1524
+1521: 	node_t*		nodePtrs[768];
+1522: } huff_t;
+1523: 
+1524: typedef struct {
+1525: 	huff_t		compressor;
+1526: 	huff_t		decompressor;
+1527: } huffman_t;
+1528: 
+1529: void	Huff_Compress(msg_t *buf, int offset);
+## D:\openmohaa\code\qcommon\qfiles.h:50
+47: 
+48: #define	VM_MAGIC			0x12721444
+49: #define	VM_MAGIC_VER2	0x12721445
+50: typedef struct {
+51: 	int		vmMagic;
+52: 
+53: 	int		instructionCount;
+54: 
+55: 	int		codeOffset;
+## D:\openmohaa\code\qcommon\qfiles.h:76
+73: ========================================================================
+74: */
+75: 
+76: typedef struct {
+77:     char	manufacturer;
+78:     char	version;
+79:     char	encoding;
+80:     char	bits_per_pixel;
+81:     unsigned short	xmin,ymin,xmax,ymax;
+## D:\openmohaa\code\qcommon\qfiles.h:172
+169: ** st				sizeof( md3St_t ) * numVerts
+170: ** XyzNormals		sizeof( md3XyzNormal_t ) * numVerts * numFrames
+171: */
+172: typedef struct {
+173: 	int		ident;				//
+174: 
+175: 	char	name[MAX_QPATH];	// polyset name
+176: 
+177: 	int		flags;
+## D:\openmohaa\code\qcommon\qfiles.h:193
+190: 	int		ofsEnd;				// next surface follows
+191: } md3Surface_t;
+192: 
+193: typedef struct {
+194: 	char			name[MAX_QPATH];
+195: 	int				shaderIndex;	// for in-game use
+196: } md3Shader_t;
+197: 
+198: typedef struct {
+## D:\openmohaa\code\qcommon\qfiles.h:198
+195: 	int				shaderIndex;	// for in-game use
+196: } md3Shader_t;
+197: 
+198: typedef struct {
+199: 	int			indexes[3];
+200: } md3Triangle_t;
+201: 
+202: typedef struct {
+203: 	float		st[2];
+## D:\openmohaa\code\qcommon\qfiles.h:202
+199: 	int			indexes[3];
+200: } md3Triangle_t;
+201: 
+202: typedef struct {
+203: 	float		st[2];
+204: } md3St_t;
+205: 
+206: typedef struct {
+207: 	short		xyz[3];
+## D:\openmohaa\code\qcommon\qfiles.h:206
+203: 	float		st[2];
+204: } md3St_t;
+205: 
+206: typedef struct {
+207: 	short		xyz[3];
+208: 	short		normal;
+209: } md3XyzNormal_t;
+210: 
+211: typedef struct {
+## D:\openmohaa\code\qcommon\qfiles.h:211
+208: 	short		normal;
+209: } md3XyzNormal_t;
+210: 
+211: typedef struct {
+212: 	int			ident;
+213: 	int			version;
+214: 
+215: 	char		name[MAX_QPATH];	// model name
+216: 
+## D:\openmohaa\code\qcommon\qfiles.h:251
+248: #define MDR_VERSION	2
+249: #define	MDR_MAX_BONES	128
+250: 
+251: typedef struct {
+252: 	int			boneIndex;	// these are indexes into the boneReferences,
+253: 	float		   boneWeight;		// not the global per-frame bone list
+254: 	vec3_t		offset;
+255: } mdrWeight_t;
+256: 
+## D:\openmohaa\code\qcommon\qfiles.h:257
+254: 	vec3_t		offset;
+255: } mdrWeight_t;
+256: 
+257: typedef struct {
+258: 	vec3_t		normal;
+259: 	vec2_t		texCoords;
+260: 	int			numWeights;
+261: 	mdrWeight_t	weights[1];		// variable sized
+262: } mdrVertex_t;
+## D:\openmohaa\code\qcommon\qfiles.h:264
+261: 	mdrWeight_t	weights[1];		// variable sized
+262: } mdrVertex_t;
+263: 
+264: typedef struct {
+265: 	int			indexes[3];
+266: } mdrTriangle_t;
+267: 
+268: typedef struct {
+269: 	int			ident;
+## D:\openmohaa\code\qcommon\qfiles.h:268
+265: 	int			indexes[3];
+266: } mdrTriangle_t;
+267: 
+268: typedef struct {
+269: 	int			ident;
+270: 
+271: 	char		name[MAX_QPATH];	// polyset name
+272: 	char		shader[MAX_QPATH];
+273: 	int			shaderIndex;	// for in-game use
+## D:\openmohaa\code\qcommon\qfiles.h:294
+291: 	int			ofsEnd;		// next surface follows
+292: } mdrSurface_t;
+293: 
+294: typedef struct {
+295: 	float		matrix[3][4];
+296: } mdrBone_t;
+297: 
+298: typedef struct {
+299: 	vec3_t		bounds[2];		// bounds of all surfaces of all LOD's for this frame
+## D:\openmohaa\code\qcommon\qfiles.h:298
+295: 	float		matrix[3][4];
+296: } mdrBone_t;
+297: 
+298: typedef struct {
+299: 	vec3_t		bounds[2];		// bounds of all surfaces of all LOD's for this frame
+300: 	vec3_t		localOrigin;		// midpoint of bounds, used for sphere cull
+301: 	float		radius;			// dist from localOrigin to corner
+302: 	char		name[16];
+303: 	mdrBone_t	bones[1];		// [numBones]
+## D:\openmohaa\code\qcommon\qfiles.h:306
+303: 	mdrBone_t	bones[1];		// [numBones]
+304: } mdrFrame_t;
+305: 
+306: typedef struct {
+307:         unsigned char Comp[24]; // MC_COMP_BYTES is in MatComp.h, but don't want to couple
+308: } mdrCompBone_t;
+309: 
+310: typedef struct {
+311:         vec3_t          bounds[2];		// bounds of all surfaces of all LOD's for this frame
+## D:\openmohaa\code\qcommon\qfiles.h:310
+307:         unsigned char Comp[24]; // MC_COMP_BYTES is in MatComp.h, but don't want to couple
+308: } mdrCompBone_t;
+309: 
+310: typedef struct {
+311:         vec3_t          bounds[2];		// bounds of all surfaces of all LOD's for this frame
+312:         vec3_t          localOrigin;		// midpoint of bounds, used for sphere cull
+313:         float           radius;			// dist from localOrigin to corner
+314:         mdrCompBone_t   bones[1];		// [numBones]
+315: } mdrCompFrame_t;
+## D:\openmohaa\code\qcommon\qfiles.h:317
+314:         mdrCompBone_t   bones[1];		// [numBones]
+315: } mdrCompFrame_t;
+316: 
+317: typedef struct {
+318: 	int			numSurfaces;
+319: 	int			ofsSurfaces;		// first surface, others follow
+320: 	int			ofsEnd;				// next lod follows
+321: } mdrLOD_t;
+322: 
+## D:\openmohaa\code\qcommon\qfiles.h:323
+320: 	int			ofsEnd;				// next lod follows
+321: } mdrLOD_t;
+322: 
+323: typedef struct {
+324:         int                     boneIndex;
+325:         char            name[32];
+326: } mdrTag_t;
+327: 
+328: typedef struct {
+## D:\openmohaa\code\qcommon\qfiles.h:328
+325:         char            name[32];
+326: } mdrTag_t;
+327: 
+328: typedef struct {
+329: 	int			ident;
+330: 	int			version;
+331: 
+332: 	char		name[MAX_QPATH];	// model name
+333: 
+## D:\openmohaa\code\qcommon\qfiles.h:462
+459: 	int numVertexData;
+460: } cStaticModel_t;
+461: 
+462: typedef struct {
+463: 	void	*buffer;
+464: 	int		length;
+465: } gamelump_t;
+466: 
+467: typedef struct {
+## D:\openmohaa\code\qcommon\qfiles.h:467
+464: 	int		length;
+465: } gamelump_t;
+466: 
+467: typedef struct {
+468: 	int		fileofs, filelen;
+469: } lump_t;
+470: 
+471: 
+472: #define LUMP_FOGS				0
+## D:\openmohaa\code\qcommon\qfiles.h:469
+466: 
+467: typedef struct {
+468: 	int		fileofs, filelen;
+469: } lump_t;
+470: 
+471: 
+472: #define LUMP_FOGS				0
+473: #define	LUMP_LIGHTGRID			0
+474: // new lump defines. lump numbers are different in mohaa
+## D:\openmohaa\code\qcommon\qfiles.h:472
+469: } lump_t;
+470: 
+471: 
+472: #define LUMP_FOGS				0
+473: #define	LUMP_LIGHTGRID			0
+474: // new lump defines. lump numbers are different in mohaa
+475: #define LUMP_SHADERS			0
+476: #define LUMP_PLANES				1
+477: #define LUMP_LIGHTMAPS			2
+## D:\openmohaa\code\qcommon\qfiles.h:473
+470: 
+471: 
+472: #define LUMP_FOGS				0
+473: #define	LUMP_LIGHTGRID			0
+474: // new lump defines. lump numbers are different in mohaa
+475: #define LUMP_SHADERS			0
+476: #define LUMP_PLANES				1
+477: #define LUMP_LIGHTMAPS			2
+478: #define LUMP_SURFACES			3
+## D:\openmohaa\code\qcommon\qfiles.h:475
+472: #define LUMP_FOGS				0
+473: #define	LUMP_LIGHTGRID			0
+474: // new lump defines. lump numbers are different in mohaa
+475: #define LUMP_SHADERS			0
+476: #define LUMP_PLANES				1
+477: #define LUMP_LIGHTMAPS			2
+478: #define LUMP_SURFACES			3
+479: #define LUMP_DRAWVERTS			4
+480: #define LUMP_DRAWINDEXES		5
+## D:\openmohaa\code\qcommon\qfiles.h:476
+473: #define	LUMP_LIGHTGRID			0
+474: // new lump defines. lump numbers are different in mohaa
+475: #define LUMP_SHADERS			0
+476: #define LUMP_PLANES				1
+477: #define LUMP_LIGHTMAPS			2
+478: #define LUMP_SURFACES			3
+479: #define LUMP_DRAWVERTS			4
+480: #define LUMP_DRAWINDEXES		5
+481: #define LUMP_LEAFBRUSHES		6
+## D:\openmohaa\code\qcommon\qfiles.h:477
+474: // new lump defines. lump numbers are different in mohaa
+475: #define LUMP_SHADERS			0
+476: #define LUMP_PLANES				1
+477: #define LUMP_LIGHTMAPS			2
+478: #define LUMP_SURFACES			3
+479: #define LUMP_DRAWVERTS			4
+480: #define LUMP_DRAWINDEXES		5
+481: #define LUMP_LEAFBRUSHES		6
+482: #define LUMP_LEAFSURFACES		7
+## D:\openmohaa\code\qcommon\qfiles.h:478
+475: #define LUMP_SHADERS			0
+476: #define LUMP_PLANES				1
+477: #define LUMP_LIGHTMAPS			2
+478: #define LUMP_SURFACES			3
+479: #define LUMP_DRAWVERTS			4
+480: #define LUMP_DRAWINDEXES		5
+481: #define LUMP_LEAFBRUSHES		6
+482: #define LUMP_LEAFSURFACES		7
+483: #define LUMP_LEAFS				8
+## D:\openmohaa\code\qcommon\qfiles.h:479
+476: #define LUMP_PLANES				1
+477: #define LUMP_LIGHTMAPS			2
+478: #define LUMP_SURFACES			3
+479: #define LUMP_DRAWVERTS			4
+480: #define LUMP_DRAWINDEXES		5
+481: #define LUMP_LEAFBRUSHES		6
+482: #define LUMP_LEAFSURFACES		7
+483: #define LUMP_LEAFS				8
+484: #define LUMP_NODES				9
+## D:\openmohaa\code\qcommon\qfiles.h:480
+477: #define LUMP_LIGHTMAPS			2
+478: #define LUMP_SURFACES			3
+479: #define LUMP_DRAWVERTS			4
+480: #define LUMP_DRAWINDEXES		5
+481: #define LUMP_LEAFBRUSHES		6
+482: #define LUMP_LEAFSURFACES		7
+483: #define LUMP_LEAFS				8
+484: #define LUMP_NODES				9
+485: #define LUMP_SIDEEQUATIONS		10
+## D:\openmohaa\code\qcommon\qfiles.h:481
+478: #define LUMP_SURFACES			3
+479: #define LUMP_DRAWVERTS			4
+480: #define LUMP_DRAWINDEXES		5
+481: #define LUMP_LEAFBRUSHES		6
+482: #define LUMP_LEAFSURFACES		7
+483: #define LUMP_LEAFS				8
+484: #define LUMP_NODES				9
+485: #define LUMP_SIDEEQUATIONS		10
+486: #define LUMP_BRUSHSIDES			11
+## D:\openmohaa\code\qcommon\qfiles.h:482
+479: #define LUMP_DRAWVERTS			4
+480: #define LUMP_DRAWINDEXES		5
+481: #define LUMP_LEAFBRUSHES		6
+482: #define LUMP_LEAFSURFACES		7
+483: #define LUMP_LEAFS				8
+484: #define LUMP_NODES				9
+485: #define LUMP_SIDEEQUATIONS		10
+486: #define LUMP_BRUSHSIDES			11
+487: #define LUMP_BRUSHES			12
+## D:\openmohaa\code\qcommon\qfiles.h:483
+480: #define LUMP_DRAWINDEXES		5
+481: #define LUMP_LEAFBRUSHES		6
+482: #define LUMP_LEAFSURFACES		7
+483: #define LUMP_LEAFS				8
+484: #define LUMP_NODES				9
+485: #define LUMP_SIDEEQUATIONS		10
+486: #define LUMP_BRUSHSIDES			11
+487: #define LUMP_BRUSHES			12
+488: /*
+## D:\openmohaa\code\qcommon\qfiles.h:484
+481: #define LUMP_LEAFBRUSHES		6
+482: #define LUMP_LEAFSURFACES		7
+483: #define LUMP_LEAFS				8
+484: #define LUMP_NODES				9
+485: #define LUMP_SIDEEQUATIONS		10
+486: #define LUMP_BRUSHSIDES			11
+487: #define LUMP_BRUSHES			12
+488: /*
+489: #define LUMP_FOGS				13
+## D:\openmohaa\code\qcommon\qfiles.h:485
+482: #define LUMP_LEAFSURFACES		7
+483: #define LUMP_LEAFS				8
+484: #define LUMP_NODES				9
+485: #define LUMP_SIDEEQUATIONS		10
+486: #define LUMP_BRUSHSIDES			11
+487: #define LUMP_BRUSHES			12
+488: /*
+489: #define LUMP_FOGS				13
+490: LUMP_FOGS was removed in BSP version 19, since moh version 1.10
+## D:\openmohaa\code\qcommon\qfiles.h:486
+483: #define LUMP_LEAFS				8
+484: #define LUMP_NODES				9
+485: #define LUMP_SIDEEQUATIONS		10
+486: #define LUMP_BRUSHSIDES			11
+487: #define LUMP_BRUSHES			12
+488: /*
+489: #define LUMP_FOGS				13
+490: LUMP_FOGS was removed in BSP version 19, since moh version 1.10
+491: */
+## D:\openmohaa\code\qcommon\qfiles.h:487
+484: #define LUMP_NODES				9
+485: #define LUMP_SIDEEQUATIONS		10
+486: #define LUMP_BRUSHSIDES			11
+487: #define LUMP_BRUSHES			12
+488: /*
+489: #define LUMP_FOGS				13
+490: LUMP_FOGS was removed in BSP version 19, since moh version 1.10
+491: */
+492: #define LUMP_MODELS				13
+## D:\openmohaa\code\qcommon\qfiles.h:489
+486: #define LUMP_BRUSHSIDES			11
+487: #define LUMP_BRUSHES			12
+488: /*
+489: #define LUMP_FOGS				13
+490: LUMP_FOGS was removed in BSP version 19, since moh version 1.10
+491: */
+492: #define LUMP_MODELS				13
+493: #define LUMP_ENTITIES			14
+494: #define LUMP_VISIBILITY			15
+## D:\openmohaa\code\qcommon\qfiles.h:492
+489: #define LUMP_FOGS				13
+490: LUMP_FOGS was removed in BSP version 19, since moh version 1.10
+491: */
+492: #define LUMP_MODELS				13
+493: #define LUMP_ENTITIES			14
+494: #define LUMP_VISIBILITY			15
+495: #define LUMP_LIGHTGRIDPALETTE	16
+496: #define LUMP_LIGHTGRIDOFFSETS	17
+497: #define LUMP_LIGHTGRIDDATA		18
+## D:\openmohaa\code\qcommon\qfiles.h:493
+490: LUMP_FOGS was removed in BSP version 19, since moh version 1.10
+491: */
+492: #define LUMP_MODELS				13
+493: #define LUMP_ENTITIES			14
+494: #define LUMP_VISIBILITY			15
+495: #define LUMP_LIGHTGRIDPALETTE	16
+496: #define LUMP_LIGHTGRIDOFFSETS	17
+497: #define LUMP_LIGHTGRIDDATA		18
+498: #define LUMP_SPHERELIGHTS		19
+## D:\openmohaa\code\qcommon\qfiles.h:494
+491: */
+492: #define LUMP_MODELS				13
+493: #define LUMP_ENTITIES			14
+494: #define LUMP_VISIBILITY			15
+495: #define LUMP_LIGHTGRIDPALETTE	16
+496: #define LUMP_LIGHTGRIDOFFSETS	17
+497: #define LUMP_LIGHTGRIDDATA		18
+498: #define LUMP_SPHERELIGHTS		19
+499: #define LUMP_SPHERELIGHTVIS		20
+## D:\openmohaa\code\qcommon\qfiles.h:495
+492: #define LUMP_MODELS				13
+493: #define LUMP_ENTITIES			14
+494: #define LUMP_VISIBILITY			15
+495: #define LUMP_LIGHTGRIDPALETTE	16
+496: #define LUMP_LIGHTGRIDOFFSETS	17
+497: #define LUMP_LIGHTGRIDDATA		18
+498: #define LUMP_SPHERELIGHTS		19
+499: #define LUMP_SPHERELIGHTVIS		20
+500: #define LUMP_LIGHTDEFS			21
+## D:\openmohaa\code\qcommon\qfiles.h:496
+493: #define LUMP_ENTITIES			14
+494: #define LUMP_VISIBILITY			15
+495: #define LUMP_LIGHTGRIDPALETTE	16
+496: #define LUMP_LIGHTGRIDOFFSETS	17
+497: #define LUMP_LIGHTGRIDDATA		18
+498: #define LUMP_SPHERELIGHTS		19
+499: #define LUMP_SPHERELIGHTVIS		20
+500: #define LUMP_LIGHTDEFS			21
+501: #define LUMP_TERRAIN			22
+## D:\openmohaa\code\qcommon\qfiles.h:497
+494: #define LUMP_VISIBILITY			15
+495: #define LUMP_LIGHTGRIDPALETTE	16
+496: #define LUMP_LIGHTGRIDOFFSETS	17
+497: #define LUMP_LIGHTGRIDDATA		18
+498: #define LUMP_SPHERELIGHTS		19
+499: #define LUMP_SPHERELIGHTVIS		20
+500: #define LUMP_LIGHTDEFS			21
+501: #define LUMP_TERRAIN			22
+502: #define LUMP_TERRAININDEXES		23
+## D:\openmohaa\code\qcommon\qfiles.h:498
+495: #define LUMP_LIGHTGRIDPALETTE	16
+496: #define LUMP_LIGHTGRIDOFFSETS	17
+497: #define LUMP_LIGHTGRIDDATA		18
+498: #define LUMP_SPHERELIGHTS		19
+499: #define LUMP_SPHERELIGHTVIS		20
+500: #define LUMP_LIGHTDEFS			21
+501: #define LUMP_TERRAIN			22
+502: #define LUMP_TERRAININDEXES		23
+503: #define LUMP_STATICMODELDATA	24
+## D:\openmohaa\code\qcommon\qfiles.h:499
+496: #define LUMP_LIGHTGRIDOFFSETS	17
+497: #define LUMP_LIGHTGRIDDATA		18
+498: #define LUMP_SPHERELIGHTS		19
+499: #define LUMP_SPHERELIGHTVIS		20
+500: #define LUMP_LIGHTDEFS			21
+501: #define LUMP_TERRAIN			22
+502: #define LUMP_TERRAININDEXES		23
+503: #define LUMP_STATICMODELDATA	24
+504: #define LUMP_STATICMODELDEF		25
+## D:\openmohaa\code\qcommon\qfiles.h:500
+497: #define LUMP_LIGHTGRIDDATA		18
+498: #define LUMP_SPHERELIGHTS		19
+499: #define LUMP_SPHERELIGHTVIS		20
+500: #define LUMP_LIGHTDEFS			21
+501: #define LUMP_TERRAIN			22
+502: #define LUMP_TERRAININDEXES		23
+503: #define LUMP_STATICMODELDATA	24
+504: #define LUMP_STATICMODELDEF		25
+505: #define LUMP_STATICMODELINDEXES	26
+## D:\openmohaa\code\qcommon\qfiles.h:501
+498: #define LUMP_SPHERELIGHTS		19
+499: #define LUMP_SPHERELIGHTVIS		20
+500: #define LUMP_LIGHTDEFS			21
+501: #define LUMP_TERRAIN			22
+502: #define LUMP_TERRAININDEXES		23
+503: #define LUMP_STATICMODELDATA	24
+504: #define LUMP_STATICMODELDEF		25
+505: #define LUMP_STATICMODELINDEXES	26
+506: #define LUMP_DUMMY10			27
+## D:\openmohaa\code\qcommon\qfiles.h:502
+499: #define LUMP_SPHERELIGHTVIS		20
+500: #define LUMP_LIGHTDEFS			21
+501: #define LUMP_TERRAIN			22
+502: #define LUMP_TERRAININDEXES		23
+503: #define LUMP_STATICMODELDATA	24
+504: #define LUMP_STATICMODELDEF		25
+505: #define LUMP_STATICMODELINDEXES	26
+506: #define LUMP_DUMMY10			27
+507: 
+## D:\openmohaa\code\qcommon\qfiles.h:503
+500: #define LUMP_LIGHTDEFS			21
+501: #define LUMP_TERRAIN			22
+502: #define LUMP_TERRAININDEXES		23
+503: #define LUMP_STATICMODELDATA	24
+504: #define LUMP_STATICMODELDEF		25
+505: #define LUMP_STATICMODELINDEXES	26
+506: #define LUMP_DUMMY10			27
+507: 
+508: #define	HEADER_LUMPS		28
+## D:\openmohaa\code\qcommon\qfiles.h:504
+501: #define LUMP_TERRAIN			22
+502: #define LUMP_TERRAININDEXES		23
+503: #define LUMP_STATICMODELDATA	24
+504: #define LUMP_STATICMODELDEF		25
+505: #define LUMP_STATICMODELINDEXES	26
+506: #define LUMP_DUMMY10			27
+507: 
+508: #define	HEADER_LUMPS		28
+509: 
+## D:\openmohaa\code\qcommon\qfiles.h:505
+502: #define LUMP_TERRAININDEXES		23
+503: #define LUMP_STATICMODELDATA	24
+504: #define LUMP_STATICMODELDEF		25
+505: #define LUMP_STATICMODELINDEXES	26
+506: #define LUMP_DUMMY10			27
+507: 
+508: #define	HEADER_LUMPS		28
+509: 
+510: typedef struct {
+## D:\openmohaa\code\qcommon\qfiles.h:506
+503: #define LUMP_STATICMODELDATA	24
+504: #define LUMP_STATICMODELDEF		25
+505: #define LUMP_STATICMODELINDEXES	26
+506: #define LUMP_DUMMY10			27
+507: 
+508: #define	HEADER_LUMPS		28
+509: 
+510: typedef struct {
+511: 	int			ident;
+## D:\openmohaa\code\qcommon\qfiles.h:510
+507: 
+508: #define	HEADER_LUMPS		28
+509: 
+510: typedef struct {
+511: 	int			ident;
+512: 	int			version;
+513: 	int			checksum;
+514: 
+515: 	lump_t		lumps[ HEADER_LUMPS ];
+## D:\openmohaa\code\qcommon\qfiles.h:516
+513: 	int			checksum;
+514: 
+515: 	lump_t		lumps[ HEADER_LUMPS ];
+516: } dheader_t;
+517: 
+518: static lump_t *Q_GetLumpByVersion(dheader_t *header, int lump)
+519: {
+520: 	if (header->version <= 18) {
+521: 		if (lump > LUMP_BRUSHES) {
+## D:\openmohaa\code\qcommon\qfiles.h:530
+527:     return &header->lumps[lump];
+528: }
+529: 
+530: typedef struct {
+531: 	float		mins[3], maxs[3];
+532: 	int			firstSurface, numSurfaces;
+533: 	int			firstBrush, numBrushes;
+534: } dmodel_t;
+535: 
+## D:\openmohaa\code\qcommon\qfiles.h:536
+533: 	int			firstBrush, numBrushes;
+534: } dmodel_t;
+535: 
+536: typedef struct {
+537: 	char shader[ 64 ];
+538: 	int surfaceFlags;
+539: 	int contentFlags;
+540: 	int subdivisions;
+541: 	char fenceMaskImage[ 64 ];
+## D:\openmohaa\code\qcommon\qfiles.h:552
+549: 
+550: // planes x^1 is allways the opposite of plane x
+551: 
+552: typedef struct {
+553: 	float		normal[3];
+554: 	float		dist;
+555: } dplane_t;
+556: 
+557: typedef struct {
+## D:\openmohaa\code\qcommon\qfiles.h:557
+554: 	float		dist;
+555: } dplane_t;
+556: 
+557: typedef struct {
+558: 	int			planeNum;
+559: 	int			children[2];	// negative numbers are -(leafs+1), not nodes
+560: 	int			mins[3];		// for frustom culling
+561: 	int			maxs[3];
+562: } dnode_t;
+## D:\openmohaa\code\qcommon\qfiles.h:564
+561: 	int			maxs[3];
+562: } dnode_t;
+563: 
+564: typedef struct {
+565: 	int			cluster;			// -1 = opaque cluster (do I still store these?)
+566: 	int			area;
+567: 
+568: 	int			mins[3];			// for frustum culling
+569: 	int			maxs[3];
+## D:\openmohaa\code\qcommon\qfiles.h:585
+582: } dleaf_t;
+583: 
+584: // old leaf version
+585: typedef struct {
+586: 	int		cluster;
+587: 	int		area;
+588: 
+589: 	int		mins[ 3 ];
+590: 	int		maxs[ 3 ];
+## D:\openmohaa\code\qcommon\qfiles.h:605
+602: // su44: It seems that sideEquations 
+603: // are somehow related to fencemasks...
+604: // MoHAA loads them only in CM (CM_LoadMap).
+605: typedef struct {
+606: 	float fSeq[ 4 ];
+607: 	float fTeq[ 4 ];
+608: } dsideequation_t;
+609: 
+610: typedef struct {
+## D:\openmohaa\code\qcommon\qfiles.h:610
+607: 	float fTeq[ 4 ];
+608: } dsideequation_t;
+609: 
+610: typedef struct {
+611: 	int			planeNum;			// positive plane side faces out of the leaf
+612: 	int			shaderNum;
+613: 
+614: 	//added for mohaa
+615: 	int			equationNum; // su44: that's a dsideEquation_t index
+## D:\openmohaa\code\qcommon\qfiles.h:618
+615: 	int			equationNum; // su44: that's a dsideEquation_t index
+616: } dbrushside_t;
+617: 
+618: typedef struct {
+619: 	int			firstSide;
+620: 	int			numSides;
+621: 	int			shaderNum;		// the shader that determines the contents flags
+622: } dbrush_t;
+623: 
+## D:\openmohaa\code\qcommon\qfiles.h:624
+621: 	int			shaderNum;		// the shader that determines the contents flags
+622: } dbrush_t;
+623: 
+624: typedef struct {
+625: 	char		shader[MAX_QPATH];
+626: 	int			brushNum;
+627: 	int			visibleSide;	// the brush side that ray tests need to clip against (-1 == none)
+628: } dfog_t;
+629: 
+## D:\openmohaa\code\qcommon\qfiles.h:630
+627: 	int			visibleSide;	// the brush side that ray tests need to clip against (-1 == none)
+628: } dfog_t;
+629: 
+630: typedef struct {
+631: 	vec3_t		xyz;
+632: 	float		st[2];
+633: 	float		lightmap[2];
+634: 	vec3_t		normal;
+635: 	byte		color[4];
+## D:\openmohaa\code\qcommon\qfiles.h:638
+635: 	byte		color[4];
+636: } drawVert_t;
+637: 
+638: typedef struct {
+639: 	vec3_t		xyz;
+640: 	float		st[ 2 ];
+641: 	int			collapseMap;
+642: 	float		lodExtra; // depending on the vertexNumber, will be 0 - minLOD, 1 - lodScale or 2 - lodBias
+643: 	vec3_t		normal;
+## D:\openmohaa\code\qcommon\qfiles.h:658
+655: 	MST_TERRAIN
+656: } mapSurfaceType_t;
+657: 
+658: typedef struct {
+659: 	int			shaderNum;
+660: 	int			fogNum;
+661: 	int			surfaceType;
+662: 
+663: 	int			firstVert;
+## D:\openmohaa\code\qcommon\qfiles.h:709
+706: 	short numVertexData;
+707: } dstaticModel_t;
+708: 
+709: typedef struct {
+710: 	float origin[3];
+711: 	float color[3];
+712: 	float intensity;
+713: 	int leaf;
+714: 	qboolean needs_trace;
+## D:\openmohaa\code\qcommon\qfiles.h:720
+717: 	float spot_radiusbydistance;
+718: } dspherel_t;
+719: 
+720: typedef struct {
+721: 	float origin[3];
+722: 	float axis[3];
+723: 	int bounds[3];
+724: } dlightGrid_t;
+725: 
+## D:\openmohaa\code\qcommon\qfiles.h:726
+723: 	int bounds[3];
+724: } dlightGrid_t;
+725: 
+726: typedef struct {
+727: 	int lightIntensity;
+728: 	int lightAngle;
+729: 	int lightmapResolution;
+730: 	qboolean twoSided;
+731: 	qboolean lightLinear;
+## D:\openmohaa\code\qcommon\qfiles.h:740
+737: 	qboolean autosprite;
+738: } dlightdef_t;
+739: 
+740: typedef struct {
+741: 	vec3_t origin;
+742: 	vec3_t color;
+743: 	float intensity;
+744: 	int leaf;
+745: 	qboolean needs_trace;
+## D:\openmohaa\code\qcommon\unzip.c:94
+91: 
+92: /* file_in_zip_read_info_s contain internal information about a file in zipfile,
+93:     when reading and decompress it */
+94: typedef struct
+95: {
+96:     char  *read_buffer;         /* internal buffer for compressed data */
+97:     z_stream stream;            /* zLib stream structure for inflate */
+98: 
+99:     uLong pos_in_zipfile;       /* position in byte on the zipfile, for fseek*/
+## D:\openmohaa\code\qcommon\unzip.c:120
+117: 
+118: /* unz_s contain internal information about the zipfile
+119: */
+120: typedef struct
+121: {
+122:     zlib_filefunc_def z_filefunc;
+123:     voidpf filestream;        /* io structore of the zipfile */
+124:     unz_global_info gi;       /* public global information */
+125:     uLong byte_before_the_zipfile;/* byte before the zipfile, (>0 for sfx)*/
+######## 3) Rust: formato FAKK
+## D:\LookingGlass-PTBR\src\main.rs:1402
+1399:     }
+1400:     if mode == "inspect" {
+1401:         let map = Bsp::parse(&assets.read(&format!("maps/{}.bsp", o.map))?)?;
+1402:         println!("Map: {}\nFormat: FAKK 42\nArchives: {}\nVertices: {}\nSurfaces: {} (world: {})\nEntities: {}\nLightmaps: {}\nSpawn: {:?}",o.map,assets.pack_count(),map.vertices.len(),map.surfaces.len(),map.world_surfaces.len(),map.entities.len(),map.lightmaps.len()/49152,map.spawn());
+1403:         return Ok(());
+1404:     }
+1405:     crate::platform::mq::Window::from_config(viewer::config(), async move {
+1406:         if let Err(e) = viewer::run(assets, o).await {
+1407:             eprintln!("Viewer failed: {e:#}");
+1408:             std::process::exit(1);
+1409:         }
+1410:     });
+1411:     Ok(())
+1412: }

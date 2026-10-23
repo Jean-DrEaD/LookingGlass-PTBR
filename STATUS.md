@@ -247,3 +247,9 @@
 ## Lote 15y-g (2026-10-23 14:21)
 - 15y-f: trava em SV_Startup (sv_init.c:454); suspeitos = SV_InitGamespy (sockets qr2 sem NET) e NET_JoinMulticast6
 - 15y-g: ambos sob #ifndef NXDK (regra SEM REDE) + breadcrumbs 'LG: st <linha>' em cada chamada do SV_Startup
+
+## Lote 15y-h (2026-10-23 14:32)
+- 15y-g xemu: SV_Startup OK sem GameSpy/multicast6 (causa da trava); InitGame/CleanupGame do game rodam; pak0.pk3 aberto
+- CM_LoadMap: 'centipede1.bsp has wrong version number (42 should be between 17 and 21)' -> previsto (15y-a); servidor encerra limpo
+- models\player err=3 = esperado (asset MOHAA, nao existe no Alice)
+- 15y-h: coleta p/ loader FAKK (checagens versao, qfiles.h lumps, Rust FAKK) em docs/probes/lote15y-h-bsp.log; lote 16 = loader BSP FAKK v42
