@@ -6,6 +6,8 @@
 - Depois: Sys_Error sem lixo na tela, remover /FORCE:MULTIPLE, mbtowc/strtold (stubs assert do nxdk)
 - Inicio de chat: & D:\LookingGlass-PTBR\tools\lg-status.ps1 -Show
 - Regra: comandos sempre completos
+- SINGLE PLAYER SEM REDE: remover lwIP/libnxdk_net/gcd_*/winsock do link (15y)
+- Repos: port = github.com/Jean-DrEaD/LookingGlass-PTBR (xbox); engine = github.com/Jean-DrEaD/openmohaa (xbox); upstream = openmoh/openmohaa (nunca push)
 - Pipeline do lote (TODOS os passos): 0) Docker Desktop aberto (docker info) -> 1) probe.ps1 (build omohaaded.exe) -> 2) cxbe no container (exe -> xbe-out\default.xbe) -> 3) copiar p/ iso-stage + LastWriteTime -> 4) extract-xiso -> alice-test.iso -> 5) commit+push
 - probe.ps1 NAO gera XBE: o cxbe tem que estar no script do lote
 <!-- FLUXO-FIM -->
@@ -18,6 +20,7 @@
 - Todo lote: `status-check` antes -> abrir `[..]` -> trabalho -> commit+push -> fechar `[ok] <hash>` -> push -> `status-check` depois.
 - Erro: colar as ultimas 30 linhas do log/compilador.
 - Assets nunca no repositorio; o usuario fornece os PK3.
+- SINGLE PLAYER SEM REDE: eliminar toda a pilha de rede (lwIP, libnxdk_net, gcd_*/GameSpy, shim winsock, NET_* no-op) p/ economizar RAM/CPU e evitar travas
 
 ## Hardware
 - Xbox original, CerBios, **128 MB**, IP 192.168.1.100, FTP via FileZilla. Pentium III 733 MHz, NV2A.
@@ -29,7 +32,8 @@
 | Local | O que |
 |---|---|
 | `D:\ioQuake3-Xbox` | fork Mayo1970/ioQuake3-Xbox; branch `alice` congelado (ioq3 incompativel com FAKK2) |
-| `D:\LookingGlass-PTBR` (branch `xbox`) | motor Rust + docs |
+| `D:\LookingGlass-PTBR` (branch `xbox`) | PORT: motor Rust + docs + tools/shims (github Jean-DrEaD/LookingGlass-PTBR) |
+| `D:\openmohaa` (branch `xbox`) | engine: fork github Jean-DrEaD/openmohaa; upstream = oficial (nunca push) |
 
 ## Validado
 - nxdk/Docker compila; o triangulo do RXDK rodou; o OpenArena roda no console (128 MB detectados).
@@ -189,3 +193,10 @@
 ## Lote 15w4 (2026-10-23 11:43)
 - Regra fixa: single player sem rede -> pilha de rede sera eliminada (15x)
 - openmohaa: fork Jean-DrEaD/openmohaa criado; origin=fork, upstream=oficial; commits LG na branch xbox
+
+## Lote 15x (2026-10-23 11:54)
+- 1a tentativa: Select-String posicional + Set-Content sem -NoNewline -> nada aplicado; regra SEM REDE pulada (-notmatch case-insensitive)
+- Regra: editar arquivos com [IO.File]::ReadAllText/WriteAllText + caminho absoluto; Select-String sempre com -Path/-Pattern
+- 2a: net_ip.c:1671 'extern __stdcall Sleep' conflita com windows.h do nxdk (sem calling convention) -> usar Sleep do windows.h
+- 15x: NET_Sleep -> Sleep(msec) sob NXDK (sem select); heartbeat 'LG: frame N' a cada 600 frames no Com_Frame
+- 15y (planejado): tirar libnxdk_net/lwIP do probe.ps1 + GameSpy do link
