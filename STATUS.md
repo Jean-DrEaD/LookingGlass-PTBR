@@ -219,3 +219,9 @@
 ## Lote 15y-a (2026-10-23 12:25)
 - Inventario (sem build): refs de rede em probe.ps1/CMake/shims, uso GameSpy no codigo, argv do sys_xbox.c, mapas .bsp + ident/versao BSP
 - Log: docs/probes/lote15y-inventario.log; 15y-b = edicoes exatas + build + teste +map
+
+## Lote 15y-b (2026-10-23 12:33)
+- 15y-a: BSP Alice = ident FAKK ver 42 (36 mapas em pak0.pk3); OpenMoHAA espera '2015' v17-21 -> loader FAKK necessario (lote 16)
+- 15y-a: sys_xbox.c sem main/argv -> mapa disparado por Cbuf_AddText('map centipede1') no frame 40 (common.c)
+- 15y-b: libnxdk_net removido do link: SEM_NET=False (se False: simbolos em docs/probes/lote15y-semnet-simbolos.log, probe restaurado)
+- 15y-c (planejado): GameSpy fora (shared_sources.cmake/gamespy.cmake sob NXDK) + include lwIP fora
