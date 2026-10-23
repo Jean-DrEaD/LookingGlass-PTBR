@@ -1,0 +1,181 @@
+## scriptmaster.cpp 870-935
+870:         gi.Error(ERR_DROP, "Script filename '%s' exceeds maximum length of %d\n", filename.c_str(), MAX_QPATH);
+871:     }
+872: 
+873:     Q_strncpyz(filepath, filename.c_str(), sizeof(filepath));
+874:     gi.FS_CanonicalFilename(filepath);
+875:     filename = filepath;
+876: 
+877:     scr = m_GameScripts[StringDict.findKeyIndex(filename)];
+878: 
+879:     if (scr != NULL) {
+880:         return scr;
+881:     }
+882: 
+883:     scr = new GameScript(filename);
+884: 
+885:     m_GameScripts[StringDict.addKeyIndex(filename)] = scr;
+886: 
+887:     if (GetCompiledScript(scr)) {
+888:         scr->m_Filename = Director.AddString(filename);
+889:         return scr;
+890:     }
+891: 
+892:     sourceLength = gi.FS_ReadFile(filename.c_str(), &sourceBuffer, true);
+893: 
+894:     if (sourceLength == -1) {
+895:         throw ScriptException("Can't find '%s'\n", filename.c_str());
+896:     }
+897: 
+898:     scr->Load(sourceBuffer, sourceLength);
+899: 
+900:     gi.FS_FreeFile(sourceBuffer);
+901: 
+902:     if (!scr->successCompile) {
+903:         throw ScriptException("Script '%s' was not properly loaded", filename.c_str());
+904:     }
+905: 
+906:     return scr;
+907: }
+908: 
+909: GameScript *ScriptMaster::GetGameScript(const_str filename, qboolean recompile)
+910: {
+911:     return GetGameScript(Director.GetString(filename), recompile);
+912: }
+913: 
+914: GameScript *ScriptMaster::GetGameScript(str filename, qboolean recompile)
+915: {
+916:     const_str   s   = StringDict.findKeyIndex(filename);
+917:     GameScript *scr = m_GameScripts[s];
+918:     int         i;
+919: 
+920:     if (scr != NULL && !recompile) {
+921:         if (!scr->successCompile) {
+922:             throw ScriptException("Script '%s' was not properly loaded\n", filename.c_str());
+923:         }
+924: 
+925:         return scr;
+926:     } else {
+927:         if (scr && recompile) {
+928:             Container<ScriptClass *>         list;
+929:             MEM_BlockAlloc_enum<ScriptClass> en = ScriptClass_allocator;
+930:             ScriptClass                     *scriptClass;
+931:             m_GameScripts[s] = NULL;
+932: 
+933:             for (scriptClass = en.NextElement(); scriptClass != NULL; scriptClass = en.NextElement()) {
+934:                 if (scriptClass->GetScript() == scr) {
+935:                     list.AddObject(scriptClass);
+## chamadores GetGameScript / GetScript
+fgame\g_utils.cpp:1616: Director.GetScript(filename);
+fgame\gamescript.cpp:663: scr = Director.GetScript(filename);
+fgame\gamescript.cpp:1013: script  = level.m_mapscript;
+fgame\gamescript.cpp:1017: m_Script = Director.GetGameScript(script);
+fgame\gamescript.cpp:1038: m_Script = Director.GetGameScript(label.stringValue());
+fgame\gamescript.cpp:1042: m_Script = Director.GetGameScript(label.constStringValue());
+fgame\gamescript.cpp:1055: m_Script = Director.GetGameScript(script->constStringValue());
+fgame\gamescript.cpp:1057: m_Script = Director.GetGameScript(script->stringValue());
+fgame\gamescript.cpp:1123: m_Script = Director.GetGameScript(script);
+fgame\gamescript.cpp:1158: m_Script = Director.GetGameScript(script->constStringValue());
+fgame\gamescript.cpp:1160: m_Script = Director.GetGameScript(script->stringValue());
+fgame\level.cpp:1496: script = Director.GetScript(m_mapscript);
+fgame\level.cpp:1498: gi.DPrintf("Adding script: '%s'\n", m_mapscript.c_str());
+fgame\level.cpp:1501: Director.ExecuteThread(m_mapscript);
+fgame\level.cpp:1588: m_mapscript      = "maps/" + level_name + ".scr";
+fgame\level.cpp:1626: Director.GetScript(filename);
+script\scriptclass.cpp:208: scr = Director.GetGameScript(script->constStringValue());
+script\scriptclass.cpp:210: scr = Director.GetGameScript(script->stringValue());
+script\scriptclass.cpp:237: scr = Director.GetGameScript(label.constStringValue());
+script\scriptclass.cpp:239: scr = Director.GetGameScript(label.stringValue());
+script\scriptclass.cpp:247: scr = Director.GetGameScript(script->constStringValue());
+script\scriptclass.cpp:249: scr = Director.GetGameScript(script->stringValue());
+script\scriptcompiler.cpp:1666: GameScript *gameScript = Director.GetGameScript(filename);
+corepp\listener.cpp:4688: scr = Director.GetGameScript(label.constStringValue());
+corepp\listener.cpp:4690: scr = Director.GetGameScript(label.stringValue());
+corepp\listener.cpp:4698: scr = Director.GetGameScript(script->constStringValue());
+corepp\listener.cpp:4700: scr = Director.GetGameScript(script->stringValue());
+corepp\listener.cpp:4740: scr = Director.GetGameScript(script->constStringValue());
+corepp\listener.cpp:4742: scr = Director.GetGameScript(script->stringValue());
+## Rust: arquivos de script/VM
+src\campaign_chain\script_facts.rs 304 linhas
+## Rust: refs .scr / waitForPlayer / opcodes
+crates\lg-core\src\event.rs:929: fn disabled_receivers_drop_events_and_cooldowns_survive_restore() {
+crates\lg-core\src\levels_wchess1_graph.rs:20: name: "bishop_start_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:29: name: "bishop_1_2_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:38: name: "bishop_2_1_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:47: name: "bishop_2_3_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:56: name: "bishop_3_2_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:65: name: "bishop_3_4_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:74: name: "bishop_3_5_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:83: name: "bishop_5_3_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:92: name: "bishop_5_10_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:101: name: "bishop_5_11_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:110: name: "bishop_7_12_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:119: name: "bishop_7_13_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:128: name: "bishop_10_4_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:137: name: "bishop_10_5_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:146: name: "bishop_10_14_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:155: name: "bishop_10_15_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:164: name: "bishop_12_6_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:173: name: "bishop_12_7_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:182: name: "bishop_12_16_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:191: name: "bishop_12_17_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:200: name: "bishop_13_7_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:209: name: "bishop_13_8_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:218: name: "bishop_13_17_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:227: name: "bishop_13_18_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:236: name: "bishop_14_9_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:245: name: "bishop_14_10_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:254: name: "bishop_14_19_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:263: name: "bishop_14_20_thread",
+crates\lg-core\src\levels_wchess1_graph.rs:272: name: "bishop_15_10_thread",
+## .scr no pak0: 73 arquivos, 844 KB
+global/emitters.scr: 1
+global/giveall.scr: 1
+global/inventory.scr: 1
+global/old: 1
+maps/centipede1.scr: 1
+maps/centipede2.scr: 1
+maps/cinematics: 24
+maps/document.scr: 1
+maps/facade.scr: 1
+maps/fortress1.scr: 1
+maps/fortress2.scr: 1
+maps/funhouse.scr: 1
+maps/garden1.scr: 1
+maps/garden2.scr: 1
+maps/garden3.scr: 1
+maps/garden4.scr: 1
+maps/grounds1.scr: 1
+maps/grounds2.scr: 1
+maps/gvillage.scr: 1
+maps/hatter1.scr: 1
+maps/hatter2.scr: 1
+maps/hedge1.scr: 1
+maps/hedge2.scr: 1
+maps/hedge3.scr: 1
+maps/jlair1.scr: 1
+maps/jlair2.scr: 1
+maps/keep.scr: 1
+maps/oldqlair.scr: 1
+maps/pandemonium.scr: 1
+maps/potears1.scr: 1
+maps/potears2.scr: 1
+maps/potears3.scr: 1
+maps/qlair.scr: 1
+maps/rchess1.scr: 1
+maps/skool1.scr: 1
+maps/skool2.scr: 1
+maps/tower1.scr: 1
+maps/tower2.scr: 1
+maps/tower3.scr: 1
+maps/utemple.scr: 1
+maps/wchess1.scr: 1
+maps/wchess2.scr: 1
+maps/wforest.scr: 1
+scripts/cinematics.scr: 1
+scripts/csb.scr: 1
+scripts/sound.scr: 1
+scripts/utils.scr: 1
+ui/bind.scr: 1
+ui/keybind.scr: 1
+ui/maplist.scr: 1

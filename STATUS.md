@@ -375,3 +375,8 @@
 - Em seguida: parse error 'unexpected TOKEN_RIGHT_BRACKET' -> SE "Script 'maps/centipede1.scr' was not properly loaded" -> throw
 - Causa raiz do 'sem thread': level script (sintaxe FAKK2) nao compila no parser MOHAA -> sem thread do mapa
 - 16v: coleta .scr (pk3) + tokens lexer/gramatica em docs/probes/lote16v-scr.log, sem build
+
+## Lote 16w (2026-10-23 18:50)
+- 16v: centipede1.scr = linguagem C-like Ritual (void main(), tipos string/entity/float, for(;;), #include) -> INCOMPATIVEL com Morpheus (MOHAA); '()' vazio = TOKEN_RIGHT_BRACKET
+- Decisao: precisa interpretador proprio do script Alice (lote 17); 16x = pular level script sem throw
+- 16w: coleta scriptmaster 870-935 + chamadores + VM no Rust + inventario .scr (docs/probes/lote16w-script.log), sem build
