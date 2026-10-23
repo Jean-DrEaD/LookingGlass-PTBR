@@ -1,0 +1,144 @@
+## corepp\listener.cpp:576
+576: void L_ProcessPendingEvents()
+577: {
+578:     EventQueueNode *node;
+579: 
+580:     Listener::ProcessingEvents = true;
+581: 
+582:     int t = EVENT_msec;
+583:     while (!LL_Empty(&Event::EventQueue, next, prev)) {
+584:         Listener *obj;
+585: 
+586:         node = Event::EventQueue.next;
+587: 
+588:         assert(node);
+589: 
+590:         obj = node->GetSourceObject();
+591: 
+592:         assert(obj);
+593: 
+594:         if (node->inttime > t) {
+595:             break;
+596:         }
+597: 
+598:         // the event is removed from its list
+599:         LL_Remove(node, next, prev);
+600:         //gi.DPrintf2("Event: %s\n", node->event->getName().c_str());
+601: 
+602:         // ProcessEvent will dispose of this event when it is done
+603:         obj->ProcessEvent(node->event);
+604: 
+605:         delete node;
+606:     }
+607: 
+608:     Listener::ProcessingEvents = false;
+609: }
+610: 
+611: void L_ShutdownEvents(void)
+612: {
+613:     if (!Listener::EventSystemStarted) {
+614:         return;
+615:     }
+616: 
+617:     L_ClearEventList();
+618: 
+619:     Event::commandList.clear();
+620:     Event::eventDefList.clear();
+621: #ifdef WITH_SCRIPT_ENGINE
+622:     Event::normalCommandList.clear();
+623:     Event::returnCommandList.clear();
+624:     Event::getterCommandList.clear();
+625:     Event::setterCommandList.clear();
+626: #endif
+627: 
+628:     Listener::EventSystemStarted = false;
+629: }
+630: 
+631: //===========================================================================
+632: // EventArgDef
+633: //===========================================================================
+634: 
+635: struct EventCompare
+636: {
+637: 	bool operator()(const EventDef* d1, const EventDef* d2)
+638: 	{
+639: 		return str::icmp(d1->command, d2->command) < 0;
+640: 	}
+641: };
+642: 
+643: struct ClassCompare
+644: {
+645: 	bool operator()(const ClassDef* c1, const ClassDef* c2)
+646: 	{
+## corepp\listener.cpp:3532
+3532: qboolean Listener::ProcessPendingEvents(void)
+3533: {
+3534:     EventQueueNode *event;
+3535:     qboolean        processedEvents;
+3536:     float           t;
+3537: 
+3538:     processedEvents = false;
+3539: 
+3540:     t = EVENT_msec;
+3541: 
+3542:     Listener::ProcessingEvents = true;
+3543: 
+3544:     event = Event::EventQueue.next;
+3545:     while (event != &Event::EventQueue) {
+3546:         Listener *obj;
+3547: 
+3548:         assert(event);
+3549: 
+3550:         obj = event->GetSourceObject();
+3551: 
+3552:         if (event->inttime > t) {
+3553:             break;
+3554:         }
+3555: 
+3556:         if (obj != this) {
+3557:             // traverse normally
+3558:             event = event->next;
+3559:         } else {
+3560:             // the event is removed from its list and temporarily added to the active list
+3561:             LL_Remove(event, next, prev);
+3562: 
+3563:             // ProcessEvent will dispose of this event when it is done
+3564:             obj->ProcessEvent(event->event);
+3565: 
+3566:             // free up the node
+3567:             delete event;
+3568: 
+3569:             // start over, since can't guarantee that we didn't process any previous or following events
+3570:             event = Event::EventQueue.next;
+3571: 
+3572:             processedEvents = true;
+3573:         }
+3574:     }
+3575: 
+3576:     Listener::ProcessingEvents = false;
+3577: 
+3578:     return processedEvents;
+3579: }
+3580: 
+3581: /*
+3582: =======================
+3583: GetScriptOwner
+3584: 
+3585: listener.owner
+3586: =======================
+3587: */
+3588: Listener *Listener::GetScriptOwner(void)
+3589: {
+3590:     return NULL;
+3591: }
+3592: 
+3593: /*
+3594: =======================
+3595: SetScriptOwner
+3596: =======================
+3597: */
+3598: void Listener::SetScriptOwner(Listener* newOwner)
+3599: {
+3600: }
+3601: 
+3602: #ifdef WITH_SCRIPT_ENGINE

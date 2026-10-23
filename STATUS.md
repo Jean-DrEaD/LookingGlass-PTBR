@@ -349,3 +349,8 @@
 - 16p xemu: 'pl ucfg' -> 'pl pending' -> ~4s -> SM 842 -> throw: dentro do L_ProcessPendingEvents (evento de entidade resolvendo label sem thread)
 - 16p: FindLabel (gamescript.cpp:267) ja trata scriptClass NULL; CurrentScriptClass e que lancava
 - 16q: CurrentScriptClass usa CurrentThread() e retorna NULL; SetThread (1145) tolera NULL e imprime label (+2 -2)
+
+## Lote 16r (2026-10-23 17:51)
+- 16q xemu: 'SM 842 sem thread' t=18072 e para; sem SetThread/SE/throw/'pl player' -> chamador = FindLabel privado; trava/crash silencioso no L_ProcessPendingEvents
+- 16q: ~4s fixos entre 'pl pending' e SM 842 (evento pesado antes)
+- 16r: FindLabel imprime label privado + 'FindLabel ret' (+2 -2); coleta L_ProcessPendingEvents em docs/probes/lote16r-pending.log
