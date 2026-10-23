@@ -253,3 +253,7 @@
 - CM_LoadMap: 'centipede1.bsp has wrong version number (42 should be between 17 and 21)' -> previsto (15y-a); servidor encerra limpo
 - models\player err=3 = esperado (asset MOHAA, nao existe no Alice)
 - 15y-h: coleta p/ loader FAKK (checagens versao, qfiles.h lumps, Rust FAKK) em docs/probes/lote15y-h-bsp.log; lote 16 = loader BSP FAKK v42
+
+## Lote 15y-i (2026-10-23 14:47)
+- 15y-h: checagem versao em cm_load.c:894 e renderergl1/tr_bsp.c:2293; lumps via Q_GetLumpByVersion -> ponto de entrada do FAKK v42
+- 15y-h: log poluido (typedef struct cm_local.h); 15y-i = coleta focada (LUMP_*/dheader_t, Q_GetLumpByVersion, cm_load 860-893, Rust)
