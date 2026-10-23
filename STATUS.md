@@ -268,3 +268,8 @@
 - 15y-j: FAKK header 172 B = 12 + 20 lumps; ordem 0 shaders(76) 1 planes 2 lightmaps 3 surfaces(108=MOHAA) 4 verts(44=MOHAA) 5 indexes 6 leafbrushes 7 leafsurfaces 8 leafs 9 nodes 10 brushsides(8) 11 brushes(12) 12 fogs(72) 13 models(40) 14 entities 15 vis 16-19 lightgrid/entlights/lightdefs
 - 16a: cm_load.c sob NXDK: LG_Lump (mapa MOHAA->FAKK; sideeq/terrain/lightgrid vazios), repack shaders 76->140, brushsides 8->12, leafs 48->64 (premissa 48 = layout Q3, nao confirmada); aceita versao 42
 - Pendente: renderer tr_bsp.c (build cliente), lightgrid FAKK, fogs
+
+## Lote 16b (2026-10-23 15:24)
+- 16a xemu: 'Stack overflow caught' apos fopen pak0.pk3 (request 0x1002c=64KB, livre ~50KB) -> pilha padrao do nxdk pequena; loader FAKK ainda nao exercitado
+- 16b 1a tentativa: probe.ps1 nao tem /FORCE:MULTIPLE (flags de link = CMAKE_EXE_LINKER_FLAGS '/errorlimit:0 ...'); nada aplicado
+- 16b: /STACK:4194304,4194304 apos /errorlimit:0 (reserve+commit; cxbe herda do PE)
