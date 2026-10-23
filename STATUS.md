@@ -215,3 +215,7 @@
 - xemu: 'LG: frame N t=...' a cada 2s, +40 frames/2s (20 fps) por 2+ min -> loop principal OK
 - Esclarecido: dedicado = prova de boot; alvo = cliente single player com servidor local (loopback), sem rede
 - Proximo 15y: remover lwIP/libnxdk_net/gcd_*/winsock do link; depois testar +map de um mapa do Alice (validar diferenca BSP FAKK x MOHAA)
+
+## Lote 15y-a (2026-10-23 12:25)
+- Inventario (sem build): refs de rede em probe.ps1/CMake/shims, uso GameSpy no codigo, argv do sys_xbox.c, mapas .bsp + ident/versao BSP
+- Log: docs/probes/lote15y-inventario.log; 15y-b = edicoes exatas + build + teste +map

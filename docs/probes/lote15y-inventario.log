@@ -1,0 +1,129 @@
+## 1) probe.ps1
+6: $flags = '-DCMAKE_TOOLCHAIN_FILE=$NXDK_DIR/share/toolchain-nxdk.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CLIENT=OFF -DBUILD_SERVER=ON -DBUILD_RENDERER_GL1=OFF -DBUILD_RENDERER_GL2=OFF -DBUILD_GAME_QVMS=OFF -DBUILD_GAME_LIBRARIES=ON -DUSE_RENDERER_DLOPEN=OFF -DUSE_OPENAL=OFF -DUSE_OPENAL_DLOPEN=OFF -DUSE_HTTP=OFF -DUSE_CODEC_VORBIS=OFF -DUSE_CODEC_OPUS=OFF -DUSE_CODEC_MAD=OFF -DUSE_INTERNAL_LIBS=ON -Wno-dev -DCMAKE_EXE_LINKER_FLAGS="/errorlimit:0 $NXDK_DIR/lib/libnxdk_net.lib /src/build-lgsys/lg_xboxsys.lib"'
+8: INC="-I/shims -include/shims/lg_compat.h -I`$NXDK_DIR/lib/xboxrt/libc_extensions -I`$NXDK_DIR/lib/net/lwip/src/include -I`$NXDK_DIR/lib/net/nforceif/include"
+## 2) CMake (openmohaa)
+cmake\compilers\msvc.cmake:46: add_compile_definitions(_WINSOCK_DEPRECATED_NO_WARNINGS)
+cmake\platforms\windows.cmake:22: ws2_32 # Windows Sockets 2
+cmake\client.cmake:31: ${SOURCE_DIR}/client/cl_uigamespy.cpp
+cmake\client.cmake:63: # Gamespy
+cmake\client.cmake:65: ${SOURCE_DIR}/gamespy/cl_gamespy.c
+cmake\gamespy.cmake:1: include_directories(${SOURCE_DIR}/gamespy/common)
+cmake\gamespy.cmake:2: include_directories(${SOURCE_DIR}/gamespy/gcdkey)
+cmake\gamespy.cmake:5: ${SOURCE_DIR}/gamespy/common/*.c
+cmake\gamespy.cmake:6: ${SOURCE_DIR}/gamespy/darray.c
+cmake\gamespy.cmake:7: ${SOURCE_DIR}/gamespy/gserver.c
+cmake\gamespy.cmake:8: ${SOURCE_DIR}/gamespy/gserverlist.c
+cmake\gamespy.cmake:9: ${SOURCE_DIR}/gamespy/hashtable.c
+cmake\gamespy.cmake:10: ${SOURCE_DIR}/gamespy/md5c.c
+cmake\gamespy.cmake:11: ${SOURCE_DIR}/gamespy/gutil.c
+cmake\gamespy.cmake:15: ${SOURCE_DIR}/gamespy/gcdkey/*.c
+cmake\gamespy.cmake:19: ${SOURCE_DIR}/gamespy/natneg/*.c
+cmake\gamespy.cmake:23: ${SOURCE_DIR}/gamespy/qr2/*.c
+cmake\gamespy.cmake:26: add_library(gcd_common STATIC ${SRCS_common})
+cmake\gamespy.cmake:27: add_library(gcd_key STATIC ${SRCS_gcdkey})
+cmake\gamespy.cmake:28: add_library(gcd_natneg STATIC ${SRCS_natneg})
+cmake\gamespy.cmake:29: add_library(gcd_qr2 STATIC ${SRCS_qr2})
+cmake\gamespy.cmake:30: add_library(gcd INTERFACE)
+cmake\gamespy.cmake:32: set_property(TARGET gcd_common gcd_key PROPERTY POSITION_INDEPENDENT_CODE ON)
+cmake\gamespy.cmake:39: gcd_key
+cmake\gamespy.cmake:40: #	gcd_gp
+cmake\gamespy.cmake:41: #	gcd_gstats
+cmake\gamespy.cmake:42: gcd_natneg
+cmake\gamespy.cmake:43: #	gcd_pinger
+cmake\gamespy.cmake:44: #	gcd_pt
+cmake\gamespy.cmake:45: gcd_qr2
+cmake\gamespy.cmake:46: #	gcd_sake
+cmake\gamespy.cmake:47: #	gcd_sc
+cmake\gamespy.cmake:48: #	gcd_serverbrowsing
+cmake\gamespy.cmake:49: #	gcd_webservices
+cmake\gamespy.cmake:52: target_link_libraries(gcd INTERFACE ${DEPENDENT_LIBS})
+cmake\gamespy.cmake:55: target_link_libraries(${LIB} PUBLIC gcd_common)
+cmake\gamespy.cmake:58: target_link_libraries(gcd_key PRIVATE gcd_qr2)
+cmake\gamespy.cmake:59: target_link_libraries(gcd_qr2 PRIVATE gcd_natneg)
+cmake\gamespy.cmake:61: list(APPEND CLIENT_LIBRARIES gcd)
+cmake\gamespy.cmake:62: list(APPEND SERVER_LIBRARIES gcd)
+cmake\shared_sources.cmake:5: include(gamespy)
+cmake\shared_sources.cmake:35: ${SOURCE_DIR}/gamespy/q_gamespy.c
+cmake\shared_sources.cmake:98: # Gamespy
+cmake\shared_sources.cmake:101: ${SOURCE_DIR}/gamespy/sv_gamespy.c
+cmake\shared_sources.cmake:102: ${SOURCE_DIR}/gamespy/sv_gqueryreporting.c
+## 3) shims (LookingGlass-PTBR\tools)
+D:\LookingGlass-PTBR\tools\nxdk-shims\winsock.h
+D:\LookingGlass-PTBR\tools\nxdk-shims\winsock2.h
+D:\LookingGlass-PTBR\tools\nxdk-shims\ws2tcpip.h
+D:\LookingGlass-PTBR\tools\nxdk-shims\wspiapi.h
+## 4) chamadas GameSpy/NET no codigo (contagem por arquivo, top 25)
+33  code\thirdparty\opusfile-0.12\src\info.c
+26  code\client\cl_uiserverlist.cpp
+17  code\thirdparty\opusfile-0.12\include\opusfile.h
+17  code\tiki\tiki_skel.cpp
+17  code\thirdparty\recastnavigation\RecastDemo\Source\NavMeshTesterTool.cpp
+14  code\fgame\player.cpp
+12  code\client\cl_ui.cpp
+11  code\client\cl_uigamespy.cpp
+11  code\server\sv_client.c
+10  code\renderergl2\tr_image.c
+9  code\thirdparty\opus-1.5.2\silk\float\pitch_analysis_core_FLP.c
+9  code\server\sv_main.c
+9  code\botlib\be_aas_route.c
+8  code\renderergl2\tr_shader.c
+8  code\client\cl_main.cpp
+8  code\thirdparty\opusfile-0.12\src\opusfile.c
+8  code\client\cl_uigamespy.h
+8  code\fgame\bg_pmove.cpp
+8  code\qcommon\bg_compat.cpp
+8  code\client\cl_avi.cpp
+7  code\sys\con_log.c
+7  code\renderergl2\tr_image_dds.c
+7  code\client\cl_instantAction.cpp
+6  code\thirdparty\recastnavigation\RecastDemo\Include\Sample.h
+5  code\qcommon\cm_trace_lbd.cpp
+## 5) sys_xbox.c: main/argv
+D:\LookingGlass-PTBR\tools\nxdk-shims\xboxsys\sys_xbox.c
+## 6) mapas nos PK3 (iso-stage\main)
+pak0.pk3: 36 bsp
+   maps/centipede1.bsp
+   maps/centipede2.bsp
+   maps/facade.bsp
+   maps/fortress1.bsp
+   maps/fortress2.bsp
+   maps/funhouse.bsp
+   maps/garden1.bsp
+   maps/garden2.bsp
+   maps/garden3.bsp
+   maps/garden4.bsp
+   maps/grounds1.bsp
+   maps/grounds2.bsp
+   maps/gvillage.bsp
+   maps/hatter1.bsp
+   maps/hatter2.bsp
+   maps/hedge1.bsp
+   maps/hedge2.bsp
+   maps/hedge3.bsp
+   maps/jlair1.bsp
+   maps/jlair2.bsp
+   maps/keep.bsp
+   maps/pandemonium.bsp
+   maps/potears1.bsp
+   maps/potears2.bsp
+   maps/potears3.bsp
+   maps/qlair.bsp
+   maps/rchess1.bsp
+   maps/skool1.bsp
+   maps/skool2.bsp
+   maps/tower1.bsp
+   maps/tower2.bsp
+   maps/tower3.bsp
+   maps/utemple.bsp
+   maps/wchess1.bsp
+   maps/wchess2.bsp
+   maps/wforest.bsp
+pak1_large.pk3: 0 bsp
+pak2.pk3: 0 bsp
+pak3.pk3: 0 bsp
+pak4_english.pk3: 0 bsp
+pak5_mod.pk3: 0 bsp
+pak6_VorpalFix.pk3: 0 bsp
+pak7_VorpalFix_menu.pk3: 0 bsp
+## 7) cabecalho BSP (1o mapa): ident + versao
+maps/centipede1.bsp: ident=FAKK ver=42
