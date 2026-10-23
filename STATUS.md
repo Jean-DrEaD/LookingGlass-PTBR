@@ -6,6 +6,8 @@
 - Depois: Sys_Error sem lixo na tela, remover /FORCE:MULTIPLE, mbtowc/strtold (stubs assert do nxdk)
 - Inicio de chat: & D:\LookingGlass-PTBR\tools\lg-status.ps1 -Show
 - Regra: comandos sempre completos
+- Pipeline do lote (TODOS os passos): 0) Docker Desktop aberto (docker info) -> 1) probe.ps1 (build omohaaded.exe) -> 2) cxbe no container (exe -> xbe-out\default.xbe) -> 3) copiar p/ iso-stage + LastWriteTime -> 4) extract-xiso -> alice-test.iso -> 5) commit+push
+- probe.ps1 NAO gera XBE: o cxbe tem que estar no script do lote
 <!-- FLUXO-FIM -->
 # STATUS - Alice (LookingGlass-PTBR) -> Xbox Original
 > Anexe no inicio de todo chat. Historico completo: docs/LOG.md. Auditoria: docs/AUDIT.md.
@@ -178,3 +180,7 @@
 - 15v3 xemu: 'LG: fs_homepath = E:\TDATA\4c470001' OK; fatal FS_CreatePath 'E:\TDATA' -> E: montado so depois (no probe)
 - 15w: lg_mount_drives() (E:->Harddisk0\Partition1, D:->CdRom0) no inicio do Sys_PlatformInit
 - 15x (planejado): remover lwIP/libnxdk_net/gcd_*/winsock shim do link
+
+## Lote 15w2 (2026-10-23 11:35)
+- 15w: 1a tentativa falhou (Docker Desktop fechado); 2a: build OK (378/0), omohaaded.exe 4.763.648, mas sem XBE
+- Causa: lote-15w.ps1 sem o passo cxbe (probe.ps1 so compila) -> pipeline completo registrado no FLUXO
