@@ -1,0 +1,198 @@
+## D:\openmohaa\code\fgame\g_spawn.cpp:337
+337: Listener *SpawnArgs::SpawnInternal(void)
+338: {
+339:     str         classname;
+340:     ClassDef   *cls;
+341:     Listener   *obj;
+342:     Event      *ev;
+343:     int         i;
+344:     qboolean    tikiWasStatic; // used to determine if entity was intentionally suppressed
+345:     const char *key, *value;
+346:     str         keyname;
+347:     int         t1, t2;
+348: #ifdef WITH_SCRIPT_ENGINE
+349:     unsigned int        eventnum;
+350:     EventDef           *def;
+351:     ScriptVariable     *var;
+352:     ScriptVariableList *varList;
+353: #endif
+354: 
+355:     if (!g_spawnentities->integer) {
+356:         value = getArg("classname", NULL);
+357: 
+358:         // only spawn a playerstart or the world
+359:         if (value) {
+360:             if ((Q_stricmp(value, "info_player_start") && Q_stricmp(value, "worldspawn"))) {
+361:                 Com_Printf("%s\n", value);
+362:                 return NULL;
+363:             }
+364:         }
+365:     }
+366: 
+367:     if (!g_spawnai->integer) {
+368:         value = getArg("classname", NULL);
+369: 
+370:         //dont spawn ai_* if g_spawnai is 0
+371:         if (value) {
+372:             if (!Q_stricmpn(value, "ai_", 3)) {
+373:                 Com_Printf("%s\n", value);
+374:                 return NULL;
+375:             }
+376:         }
+377:     }
+378: 
+379:     t1 = gi.Milliseconds();
+380: 
+381:     classname = getArg("classname", "Unspecified");
+382:     cls       = getClassDef(&tikiWasStatic);
+383: 
+384:     if (!cls) {
+385:         if (!tikiWasStatic) {
+386:             gi.DPrintf("%s doesn't have a spawn function\n", classname.c_str());
+387: 
+388:             if (g_scriptcheck->integer) {
+389:                 gi.Error(ERR_DROP, "Script check failed");
+390:             }
+391:         }
+392: 
+393:         return NULL;
+394:     }
+395: 
+396:     if (checkInheritance(PathNode::classinfostatic(), cls)) {
+## D:\openmohaa\code\fgame\worldspawn.cpp:545
+545: World::World()
+546: {
+547:     world       = this;
+548:     world_dying = qfalse;
+549: 
+550:     // Anything that modifies configstrings, or spawns things is ignored when loading savegames
+551:     if (LoadingSavegame) {
+552:         return;
+553:     }
+554: 
+555:     assert(entnum == ENTITYNUM_WORLD);
+556: 
+557:     setMoveType(MOVETYPE_NONE);
+558:     setSolidType(SOLID_BSP);
+559: 
+560:     // world model is always index 1
+561:     edict->s.modelindex = 1;
+562:     model               = "*0";
+563: 
+564:     UpdateConfigStrings();
+565: 
+566:     // clear out the soundtrack from the last level
+567:     ChangeSoundtrack("");
+568: 
+569:     // set the default gravity
+570:     gi.cvar_set("sv_gravity", "800");
+571: 
+572:     // set the default farplane parameters
+573:     farplane_distance               = 0;
+574:     farplane_bias                   = 0.0;
+575:     farplane_color                  = vec_zero;
+576:     farplane_cull                   = qtrue;
+577:     skybox_farplane                 = 0.0;
+578:     render_terrain                  = qtrue;
+579:     skybox_speed                    = 0.0;
+580:     farclip_override                = 0.f;
+581:     farplane_color_override         = Vector(-1, -1, -1);
+582:     animated_farplane_start         = 0.0;
+583:     animated_farplane_end           = 0.0;
+584:     animated_farplane_start_z       = 8192.0;
+585:     animated_farplane_end_z         = 0.0;
+586:     animated_farplane_bias_start    = 0.0;
+587:     animated_farplane_bias_end      = 0.0;
+588:     animated_farplane_bias_start_z  = 8192.0;
+589:     animated_farplane_bias_end_z    = 0.0;
+590:     animated_farplane_color_start   = vec_zero;
+591:     animated_farplane_color_end     = vec_zero;
+592:     animated_farplane_color_start_z = 8192.0;
+593:     animated_farplane_color_end_z   = 0.0;
+594: 
+595:     UpdateFog();
+596: 
+597:     sky_alpha  = 1.0f;
+598:     sky_portal = qtrue;
+599:     UpdateSky();
+600: 
+601:     m_fAIVisionDistance = 2048.0f;
+602: 
+603:     level.cinematic = spawnflags & WORLD_CINEMATIC;
+604: 
+605:     if (level.cinematic) {
+606:         gi.cvar_set("sv_cinematic", "1");
+607:     } else {
+608:         gi.cvar_set("sv_cinematic", "0");
+609:     }
+610: 
+611:     level.nextmap    = "";
+612:     level.level_name = level.mapname;
+613: 
+614:     SoundMan.Load();
+615: 
+616:     // Set the color for the blends.
+617:     level.water_color = Vector(0, 0, 1);
+618:     level.water_alpha = 0.1f;
+619:     level.lava_color  = Vector(1.0f, 0.3f, 0);
+620:     level.lava_alpha  = 0.6f;
+621: 
+622:     //
+623:     // set the targetname of the world
+624:     //
+625:     SetTargetName("world");
+626: 
+627:     m_fNorth = 0;
+628: 
+629:     gi.ModelBoundsFromName(model.c_str(), bounds[0], bounds[1]);
+630:     radius = (bounds[1] - bounds[0]).length() * 0.5;
+631: }
+632: 
+633: World::~World()
+634: {
+635:     world_dying = false;
+636:     FreeTargetList();
+637: }
+638: 
+639: void World::UpdateConfigStrings(void)
+640: {
+641:     //
+642:     // make some data visible to connecting client
+643:     //
+644:     gi.setConfigstring(CS_GAME_VERSION, GAME_VERSION);
+645:     gi.setConfigstring(CS_LEVEL_START_TIME, va("%i", level.svsStartTime));
+646: 
+647:     // make some data visible to the server
+648:     gi.setConfigstring(CS_MESSAGE, level.level_name.c_str());
+649: };
+650: 
+651: void World::UpdateFog(void)
+652: {
+653:     const char *fogInfoString;
+654:     gi.SetFarPlane(farplane_distance);
+## D:\openmohaa\code\fgame\g_spawn.cpp:317
+317: Listener *SpawnArgs::Spawn(void)
+318: {
+319:     SafePtr<Listener> ent = (Listener *)SpawnInternal();
+320:     if (!ent) {
+321:         return NULL;
+322:     }
+323: 
+324:     ent->ProcessPendingEvents();
+325:     if (!ent) {
+326:         // Fixed in OPM
+327:         //  Make sure to check the entity after processing events,
+328:         //  the ent could be deleted due to a posted remove event
+329:         return NULL;
+330:     }
+331: 
+332:     ent->ProcessEvent(EV_Entity_Start);
+333: 
+334:     return ent;
+335: }
+336: 
+337: Listener *SpawnArgs::SpawnInternal(void)
+338: {
+339:     str         classname;
+340:     ClassDef   *cls;
+341:     Listener   *obj;

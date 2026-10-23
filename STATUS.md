@@ -287,3 +287,8 @@
 - 16d: lump14 OK (texto worldspawn/Item_*/func_spawn/info_pathnode) -> remapeamento FAKK de entidades correto
 - 16d: print do stub EH nao apareceu -> provavelmente nao e throw; Com_Printf do game = gi.DPrintf (so com developer)
 - 16e: breadcrumbs gi.Printf no Level::SpawnEntities (inicio/skill/parse/world/nodes + 'LG: le N classname' por entidade)
+
+## Lote 16f (2026-10-23 15:58)
+- 16e xemu: 'se inicio/skill/parse' ok, 'se world' nunca -> trava no args.SpawnInternal() do worldspawn (level.cpp:1159, construtor World)
+- 16e: tela deu piscadas rapidas (possivel Com_Error/lixo pos-erro, ver 15o)
+- 16f: coleta SpawnArgs::SpawnInternal + World::World (docs/probes/lote16f-world.log), sem build
