@@ -318,3 +318,9 @@
 - '96 1556 -410' e '-32.00 1668.00 -564.00' OK -> falha com inteiro negativo no inicio: bug lg_strtod ou sscanf %f do PDCLib
 - 16k: coleta conversor de vetor + lg_strtod + lg_compat (docs/probes/lote16k-vector.log), sem build
 - Regra PS: "$var:" dentro de string = escopo de unidade -> usar "${var}:"
+
+## Lote 16l (2026-10-23 17:00)
+- 16k: lg_strtod correto p/ '-32'; vectorValue (scriptvariable.cpp:1242) usa sscanf '%f %f %f' -> culpado = sscanf %f do PDCLib
+- 1a tentativa: indice errado (stringValue fica 3 linhas acima do throw); nada aplicado. Busca agora a partir da assinatura da funcao
+- 16l: LG_ParseVec3 (strtod->lg_strtod) no vectorValue sob NXDK; inventario sscanf %f em docs/probes/lote16l-sscanf.log (47 usos)
+- Esperado xemu: passar de 'le 407' e chegar a 'se nodes'/fim do SpawnEntities

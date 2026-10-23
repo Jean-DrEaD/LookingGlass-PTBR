@@ -1,0 +1,48 @@
+## sscanf %f: 47 usos
+cgame\cg_main.c:465: sscanf(str, "%f %d", &cg.sky_alpha, &cg.sky_portal);
+client\cl_ui.cpp:209: if (sscanf(ui_consoleposition->string, "%f %f %f %f", &f[0], &f[1], &f[2], &f[3]) == 4) {
+client\cl_ui.cpp:964: if (sscanf(ui_consoleposition->string, "%f %f %f %f", &f[0], &f[1], &f[2], &f[3]) == 4) {
+client\cl_ui.cpp:994: if (sscanf(ui_consoleposition->string, "%f %f %f %f", &f[0], &f[1], &f[2], &f[3]) == 4) {
+corepp\vector.h:250: sscanf(text, "\"%f %f %f\"", &x, &y, &z);
+corepp\vector.h:252: sscanf(text, "%f %f %f", &x, &y, &z);
+corepp\vector.h:289: sscanf(a, "\"%f %f %f\"", &x, &y, &z);
+corepp\vector.h:291: sscanf(a, "%f %f %f", &x, &y, &z);
+fgame\camera.cpp:2034: sscanf(cvar->string, "%f %f %f", &tempvec[0], &tempvec[1], &tempvec[2]);
+fgame\g_spawn.cpp:656: sscanf( s, "%f %f %f", &out[0], &out[1], &out[2] );
+fgame\g_spawn.cpp:1018: sscanf (value, "%f %f %f", &vec[0], &vec[1], &vec[2]);
+fgame\lodthing.cpp:233: sscanf(cvar->string, "%f %f %f", &position[0], &position[1], &position[2]);
+fgame\scriptthread.cpp:4574: sscanf(loc, "%f %f %f", &v[0], &v[1], &v[2]);
+fgame\soundman.cpp:405: sscanf(cvar->string, "%f %f %f", &tempvec[0], &tempvec[1], &tempvec[2]);
+fgame\soundman.cpp:464: sscanf(cvar->string, "%f %f %f", &tempvec[0], &tempvec[1], &tempvec[2]);
+fgame\soundman.cpp:519: sscanf(cvar->string, "%f %f %f", &tempvec[0], &tempvec[1], &tempvec[2]);
+fgame\soundman.cpp:612: sscanf(cvar->string, "%f %f %f", &tempvec[0], &tempvec[1], &tempvec[2]);
+qcommon\json.h:327: sscanf(cValue, "%f", &fValue);
+renderergl1\tr_sphere_shade.cpp:1225: sscanf(COM_Parse((char **)&ents), "%f %f %f", &s_sun.color[0], &s_sun.color[1], &s_sun.color[2]);
+renderergl1\tr_sphere_shade.cpp:1238: sscanf(COM_Parse((char **)&ents), "%f %f %f", &dir[0], &dir[1], &dir[2]);
+renderergl1\tr_sphere_shade.cpp:1254: sscanf(COM_Parse((char **)&ents), "%f %f %f", &dir[0], &dir[1], &dir[2]);
+renderergl1\tr_sphere_shade.cpp:1268: sscanf(COM_Parse((char **)&ents), "%f %f %f", &ambientlight[0], &ambientlight[1], &ambientlight[2]);
+renderergl2\tr_bsp.c:2416: sscanf(value, "%f %f %f", &w->lightGridSize[0], &w->lightGridSize[1], &w->lightGridSize[2] );
+renderergl2\tr_bsp.c:2422: sscanf(value, "%f %f", &tr.autoExposureMinMax[0], &tr.autoExposureMinMax[1]);
+renderergl2\tr_bsp.c:2642: sscanf(spawnVars[i][1], "%f %f %f", &origin[0], &origin[1], &origin[2]);
+renderergl2\tr_bsp.c:2647: sscanf(spawnVars[i][1], "%f", &parallaxRadius);
+renderergl2\tr_sphere_shade.cpp:1236: sscanf(COM_Parse((char **)&ents), "%f %f %f", &s_sun.color[0], &s_sun.color[1], &s_sun.color[2]);
+renderergl2\tr_sphere_shade.cpp:1249: sscanf(COM_Parse((char **)&ents), "%f %f %f", &dir[0], &dir[1], &dir[2]);
+renderergl2\tr_sphere_shade.cpp:1265: sscanf(COM_Parse((char **)&ents), "%f %f %f", &dir[0], &dir[1], &dir[2]);
+renderergl2\tr_sphere_shade.cpp:1279: sscanf(COM_Parse((char **)&ents), "%f %f %f", &ambientlight[0], &ambientlight[1], &ambientlight[2]);
+script\scriptvariable.cpp:1259: if (sscanf(string, "(%f %f %f)", &x, &y, &z) != 3) {
+script\scriptvariable.cpp:1260: if (sscanf(string, "(%f, %f, %f)", &x, &y, &z) != 3) {
+script\scriptvariable.cpp:1265: if (sscanf(string, "%f %f %f", &x, &y, &z) != 3) {
+script\scriptvariable.cpp:1266: if (sscanf(string, "%f, %f, %f", &x, &y, &z) != 3) {
+thirdparty\recastnavigation\RecastDemo\Source\InputGeom.cpp:241: sscanf(row+1, "%f %f %f  %f %f %f %f %d %d %d",
+thirdparty\recastnavigation\RecastDemo\Source\InputGeom.cpp:256: sscanf(row+1, "%d %d %f %f", &vol->nverts, &vol->area, &vol->hmin, &vol->hmax);
+thirdparty\recastnavigation\RecastDemo\Source\InputGeom.cpp:261: sscanf(row, "%f %f %f", &vol->verts[i*3+0], &vol->verts[i*3+1], &vol->verts[i*3+2]);
+thirdparty\recastnavigation\RecastDemo\Source\InputGeom.cpp:269: sscanf(row + 1, "%f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %f %f %f %f %f %f",
+thirdparty\recastnavigation\RecastDemo\Source\MeshLoaderObj.cpp:194: sscanf(row+1, "%f %f %f", &x, &y, &z);
+thirdparty\recastnavigation\RecastDemo\Source\TestCase.cpp:162: sscanf(row+2, "%f %f %f %f %f %f %hx %hx",
+thirdparty\recastnavigation\RecastDemo\Source\TestCase.cpp:175: sscanf(row+2, "%f %f %f %f %f %f %hx %hx",
+tools\ommap\light.c:511: sscanf (_color, "%f %f %f", &dl->color[0],&dl->color[1],&dl->color[2]);
+tools\ommap\light.c:2125: sscanf( value, "%f %f %f", &gridSize[0], &gridSize[1], &gridSize[2] );
+tools\ommap\lightv.c:5048: sscanf (_color, "%f %f %f", &dl->color[0],&dl->color[1],&dl->color[2]);
+tools\ommap\lightv.c:5692: sscanf( value, "%f %f %f", &gridSize[0], &gridSize[1], &gridSize[2] );
+tools\ommap\soundv.c:5048: sscanf (_color, "%f %f %f", &dl->color[0],&dl->color[1],&dl->color[2]);
+tools\ommap\soundv.c:5686: sscanf( value, "%f %f %f", &gridSize[0], &gridSize[1], &gridSize[2] );
