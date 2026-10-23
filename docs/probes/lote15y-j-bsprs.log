@@ -1,0 +1,181 @@
+## bsp.rs total=540 linhas
+######## 1) bsp.rs 1-160
+1: #[allow(unused_imports)]
+2: use crate::prelude::*;
+3: use anyhow::{bail, ensure, Context, Result};
+4: use glam::{vec2, vec3, Vec2, Vec3};
+5: use alloc::collections::BTreeMap;
+6: 
+7: #[derive(Clone, Debug)]
+8: pub struct MapVertex {
+9:     pub position: Vec3,
+10:     pub normal: Vec3,
+11:     pub uv: Vec2,
+12:     pub light_uv: Vec2,
+13:     pub color: [u8; 4],
+14: }
+15: #[derive(Debug)]
+16: pub struct Shader {
+17:     pub name: String,
+18:     pub flags: i32,
+19:     pub contents: i32,
+20: }
+21: #[derive(Clone, Copy, Debug)]
+22: pub struct Plane {
+23:     pub normal: Vec3,
+24:     pub distance: f32,
+25: }
+26: #[derive(Debug)]
+27: pub struct MapBrush {
+28:     pub sides: core::ops::Range<usize>,
+29:     pub shader: usize,
+30: }
+31: #[derive(Debug)]
+32: pub struct Surface {
+33:     pub shader: usize,
+34:     pub kind: i32,
+35:     pub first_vertex: usize,
+36:     pub vertex_count: usize,
+37:     pub first_index: usize,
+38:     pub index_count: usize,
+39:     pub lightmap: i32,
+40:     pub patch_width: usize,
+41:     pub patch_height: usize,
+42: }
+43: #[derive(Debug)]
+44: pub struct Model {
+45:     pub min: Vec3,
+46:     pub max: Vec3,
+47:     pub surfaces: core::ops::Range<usize>,
+48:     pub brushes: core::ops::Range<usize>,
+49: }
+50: #[derive(Debug)]
+51: pub struct Fog {
+52:     pub shader: String,
+53:     pub brush: usize,
+54: }
+55: #[derive(Debug)]
+56: pub struct Bsp {
+57:     pub visibility: crate::visibility::Visibility,
+58:     pub difficulty: crate::difficulty::Difficulty,
+59:     pub models: Vec<Model>,
+60:     pub fogs: Vec<Fog>,
+61:     pub shaders: Vec<Shader>,
+62:     pub vertices: Vec<MapVertex>,
+63:     pub indices: Vec<usize>,
+64:     pub surfaces: Vec<Surface>,
+65:     pub lightmaps: Vec<u8>,
+66:     pub entities: Vec<BTreeMap<String, String>>,
+67:     pub world_surfaces: core::ops::Range<usize>,
+68:     pub planes: Vec<Plane>,
+69:     pub side_planes: Vec<usize>,
+70:     pub brushes: Vec<MapBrush>,
+71:     pub world_brushes: core::ops::Range<usize>,
+72:     pub world_min: Vec3,
+73:     pub world_max: Vec3,
+74: }
+75: 
+76: fn i32_at(b: &[u8], o: usize) -> Result<i32> {
+77:     let end = o.checked_add(4).context("Offset overflow")?;
+78:     Ok(i32::from_le_bytes(
+79:         b.get(o..end).context("Truncated BSP field")?.try_into()?,
+80:     ))
+81: }
+82: fn count(b: &[u8], o: usize) -> Result<usize> {
+83:     usize::try_from(i32_at(b, o)?).context("Negative BSP count or offset")
+84: }
+85: fn f32_at(b: &[u8], o: usize) -> Result<f32> {
+86:     let f = f32::from_bits(i32_at(b, o)? as u32);
+87:     ensure!(f.is_finite(), "Non-finite BSP coordinate");
+88:     Ok(f)
+89: }
+90: fn vec_at(b: &[u8], o: usize) -> Result<Vec3> {
+91:     Ok(vec3(f32_at(b, o)?, f32_at(b, o + 4)?, f32_at(b, o + 8)?))
+92: }
+93: fn records(b: &[u8], stride: usize) -> Result<core::slice::ChunksExact<'_, u8>> {
+94:     ensure!(
+95:         b.len() % stride == 0,
+96:         "Lump length {} is not a multiple of {stride}",
+97:         b.len()
+98:     );
+99:     Ok(b.chunks_exact(stride))
+100: }
+101: fn bounded(first: usize, size: usize, total: usize) -> Result<core::ops::Range<usize>> {
+102:     let end = first.checked_add(size).context("BSP range overflow")?;
+103:     ensure!(end <= total, "BSP range {first}..{end} exceeds {total}");
+104:     Ok(first..end)
+105: }
+106: 
+107: impl Bsp {
+108:     pub fn parse(b: &[u8]) -> Result<Self> {
+109:         ensure!(b.len() >= 172, "Truncated FAKK BSP header");
+110:         ensure!(&b[..4] == b"FAKK", "Expected an Alice FAKK BSP");
+111:         ensure!(
+112:             i32_at(b, 4)? == 42,
+113:             "Unsupported FAKK BSP version (expected 42)"
+114:         );
+115:         let mut lumps = Vec::new();
+116:         let mut ranges = Vec::new();
+117:         for i in 0..20 {
+118:             let offset = count(b, 12 + i * 8)?;
+119:             let length = count(b, 16 + i * 8)?;
+120:             let range = bounded(offset, length, b.len())?;
+121:             if length > 0 {
+122:                 ensure!(offset >= 172, "Lump overlaps header");
+123:                 ranges.push(range.clone());
+124:             }
+125:             lumps.push(&b[range]);
+126:         }
+127:         ranges.sort_by_key(|r| r.start);
+128:         ensure!(
+129:             ranges.windows(2).all(|w| w[0].end <= w[1].start),
+130:             "Overlapping BSP lumps"
+131:         );
+132:         let shaders = records(lumps[0], 76)?
+133:             .map(|s| {
+134:                 let n = s[..64].iter().position(|&b| b == 0).unwrap_or(64);
+135:                 Ok(Shader {
+136:                     name: core::str::from_utf8(&s[..n])?.to_owned(),
+137:                     flags: i32_at(s, 64)?,
+138:                     contents: i32_at(s, 68)?,
+139:                 })
+140:             })
+141:             .collect::<Result<Vec<_>>>()?;
+142:         let vertices = records(lumps[4], 44)?
+143:             .map(|s| {
+144:                 Ok(MapVertex {
+145:                     position: vec_at(s, 0)?,
+146:                     normal: vec_at(s, 28)?.normalize_or_zero(),
+147:                     uv: vec2(f32_at(s, 12)?, f32_at(s, 16)?),
+148:                     light_uv: vec2(f32_at(s, 20)?, f32_at(s, 24)?),
+149:                     color: s[40..44].try_into()?,
+150:                 })
+151:             })
+152:             .collect::<Result<Vec<_>>>()?;
+153:         let indices = records(lumps[5], 4)?
+154:             .map(|s| count(s, 0))
+155:             .collect::<Result<Vec<_>>>()?;
+156:         ensure!(
+157:             lumps[2].len() % (128 * 128 * 3) == 0,
+158:             "Invalid lightmap lump"
+159:         );
+160:         let lightmap_count = lumps[2].len() / (128 * 128 * 3);
+######## 2) linhas-chave (lump/stride/chunks/size)
+161: let surfaces = records(lumps[3], 108)?
+209: let planes = records(lumps[1], 16)?
+221: let side_planes = records(lumps[10], 8)?
+229: let brushes = records(lumps[11], 12)?
+241: let models = records(lumps[13], 40)?
+259: let fogs = records(lumps[12], 72)?
+275: let entity_text = core::str::from_utf8(lumps[14])?.trim_end_matches('\0');
+278: lumps[9],
+279: lumps[8],
+280: lumps[7],
+281: lumps[15],
+294: lightmaps: lumps[2].to_vec(),
+325: return (vec3(c[0], c[1], c[2] + 48.), yaw);
+351: const STEPS: usize = 4;
+512: fn rejects_truncated_bad_version_negative_and_out_of_bounds() {
+517: b[4] = 41;
+519: b[4] = 42;
+530: assert_eq!(e[0]["origin"], "1 2 3");

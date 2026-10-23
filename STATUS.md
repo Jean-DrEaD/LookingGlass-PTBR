@@ -257,3 +257,9 @@
 ## Lote 15y-i (2026-10-23 14:47)
 - 15y-h: checagem versao em cm_load.c:894 e renderergl1/tr_bsp.c:2293; lumps via Q_GetLumpByVersion -> ponto de entrada do FAKK v42
 - 15y-h: log poluido (typedef struct cm_local.h); 15y-i = coleta focada (LUMP_*/dheader_t, Q_GetLumpByVersion, cm_load 860-893, Rust)
+
+## Lote 15y-j (2026-10-23 14:56)
+- CORRECAO 15y-i: variaveis do PowerShell ignoram maiusculas/minusculas ($A sobrescreveu $a) -> arquivos inteiros no log; regra: nomes distintos, nunca $a/$A
+- 15y-i (vazamento util): dheader_t = ident/version/checksum + 28 lumps; Q_GetLumpByVersion e static no qfiles.h (v<=18 desloca +1 apos BRUSHES)
+- Plano lote 16: ramo version==42 no Q_GetLumpByVersion + conversao de dshader/dleaf/dbrushside/dsurface; checagens em cm_load.c:894 e tr_bsp.c:2293
+- 15y-j: coleta do crates/lg-core/src/bsp.rs (ordem dos lumps e tamanhos FAKK)
