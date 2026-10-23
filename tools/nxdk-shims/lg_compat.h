@@ -76,3 +76,14 @@ struct _iobuf;
 }
 #endif
 #define fopen lg_fopen
+
+/* ---- lote 16z6b: printf proprio (PDCLib sem %f) ---- */
+#include <stdarg.h>
+#include <stddef.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+int lg_vsnprintf(char *buf, size_t size, const char *fmt, va_list ap);
+#ifdef __cplusplus
+}
+#endif

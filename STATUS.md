@@ -426,3 +426,10 @@
 - Inicio do %f: PDCLib do nxdk imprime '%5.2f' vazio (16y) e sscanf '%f' falha (16k)
 - 16z6a: coleta Q_vsnprintf/Com_sprintf/va, lg_compat.h, lg_strtod, PDCLib print/scan, contagem de usos (docs/probes/lote16z6a-printf.log), sem build
 - Plano 16z6b: lg_vsnprintf (float proprio, resto delega ao PDCLib) + lg_vsscanf (%f via lg_strtod) ligados no Q_vsnprintf/lg_compat
+
+## Lote 16z6b (2026-10-23 20:17)
+- 1a tentativa: patch correto, mas validacao esperava +6 -1; git conta a linha original preservada no #else como mantida (+5 -0 / +4 -0) -> rollback
+- Regra: bloco #ifdef que reinsere a linha original no #else = diff so de adicoes (-0)
+- 16z6b: lg_vsnprintf proprio (sys_xbox.c; d i u x X o c s p f e g n %, ll/I64/*) ligado no Q_vsnprintf + macro do qcommon.h sob NXDK
+- Teste: 'LG: fmt' antes do auto map; esperado [ 3.14] [0.5] [1.234568e+04] [-42] [ok] [00a]
+- 16z6c (planejado): lg_sscanf (%f via lg_strtod) p/ os 47 usos

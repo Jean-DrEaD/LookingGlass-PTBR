@@ -179,3 +179,145 @@ int Sys_Mkdir(const char *p) {
   a = GetFileAttributesA(b);
   return a != INVALID_FILE_ATTRIBUTES && (a & FILE_ATTRIBUTE_DIRECTORY);
 }
+
+/* ---- lote 16z6b: lg_vsnprintf (PDCLib do nxdk nao formata %f/%e/%g) ---- */
+#include <stdarg.h>
+#include <stddef.h>
+#include <string.h>
+typedef struct { char *b; size_t n, k; } lg_out_t;
+static void lg_pc(lg_out_t *o, char c) { if (o->k + 1 < o->n) o->b[o->k] = c; o->k++; }
+static void lg_pad(lg_out_t *o, char c, int n) { while (n-- > 0) lg_pc(o, c); }
+static void lg_emit(lg_out_t *o, const char *pre, const char *s, int len, int width, int left, int zero) {
+  int pl = (int)strlen(pre), padn = width - pl - len, i;
+  if (!left && !zero) lg_pad(o, ' ', padn);
+  while (*pre) lg_pc(o, *pre++);
+  if (!left && zero) lg_pad(o, '0', padn);
+  for (i = 0; i < len; i++) lg_pc(o, s[i]);
+  if (left) lg_pad(o, ' ', padn);
+}
+static int lg_utoa(char *buf, unsigned long long v, int base, int upper) {
+  char t[32]; int n = 0, i; const char *dg = upper ? "0123456789ABCDEF" : "0123456789abcdef";
+  do { t[n++] = dg[v % (unsigned)base]; v /= (unsigned)base; } while (v);
+  for (i = 0; i < n; i++) buf[i] = t[n - 1 - i];
+  return n;
+}
+static void lg_int(lg_out_t *o, unsigned long long u, int base, int upper, const char *pre, int prec, int width, int left, int zero) {
+  char t[32], d[96]; int n, k = 0, i;
+  if (prec >= 0) zero = 0; else prec = 1;
+  n = (prec == 0 && u == 0) ? 0 : lg_utoa(t, u, base, upper);
+  for (i = n; i < prec && k < 60; i++) d[k++] = '0';
+  memcpy(d + k, t, n); k += n;
+  lg_emit(o, pre, d, k, width, left, zero);
+}
+static int lg_ftoa_e(char *buf, double v, int prec, int upper);
+static int lg_ftoa_f(char *buf, double v, int prec) {
+  unsigned long long p10 = 1, ip, fd; double fr; int i, n;
+  if (prec > 17) prec = 17;
+  if (v >= 1.8e19) return lg_ftoa_e(buf, v, prec, 0);
+  for (i = 0; i < prec; i++) p10 *= 10;
+  ip = (unsigned long long)v;
+  fr = v - (double)ip;
+  fd = (unsigned long long)(fr * (double)p10 + 0.5);
+  if (fd >= p10) { ip++; fd -= p10; }
+  n = lg_utoa(buf, ip, 10, 0);
+  if (prec > 0) {
+    char t[24]; int m = lg_utoa(t, fd, 10, 0);
+    buf[n++] = '.';
+    for (i = m; i < prec; i++) buf[n++] = '0';
+    memcpy(buf + n, t, m); n += m;
+  }
+  return n;
+}
+static int lg_ftoa_e(char *buf, double v, int prec, int upper) {
+  int ex = 0, n;
+  if (prec > 17) prec = 17;
+  if (v != 0) { while (v >= 10) { v /= 10; ex++; } while (v < 1) { v *= 10; ex--; } }
+  n = lg_ftoa_f(buf, v, prec);
+  if (buf[0] == '1' && buf[1] == '0') { v /= 10; ex++; n = lg_ftoa_f(buf, v, prec); }
+  buf[n++] = upper ? 'E' : 'e';
+  buf[n++] = ex < 0 ? '-' : '+';
+  if (ex < 0) ex = -ex;
+  if (ex < 10) buf[n++] = '0';
+  n += lg_utoa(buf + n, (unsigned long long)ex, 10, 0);
+  return n;
+}
+static int lg_ftoa_g(char *buf, double v, int prec, int alt, int upper) {
+  int P = prec < 0 ? 6 : (prec == 0 ? 1 : prec), n, X = 0, i, j, m;
+  char t[64];
+  m = lg_ftoa_e(t, v, P - 1, 0);
+  for (i = 0; i < m; i++) if (t[i] == 'e') { int s = t[i + 1] == '-' ? -1 : 1; for (j = i + 2; j < m; j++) X = X * 10 + (t[j] - '0'); X *= s; break; }
+  if (X < P && X >= -4) n = lg_ftoa_f(buf, v, P - 1 - X);
+  else n = lg_ftoa_e(buf, v, P - 1, upper);
+  if (!alt) {
+    int e = n, hasdot = 0, z;
+    for (i = 0; i < n; i++) if (buf[i] == 'e' || buf[i] == 'E') { e = i; break; }
+    for (i = 0; i < e; i++) if (buf[i] == '.') hasdot = 1;
+    if (hasdot) {
+      z = e; while (z > 0 && buf[z - 1] == '0') z--;
+      if (z > 0 && buf[z - 1] == '.') z--;
+      memmove(buf + z, buf + e, n - e); n -= e - z;
+    }
+  }
+  return n;
+}
+int lg_vsnprintf(char *buf, size_t size, const char *fmt, va_list ap) {
+  lg_out_t o; char tmp[400];
+  o.b = buf; o.n = size; o.k = 0;
+  for (; *fmt; fmt++) {
+    int left = 0, plus = 0, space = 0, alt = 0, zero = 0, width = 0, prec = -1, lng = 0;
+    const char *p; char cv; char pre[4] = { 0, 0, 0, 0 };
+    if (*fmt != '%') { lg_pc(&o, *fmt); continue; }
+    p = fmt + 1;
+    for (;; p++) { if (*p == '-') left = 1; else if (*p == '+') plus = 1; else if (*p == ' ') space = 1; else if (*p == '#') alt = 1; else if (*p == '0') zero = 1; else break; }
+    if (*p == '*') { width = va_arg(ap, int); if (width < 0) { left = 1; width = -width; } p++; }
+    else while (*p >= '0' && *p <= '9') width = width * 10 + (*p++ - '0');
+    if (*p == '.') { p++; prec = 0; if (*p == '*') { prec = va_arg(ap, int); p++; } else while (*p >= '0' && *p <= '9') prec = prec * 10 + (*p++ - '0'); }
+    for (;; p++) {
+      if (*p == 'l') lng++;
+      else if (*p == 'h' || *p == 'L' || *p == 'z' || *p == 't') ;
+      else if (*p == 'j' || *p == 'q') lng = 2;
+      else if (*p == 'I' && p[1] == '6' && p[2] == '4') { lng = 2; p += 2; }
+      else if (*p == 'I' && p[1] == '3' && p[2] == '2') { p += 2; }
+      else break;
+    }
+    cv = *p; fmt = p;
+    if (!cv) break;
+    if (left) zero = 0;
+    switch (cv) {
+    case 'd': case 'i': {
+      long long v = lng >= 2 ? va_arg(ap, long long) : (long long)va_arg(ap, int);
+      unsigned long long u = v < 0 ? 0ULL - (unsigned long long)v : (unsigned long long)v;
+      if (v < 0) pre[0] = '-'; else if (plus) pre[0] = '+'; else if (space) pre[0] = ' ';
+      lg_int(&o, u, 10, 0, pre, prec, width, left, zero); break; }
+    case 'u': case 'x': case 'X': case 'o': {
+      unsigned long long u = lng >= 2 ? va_arg(ap, unsigned long long) : (unsigned long long)va_arg(ap, unsigned int);
+      int base = cv == 'o' ? 8 : (cv == 'u' ? 10 : 16);
+      if (alt && u && base == 16) { pre[0] = '0'; pre[1] = cv; }
+      if (alt && base == 8) pre[0] = '0';
+      lg_int(&o, u, base, cv == 'X', pre, prec, width, left, zero); break; }
+    case 'p': {
+      unsigned long long u = (unsigned long long)(size_t)va_arg(ap, void *);
+      lg_int(&o, u, 16, 0, "0x", 8, width, left, 0); break; }
+    case 'c': tmp[0] = (char)va_arg(ap, int); lg_emit(&o, "", tmp, 1, width, left, 0); break;
+    case 's': {
+      const char *s = va_arg(ap, const char *); int len = 0;
+      if (!s) s = "(null)";
+      while (s[len] && (prec < 0 || len < prec)) len++;
+      lg_emit(&o, "", s, len, width, left, 0); break; }
+    case 'f': case 'F': case 'e': case 'E': case 'g': case 'G': {
+      double v = va_arg(ap, double); int len;
+      if (v < 0) { pre[0] = '-'; v = -v; } else if (plus) pre[0] = '+'; else if (space) pre[0] = ' ';
+      if (v != v) { lg_emit(&o, pre, "nan", 3, width, left, 0); break; }
+      if (v > 1.7976931348623157e308) { lg_emit(&o, pre, "inf", 3, width, left, 0); break; }
+      if (cv == 'f' || cv == 'F') len = lg_ftoa_f(tmp, v, prec < 0 ? 6 : prec);
+      else if (cv == 'e' || cv == 'E') len = lg_ftoa_e(tmp, v, prec < 0 ? 6 : prec, cv == 'E');
+      else len = lg_ftoa_g(tmp, v, prec, alt, cv == 'G');
+      lg_emit(&o, pre, tmp, len, width, left, zero); break; }
+    case 'n': { int *pn = va_arg(ap, int *); if (pn) *pn = (int)o.k; break; }
+    case '%': lg_pc(&o, '%'); break;
+    default: lg_pc(&o, '%'); lg_pc(&o, cv); break;
+    }
+  }
+  if (size) buf[o.k < size ? o.k : size - 1] = '\0';
+  return (int)o.k;
+}
