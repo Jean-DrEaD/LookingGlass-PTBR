@@ -359,3 +359,8 @@
 - 16r xemu: 'SM 842 sem thread' t=18473 e congela (5 min); NAO apareceu 'FindLabel privado' nem 'SetThread sem thread'
 - Conclusao: chamador de CurrentScriptClass e outro (fora de fgame/script) OU copia duplicada de FindLabel/SetThread vence no /FORCE:MULTIPLE; NULL desreferenciado = congelamento
 - 16s: coleta global (code\ inteiro + CMake + .obj) em docs/probes/lote16s-callers.log, sem build
+
+## Lote 16t (2026-10-23 18:07)
+- 16s: chamador real de CurrentScriptClass = corepp\listener.cpp:4726 (fora de fgame); sem duplicatas (1 obj gamescript/scriptmaster)
+- Hipotese: Listener::CreateThreadInternal faz scriptClass->GetScript() sem checar NULL -> congelamento
+- 16t: coleta da funcao + chamadores em docs/probes/lote16t-listener.log, sem build

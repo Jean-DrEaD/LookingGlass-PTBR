@@ -1,0 +1,92 @@
+## listener.cpp 4719-4798
+4719: ScriptThread *Listener::CreateThreadInternal(const ScriptVariable& label)
+4720: {
+4721:     GameScript   *scr;
+4722:     ScriptThread *thread = NULL;
+4723:     ScriptClass  *scriptClass;
+4724: 
+4725:     if (label.GetType() == VARIABLE_STRING || label.GetType() == VARIABLE_CONSTSTRING) {
+4726:         scriptClass = Director.CurrentScriptClass();
+4727:         scr         = scriptClass->GetScript();
+4728: 
+4729:         if (label.GetType() == VARIABLE_CONSTSTRING) {
+4730:             thread = Director.CreateScriptThread(scr, this, label.constStringValue());
+4731:         } else {
+4732:             thread = Director.CreateScriptThread(scr, this, label.stringValue());
+4733:         }
+4734:     } else if (label.GetType() == VARIABLE_CONSTARRAY && label.arraysize() > 1) {
+4735:         ScriptVariable *script    = label[1];
+4736:         ScriptVariable *labelname = label[2];
+4737: 
+4738:         if (script->GetType() == VARIABLE_CONSTSTRING) {
+4739:             scr = Director.GetGameScript(script->constStringValue());
+4740:         } else {
+4741:             scr = Director.GetGameScript(script->stringValue());
+4742:         }
+4743: 
+4744:         if (labelname->GetType() == VARIABLE_CONSTSTRING) {
+4745:             thread = Director.CreateScriptThread(scr, this, labelname->constStringValue());
+4746:         } else {
+4747:             thread = Director.CreateScriptThread(scr, this, labelname->stringValue());
+4748:         }
+4749:     } else {
+4750:         ScriptError("Listener::CreateThreadInternal: bad argument format");
+4751:     }
+4752: 
+4753:     return thread;
+4754: }
+4755: 
+4756: /*
+4757: =======================
+4758: CreateReturnThread
+4759: =======================
+4760: */
+4761: void Listener::CreateReturnThread(Event *ev)
+4762: {
+4763:     ScriptVariable returnValue;
+4764: 
+4765:     returnValue.newPointer();
+4766: 
+4767:     ExecuteThreadInternal(ev, returnValue);
+4768: 
+4769:     ev->AddValue(returnValue);
+4770: }
+4771: 
+4772: /*
+4773: =======================
+4774: CreateThread
+4775: =======================
+4776: */
+4777: void Listener::CreateThread(Event *ev)
+4778: {
+4779:     ScriptVariable returnValue;
+4780: 
+4781:     ExecuteThreadInternal(ev, returnValue);
+4782: }
+4783: 
+4784: /*
+4785: =======================
+4786: ExecuteReturnScript
+4787: =======================
+4788: */
+4789: void Listener::ExecuteReturnScript(Event *ev)
+4790: {
+4791:     ScriptVariable returnValue;
+4792: 
+4793:     returnValue.newPointer();
+4794: 
+4795:     ExecuteScriptInternal(ev, returnValue);
+4796: 
+4797:     ev->AddValue(returnValue);
+4798: }
+## chamadores de CreateThreadInternal
+corepp\listener.cpp:4640: ScriptThread *thread = CreateThreadInternal(ev->GetValue(1));
+corepp\listener.cpp:4668: ScriptThread *thread        = CreateThreadInternal(ev->GetValue(1));
+corepp\listener.cpp:4719: ScriptThread *Listener::CreateThreadInternal(const ScriptVariable& label)
+corepp\listener.h:533: virtual ScriptThread *CreateThreadInternal(const ScriptVariable& label);
+fgame\scriptslave.cpp:865: Register(0, CreateThreadInternal(ev->GetValue(1)));
+fgame\scriptthread.cpp:2547: ScriptThread *ScriptThread::CreateThreadInternal(const ScriptVariable& label)
+fgame\scriptthread.cpp:2549: return GetScriptClass()->CreateThreadInternal(label);
+fgame\scriptthread.h:211: virtual ScriptThread *CreateThreadInternal(const ScriptVariable& label) override;
+script\scriptclass.cpp:192: ScriptThread *ScriptClass::CreateThreadInternal(const ScriptVariable& label)
+script\scriptclass.h:65: ScriptThread *CreateThreadInternal(const ScriptVariable& label) override;
