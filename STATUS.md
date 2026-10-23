@@ -433,3 +433,8 @@
 - 16z6b: lg_vsnprintf proprio (sys_xbox.c; d i u x X o c s p f e g n %, ll/I64/*) ligado no Q_vsnprintf + macro do qcommon.h sob NXDK
 - Teste: 'LG: fmt' antes do auto map; esperado [ 3.14] [0.5] [1.234568e+04] [-42] [ok] [00a]
 - 16z6c (planejado): lg_sscanf (%f via lg_strtod) p/ os 47 usos
+
+## Lote 16z6c (2026-10-23 20:23)
+- 16z6b xemu: printf OK - 'LG: fmt [ 3.14] [0.5] [1.234568e+04] [-42] [ok] [00a]' identico ao esperado
+- Efeito colateral: linha fmt repetia ~15x/2s e frame caiu (362 em t=35s) -> provavel if sem chaves no auto map (contexto em docs/probes/lote16z6c-automap.log)
+- 16z6c: linha fmt removida (+0 -1); proximo 16z6d = lg_sscanf (%f via lg_strtod)
