@@ -1,0 +1,334 @@
+## SV_Frame\s*\(
+client\cl_main.cpp:1349: SV_Frame( 0 );
+null\null_server.c:34: void SV_Frame( int msec ) {
+qcommon\common.c:2387: SV_Frame( msec );
+server\sv_main.c:1040: void SV_Frame( int msec ) {
+## ge->RunFrame\s*\(
+server\sv_init.c:867: ge->RunFrame( svs.time, 100 );
+server\sv_main.c:1136: ge->RunFrame( svs.time, frameMsec );
+## common.c em volta do cf (2386)
+   2346:         else
+   2347:             NET_Sleep(timeVal - 1);
+   2348:     } while (Com_TimeVal(minMsec));
+   2349: 
+   2350:     IN_Frame();
+   2351: 
+   2352:     lastTime = com_frameTime;
+   2353:     com_frameTime = Com_EventLoop();
+   2354: 
+   2355:     msec = com_frameTime - lastTime;
+   2356: 
+   2357: #ifndef DEDICATED
+   2358: 	if (com_dedicated->integer || CL_FinishedIntro())
+   2359: 	{
+   2360: 		Cbuf_Execute(0);
+   2361: 		SV_CheckSaveGame();
+   2362: 	}
+   2363: #else
+   2364: 	// Fixed in OPM
+   2365: 	//   On dedicated servers, the client part that runs buffered commands is never run.
+   2366: 	//   Therefore, the delta time has to be specified here for wait commands to work
+   2367: 	Cbuf_Execute(msec);
+   2368: #endif
+   2369: 
+   2370:     if (com_altivec->modified)
+   2371:     {
+   2372:         Com_DetectAltivec();
+   2373:         com_altivec->modified = qfalse;
+   2374:     }
+   2375: 
+   2376:     // mess with msec if needed
+   2377:     msec = Com_ModifyMsec(msec);
+   2378: 
+   2379:     //
+   2380:     // server side
+   2381:     //
+   2382:     if (com_speeds->integer) {
+   2383:         timeBeforeServer = Sys_Milliseconds();
+   2384:     }
+   2385: 
+   2386: 	{ static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: cf %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+   2387: 	SV_Frame( msec );
+   2388: 	{ static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: cf %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+   2389: 
+   2390: 	// if "dedicated" has been modified, start up
+   2391: 	// or shut down the client system.
+   2392: 	// Do this after the server may have started,
+   2393: 	// but before the client tries to auto-connect
+   2394: 	if ( com_dedicated->modified ) {
+   2395: 		// get the latched value
+   2396: 		Cvar_Get( "dedicated", "0", 0 );
+   2397: 		com_dedicated->modified = qfalse;
+   2398: 		if ( !com_dedicated->integer ) {
+   2399: 			SV_Shutdown( "dedicated set to 0" );
+   2400: 			CL_FlushMemory();
+   2401: 		} else {
+   2402: 			CL_Shutdown("dedicated set to 1", qtrue, qtrue);
+   2403: 			Sys_CloseMutex();
+   2404: 			Sys_ShowConsole(0, 0);
+   2405: 			NET_Init();
+   2406: 		}
+   2407: 	}
+   2408: 
+   2409: #ifndef DEDICATED
+   2410: 	//
+   2411: 	// client system
+   2412: 	//
+   2413: 	//
+   2414: 	// run event loop a second time to get server to client packets
+   2415: 	// without a frame of latency
+   2416: 	//
+## sv_main.c em volta do rf (1135)
+   1075: 	// don't let it scale below 1ms
+   1076: 	if(frameMsec < 1)
+   1077: 	{
+   1078: 		Cvar_Set("timescale", va("%f", sv_fps->integer / 1000.0f));
+   1079: 		frameMsec = 1;
+   1080: 	}
+   1081: 
+   1082: 	sv.timeResidual += msec;
+   1083: 
+   1084: 	// if time is about to hit the 32nd bit, kick all clients
+   1085: 	// and clear sv.time, rather
+   1086: 	// than checking for negative time wraparound everywhere.
+   1087: 	// 2giga-milliseconds = 23 days, so it won't be too often
+   1088: 	if ( svs.time > 0x70000000 ) {
+   1089: 		SV_Shutdown( "Restarting server due to time wrapping" );
+   1090: 		Cbuf_AddText( va( "map %s\n", Cvar_VariableString( "mapname" ) ) );
+   1091: 		return;
+   1092: 	}
+   1093: 	// this can happen considerably earlier when lots of clients play and the map doesn't change
+   1094: 	if ( svs.nextSnapshotEntities >= 0x7FFFFFFE - svs.numSnapshotEntities ) {
+   1095: 		SV_Shutdown( "Restarting server due to numSnapshotEntities wrapping" );
+   1096: 		Cbuf_AddText( va( "map %s\n", Cvar_VariableString( "mapname" ) ) );
+   1097: 		return;
+   1098: 	}
+   1099: 
+   1100: 	// update infostrings if anything has been changed
+   1101: 	if ( cvar_modifiedFlags & CVAR_SERVERINFO ) {
+   1102: 		SV_SetConfigstring( CS_SERVERINFO, Cvar_InfoString( CVAR_SERVERINFO ) );
+   1103: 		cvar_modifiedFlags &= ~CVAR_SERVERINFO;
+   1104: 	}
+   1105: 	if ( cvar_modifiedFlags & CVAR_SYSTEMINFO ) {
+   1106: 		SV_SetConfigstring( CS_SYSTEMINFO, Cvar_InfoString_Big( CVAR_SYSTEMINFO ) );
+   1107: 		cvar_modifiedFlags &= ~CVAR_SYSTEMINFO;
+   1108: 	}
+   1109: 
+   1110: 	if ( com_speeds->integer ) {
+   1111: 		startTime = Sys_Milliseconds ();
+   1112: 	} else {
+   1113: 		startTime = 0;	// quite a compiler warning
+   1114: 	}
+   1115: 
+   1116: 	if( ( sv_fps->integer * msec > 1100 ) && ( svs.time > svs.serverLagTime + 2500 ) )
+   1117: 	{
+   1118: 		svs.serverLagTime = svs.time;
+   1119: 		SV_SendServerCommand( NULL, "svlag" );
+   1120: 	}
+   1121: 
+   1122: 	// update ping based on the all received frames
+   1123: 	SV_CalcPings();
+   1124: 
+   1125: 	// run the game simulation in chunks
+   1126: 	while ( sv.timeResidual >= frameMsec ) {
+   1127: 		sv.timeResidual -= frameMsec;
+   1128: 		svs.time += frameMsec;
+   1129: 
+   1130: 		if( sv.state == SS_GAME )
+   1131: 		{
+   1132: 			const char *err;
+   1133: 
+   1134: 			// let everything in the world think and move
+   1135: 			{ static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: rf %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+   1136: 			ge->RunFrame( svs.time, frameMsec );
+   1137: 			{ static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: rf %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+   1138: 
+   1139: 			err = ge->errorMessage;
+   1140: 			if( err )
+   1141: 			{
+   1142: 				ge->errorMessage = NULL;
+   1143: 				Com_Error(ERR_DROP, "%s", err);
+   1144: 			}
+   1145: 		}
+   1146: 	}
+   1147: 
+   1148: 	if ( com_speeds->integer ) {
+   1149: 		time_game = Sys_Milliseconds () - startTime;
+   1150: 	}
+   1151: 
+   1152: 	// check timeouts
+   1153: 	SV_CheckTimeouts();
+   1154: 
+   1155: 	// send messages back to the clients
+   1156: 	SV_SendClientMessages();
+   1157: 
+   1158: 	// send a heartbeat to the master if needed
+   1159: 	SV_MasterHeartbeat();
+   1160: 
+   1161: 	// process all gamespy queries
+   1162: 	SV_ProcessGamespyQueries();
+   1163: 
+   1164: 	// Added in OPM
+   1165: 	//  Handle non-pvs sounds
+   1166: 	SV_HandleNonPVSSound();
+   1167: 
+   1168: 	svs.lastTime = svs.time;
+   1169: }
+   1170: 
+   1171: /*
+   1172: ==================
+   1173: Com_Pause
+   1174: ==================
+   1175: */
+   1176: void Com_Pause()
+   1177: {
+   1178: 	if( deathmatch->integer ) {
+   1179: 		return;
+   1180: 	}
+   1181: 
+   1182: 	if( !com_sv_running->integer ) {
+   1183: 		return;
+   1184: 	}
+   1185: 
+   1186: 	if( sv.state != SS_GAME ) {
+   1187: 		return;
+   1188: 	}
+   1189: 
+   1190: 	if( paused->integer == 1 ) {
+   1191: 		return;
+   1192: 	}
+   1193: 
+   1194: 	SetBelowNormalThreadPriority();
+   1195: 	Cvar_Set( "paused", "1" );
+   1196: }
+   1197: 
+   1198: /*
+   1199: ==================
+   1200: Com_Unpause
+   1201: ==================
+   1202: */
+   1203: void Com_Unpause()
+   1204: {
+   1205: 	if( paused->integer )
+   1206: 	{
+   1207: 		if( paused->integer == 1 ) {
+   1208: 			SetNormalThreadPriority();
+   1209: 		}
+   1210: 
+   1211: 		Cvar_Set( "paused", "0" );
+   1212: 		CL_ClearButtons();
+   1213: 	}
+   1214: }
+   1215: 
+   1216: /*
+   1217: ==================
+   1218: Com_FakePause
+   1219: ==================
+   1220: */
+   1221: void Com_FakePause()
+   1222: {
+   1223: 	if( !paused->integer ) {
+   1224: 		Cvar_Set( "paused", "2" );
+   1225: 	}
+   1226: }
+   1227: 
+   1228: /*
+   1229: ==================
+   1230: Com_FakeUnpause
+   1231: ==================
+   1232: */
+   1233: void Com_FakeUnpause()
+   1234: {
+   1235: 	if( paused->integer >= 2 )
+   1236: 	{
+   1237: 		Cvar_Set( "paused", "0" );
+   1238: 		CL_ClearButtons();
+   1239: 	}
+   1240: }
+   1241: 
+   1242: /*
+   1243: ==================
+   1244: Com_Pause_f
+   1245: ==================
+   1246: */
+   1247: void Com_Pause_f()
+   1248: {
+   1249: 	if( paused->integer == 1 ) {
+   1250: 		Com_Unpause();
+   1251: 	} else {
+   1252: 		Com_Pause();
+   1253: 	}
+   1254: }
+   1255: 
+## sv_ccmds.c 240-310
+   240: 		}
+   241: 	}
+   242: 
+   243: 	Cvar_SaveGameRestart_f();
+   244: 
+   245: 	//
+   246: 	// in 2.0 and above, ignore training / mohaa mission maps
+   247: 	//
+   248: 	// FIXME: is this really necessary?
+   249: 	/*
+   250: 	if (com_target_game->integer != TG_MOH && g_gametype->integer == GT_SINGLE_PLAYER) {
+   251: 		if (mapname[0] == 'm' && mapname[1] - '1' <= 5) {
+   252: 			return;
+   253: 		}
+   254: 
+   255: 		if (!Q_stricmp(mapname, "training")) {
+   256: 			return;
+   257: 		} else if (!Q_stricmp(mapname, "training.bsp")) {
+   258: 			return;
+   259: 		} else if (!Q_stricmp(mapname, "void")) {
+   260: 			return;
+   261: 		} else if (!Q_stricmp(mapname, "void.bsp")) {
+   262: 			return;
+   263: 		}
+   264: 	}
+   265: 	*/
+   266: 
+   267: 	// start up the map
+   268: 	SV_SpawnServer( mapname, qfalse, qfalse, qfalse );
+   269: 	{ static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: mp %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+   270: 
+   271: 	if( g_gametype->integer == GT_SINGLE_PLAYER ) {
+   272: 		svs.autosave = qtrue;
+   273: 	}
+   274: }
+   275: 
+   276: /*
+   277: ==================
+   278: SV_GameMap_f
+   279: 
+   280: Restart the server on a different map
+   281: ==================
+   282: */
+   283: static void SV_GameMap_f( void ) {
+   284: 	const char	*map;
+   285: 	qboolean	bTransition;
+   286: 
+   287: 	if( Cmd_Argc() != 2 ) {
+   288: 		Com_Printf( "USAGE: gamemap <map>\n" );
+   289: 		return;
+   290: 	}
+   291: 
+   292: 	map = Cmd_Argv( 1 );
+   293: 	Com_DPrintf( "SV_GameMap(%s)\n", map );
+   294: 
+   295: 	Q_strncpyz( svs.gameName, "current", sizeof( svs.gameName ) );
+   296: 	Cvar_SaveGameRestart_f();
+   297: 
+   298: 	bTransition = sv.state == SS_GAME;
+   299: 
+   300: 	// save persistant data
+   301: 	if( bTransition ) {
+   302: 		SV_ArchivePersistantFile( qfalse );
+   303: 	}
+   304: 
+   305: 	SV_SpawnServer( map, qfalse, qfalse, bTransition );
+   306: 
+   307: 	if( g_gametype->integer == GT_SINGLE_PLAYER ) {
+   308: 		svs.autosave = qtrue;
+   309: 	}
+   310: }

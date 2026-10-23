@@ -404,3 +404,9 @@
 - 16z xemu: sl 1068/1070/1074/1076/1078 todos OK (ServerSpawned + Recast retornam); depois nada, sem heartbeat
 - Trava entre fim do SV_ServerLoaded e o 1o Com_Frame/SV_Frame/ge->RunFrame
 - 16z2: breadcrumbs sz (fim ServerLoaded), mp (pos SV_SpawnServer), cf (Com_Frame/SV_Frame), rf (ge->RunFrame), limitados a 3 frames
+
+## Lote 16z3 (2026-10-23 19:50)
+- 16z2 xemu: sz 1080 -> mp 269 -> rf 1135 -> rf 1137 e para (minutos); NENHUM cf
+- 1o ge->RunFrame RETORNA; trava apos ele no mesmo frame (resto do SV_Frame/snapshots/volta ao Com_Frame)
+- cf ausente: SV_Frame instrumentado no common.c nao e o caminho executado (outra chamada/ramo)
+- 16z3: coleta SV_Frame/RunFrame + contexto cf/rf/mp (docs/probes/lote16z3-frame.log), sem build
