@@ -1,0 +1,21 @@
+# Probe 15y-c 2026-10-23 12:44 @ 58dc852 breadcrumbs SV_SpawnServer
+## LGSYS ok
+BUILD_EXIT=0
+## Objetos ok / falhos:
+378
+0
+## Erros por arquivo:
+## Top mensagens:
+## Linker (simbolos):
+## Falhou:
+## Alvos:
+build-xbox/libgcd_common.lib
+build-xbox/libgcd_key.lib
+build-xbox/libgcd_natneg.lib
+build-xbox/libgcd_qr2.lib
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe

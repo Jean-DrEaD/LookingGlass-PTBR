@@ -225,3 +225,8 @@
 - 15y-a: sys_xbox.c sem main/argv -> mapa disparado por Cbuf_AddText('map centipede1') no frame 40 (common.c)
 - 15y-b: libnxdk_net removido do link: SEM_NET=False (se False: simbolos em docs/probes/lote15y-semnet-simbolos.log, probe restaurado)
 - 15y-c (planejado): GameSpy fora (shared_sources.cmake/gamespy.cmake sob NXDK) + include lwIP fora
+
+## Lote 15y-c (2026-10-23 12:46)
+- 15y-b xemu: 'LG: auto map centipede1' -> 'Server Initialization' -> 'Server: centipede1' -> TRAVA (heartbeat para) dentro de SV_SpawnServer; sem erro de versao BSP
+- 15y-b: sem libnxdk_net faltam so 18 lwip_* (socket/bind/select/getaddrinfo/inet_ntop...) -> stubs -1 ou #ifdef NXDK no net_ip.c (15z)
+- 15y-c: breadcrumbs 'LG: sv <linha> t=' nas chamadas do SV_SpawnServer apos 'Server: %s'
