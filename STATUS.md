@@ -339,3 +339,8 @@
 - 16n xemu: TODAS as 408 entidades OK (407 'si fim' t=14059); ~4s depois 'SM 842 CurrentScriptClass' t=18244 -> 'current thread is NULL'
 - Throw vem de apos o laco de spawn (pos-spawn do Level), sem 'se nodes' antes
 - 16o: coleta chamadores CurrentScriptClass + level.cpp pos-laco (docs/probes/lote16o-scriptclass.log), sem build
+
+## Lote 16p (2026-10-23 17:38)
+- 16o: CurrentScriptClass chamado so de gamescript.cpp:267 e :1145 (m_Script = ...->GetScript(), provavel label sem arquivo)
+- 16o: pos-laco = UpdateConfigStrings -> PreSpawnSentient + L_ProcessPendingEvents (EV_Entity_Start x408) -> new Player -> ComputeDMWaypoints
+- 16p: breadcrumbs 'pl ucfg/pending/player/dmwp' (+4 -4); coleta gamescript.cpp em docs/probes/lote16p-gamescript.log

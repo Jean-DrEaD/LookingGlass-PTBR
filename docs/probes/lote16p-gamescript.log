@@ -1,0 +1,114 @@
+## gamescript.cpp 240-285
+240:     s.codepos   = pos;
+241:     s.key       = label;
+242:     s.isprivate = private_section;
+243: 
+244:     if (!label_list.findKeyValue(STRING_NULL)) {
+245:         label_list.addKeyValue(STRING_NULL) = s;
+246:     }
+247: 
+248:     return true;
+249: }
+250: 
+251: bool StateScript::AddLabel(str label, unsigned char *pos, bool private_section)
+252: {
+253:     return AddLabel(Director.AddString(label), pos, private_section);
+254: }
+255: 
+256: unsigned char *StateScript::FindLabel(const_str label)
+257: {
+258:     script_label_t *s;
+259:     ScriptClass    *scriptClass;
+260:     GameScript     *script;
+261: 
+262:     s = label_list.findKeyValue(label);
+263: 
+264:     if (s) {
+265:         // check if the label is a private function
+266:         if (s->isprivate) {
+267:             scriptClass = Director.CurrentScriptClass();
+268: 
+269:             if (scriptClass) {
+270:                 script = scriptClass->GetScript();
+271: 
+272:                 // now check if the label's statescript matches this statescript
+273:                 if ((&script->m_State) != this) {
+274:                     ScriptError("Cannot call a private function.");
+275:                     return NULL;
+276:                 }
+277:             }
+278:         }
+279: 
+280:         return s->codepos;
+281:     } else {
+282:         return NULL;
+283:     }
+284: }
+285: 
+## gamescript.cpp 1110-1175
+1110:             m_Label    = STRING_EMPTY;
+1111:             foundLabel = true;
+1112:             break;
+1113:         }
+1114: 
+1115:         if (i >= 1023) {
+1116:             //we didn't find label so empty label
+1117:             m_Label    = STRING_EMPTY;
+1118:             foundLabel = false;
+1119:             break;
+1120:         }
+1121:     }
+1122: 
+1123:     m_Script = Director.GetGameScript(script);
+1124: 
+1125:     if (!m_Script->m_State.FindLabel(m_Label)) {
+1126:         str l = Director.GetString(m_Label);
+1127: 
+1128:         m_Script = NULL;
+1129:         m_Label  = STRING_EMPTY;
+1130: 
+1131:         ScriptError("^~^~^ Could not find label '%s' in '%s'", l.c_str(), script.c_str());
+1132:     }
+1133: }
+1134: 
+1135: void ScriptThreadLabel::SetScript(const_str label)
+1136: {
+1137:     SetScript(Director.GetString(label));
+1138: }
+1139: 
+1140: void ScriptThreadLabel::SetThread(const ScriptVariable& label)
+1141: {
+1142:     switch (label.GetType()) {
+1143:     case VARIABLE_STRING:
+1144:     case VARIABLE_CONSTSTRING:
+1145:         m_Script = Director.CurrentScriptClass()->GetScript();
+1146:         m_Label  = label.constStringValue();
+1147:         break;
+1148:     case VARIABLE_NONE:
+1149:         m_Script = NULL;
+1150:         m_Label  = STRING_EMPTY;
+1151:         break;
+1152:     case VARIABLE_CONSTARRAY:
+1153:         if (label.arraysize() > 1) {
+1154:             ScriptVariable *script    = label[1];
+1155:             ScriptVariable *labelname = label[2];
+1156: 
+1157:             if (script->GetType() == VARIABLE_CONSTSTRING) {
+1158:                 m_Script = Director.GetGameScript(script->constStringValue());
+1159:             } else {
+1160:                 m_Script = Director.GetGameScript(script->stringValue());
+1161:             }
+1162: 
+1163:             m_Label = labelname->constStringValue();
+1164:             break;
+1165:         }
+1166:     default:
+1167:         ScriptError("ScriptThreadLabel::SetThread: bad label type '%s'", label.GetTypeName());
+1168:         break;
+1169:     }
+1170: 
+1171:     if (m_Script && !m_Script->m_State.FindLabel(m_Label)) {
+1172:         const str& scriptName = m_Script->Filename();
+1173:         const str& labelName  = Director.GetString(m_Label);
+1174: 
+1175:         m_Script = NULL;
