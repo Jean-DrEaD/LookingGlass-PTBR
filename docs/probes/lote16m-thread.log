@@ -1,0 +1,242 @@
+## throw 'current thread is NULL'
+### D:\openmohaa\code\fgame\scriptmaster.cpp:1107
+1093: 
+1094: ScriptThread *ScriptMaster::PreviousThread(void)
+1095: {
+1096:     return m_PreviousThread;
+1097: }
+1098: 
+1099: ScriptThread *ScriptMaster::CurrentThread(void)
+1100: {
+1101:     return m_CurrentThread;
+1102: }
+1103: 
+1104: ScriptThread *ScriptMaster::CurrentScriptThread(void)
+1105: {
+1106:     if (!m_CurrentThread) {
+1107:         ScriptError("current thread is NULL");
+1108:     }
+1109: 
+1110:     return m_CurrentThread;
+1111: }
+1112: 
+## chamadores CurrentScriptThread/CurrentThread
+fgame\scriptmaster.cpp:467: if (l && l == Director.CurrentThread()) {
+fgame\scriptmaster.cpp:530: if (l && l == Director.CurrentThread()) {
+fgame\scriptmaster.cpp:842: return CurrentScriptThread()->GetScriptClass();
+fgame\scriptmaster.cpp:1099: ScriptThread *ScriptMaster::CurrentThread(void)
+fgame\scriptmaster.cpp:1104: ScriptThread *ScriptMaster::CurrentScriptThread(void)
+fgame\scriptmaster.h:108: ScriptThread *CurrentThread(void);
+fgame\scriptmaster.h:109: ScriptThread *CurrentScriptThread(void);
+fgame\scriptslave.cpp:847: Register(0, Director.CurrentScriptThread());
+fgame\scriptthread.cpp:2487: currentThread  = Director.CurrentThread();
+fgame\scriptthread.cpp:2490: Director.m_PreviousThread = Director.CurrentThread();
+## entidade 407 (lote16j-ents.log)
+## BSP 4562996 bytes; lump14 ofs=3034568 len=38830; ENTIDADES total=408
+## ent idx 402 (le 403)
+{
+"spawnflags" "768"
+"target" "t53"
+"origin" "96.00 1732.00 -564.00"
+"model" "c_evilmushroom.tik"
+"scale" "1.0"
+"classname" "Enemies_EvilMushroom"
+}
+## ent idx 403 (le 404)
+{
+"targetname" "t53"
+"classname" "info_waypoint"
+"origin" "96 1556 -410"
+}
+## ent idx 404 (le 405)
+{
+"spawnflags" "128"
+"classname" "info_splinepath"
+"origin" "592 1614 -109"
+"targetname" "t13b"
+"target" "t13"
+}
+## ent idx 405 (le 406)
+{
+"spawnflags" "128"
+"origin" "589 1739 -109"
+"classname" "info_splinepath"
+"targetname" "t48"
+"target" "t48b"
+}
+## ent idx 406 (le 407)
+{
+"spawnflags" "256"
+"classname" "Enemies_EvilMushroom"
+"scale" "1.0"
+"model" "c_evilmushroom.tik"
+"origin" "-32.00 1668.00 -564.00"
+"target" "t54"
+}
+## ent idx 407 (le 408)
+{
+"origin" "-32 1492 -410"
+"classname" "info_waypoint"
+"targetname" "t54"
+}
+## SpawnInternal D:\openmohaa\code\fgame\g_spawn.cpp:337
+337: Listener *SpawnArgs::SpawnInternal(void)
+338: {
+339:     str         classname;
+340:     ClassDef   *cls;
+341:     Listener   *obj;
+342:     Event      *ev;
+343:     int         i;
+344:     qboolean    tikiWasStatic; // used to determine if entity was intentionally suppressed
+345:     const char *key, *value;
+346:     str         keyname;
+347:     int         t1, t2;
+348: #ifdef WITH_SCRIPT_ENGINE
+349:     unsigned int        eventnum;
+350:     EventDef           *def;
+351:     ScriptVariable     *var;
+352:     ScriptVariableList *varList;
+353: #endif
+354: 
+355:     if (!g_spawnentities->integer) {
+356:         value = getArg("classname", NULL);
+357: 
+358:         // only spawn a playerstart or the world
+359:         if (value) {
+360:             if ((Q_stricmp(value, "info_player_start") && Q_stricmp(value, "worldspawn"))) {
+361:                 Com_Printf("%s\n", value);
+362:                 return NULL;
+363:             }
+364:         }
+365:     }
+366: 
+367:     if (!g_spawnai->integer) {
+368:         value = getArg("classname", NULL);
+369: 
+370:         //dont spawn ai_* if g_spawnai is 0
+371:         if (value) {
+372:             if (!Q_stricmpn(value, "ai_", 3)) {
+373:                 Com_Printf("%s\n", value);
+374:                 return NULL;
+375:             }
+376:         }
+377:     }
+378: 
+379:     t1 = gi.Milliseconds();
+380: 
+381:     gi.Printf("LG: si inicio t=%d\n", gi.Milliseconds());
+382:     classname = getArg("classname", "Unspecified");
+383:     cls       = getClassDef(&tikiWasStatic);
+384: 
+385:     gi.Printf("LG: si getclass cls=%p t=%d\n", (void *)cls, gi.Milliseconds());
+386:     if (!cls) {
+387:         if (!tikiWasStatic) {
+388:             gi.DPrintf("%s doesn't have a spawn function\n", classname.c_str());
+389: 
+390:             if (g_scriptcheck->integer) {
+391:                 gi.Error(ERR_DROP, "Script check failed");
+392:             }
+393:         }
+394: 
+395:         return NULL;
+396:     }
+397: 
+398:     gi.Printf("LG: si cls ok %s t=%d\n", classname.c_str(), gi.Milliseconds());
+399:     if (checkInheritance(PathNode::classinfostatic(), cls)) {
+400:         // use the existing node that was loaded
+401:         obj = PathManager.GetSpawnNode(cls);
+402:     } else {
+403:         obj = (Listener *)cls->newInstance();
+404:     }
+405: 
+406:     for (int i = g_spawnlist.NumObjects(); i > 0; i--) {
+407:         if (g_spawnlist.ObjectAt(i) == NULL) {
+408:             g_spawnlist.RemoveObjectAt(i);
+409:         }
+410:     }
+411: 
+412:     g_spawnlist.AddObject(obj);
+413: 
+414:     // post spawnarg events
+415:     for (i = 0; i < NumArgs(); i++) {
+416:         key   = getKey(i);
+417:         value = getValue(i);
+418: 
+419:         if (*key == '#') {
+420:             // don't count the prefix
+421:             keyname = (key + 1);
+422: 
+423: #ifdef WITH_SCRIPT_ENGINE
+424:             // initialize the object vars
+425:             varList = obj->Vars();
+426: 
+427:             var = varList->GetVariable(keyname);
+428:             if (var) {
+429:                 Com_Printf(
+430:                     "^~^~^ variable '%s' already set with string value '%s' - failed to attempt to set with numeric "
+431:                     "value '%s'\n",
+432:                     keyname.c_str(),
+433:                     var->stringValue().c_str(),
+434:                     value
+435:                 );
+436: 
+437:                 continue;
+438:             }
+439: 
+440:             eventnum = Event::FindSetterEventNum(keyname);
+441: 
+442:             if (!eventnum || !(def = cls->GetDef(eventnum))) {
+443:                 if (strchr(keyname.c_str(), '.')) {
+444:                     // it's a float
+445:                     varList->SetVariable(keyname, (float)atof(value));
+446:                 } else {
+447:                     varList->SetVariable(keyname, atoi(value));
+448:                 }
+449:             } else if (def->type != EV_SETTER) {
+450:                 Com_Printf("^~^~^ Cannot set a read-only variable '%s'\n", keyname.c_str());
+451:             } else {
+452:                 ev = new Event(keyname, EV_SETTER);
+453: 
+454:                 if (strchr(keyname.c_str(), '.')) {
+455:                     ev->AddFloat(atof(value));
+456:                 } else {
+457:                     ev->AddInteger(atoi(value));
+458:                 }
+459: 
+460:                 obj->PostEvent(ev, EV_SPAWNARG);
+461:             }
+462: #endif
+463:         } else if (*key == '$') {
+464:             keyname = (key + 1);
+465: 
+466: #ifdef WITH_SCRIPT_ENGINE
+467:             varList = obj->Vars();
+468: 
+469:             var = varList->GetVariable(keyname);
+470:             if (var) {
+471:                 Com_Printf(
+472:                     "^~^~^ variable '%s' already set with string value '%s' - failed to attempt to set with string "
+473:                     "value '%s'\n",
+474:                     keyname.c_str(),
+475:                     var->stringValue().c_str(),
+476:                     value
+477:                 );
+478: 
+479:                 continue;
+480:             }
+481: 
+482:             eventnum = Event::FindSetterEventNum(keyname);
+483: 
+484:             if (!eventnum || !(def = cls->GetDef(eventnum))) {
+485:                 varList->SetVariable(keyname, value);
+486:             } else if (def->type != EV_SETTER) {
+487:                 Com_Printf("^~^~^ Cannot set a read-only variable '%s'\n", keyname.c_str());
+488:             } else {
+489:                 ev = new Event(eventnum);
+490:                 ev->AddString(value);
+491: 
+492:                 obj->PostEvent(ev, EV_SPAWNARG);
+493:             }
+494: #endif
+495:         }
+496:         // if it is the "script" key, execute the script commands individually

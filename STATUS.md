@@ -324,3 +324,8 @@
 - 1a tentativa: indice errado (stringValue fica 3 linhas acima do throw); nada aplicado. Busca agora a partir da assinatura da funcao
 - 16l: LG_ParseVec3 (strtod->lg_strtod) no vectorValue sob NXDK; inventario sscanf %f em docs/probes/lote16l-sscanf.log (47 usos)
 - Esperado xemu: passar de 'le 407' e chegar a 'se nodes'/fim do SpawnEntities
+
+## Lote 16m (2026-10-23 17:15)
+- 16l xemu: vetor OK (passa conversao); le 407 info_waypoint -> 'SE current thread is NULL' -> throw
+- Hipotese: spawnarg do 407 chama Director.CurrentScriptThread() sem thread ativa (level script/SoundMan nao rodaram)
+- 16m: coleta throw + chamadores + ent 407 + SpawnInternal (docs/probes/lote16m-thread.log), sem build
