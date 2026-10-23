@@ -301,3 +301,9 @@
 ## Lote 16h (2026-10-23 16:19)
 - 16g xemu: si inicio/getclass/cls ok; w ctor..sky..soundman ok, 'w target' nunca -> trava em SoundMan.Load() (World::World)
 - 16h: SoundMan.Load sob #ifndef NXDK (contorno); corpo em docs/probes/lote16h-soundman.log p/ correcao real
+
+## Lote 16i (2026-10-23 16:25)
+- 16h xemu: World OK; 406 entidades criadas; le 407 info_waypoint -> 'si cls ok' -> 'C++ throw sem runtime EH' (newInstance ou spawnargs)
+- Hipotese: ScriptException (evento/spawnarg invalido); trava do SoundMan (Director.ExecuteThread) talvez fosse o mesmo throw
+- 16i: coleta stub EH + ScriptException + entidades 403-409 do centipede1 (docs/probes/lote16i-throw.log), sem build
+- Proximo: imprimir mensagem do ScriptException no stub; decidir EH real vs. try/catch-less (Com_Error)

@@ -1,0 +1,176 @@
+## STUB D:\LookingGlass-PTBR\tools\nxdk-shims\xboxsys\sys_xbox.c:90
+76:     const char *q = p + 1; if (*q == '-' || *q == '+') en = (*q++ == '-');
+77:     if (*q >= '0' && *q <= '9') { while (*q >= '0' && *q <= '9') e = e * 10 + (*q++ - '0'); p = q;
+78:       while (e--) v = en ? v / 10.0 : v * 10.0; }
+79:   }
+80:   if (!any) p = s;
+81:   if (end) *end = (char *)p;
+82:   return neg ? -v : v;
+83: }
+84: float lg_strtof(const char *s, char **end) { return (float)lg_strtod(s, end); }
+85: double atof(const char *s) { return lg_strtod(s, NULL); }
+86: 
+87: /* ---- runtime C++ EH (STUB: throw aborta) ---- */
+88: void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1000); }
+89: int  __CxxFrameHandler3(void *a, void *b, void *c, void *d) { (void)a; (void)b; (void)c; (void)d; return 1; /* ContinueSearch */ }
+90: void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPrint("LG: C++ throw sem runtime EH\n"); for(;;) Sleep(1000); }
+91: 
+92: /* ---- lote 15t: rede (lwIP) antes do NET_Init ---- */
+93: #include <nxdk/net.h>
+94: static void lg_net_init(void) {
+95:   int r;
+96:   debugPrint("LG: nxNetInit...\n");
+97:   r = nxNetInit(NULL);
+98:   debugPrint("LG: nxNetInit = %d\n", r);
+99: }
+100: /* ---- lote 15p: probe/mount D: ---- */
+101: #include <nxdk/mount.h>
+102: static void lg_probe_d(void) {
+103:   static int done = 0; WIN32_FIND_DATAA fd; HANDLE h; int n = 0;
+104:   if (done) return; done = 1;
+105:   if (!nxIsDriveMounted('E')) debugPrint("LG: mount E->HD P1 = %d\n", nxMountDrive('E', "\\Device\\Harddisk0\\Partition1\\"));
+106:   CreateDirectoryA("E:\\TDATA", NULL); CreateDirectoryA("E:\\TDATA\\4c470001", NULL); CreateDirectoryA("E:\\UDATA", NULL); CreateDirectoryA("E:\\UDATA\\4c470001", NULL);
+107:   debugPrint("LG: attr E:\\TDATA\\4c470001 = %lx\n", (unsigned long)GetFileAttributesA("E:\\TDATA\\4c470001"));
+108:   debugPrint("LG: D mounted=%d\n", nxIsDriveMounted('D'));
+109:   if (!nxIsDriveMounted('D')) debugPrint("LG: mount D->CdRom0 = %d\n", nxMountDrive('D', "\\Device\\CdRom0\\"));
+110:   debugPrint("LG: attr D:\\default.xbe = %lx\n", (unsigned long)GetFileAttributesA("D:\\default.xbe"));
+111:   h = FindFirstFileA("D:\\*", &fd);
+112:   debugPrint("LG: D:\\* ok=%d err=%lu\n", h != INVALID_HANDLE_VALUE, h == INVALID_HANDLE_VALUE ? (unsigned long)GetLastError() : 0UL);
+113:   if (h != INVALID_HANDLE_VALUE) { do { if (n++ < 6) debugPrint("LG:  %s\n", fd.cFileName); } while (FindNextFileA(h, &fd)); FindClose(h); }
+114: }
+115: 
+## FILE D:\openmohaa\code\script\scriptexception.cpp
+1: /*
+2: ===========================================================================
+3: Copyright (C) 2015 the OpenMoHAA team
+4: 
+5: This file is part of OpenMoHAA source code.
+6: 
+7: OpenMoHAA source code is free software; you can redistribute it
+8: and/or modify it under the terms of the GNU General Public License as
+9: published by the Free Software Foundation; either version 2 of the License,
+10: or (at your option) any later version.
+11: 
+12: OpenMoHAA source code is distributed in the hope that it will be
+13: useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+14: MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+15: GNU General Public License for more details.
+16: 
+17: You should have received a copy of the GNU General Public License
+18: along with OpenMoHAA source code; if not, write to the Free Software
+19: Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+20: ===========================================================================
+21: */
+22: 
+23: // scriptexception.cpp : Script Exception
+24: 
+25: #include "scriptexception.h"
+26: #include "q_shared.h"
+27: 
+28: #include <cstdarg>
+29: 
+30: int ScriptException::next_abort      = 0;
+31: int ScriptException::next_bIsForAnim = 0;
+32: 
+33: void ScriptException::CreateException(const char *data)
+34: {
+35:     string = data;
+36: 
+37:     bAbort          = next_abort;
+38:     next_abort      = 0;
+39:     bIsForAnim      = next_bIsForAnim;
+40:     next_bIsForAnim = 0;
+41: }
+42: 
+43: ScriptException::ScriptException(str text)
+44: {
+45:     CreateException(text.c_str());
+46: }
+47: 
+48: ScriptException::ScriptException(const char *format, ...)
+49: {
+50:     va_list va;
+51:     char    data[4100];
+52: 
+53:     va_start(va, format);
+54:     Q_vsnprintf(data, sizeof(data), format, va);
+55:     va_end(va);
+56: 
+57:     CreateException(data);
+58: }
+59: 
+60: ScriptException::ScriptException(char *text)
+61: {
+62:     CreateException(text);
+63: }
+64: 
+65: void Error(const char *format, ...)
+66: {
+67:     va_list va;
+68:     char    data[4100];
+69: 
+70:     va_start(va, format);
+71:     Q_vsnprintf(data, sizeof(data), format, va);
+72:     va_end(va);
+73: 
+74:     throw ScriptException((const char *)data);
+75: }
+## FILE D:\openmohaa\code\script\scriptexception.h
+1: /*
+2: ===========================================================================
+3: Copyright (C) 2015 the OpenMoHAA team
+4: 
+5: This file is part of OpenMoHAA source code.
+6: 
+7: OpenMoHAA source code is free software; you can redistribute it
+8: and/or modify it under the terms of the GNU General Public License as
+9: published by the Free Software Foundation; either version 2 of the License,
+10: or (at your option) any later version.
+11: 
+12: OpenMoHAA source code is distributed in the hope that it will be
+13: useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+14: MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+15: GNU General Public License for more details.
+16: 
+17: You should have received a copy of the GNU General Public License
+18: along with OpenMoHAA source code; if not, write to the Free Software
+19: Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+20: ===========================================================================
+21: */
+22: 
+23: // scriptexception.h: Script Exception
+24: 
+25: #pragma once
+26: 
+27: #include "../corepp/str.h"
+28: 
+29: class ScriptException
+30: {
+31: public:
+32:     str string;
+33:     int bAbort;
+34:     int bIsForAnim;
+35: 
+36: private:
+37:     void CreateException(const char *data);
+38: 
+39: public:
+40:     ScriptException(str text);
+41:     ScriptException(const char *format, ...);
+42:     ScriptException(char *text);
+43: 
+44:     static int next_abort;
+45:     static int next_bIsForAnim;
+46: };
+47: 
+48: void Error(const char *format, ...);
+49: 
+50: #define ScriptDeprecated(function) throw ScriptException(function ": DEPRECATED. DON'T USE IT ANYMORE")
+51: #define ScriptDeprecatedAltMethod(alternative_name) \
+52:     gi.DPrintf("WARNING: %s: is deprecated and has been superseded by the " alternative_name " method\n", __FUNCTION__)
+53: #define ScriptDeprecatedAltVariable(alternative_name)                                                             \
+54:     gi.DPrintf(                                                                                                   \
+55:         "WARNING: %s: is deprecated and has been superseded by the " alternative_name " variable\n", __FUNCTION__ \
+56:     )
+57: #define ScriptError throw ScriptException
+## ENTIDADES total=0
