@@ -1,0 +1,27 @@
+## CurrentScriptClass (todo code\)
+corepp\listener.cpp:4726: scriptClass = Director.CurrentScriptClass();
+fgame\gamescript.cpp:267: { scriptClass = Director.CurrentScriptClass(); if (!scriptClass) { gi.Printf("LG: FindLabel privado '%s' t=%d\n", Director.GetString(label).c_str(), gi.Milliseconds()); } } /* LG16r */
+fgame\gamescript.cpp:1145: { ScriptClass *lgSc = Director.CurrentScriptClass(); m_Script = lgSc ? lgSc->GetScript() : NULL; if (!lgSc) { gi.Printf("LG: SetThread sem thread label=%s\n", label.stringValue().c_str()); } } /* LG16q */
+fgame\scriptmaster.cpp:840: ScriptClass *ScriptMaster::CurrentScriptClass(void)
+fgame\scriptmaster.h:110: ScriptClass  *CurrentScriptClass(void);
+## definicoes FindLabel
+fgame\gamescript.cpp:256: unsigned char *StateScript::FindLabel(const_str label)
+fgame\gamescript.cpp:286: unsigned char *StateScript::FindLabel(str label)
+## definicoes SetThread/SetScript
+fgame\gamescript.cpp:1034: void ScriptThreadLabel::SetScript(const ScriptVariable& label)
+fgame\gamescript.cpp:1079: void ScriptThreadLabel::SetScript(const char *label)
+fgame\gamescript.cpp:1135: void ScriptThreadLabel::SetScript(const_str label)
+fgame\gamescript.cpp:1140: void ScriptThreadLabel::SetThread(const ScriptVariable& label)
+## definicoes CurrentScriptClass/Thread
+fgame\scriptmaster.cpp:840: ScriptClass *ScriptMaster::CurrentScriptClass(void)
+fgame\scriptmaster.cpp:1104: ScriptThread *ScriptMaster::CurrentScriptThread(void)
+## marcas LG16q/LG16r
+fgame\gamescript.cpp:267: { scriptClass = Director.CurrentScriptClass(); if (!scriptClass) { gi.Printf("LG: FindLabel privado '%s' t=%d\n", Director.GetString(label).c_str(), gi.Milliseconds()); } } /* LG16r */
+fgame\gamescript.cpp:280: { if (s->isprivate) { gi.Printf("LG: FindLabel ret t=%d\n", gi.Milliseconds()); } return s->codepos; } /* LG16r */
+fgame\gamescript.cpp:1145: { ScriptClass *lgSc = Director.CurrentScriptClass(); m_Script = lgSc ? lgSc->GetScript() : NULL; if (!lgSc) { gi.Printf("LG: SetThread sem thread label=%s\n", label.stringValue().c_str()); } } /* LG16q */
+fgame\scriptmaster.cpp:842: { ScriptThread *lgT = CurrentThread(); if (!lgT) { gi.Printf("LG: SM 842 sem thread t=%d\n", gi.Milliseconds()); return NULL; } return lgT->GetScriptClass(); } /* LG16q */
+## CMake: gamescript/scriptmaster/fgame
+cmake\basegame.cmake:23: ${SOURCE_DIR}/fgame/*.c ${SOURCE_DIR}/fgame/*.cpp
+## objetos .obj gamescript/scriptmaster
+CMakeFiles\game.dir\code\fgame\gamescript.cpp.obj 81791 10/23/2026 17:50:30
+CMakeFiles\game.dir\code\fgame\scriptmaster.cpp.obj 206018 10/23/2026 17:50:41

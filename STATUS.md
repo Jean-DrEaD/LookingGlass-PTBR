@@ -354,3 +354,8 @@
 - 16q xemu: 'SM 842 sem thread' t=18072 e para; sem SetThread/SE/throw/'pl player' -> chamador = FindLabel privado; trava/crash silencioso no L_ProcessPendingEvents
 - 16q: ~4s fixos entre 'pl pending' e SM 842 (evento pesado antes)
 - 16r: FindLabel imprime label privado + 'FindLabel ret' (+2 -2); coleta L_ProcessPendingEvents em docs/probes/lote16r-pending.log
+
+## Lote 16s (2026-10-23 18:03)
+- 16r xemu: 'SM 842 sem thread' t=18473 e congela (5 min); NAO apareceu 'FindLabel privado' nem 'SetThread sem thread'
+- Conclusao: chamador de CurrentScriptClass e outro (fora de fgame/script) OU copia duplicada de FindLabel/SetThread vence no /FORCE:MULTIPLE; NULL desreferenciado = congelamento
+- 16s: coleta global (code\ inteiro + CMake + .obj) em docs/probes/lote16s-callers.log, sem build
