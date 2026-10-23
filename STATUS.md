@@ -344,3 +344,8 @@
 - 16o: CurrentScriptClass chamado so de gamescript.cpp:267 e :1145 (m_Script = ...->GetScript(), provavel label sem arquivo)
 - 16o: pos-laco = UpdateConfigStrings -> PreSpawnSentient + L_ProcessPendingEvents (EV_Entity_Start x408) -> new Player -> ComputeDMWaypoints
 - 16p: breadcrumbs 'pl ucfg/pending/player/dmwp' (+4 -4); coleta gamescript.cpp em docs/probes/lote16p-gamescript.log
+
+## Lote 16q (2026-10-23 17:42)
+- 16p xemu: 'pl ucfg' -> 'pl pending' -> ~4s -> SM 842 -> throw: dentro do L_ProcessPendingEvents (evento de entidade resolvendo label sem thread)
+- 16p: FindLabel (gamescript.cpp:267) ja trata scriptClass NULL; CurrentScriptClass e que lancava
+- 16q: CurrentScriptClass usa CurrentThread() e retorna NULL; SetThread (1145) tolera NULL e imprime label (+2 -2)
