@@ -1,0 +1,341 @@
+## D:\openmohaa\code\server\sv_init.c 1020-1075
+1020: 				}
+1021: 			}
+1022: 		}
+1023: 	}
+1024: 
+1025: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+1026: 	Q_strncpyz(svs.gameName, "current", sizeof(svs.gameName) );
+1027: 
+1028: 	iEnd = Sys_Milliseconds();
+1029: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+1030: 	Com_Printf( "------ Server Initialization Complete ------ %5.2f seconds\n", ( float )iEnd / 1000.0f );
+1031: 
+1032: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+1033: 	UI_LoadResource( "*143" );
+1034: 
+1035: 	if( g_gametype->integer != GT_SINGLE_PLAYER ) {
+1036: 		Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+1037: 		SV_ServerLoaded();
+1038: 	}
+1039: }
+1040: 
+1041: /*
+1042: ===============
+1043: SV_ServerLoaded
+1044: ===============
+1045: */
+1046: void SV_ServerLoaded( void ) {
+1047: 	const char	*p;
+1048: 
+1049: 	if( !com_sv_running->integer ) {
+1050: 		return;
+1051: 	}
+1052: 
+1053: 	if( sv.state == SS_GAME ) {
+1054: 		return;
+1055: 	}
+1056: 
+1057: 	sv.state = SS_GAME;
+1058: 	sv.timeResidual = 0;
+1059: 	svs.startTime = svs.time - svs.mapTime;
+1060: 	if( svs.startTime < 0 )
+1061: 	{
+1062: 		svs.time -= svs.startTime;
+1063: 		svs.startTime = 0;
+1064: 	}
+1065: 
+1066: 	// notify the new time
+1067: 	svs.serverLagTime = svs.time;
+1068: 	ge->SetTime( svs.startTime, svs.time );
+1069: 	SV_FinishSvsTimeFixups();
+1070: 
+1071: 	// notify the game dll
+1072: 	ge->ServerSpawned();
+1073: 
+1074: 	p = ge->errorMessage;
+1075: 	if( p )
+## No bots, skipping navigation
+fgame\navigation_recast_load.cpp:730: gi.Printf("No bots, skipping navigation\n");
+   716:     int                start, end;
+   717: 
+   718:     gi.Printf("---- Recast Navigation ----\n");
+   719: 
+   720:     //
+   721:     // Free up existing navigation if there is one
+   722:     //
+   723: 
+   724:     if (currentMap != mapname) {
+   725:         currentMap = mapname;
+   726:         ClearNavigation();
+   727:     }
+   728: 
+   729:     if (!sv_maxbots->integer) {
+   730:         gi.Printf("No bots, skipping navigation\n");
+   731:         return;
+   732:     }
+   733: 
+   734:     if (validNavigation) {
+   735:         return;
+   736:     }
+   737: 
+   738:     //
+   739:     // Parse the BSP file into triangles
+   740:     //
+   741: 
+   742:     try {
+   743:         start = gi.Milliseconds();
+   744: 
+   745:         navigationData.ProcessBSPForNavigation(mapname);
+   746:     } catch (const ScriptException& e) {
+   747:         gi.Printf("Failed to load BSP for navigation: %s\n", e.string.c_str());
+   748:         ClearNavigation();
+   749:         return;
+   750:     }
+   751: 
+   752:     end = gi.Milliseconds();
+   753: 
+   754:     gi.Printf("BSP file loaded and parsed in %.03f seconds\n", (float)((end - start) / 1000.0));
+   755: 
+## Recast Navigation
+fgame\level.cpp:1548: //  Recast navigation
+   1534:         RemoveWaitTill(STRING_SPAWN);
+   1535: 
+   1536:         Director.Pause();
+   1537: 
+   1538:         for (ent = active_edicts.next; ent != &active_edicts; ent = ent->next) {
+   1539:             ent->entity->Unregister(STRING_SPAWN);
+   1540:         }
+   1541: 
+   1542:         Director.Unpause();
+   1543: 
+   1544:         Unregister(STRING_SPAWN);
+   1545: 
+   1546:         if (!g_navigation_legacy->integer && g_gametype->integer != GT_SINGLE_PLAYER) {
+   1547:             // Added in OPM
+   1548:             //  Recast navigation
+   1549:             navigationMap.LoadWorldMap(m_mapfile);
+   1550:         }
+   1551:     } else {
+   1552:         Director.LoadMenus();
+   1553:     }
+   1554: 
+   1555:     spawning = false;
+   1556: }
+   1557: 
+   1558: void Level::SetMap(const char *themapname)
+   1559: {
+   1560:     const char *spawnpos;
+   1561:     int         i;
+   1562:     str         text;
+   1563: 
+   1564:     Init();
+   1565: 
+   1566:     spawning = true;
+   1567: 
+   1568:     // set a specific spawnpoint if the map was started with a $
+   1569:     spawnpos = strchr((char *)themapname, '$');
+   1570:     if (spawnpos) {
+   1571:         mapname    = str(themapname, 0, spawnpos - themapname);
+   1572:         spawnpoint = spawnpos + 1;
+   1573:     } else {
+fgame\navigation_recast_helpers.h:24: * @brief Utility functions for Recast navigation
+   10: or (at your option) any later version.
+   11: 
+   12: OpenMoHAA source code is distributed in the hope that it will be
+   13: useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+   14: MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   15: GNU General Public License for more details.
+   16: 
+   17: You should have received a copy of the GNU General Public License
+   18: along with OpenMoHAA source code; if not, write to the Free Software
+   19: Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+   20: ===========================================================================
+   21: */
+   22: 
+   23: /**
+   24:  * @brief Utility functions for Recast navigation
+   25:  * 
+   26:  */
+   27: 
+   28: #pragma once
+   29: 
+   30: #include "../qcommon/q_shared.h"
+   31: 
+   32: struct rcPolyMesh;
+   33: 
+   34: /**
+   35:  * @brief Convert Recast coordinates to game coordinates.
+   36:  * 
+   37:  * @param in XYZ Recast coordinates.
+   38:  * @param out XYZ Game coordinates.
+   39:  */
+   40: void ConvertRecastToGameCoord(const float *in, float *out);
+   41: 
+   42: /**
+   43:  * @brief Convert Recast coordinates to game coordinates.
+   44:  * 
+   45:  * @param in XYZ Recast coordinates.
+   46:  * @param out XYZ Game coordinates.
+   47:  */
+   48: void ConvertRecastToGameExtents(const float *in, float *out);
+   49: 
+fgame\navigation_recast_load.cpp:718: gi.Printf("---- Recast Navigation ----\n");
+   704:         rcFreePolyMesh(polyMesh);
+   705:     }
+   706: }
+   707: 
+   708: /*
+   709: ============
+   710: NavigationMap::LoadWorldMap
+   711: ============
+   712: */
+   713: void NavigationMap::LoadWorldMap(const char *mapname)
+   714: {
+   715:     RecastBuildContext buildContext;
+   716:     int                start, end;
+   717: 
+   718:     gi.Printf("---- Recast Navigation ----\n");
+   719: 
+   720:     //
+   721:     // Free up existing navigation if there is one
+   722:     //
+   723: 
+   724:     if (currentMap != mapname) {
+   725:         currentMap = mapname;
+   726:         ClearNavigation();
+   727:     }
+   728: 
+   729:     if (!sv_maxbots->integer) {
+   730:         gi.Printf("No bots, skipping navigation\n");
+   731:         return;
+   732:     }
+   733: 
+   734:     if (validNavigation) {
+   735:         return;
+   736:     }
+   737: 
+   738:     //
+   739:     // Parse the BSP file into triangles
+   740:     //
+   741: 
+   742:     try {
+   743:         start = gi.Milliseconds();
+fgame\navigation_recast_load.cpp:779: gi.Printf("Couldn't build recast navigation mesh: %s\n", e.string.c_str());
+   765:     gi.Printf("Building the navigation mesh...\n");
+   766: 
+   767:     try {
+   768:         start = gi.Milliseconds();
+   769: 
+   770:         gi.Printf("  Building the world mesh...\n");
+   771:         BuildWorldMesh(buildContext, navigationData.navMap);
+   772: 
+   773:         gi.Printf("  Building meshes for entities...\n");
+   774:         // FIXME: TODO
+   775:         //  Split everything into chunks and use a tile-based approach
+   776:         //BuildMeshesForEntities(buildContext, navigationData.navMap);
+   777: 
+   778:     } catch (const ScriptException& e) {
+   779:         gi.Printf("Couldn't build recast navigation mesh: %s\n", e.string.c_str());
+   780:         ClearNavigation();
+   781:         return;
+   782:     }
+   783: 
+   784:     pathMaster.PostLoadNavigation(*this);
+   785:     navigationObstacleMap.Init();
+   786: 
+   787:     // Finished processing the map with extensions
+   788:     ClearExtensions();
+   789: 
+   790:     end = gi.Milliseconds();
+   791: 
+   792:     gi.Printf("Recast navigation mesh(es) generated in %.03f seconds\n", (float)((end - start) / 1000.0));
+   793: 
+   794:     validNavigation = true;
+   795: }
+   796: 
+   797: void NavigationMap::CleanUp(qboolean samemap)
+   798: {
+   799:     if (!samemap) {
+   800:         ClearNavigation();
+   801:     }
+   802: }
+fgame\navigation_recast_load.cpp:792: gi.Printf("Recast navigation mesh(es) generated in %.03f seconds\n", (float)((end - start) / 1000.0));
+   778:     } catch (const ScriptException& e) {
+   779:         gi.Printf("Couldn't build recast navigation mesh: %s\n", e.string.c_str());
+   780:         ClearNavigation();
+   781:         return;
+   782:     }
+   783: 
+   784:     pathMaster.PostLoadNavigation(*this);
+   785:     navigationObstacleMap.Init();
+   786: 
+   787:     // Finished processing the map with extensions
+   788:     ClearExtensions();
+   789: 
+   790:     end = gi.Milliseconds();
+   791: 
+   792:     gi.Printf("Recast navigation mesh(es) generated in %.03f seconds\n", (float)((end - start) / 1000.0));
+   793: 
+   794:     validNavigation = true;
+   795: }
+   796: 
+   797: void NavigationMap::CleanUp(qboolean samemap)
+   798: {
+   799:     if (!samemap) {
+   800:         ClearNavigation();
+   801:     }
+   802: }
+## Server Initialization Complete
+server\sv_init.c:1030: Com_Printf( "------ Server Initialization Complete ------ %5.2f seconds\n", ( float )iEnd / 1000.0f );
+   1016: 					SV_DropClient( &svs.clients[ i ], denied );
+   1017: 				} else {
+   1018: 					// send the client's last usercmd
+   1019: 					SV_ClientEnterWorld( &svs.clients[ i ], &svs.clients[ i ].lastUsercmd );
+   1020: 				}
+   1021: 			}
+   1022: 		}
+   1023: 	}
+   1024: 
+   1025: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+   1026: 	Q_strncpyz(svs.gameName, "current", sizeof(svs.gameName) );
+   1027: 
+   1028: 	iEnd = Sys_Milliseconds();
+   1029: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+   1030: 	Com_Printf( "------ Server Initialization Complete ------ %5.2f seconds\n", ( float )iEnd / 1000.0f );
+   1031: 
+   1032: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+   1033: 	UI_LoadResource( "*143" );
+   1034: 
+   1035: 	if( g_gametype->integer != GT_SINGLE_PLAYER ) {
+   1036: 		Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+   1037: 		SV_ServerLoaded();
+   1038: 	}
+   1039: }
+   1040: 
+   1041: /*
+   1042: ===============
+   1043: SV_ServerLoaded
+   1044: ===============
+   1045: */
+   1046: void SV_ServerLoaded( void ) {
+   1047: 	const char	*p;
+   1048: 
+   1049: 	if( !com_sv_running->integer ) {
+   1050: 		return;
+   1051: 	}
+   1052: 
+   1053: 	if( sv.state == SS_GAME ) {
+   1054: 		return;
+   1055: 	}
+## Q_vsnprintf / vsnprintf
+botlib\be_aas_main.c:63: Q_vsnprintf(str, sizeof(str), fmt, arglist);
+botlib\l_precomp.c:134: Q_vsnprintf(text, sizeof(text), str, ap);
+botlib\l_precomp.c:158: Q_vsnprintf(text, sizeof(text), str, ap);
+botlib\l_script.c:237: Q_vsnprintf(text, sizeof(text), str, ap);
+botlib\l_script.c:263: Q_vsnprintf(text, sizeof(text), str, ap);
+cgame\cg_commands.cpp:5348: Q_vsnprintf(msg, sizeof(msg), fmt, argptr);
+cgame\cg_main.c:905: Q_vsnprintf(text, sizeof(text), error, argptr);
+cgame\cg_main.c:917: Q_vsnprintf(text, sizeof(text), msg, argptr);
+cgame\cg_modelanim.c:685: Q_vsnprintf(msg, sizeof(msg), fmt, argptr);
+client\cl_main.cpp:2866: Q_vsnprintf(msg, sizeof(msg), fmt, argptr);

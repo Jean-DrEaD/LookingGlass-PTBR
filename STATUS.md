@@ -386,3 +386,9 @@
 - 16w: Rust NAO tem VM de script (so script_facts.rs + grafos por mapa, ex. levels_wchess1_graph.rs) -> lote 17 = interpretador proprio (73 .scr, 844 KB)
 - 16x: sob NXDK os 2 throws -> 'LG: scr falhou X' + NULL; level.cpp so executa se script != NULL (+8 -0 / +1 -1)
 - Risco: CreateThreadInternal (listener.cpp:4740) com scr NULL
+
+## Lote 16y (2026-10-23 19:14)
+- 16x xemu: MARCO - 'Server Initialization Complete' com centipede1 (BSP FAKK + 408 ents, level script pulado)
+- ubersound err=2 esperado (pasta MOHAA); 'Complete ------ seconds' sem numero -> printf %f do PDCLib suspeito
+- Apos 'No bots, skipping navigation' sem heartbeat no print (confirmar com 30 s de espera)
+- 16y: coleta sv_init pos-1029 + Recast + Q_vsnprintf (docs/probes/lote16y-pos-init.log), sem build
