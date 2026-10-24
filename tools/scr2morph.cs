@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class LgScrError : Exception { public LgScrError(string m) : base(m) {} }
+public class LgScrErrorV2 : Exception { public LgScrErrorV2(string m) : base(m) {} }
 
 public class Scr2MorphV2
 {
@@ -83,7 +83,7 @@ public class Scr2MorphV2
     bool Is(string s) { return IsK(Cur, s); }
     void Exp(string s) { if (!Is(s)) Fail("esperado '" + s + "'"); p++; }
     string Id() { if (Cur.K != ID) Fail("esperado identificador"); return T[p++].S; }
-    void Fail(string m) { string[] ls = (Src ?? "").Split('\n'); int k = Cur.L - 1; string ctx = (k >= 0 && k < ls.Length) ? ls[k].Trim() : ""; throw new LgScrError(Root + " linha(expandida) " + Cur.L + ": " + m + " (token '" + Cur.S + "') >> " + ctx); }
+    void Fail(string m) { string[] ls = (Src ?? "").Split('\n'); int k = Cur.L - 1; string ctx = (k >= 0 && k < ls.Length) ? ls[k].Trim() : ""; throw new LgScrErrorV2(Root + " linha(expandida) " + Cur.L + ": " + m + " (token '" + Cur.S + "') >> " + ctx); }
     static void Count(Dictionary<string, int> d, string k) { int v; d.TryGetValue(k, out v); d[k] = v + 1; }
     void Line(string s) { O.Append(new string('\t', Ind)); O.Append(s); O.Append('\n'); }
     void FlushPre() { foreach (var x in Pre) Line(x); Pre.Clear(); }

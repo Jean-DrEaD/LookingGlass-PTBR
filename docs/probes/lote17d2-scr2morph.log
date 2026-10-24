@@ -1,0 +1,239 @@
+# Lote 17d2 2026-10-24 09:05 - scr2morph v2
+## Resultado: 32 ok / 6 falhos de 38
+## Falhas
+maps/centipede2.scr linha(expandida) 742: esperado ';' (token '=') >> grabcam = spawn( "Camera", "targetname", "grabcam" );
+maps/fortress2.scr linha(expandida) 1848: esperado ';' (token '{') >> {
+maps/funhouse.scr linha(expandida) 475: esperado '(' (token ')') >> $steam7.show);
+maps/garden4.scr linha(expandida) 422: esperado ';' (token '=') >> $newtrigger = spawn( "trigger_once", "thread", "Ice_Fall3", "spawnflags", "1536", "targetname", "remove_me" );
+maps/oldqlair.scr linha(expandida) 773: esperado ';' (token 'DownBitch') >> qthreadnum = thread DownBitch();
+maps/qlair.scr linha(expandida) 787: esperado ';' (token 'DownBitch') >> qthreadnum = thread DownBitch();
+## Avisos (top 80)
+maps/centipede2.scr: expressao sem efeito linha(expandida) 742
+maps/fortress2.scr: expressao sem efeito linha(expandida) 1848
+maps/fortress2.scr: identificador solto do
+maps/garden4.scr: expressao sem efeito linha(expandida) 422
+maps/oldqlair.scr: identificador solto neworg_x
+maps/oldqlair.scr: identificador solto neworg_y
+maps/oldqlair.scr: identificador solto qorg_z
+maps/oldqlair.scr: identificador solto thread
+maps/oldqlair.scr: variavel nao declarada newang_x
+maps/oldqlair.scr: variavel nao declarada newang_y
+maps/oldqlair.scr: variavel nao declarada newang_z
+maps/oldqlair.scr: variavel nao declarada qorg_x
+maps/oldqlair.scr: variavel nao declarada qorg_y
+maps/oldqlair.scr: variavel nao declarada qorg_z
+maps/qlair.scr: identificador solto neworg_x
+maps/qlair.scr: identificador solto neworg_y
+maps/qlair.scr: identificador solto qorg_z
+maps/qlair.scr: identificador solto thread
+maps/qlair.scr: variavel nao declarada newang_x
+maps/qlair.scr: variavel nao declarada newang_y
+maps/qlair.scr: variavel nao declarada newang_z
+maps/qlair.scr: variavel nao declarada qorg_x
+maps/qlair.scr: variavel nao declarada qorg_y
+maps/qlair.scr: variavel nao declarada qorg_z
+## Comandos do engine (distintos)
+  2421 wait
+   916 waitfor
+   629 alias
+   535 cam_fadein
+   522 cam_fadeout
+   376 level_ai
+   364 trigger
+   290 cuecamera
+   224 waitForDialog
+   193 freezeplayer
+   191 cinematic
+   191 letterbox
+   178 killthread
+   166 skipthread
+   161 releaseplayer
+   159 clearletterbox
+   159 noncinematic
+   113 fakeplayer
+   112 musicvolume
+    92 setcvar
+    88 cueplayer
+    86 removefakeplayer
+    78 drugview
+    74 clearfade
+    74 restoremusicvolume
+    74 fadeisactive
+    49 waitForPlayer
+    37 print
+    32 music
+    31 soundtrack
+    21 map
+     7 setlightstyle
+     4 spawn
+     3 threadname
+     3 stuffcmd
+     2 randomfloat
+     1 cache
+## Metodos (distintos)
+  1017 anim
+   962 time
+   756 nottriggerable
+   579 show
+   513 remove
+   485 hide
+   469 hideweapon
+   448 notsolid
+   390 triggerable
+   382 bind
+   362 moveDown
+   293 cut
+   280 load
+   277 follow
+   270 dt_clear
+   269 dt_fadetime
+   264 rendereffects
+   258 playsound
+   253 thread
+   231 playdialog
+   227 warpto
+   215 allow_cheshire
+   192 moveUp
+   191 ai_off
+   168 followpath
+   158 solid
+   143 scale
+   127 rotateY
+   121 killdemons
+   117 headwatch
+   117 rotateX
+   111 farplane_color
+   111 farplane
+   103 rotateZ
+   101 walkto_pathnode
+    93 movetoent
+    77 ai_on
+    76 rotateto
+    71 moveNorth
+    70 rotateXdown
+    67 attackplayer
+    67 moveWest
+    65 health
+    65 followspline
+    62 runto_pathnode
+    58 rotateXup
+    56 alpha
+    56 angles
+    54 fadein
+    53 moveSouth
+    53 origin
+    51 rotateYdownto
+    51 rotateYupto
+    48 rotateZup
+    47 jumptoent
+    47 setenemy
+    46 surface
+    45 fade
+    44 watchenemy
+    44 moveEast
+    43 model
+    43 rotateZdown
+    43 pendulum
+    41 maxmouthangle
+    40 god
+    39 killthread
+    38 dead
+    37 dt_fadeinspeed
+    37 dt_fadeoutspeed
+    37 dt_position
+    34 rotateYup
+    32 rotateXupto
+    32 attack
+    32 rotateYdown
+    31 rotateXdownto
+    29 visiondistance
+    28 loopsound
+    26 watch
+    26 lookat
+    26 stoploopsound
+    25 dmg
+    24 rotateZupto
+    24 takedamage
+    23 attach
+    23 ai_dumb
+    22 lightStyle
+    22 setsize
+    22 lightRadius
+    18 turntoangle
+    18 setdamage
+    18 unbind
+    17 openportal
+    17 bosslevel
+    16 minhealth
+    16 rotateZdownto
+    15 deactivate
+    15 nodamage
+    14 stop
+    14 angle
+    13 activate
+    13 max_inactive_time
+    13 watchoffset
+    12 full_stats
+    12 removeattachedmodel
+    12 animonce
+    12 continue
+    11 speed
+    11 bind_localangles
+    10 name
+    10 setframe
+    10 jumpto
+     9 useobject_reset
+     8 gravity
+     8 hurt
+     8 getorigin
+     8 closeportal
+     8 altarattach
+     8 attachmodel
+     7 fadetime
+     7 give
+     7 open
+     6 playerclip
+     6 lightOff
+     6 detach
+     6 altardetach
+     6 solidmask
+     5 idle
+     5 gethealth
+     4 checkreload
+     4 walkto_entity
+     4 chesspuzzle
+     4 ignore_deadtime
+     4 setidlethread
+     4 allowhangback
+     4 electrocute
+     4 turnspeed
+     3 lightGreen
+     3 altarhide
+     3 camerafov
+     3 runto_entity
+     3 smash
+     3 lock
+     3 lightOn
+     3 lightBlue
+     3 lightRed
+     2 rotateupto
+     2 stop_motion
+     2 aaccelX
+     2 resetslave
+     2 take
+     2 getangles
+     2 immortal
+     2 item
+     2 follow_distance
+     2 inqueen2
+     1 orbit
+     1 dt_loadfile
+     1 orbit_height
+     1 aaccelZ
+     1 earthquake
+     1 swimsinwater
+     1 hasmockturtleshell
+     1 dt_resetdialog
+     1 svflags
+     1 moveto
+     1 noclip

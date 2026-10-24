@@ -541,3 +541,9 @@
 - 17c: 17 falhas '{' ~linha 411 = provavel prototipo 'void X();'; 2 falhas '=' (centipede2/garden4)
 - 17d: scr2morph v2 (prototipos, contexto da linha na falha): 0 ok / 38 falhos; coleta 'unknown command' no compilador (docs/probes/lote17d-scr2morph.log); ISO recriada, sem build
 - 17e (planejado): unknown command -> aviso 'LG: cmd? X' + comando ignorado sob NXDK
+
+## Lote 17d2 (2026-10-24 09:05)
+- CORRECAO 17d: Add-Type do v2 falhou (LgScrError ja definido pelo v1 na mesma sessao) -> 0/38; pk3 saiu VAZIO
+- Regra PS: Add-Type nao redefine tipos na sessao -> nomes de classe versionados + -PassThru (sem type literal); abortar pk3/ISO se 0 ok
+- 17d: 'unknown command' = scriptcompiler.cpp:1126 (cmd_event_statement) e :1149 (cmd_event_expr), CompileError quando eventnum==0 -> alvo do 17e
+- 17d2: v2 rodado: 32 ok / 6 falhos (docs/probes/lote17d2-scr2morph.log); ISO recriada, sem build
