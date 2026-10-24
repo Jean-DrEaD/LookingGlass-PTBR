@@ -583,3 +583,8 @@
 - 17j: throw em scriptvm.cpp:723 (cmd) e :742 (method); traducao correta, mas c1_changelevel NAO existe nos 71 targetnames do centipede1.bsp
 - 17k: macro LG_NUL_THROW sob NXDK -> 'LG: nul X' (5 max) + return (args ja desempilhados; method retorna NIL) (+9 -2); XBE 4554752
 - Pendente: 'Field applied to NULL listener' (1436/1588/1616) e 'function applied to NULL listener' (761/798) ainda lancam
+
+## Lote 17l (2026-10-24 16:17)
+- 17k xemu: 'nul nottriggerable' + 'nul load' OK; novo 'SE Failed execution of command maxmouthangle for class Object Targetname centipede_actor1' -> throw (checkValidEvent)
+- ACHADO: centipede_actor1 spawnado como Object (classnames Alice sem mapeamento p/ Actor) -> lote futuro = tabela classname Alice -> classe OpenMoHAA
+- 17l: checkValidEvent sob NXDK -> 'LG: cev X classe' (5 max) + return (+3 -0); executeCommandInternal no log p/ validar; XBE 4554752
