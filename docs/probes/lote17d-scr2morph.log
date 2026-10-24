@@ -1,0 +1,395 @@
+# Lote 17d 2026-10-24 08:59 - scr2morph v2 + compilador Morpheus
+## Resultado: 0 ok / 38 falhos de 38
+## Falhas
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+Unable to find type [Scr2MorphV2].
+## Avisos (top 80)
+## Engine: 'unknown command' (contexto)
+### de\client\cl_keys.cpp:652
+623: 
+624:     if (binding) {
+625:         for (i = 0; i < MAX_KEYS; i++) {
+626:             if (keys[i].binding && Q_stricmp(binding, keys[i].binding) == 0) {
+627:                 return i;
+628:             }
+629:         }
+630:     }
+631:     return -1;
+632: }
+633: 
+634: /*
+635: ===================
+636: Key_GetKeynameForCommand
+637: ===================
+638: */
+639: const char *Key_GetKeynameForCommand(const char *command)
+640: {
+641:     int i;
+642: 
+643:     for (i = 0; i < MAX_KEYS; i++) {
+644:         if (!keys[i].binding) {
+645:             continue;
+646:         }
+647:         if (keys[i].down && !stricmp(command, keys[i].binding)) {
+648:             return Key_KeynumToString(i);
+649:         }
+650:     }
+651: 
+652:     return "Unknown Command";
+653: }
+654: 
+655: /*
+656: ===================
+657: Key_GetKeysForCommand
+658: ===================
+659: */
+660: void Key_GetKeysForCommand(const char *command, int *key1, int *key2)
+661: {
+662:     int i;
+663: 
+664:     *key1 = *key2 = -1;
+665: 
+### de\client\cl_main.cpp:1065
+1036: void CL_AbnormalDisconnect() {
+1037:     CL_Disconnect();
+1038:     UI_ServerLoaded();
+1039: 
+1040: 	if (developer->integer) {
+1041: 		UI_OpenConsole();
+1042: 	}
+1043: }
+1044: 
+1045: /*
+1046: ===================
+1047: CL_ForwardCommandToServer
+1048: 
+1049: adds the current command line as a clientCommand
+1050: things like godmode, noclip, etc, are commands directed to the server,
+1051: so when they are typed in at the console, they will need to be forwarded.
+1052: ===================
+1053: */
+1054: void CL_ForwardCommandToServer( const char *string ) {
+1055: 	char	*cmd;
+1056: 
+1057: 	cmd = Cmd_Argv(0);
+1058: 
+1059: 	// ignore key up commands
+1060: 	if ( cmd[0] == '-' ) {
+1061: 		return;
+1062: 	}
+1063: 
+1064: 	if ( clc.demoplaying || clc.state < CA_CONNECTED || cmd[0] == '+' ) {
+1065: 		Com_Printf ("Unknown command \"%s" S_COLOR_WHITE "\"\n", cmd);
+1066: 		return;
+1067: 	}
+1068: 
+1069: 	if ( Cmd_Argc() > 1 ) {
+1070: 		CL_AddReliableCommand( string, qfalse );
+1071: 	} else {
+1072: 		CL_AddReliableCommand( cmd, qfalse );
+1073: 	}
+1074: }
+1075: 
+1076: /*
+1077: ===================
+1078: CL_RequestMotd
+### de\client\snd_openal_new.cpp:3520
+3491:             if (load_path[strlen(load_path) - 1] != '/' && load_path[strlen(load_path) - 1] != '\\') {
+3492:                 Q_strcat(load_path, sizeof(load_path), "/");
+3493:             }
+3494:         } else if (args[0][0] == '!') {
+3495:             for (i = 0; i < music_numsongs; i++) {
+3496:                 psong = &music_songs[i];
+3497:                 if (!Q_stricmp(psong->alias, &args[0][1])) {
+3498:                     break;
+3499:                 }
+3500:             }
+3501: 
+3502:             if (i == music_numsongs) {
+3503:                 Com_Printf("MUSIC_LoadSoundtrackFile: song %s not found, command skipped in %s.\n", &args[0][1], path);
+3504:                 continue;
+3505:             }
+3506: 
+3507:             if (!Q_stricmp(args[1], "volume")) {
+3508:                 psong->volume = atof(args[2]);
+3509:             } else if (!Q_stricmp(args[1], "fadetime")) {
+3510:                 psong->fadetime = atof(args[2]);
+3511:             } else if (!Q_stricmp(args[1], "loop")) {
+3512:                 psong->flags |= 1;
+3513:             } else if (!Q_stricmp(args[1], "restart")) {
+3514:                 psong->flags |= 2;
+3515:             } else if (!Q_stricmp(args[1], "interrupt")) {
+3516:                 psong->fadetime = 0;
+3517:                 psong->flags |= 4 | 2;
+3518:             } else {
+3519:                 Com_Printf(
+3520:                     "MUSIC_LoadSoundtrackFile: unknown command %s for song %s in %s.\n", args[1], &args[0][1], path
+3521:                 );
+3522:             }
+3523:         } else {
+3524:             if (numargs > 1) {
+3525:                 Q_strncpyz(alias, args[0], sizeof(alias));
+3526:                 Q_strncpyz(file, load_path, sizeof(file));
+3527:                 Q_strcat(file, sizeof(file), args[1]);
+3528:             } else {
+3529:                 size_t len;
+3530: 
+3531:                 Q_strncpyz(file, load_path, sizeof(file));
+3532:                 Q_strcat(file, sizeof(file), args[1]);
+3533: 
+### de\fgame\characterstate.cpp:682
+653:     }
+654: 
+655:     while (script.TokenAvailable(true)) {
+656:         cmd = script.GetToken(true);
+657:         if (!cmd.icmp("nextstate")) {
+658:             readNextState(script);
+659:         } else if (!cmd.icmp("movetype")) {
+660:             readMoveType(script);
+661:         } else if (!cmd.icmp("camera")) {
+662:             readCamera(script);
+663:         } else if (!cmd.icmp("legs")) {
+664:             readLegs(script);
+665:         } else if (!cmd.icmp("action")) {
+666:             readAction(script);
+667:         } else if (!cmd.icmp("behavior")) {
+668:             readBehavior(script);
+669:         } else if (!cmd.icmp("time")) {
+670:             readTime(script);
+671:         } else if (!cmd.icmp("states")) {
+672:             readStates(script);
+673:         } else if (!cmd.icmp("entrycommands")) {
+674:             readCommands(script, entryCommands);
+675:         } else if (!cmd.icmp("exitcommands")) {
+676:             readCommands(script, exitCommands);
+677:         } else if (!cmd.icmp("}")) {
+678:             break;
+679:         } else {
+680:             gi.Error(
+681:                 ERR_DROP,
+682:                 "%s: Unknown command '%s' on line %d.\n",
+683:                 script.Filename(),
+684:                 cmd.c_str(),
+685:                 script.GetLineNumber()
+686:             );
+687:         }
+688:     }
+689: }
+690: 
+691: StateMap::StateMap(const char *file_name, Condition<Class> *conditions, Container<Conditional *> *conditionals)
+692: {
+693:     str    cmd;
+694:     str    statename;
+695:     State *state;
+### de\fgame\characterstate.cpp:729
+700: 
+701:     filename = file_name;
+702: 
+703:     this->current_conditions = conditions;
+704: 
+705:     this->current_conditionals = conditionals;
+706: 
+707:     script.LoadFile(filename);
+708: 
+709:     while (script.TokenAvailable(true)) {
+710:         cmd = script.GetToken(true);
+711:         if (!cmd.icmp("state")) {
+712:             statename = script.GetToken(false);
+713:             if (FindState(statename.c_str())) {
+714:                 gi.Error(
+715:                     ERR_DROP,
+716:                     "%s: Duplicate definition of state '%s' on line %d.\n",
+717:                     filename.c_str(),
+718:                     statename.c_str(),
+719:                     script.GetLineNumber()
+720:                 );
+721:             }
+722: 
+723:             // parse the state even if we already have it defined
+724:             state = new State(statename.c_str(), script, *this);
+725:             stateList.AddObject(state);
+726:         } else {
+727:             gi.Error(
+728:                 ERR_DROP,
+729:                 "%s: Unknown command '%s' on line %d.\n",
+730:                 script.Filename(),
+731:                 cmd.c_str(),
+732:                 script.GetLineNumber()
+733:             );
+734:         }
+735:     }
+736: 
+737:     script.Close();
+738: 
+739:     // Have all the states check themselves to see if they reference any non-existant states.
+740:     for (i = 1; i <= stateList.NumObjects(); i++) {
+741:         stateList.ObjectAt(i)->CheckStates();
+742:     }
+### de\fgame\gamecmds.cpp:597
+568:     int           numArgs;
+569:     int           i;
+570: 
+571:     numArgs = gi.Argc();
+572: 
+573:     if (numArgs <= 1) {
+574:         gi.Printf("Usage: script [filename]\n");
+575:         return qtrue;
+576:     }
+577: 
+578:     if (!sv_cheats->integer) {
+579:         gi.Printf("command not available\n");
+580:         return qtrue;
+581:     }
+582: 
+583:     script = gi.Argv(1);
+584:     if (*script == '*') {
+585:         scriptEnt = static_cast<Entity *>(G_GetEntity(atoi(script + 1)));
+586:     } else {
+587:         scriptEnt = static_cast<Entity *>(G_FindTarget(0, script));
+588:     }
+589: 
+590:     if (!scriptEnt) {
+591:         gi.Printf("Could not find entity %s\n", script);
+592:         return qtrue;
+593:     }
+594: 
+595:     name = gi.Argv(2);
+596:     if (!Event::Exists(name)) {
+597:         gi.Printf("Unknown command '%s'.\n", name);
+598:         return qtrue;
+599:     }
+600: 
+601:     event = new ConsoleEvent(name);
+602:     event->SetConsoleEdict(ent);
+603: 
+604:     for (i = 3; i < numArgs; i++) {
+605:         event->AddToken(gi.Argv(i));
+606:     }
+607: 
+608:     return scriptEnt->ProcessEvent(event);
+609: }
+610: 
+### de\script\scriptcompiler.cpp:1126
+1097:                 CompileError(
+1098:                     val.node[3].sourcePosValue,
+1099:                     "bad case value: %d (expected integer or string)",
+1100:                     case_parm.node[0].type
+1101:                 );
+1102:             }
+1103: 
+1104:             EmitLabelParameterList(val.node[2], val.node[3].sourcePosValue);
+1105: 
+1106:             break;
+1107:         }
+1108: 
+1109:     case ENUM_try:
+1110:         {
+1111:             unsigned char *old_code_pos = code_pos;
+1112: 
+1113:             ClearPrevOpcode();
+1114:             EmitValue(val.node[1]);
+1115:             EmitCatch(val.node[2], old_code_pos, val.node[3].sourcePosValue);
+1116:             break;
+1117:         }
+1118: 
+1119:     case ENUM_cmd_event_statement:
+1120:         {
+1121:             const int      eventnum       = Event::FindNormalEventNum(val.node[1].stringValue);
+1122:             sval_t         parameter_list = val.node[2];
+1123:             const uint32_t iParamCount    = EmitParameterList(parameter_list);
+1124: 
+1125:             if (!eventnum) {
+1126:                 CompileError(val.node[3].sourcePosValue, "unknown command: %s", val.node[1].stringValue);
+1127:             }
+1128: 
+1129:             if (iParamCount > 5) {
+1130:                 SetOpcodeVarStackOffset(OP_EXEC_CMD_COUNT1, -(int32_t)iParamCount);
+1131:                 EmitOpcode(OP_EXEC_CMD_COUNT1, val.node[3].sourcePosValue);
+1132: 
+1133:                 EmitOpcodeValue((byte)iParamCount, sizeof(byte));
+1134:             } else {
+1135:                 EmitOpcode(OP_EXEC_CMD0 + iParamCount, val.node[3].sourcePosValue);
+1136:             }
+1137: 
+1138:             EmitOpcodeValue((op_ev_t)eventnum, sizeof(op_ev_t));
+1139:             break;
+### de\script\scriptcompiler.cpp:1149
+1120:         {
+1121:             const int      eventnum       = Event::FindNormalEventNum(val.node[1].stringValue);
+1122:             sval_t         parameter_list = val.node[2];
+1123:             const uint32_t iParamCount    = EmitParameterList(parameter_list);
+1124: 
+1125:             if (!eventnum) {
+1126:                 CompileError(val.node[3].sourcePosValue, "unknown command: %s", val.node[1].stringValue);
+1127:             }
+1128: 
+1129:             if (iParamCount > 5) {
+1130:                 SetOpcodeVarStackOffset(OP_EXEC_CMD_COUNT1, -(int32_t)iParamCount);
+1131:                 EmitOpcode(OP_EXEC_CMD_COUNT1, val.node[3].sourcePosValue);
+1132: 
+1133:                 EmitOpcodeValue((byte)iParamCount, sizeof(byte));
+1134:             } else {
+1135:                 EmitOpcode(OP_EXEC_CMD0 + iParamCount, val.node[3].sourcePosValue);
+1136:             }
+1137: 
+1138:             EmitOpcodeValue((op_ev_t)eventnum, sizeof(op_ev_t));
+1139:             break;
+1140:         }
+1141: 
+1142:     case ENUM_cmd_event_expr:
+1143:         {
+1144:             const int      eventnum       = Event::FindReturnEventNum(val.node[1].stringValue);
+1145:             sval_t         parameter_list = val.node[2];
+1146:             const uint32_t iParamCount    = EmitParameterList(parameter_list);
+1147: 
+1148:             if (!eventnum) {
+1149:                 CompileError(val.node[3].sourcePosValue, "unknown command: %s", val.node[1].stringValue);
+1150:             }
+1151: 
+1152:             EmitOpcode(OP_STORE_LOCAL, val.node[3].sourcePosValue);
+1153:             EmitMethodExpression(iParamCount, eventnum, val.node[3].sourcePosValue);
+1154:             break;
+1155:         }
+1156: 
+1157:     case ENUM_method_event_statement:
+1158:         {
+1159:             const int      eventnum       = Event::FindNormalEventNum(val.node[2].stringValue);
+1160:             sval_t         parameter_list = val.node[3];
+1161:             const uint32_t iParamCount    = EmitParameterList(parameter_list);
+1162: 

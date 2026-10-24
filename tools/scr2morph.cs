@@ -4,7 +4,7 @@ using System.Text;
 
 public class LgScrError : Exception { public LgScrError(string m) : base(m) {} }
 
-public class Scr2MorphV1
+public class Scr2MorphV2
 {
     class Tok { public int K; public string S; public int L; public Tok(int k, string s, int l) { K = k; S = s; L = l; } }
     const int ID = 0, NUM = 1, STR = 2, VEC = 3, DOL = 4, OP = 5, EOF = 6;
@@ -19,7 +19,7 @@ public class Scr2MorphV1
     public static void Reset() { UnkFn.Clear(); UnkMe.Clear(); Warn.Clear(); }
 
     static HashSet<string> NewSet() { return new HashSet<string>(StringComparer.OrdinalIgnoreCase); }
-    List<Tok> T; int p; string Root;
+    List<Tok> T; int p; string Root; public string Src;
     HashSet<string> Funcs = NewSet(), Globals = NewSet(), Locals = NewSet();
     List<string> Pre = new List<string>(); int Tmp; StringBuilder O = new StringBuilder(); int Ind;
 
@@ -83,7 +83,7 @@ public class Scr2MorphV1
     bool Is(string s) { return IsK(Cur, s); }
     void Exp(string s) { if (!Is(s)) Fail("esperado '" + s + "'"); p++; }
     string Id() { if (Cur.K != ID) Fail("esperado identificador"); return T[p++].S; }
-    void Fail(string m) { throw new LgScrError(Root + " linha(expandida) " + Cur.L + ": " + m + " (token '" + Cur.S + "')"); }
+    void Fail(string m) { string[] ls = (Src ?? "").Split('\n'); int k = Cur.L - 1; string ctx = (k >= 0 && k < ls.Length) ? ls[k].Trim() : ""; throw new LgScrError(Root + " linha(expandida) " + Cur.L + ": " + m + " (token '" + Cur.S + "') >> " + ctx); }
     static void Count(Dictionary<string, int> d, string k) { int v; d.TryGetValue(k, out v); d[k] = v + 1; }
     void Line(string s) { O.Append(new string('\t', Ind)); O.Append(s); O.Append('\n'); }
     void FlushPre() { foreach (var x in Pre) Line(x); Pre.Clear(); }
@@ -111,7 +111,7 @@ public class Scr2MorphV1
         var w = new List<string>();
         string src = Resolve(root, files, NewSet(), w);
         foreach (var x in w) Warn.Add(root + ": " + x);
-        var s = new Scr2MorphV1(); s.Root = root; s.T = Lex(src);
+        var s = new Scr2MorphV2(); s.Root = root; s.Src = src; s.T = Lex(src);
         return s.Run();
     }
 
@@ -150,7 +150,7 @@ public class Scr2MorphV1
                     if (Is(",")) p++; else if (!Is(")")) Fail("parametro");
                 }
                 p++;
-                O = new StringBuilder(); Ind = 1; Tmp = 0; Pre = new List<string>();
+                if (Is(";")) { p++; continue; } O = new StringBuilder(); Ind = 1; Tmp = 0; Pre = new List<string>();
                 Block();
                 if (done.Contains(name)) { Warn.Add(Root + ": funcao duplicada " + name + " (mantida a 1a)"); continue; }
                 done.Add(name);
@@ -172,7 +172,7 @@ public class Scr2MorphV1
             }
         }
         var o = new StringBuilder();
-        o.Append("// LG scr2morph v1: " + Root + "\n");
+        o.Append("// LG scr2morph v2: " + Root + "\n");
         foreach (var g in globInit) o.Append(g + "\n");
         if (Funcs.Contains("main")) o.Append("thread main\n");
         o.Append("end\n");

@@ -535,3 +535,9 @@
 - 17c: tools/scr2morph.cs (C# via Add-Type) traduz maps/*.scr -> Morpheus (includes inline, globais level., locais local., chamadas -> waitthread/cmd, metodos -> $e m args, hoist de chamadas em expressao)
 - 17c: 19 ok / 19 falhos de 38; saida iso-stage\main\zz_lg_scr.pk3 (fora do repo); ISO recriada sem build (docs/probes/lote17c-scr2morph.log)
 - Esperado xemu: sem parse error; provavel 'LG: SE' + trava (EH stub) no 1o comando desconhecido -> 17d = ScriptError sem throw
+
+## Lote 17d (2026-10-24 08:59)
+- 17c xemu: parse error SUMIU (Morpheus aceitou a traducao); 'SE unknown command: movetoent' -> throw: o compilador valida TODOS os comandos (ate em labels nao chamados)
+- 17c: 17 falhas '{' ~linha 411 = provavel prototipo 'void X();'; 2 falhas '=' (centipede2/garden4)
+- 17d: scr2morph v2 (prototipos, contexto da linha na falha): 0 ok / 38 falhos; coleta 'unknown command' no compilador (docs/probes/lote17d-scr2morph.log); ISO recriada, sem build
+- 17e (planejado): unknown command -> aviso 'LG: cmd? X' + comando ignorado sob NXDK
