@@ -486,3 +486,8 @@
 - 16z9e: G_Error RESOLVIDO (Error() do scriptexception.cpp virava G_Error via rename:376); sem FORCE restam _strtod/_strtof/_strtold (sys_xbox.c x PDCLib)
 - 16z9f: patch scriptexception reaplicado e commitado (FORCE ainda ativo); coleta membro libc que define strtod + refs (docs/probes/lote16z9f-strtod.log), sem build
 - Risco: Error() do script agora = G_Error fatal do g_main (antes throw ScriptException)
+
+## Lote 16z9g (2026-10-24 06:31)
+- 16z9f: stdlib_ext_.obj (libxboxrt) define strtod/strtof/strtold + mbtowc/rand_s/_byteswap_* -> outro simbolo puxava o obj
+- 16z9g: sys_xbox.c define mbtowc/rand_s/_byteswap_* (asm label); /FORCE:MULTIPLE removido; LINK LIMPO; XBE 4784128 bytes -> testar xemu
+- mbtowc deixa de ser stub assert (pendencia do FLUXO)
