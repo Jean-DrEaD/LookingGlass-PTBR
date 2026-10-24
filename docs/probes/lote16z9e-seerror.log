@@ -1,0 +1,16 @@
+##### defs em scriptexception.cpp: 1
+71: void Error(const char *format, ...)
+##### rename (Error)
+376: #define Error G_Error
+##### bloco 71-81
+71: void Error(const char *format, ...)
+72: {
+73:     va_list va;
+74:     char    data[4100];
+75: 
+76:     va_start(va, format);
+77:     Q_vsnprintf(data, sizeof(data), format, va);
+78:     va_end(va);
+79: 
+80:     throw ScriptException((const char *)data);
+81: }
