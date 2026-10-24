@@ -1,0 +1,60 @@
+# Lote 17i 2026-10-24 15:59 - alias -> local.lg_master (ScriptMaster)
+maps/centipede1.scr: 17 alias
+maps/facade.scr: 17 alias
+maps/fortress1.scr: 17 alias
+maps/garden1.scr: 17 alias
+maps/garden2.scr: 17 alias
+maps/garden3.scr: 17 alias
+maps/grounds1.scr: 17 alias
+maps/grounds2.scr: 17 alias
+maps/gvillage.scr: 17 alias
+maps/hatter1.scr: 17 alias
+maps/hatter2.scr: 17 alias
+maps/hedge1.scr: 17 alias
+maps/hedge2.scr: 17 alias
+maps/hedge3.scr: 17 alias
+maps/jlair1.scr: 17 alias
+maps/jlair2.scr: 17 alias
+maps/keep.scr: 17 alias
+maps/pandemonium.scr: 17 alias
+maps/potears1.scr: 17 alias
+maps/potears2.scr: 17 alias
+maps/potears3.scr: 17 alias
+maps/rchess1.scr: 17 alias
+maps/skool1.scr: 17 alias
+maps/skool2.scr: 17 alias
+maps/tower1.scr: 17 alias
+maps/tower2.scr: 17 alias
+maps/tower3.scr: 17 alias
+maps/utemple.scr: 17 alias
+maps/wchess1.scr: 17 alias
+maps/wchess2.scr: 17 alias
+maps/wforest.scr: 17 alias
+total alias=527 spawns=31
+## centipede1.scr 1-25
+1: // LG scr2morph v2: maps/centipede1.scr
+2: level.fog_color = ( 0 0 0 )
+3: level.fog_distance = 0
+4: level.brave_ants = 0
+5: level.brave_killer = 0
+6: thread main
+7: end
+8: 
+9: Func_Sound_Init:
+10: 	print "Initializing Func_Sound_Init\n"
+11: local.lg_master = spawn ScriptMaster
+12: 	local.lg_master alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+13: 	local.lg_master alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+14: 	local.lg_master alias "snd_noammo" "sound/weapon/noammo.wav"
+15: 	local.lg_master alias "snd_pickup" "sound/item/pickup.wav"
+16: 	local.lg_master alias "impact_sever1" "sound/weapon/shared/splat1.wav"
+17: 	local.lg_master alias "impact_sever2" "sound/weapon/shared/splat2.wav"
+18: 	local.lg_master alias "impact_sever3" "sound/weapon/shared/splat3.wav"
+19: 	local.lg_master alias "snd_sever1" "sound/weapon/shared/splat1.wav"
+20: 	local.lg_master alias "snd_sever2" "sound/weapon/shared/splat2.wav"
+21: 	local.lg_master alias "snd_sever3" "sound/weapon/shared/splat3.wav"
+22: 	local.lg_master alias "snd_gib1" "sound/weapon/shared/gib1.wav"
+23: 	local.lg_master alias "snd_gib2" "sound/weapon/shared/gib2.wav"
+24: 	local.lg_master alias "snd_gib3" "sound/weapon/shared/gib3.wav"
+25: 	local.lg_master alias "snd_gibhit" "sound/weapon/shared/gib1.wav"
+ISO 666894336

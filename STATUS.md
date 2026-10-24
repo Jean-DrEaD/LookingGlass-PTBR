@@ -568,3 +568,8 @@
 ## Lote 17h (2026-10-24 15:53)
 - 17g xemu: 'cmd?e allow_cheshire' -> 'SE Failed execution of command alias' -> throw; COMPILACAO DO SCRIPT PASSOU, erro agora em execucao
 - 17h: coleta origem 'Failed execution of command' + evento alias + linhas alias no zz_lg_scr.pk3/pak0.pk3 (docs/probes/lote17h-alias.log), sem build
+
+## Lote 17i (2026-10-24 15:59)
+- 17h: 'alias' = EV_RegisterAlias da classe ScriptMaster (scriptmaster.cpp:103), nao da thread -> checkValidEvent (scriptvm.cpp:607) lanca; formato 'alias "a" "b"' correto
+- 17i: zz_lg_scr.pk3 pos-processado: 'local.lg_master = spawn ScriptMaster' + 'local.lg_master alias ...' (alias=527, spawns=31); ISO recriada, sem build
+- Pendente: levar a regra pro scr2morph v3; checkValidEvent sob NXDK -> aviso em vez de throw
