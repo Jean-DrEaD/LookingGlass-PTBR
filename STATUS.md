@@ -578,3 +578,8 @@
 - 17i xemu: alias OK via ScriptMaster (527 alias / 31 spawns); novo 'SE command nottriggerable applied to NULL listener' -> throw (entidade $nome inexistente)
 - 17j: coleta origem 'NULL listener' + nottriggerable (traduzido x original) + targetnames do centipede1.bsp (docs/probes/lote17j-nulllistener.log), sem build
 - Plano 17k: NULL listener sob NXDK -> aviso 'LG: nul X' + pula comando (comportamento do jogo original = so warning)
+
+## Lote 17k (2026-10-24 16:11)
+- 17j: throw em scriptvm.cpp:723 (cmd) e :742 (method); traducao correta, mas c1_changelevel NAO existe nos 71 targetnames do centipede1.bsp
+- 17k: macro LG_NUL_THROW sob NXDK -> 'LG: nul X' (5 max) + return (args ja desempilhados; method retorna NIL) (+9 -2); XBE 4554752
+- Pendente: 'Field applied to NULL listener' (1436/1588/1616) e 'function applied to NULL listener' (761/798) ainda lancam
