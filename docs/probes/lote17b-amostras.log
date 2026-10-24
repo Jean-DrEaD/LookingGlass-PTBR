@@ -1,0 +1,683 @@
+# Lote 17b 2026-10-24 08:09 - amostras script Alice
+## ===== maps/centipede1.scr (1175 bytes) =====
+#include "scripts/utils.scr"
+#include "scripts/cinematics.scr"
+#include "maps/cinematics/centipede1_cinematics.scr"
+
+void ArmLadies()
+{
+	string bugname;
+	entity bug;
+	float  i;
+
+	while (1)
+	{
+		for ( i=1; i<5; i++ )
+		{
+			bugname = "lady" + i;
+			bug = getentity( bugname );
+
+			bug.checkreload();
+		}
+
+		wait(2);
+	}
+}
+
+void Centipede1_Enemies_Init()
+	{
+		thread ArmLadies();
+	}
+
+void Centipede1_Move_Enemies()
+	{
+		$lady1.followspline( "$t9", "loop", "normalangles" );
+		$lady2.followspline( "$t48", "loop", "normalangles" );
+		$lady3.followspline( "$t18", "loop", "normalangles" );
+		$lady4.followspline( "$t26", "loop", "normalangles" );
+	}
+
+void Centipede1_Pre_Init()
+	{
+		$c1_changelevel.nottriggerable();
+	}
+
+void main()
+	{
+		thread Centipede1_Enemies_Init();
+		thread Func_Sound_Init();
+		thread Centipede1_Cinematics_Init();
+		thread Centipede1_Pre_Init();
+		//thread Centipede1_World_Init();
+		soundtrack( "sound/music/centipede1.mus" );
+		drugview(0);
+		waitForPlayer();
+		//thread Centipede1_Move_Movers();
+		thread Centipede1_Move_Enemies();
+		music( "normal", "normal" );
+		//thread Centipede1_Start();
+	}
+## ===== scripts/utils.scr (3984 bytes) =====
+#include "scripts/sound.scr"
+
+vector   fog_color = '0 0 0';
+float    fog_distance = 0;
+
+void setfarplane( vector newcolor, float fdistance )
+   {
+   fog_color = newcolor;
+   fog_distance = fdistance;
+
+   $world.farplane_color( fog_color );
+   $world.farplane( fog_distance );
+   }
+
+void fadefog( vector newcolor, float newdistance, float fogfadetime )
+   {
+   float    i;
+   float    n;
+   float    frontlerp;
+   float    backlerp;
+   vector   oldcolor;
+   float    olddist;
+
+   oldcolor = fog_color;
+   olddist = fog_distance;
+
+   n = fogfadetime / 0.05;
+   for( i = 0; i < n; i++ )
+      {
+      frontlerp   = i / n;
+      backlerp    = ( 1.0 - frontlerp );
+
+      fog_color    = oldcolor * backlerp + newcolor * frontlerp;
+      fog_distance = olddist * backlerp + newdistance * frontlerp;
+
+      $world.farplane_color( fog_color );
+      $world.farplane( fog_distance );
+
+      wait( 0.05 );
+      }
+
+   $world.farplane_color( newcolor );
+   $world.farplane( newdistance );
+   }
+
+/*
+
+The time it takes an object to reach its apogee is (initial velocity /
+acceleration)
+
+The maximum height that an object reaches is ( initial velocity ^ 2 ) /
+( 2 * acceleration )
+
+Let initial velocity  = Vo
+Let acceleration = a
+Let Time = t
+Let Maximum Height = h
+
+t = Vo        a = Vo
+      ----  or        ----
+       a               t
+
+substituting this into the other equation we get:
+
+h = Vo^2
+      -------
+      2 * a
+
+h = Vo^2
+      -------
+      2 * Vo
+      ---------
+          t
+
+h = Vo * t
+      --------
+          2
+
+Solving for Vo and then substituting in the first equation will give you
+an acceleration
+
+
+h = ( v * v ) / ( 2 * a )
+h = ( v * v ) / ( 2v / t )
+h = v / ( 2 / t )
+h = ( v * t ) / 2
+2h = vt
+v = 2ht
+
+
+a = 2ht/t
+
+*/
+
+void FlipMove( entity org, entity tile, entity destination, vector rot, float height, float movetime )
+   {
+   float vel;
+   float acc;
+   float t;
+   float dist = 0;
+   float endtime;
+   vector r;
+
+//
+// // try to correct inaccuracy
+// height -= height / ( movetime * 10 );
+//
+// t = movetime * 0.5;
+//
+// acc = ( 2 * height ) / ( t * t );
+// vel = acc * t;
+//
+// vel *= 0.05;
+// acc *= 0.05 * 0.05;
+//
+// endtime  = ( movetime + 0.0499 ) / 0.05;
+//
+
+   //
+   // optimized version of above
+   //
+   t        = 0.1 / movetime;
+   vel      = 2 * t * ( height - height * t );
+   acc      = vel * t;
+   r        = rot * ( t * 0.5 );
+
+   endtime  = movetime * 20;
+
+   org.time( movetime );
+   org.movetoent( destination );
+
+   tile.time( 0.05 );
+   for( t = 0; t < endtime; t++ )
+      {
+      dist += vel;
+
+      tile.rotateto( r * t );
+
+      // ADDED BY MBJ
+
+      tile.playsound( "sound/ambience/special/flip1.wav" );
+
+      // ADDED BY MBJ
+
+      tile.moveUp( vel );
+      waitfor( tile );
+
+      vel -= acc;
+      }
+
+   if ( dist )
+      {
+      tile.moveDown( dist );
+      tile.rotateto( rot );
+      waitfor( tile );
+      }
+   }
+
+void shrink_alice()
+{
+//		$player.holster();
+		wait(.1);
+		$player.god(0);
+		freezeplayer();
+		fakeplayer();
+		$fakeplayer.anim("death_falling");
+		float scalecount = 1;
+
+		for(scalecount = 1; scalecount > 0; scalecount = scalecount - .05)
+			{
+				$fakeplayer.scale(scalecount);
+				wait(.1);
+			}
+		$fakeplayer.hide();
+		$player.hide();
+		$player.health(0);
+		$player.dead();
+}
+
+// DHM - These are callable by entities or script.
+void DrugFade()
+{
+	if ( fadeisactive() == 0 )
+	{
+		cam_fadeout( 0.15, 0, 0, 0, 1, 0 );
+		wait( 0.1 );
+		drugview( 1 );
+		cam_fadein( 0.6, 1, 1, 1, 1, 2 );
+		wait( 0.5 );
+		cam_fadeout( 10, 1, 1, 1, 1, 2 );
+		wait( 4 );
+		drugview( 0 );
+		cam_fadein( 0.2, 0, 0, 0, 1, 0 );
+		wait( 0.2 );
+		clearfade();
+	}
+}
+
+void IceFade()
+{
+	if ( fadeisactive() == 0 )
+	{
+		cam_fadein( 0.4, 0, 0, 0, 1, 3 );
+		wait( 0.35 );
+		cam_fadeout( 6, 0, 0, 0, 1, 3 );
+		wait( 6 );
+		clearfade();
+	}
+}
+
+## ===== scripts/cinematics.scr (3066 bytes) =====
+//Global call to cinematic settings, for the beginning of a level
+
+void Cine_Fakeplayer()
+	{
+		$player.hideweapon( 1 );
+		fakeplayer();
+		$fakeplayer.rendereffects( "+betterlighting" );
+	}
+
+void C_Placeholder()
+	{
+		//cprint( "Placeholder Cinematic" );
+	}
+
+void E_Placeholder()
+	{
+		//cprint( "Placeholder Event" );
+	}
+
+void Black_Fadein()
+	{
+		cam_fadein( 1, 0, 0, 0, 1, 0 );
+	}
+
+void Black_Fadeout()
+	{
+		cam_fadeout( 1, 0, 0, 0, 1, 0 );
+	}
+
+void White_Fadein()
+	{
+		cam_fadein( 1, 1, 1, 1, 1, 0 );
+	}
+
+void White_Fadeout()
+	{
+		cam_fadeout( 1, 0, 0, 0, 1, 0 );
+	}
+
+void Cinematic_BlackFadein()
+	{
+		freezeplayer();
+		cinematic();
+		cam_fadein( 1, 0, 0, 0, 1, 0 );
+		letterbox( 1 );
+		wait( 1 );
+	}
+
+void Cinematic_BlackFadeout()
+	{
+		cam_fadeout( 1, 0, 0, 0, 1, 0 );
+		clearletterbox( 1 );
+		wait( 1 );
+		noncinematic();
+		releaseplayer();
+	}
+
+void Cinematic_WhiteFadein()
+	{
+		freezeplayer();
+		cinematic();
+		cam_fadein( 1, 1, 1, 1, 1, 0 );
+		letterbox( 1 );
+		wait( 1 );
+	}
+
+void Cinematic_WhiteFadeout()
+	{
+		cam_fadeout( 1, 1, 1, 1, 1, 0 );
+		clearletterbox( 1 );
+		wait( 1 );
+		noncinematic();
+		releaseplayer();
+	}
+
+
+void Init_Dialog()
+	{
+		dialogtext.dt_fadetime(6);
+		dialogtext.dt_fadeoutspeed(0.5);
+		dialogtext.dt_fadeinspeed(0.5);
+		dialogtext.dt_position(1);
+		dialogtext.dt_clear();
+	}
+
+void Start_Cinematic_AI_ON()
+	{
+		float cattime;
+
+	//	fakeplayer( 1 );
+		cattime = $player.allow_cheshire(0);
+		//printfloat (timerem);
+		$player.hideweapon( 1 );
+		$player.killdemons();
+		musicvolume( .5, 2 );
+		$fakeplayer.hideweapon( 1 );
+		freezeplayer();
+		cinematic();
+		letterbox( 1 );
+		if(cattime > 0)
+			wait(cattime);
+	}
+
+void Start_Cinematic()
+	{
+		float cattime;
+
+		level_ai( 0 );
+	//	fakeplayer( 1 );
+		cattime = $player.allow_cheshire(0);
+		//printfloat (timerem);
+		$player.hideweapon( 1 );
+		$player.killdemons();
+		musicvolume( .5, 2 );
+		$fakeplayer.hideweapon( 1 );
+		freezeplayer();
+		cinematic();
+		letterbox( 1 );
+		if(cattime > 0)
+			wait(cattime);
+	}
+
+void Start_Cinematic_Fast()
+	{
+		float cattime;
+
+		level_ai( 0 );
+	//	fakeplayer( 0 );
+		cattime = $player.allow_cheshire(0);
+		$player.hideweapon( 1 );
+		$player.killdemons();
+		musicvolume( .5, 2 );
+		$fakeplayer.hideweapon( 1 );
+		cinematic();
+		letterbox( 1 );
+		if(cattime > 0)
+			wait(cattime);
+	}
+
+
+void End_Cinematic()
+	{
+		$fakeplayer.hideweapon( 0 );
+		setcvar( "timescale", "1" );
+		removefakeplayer();
+		$player.allow_cheshire(1);
+		$player.hideweapon( 0 );
+		restoremusicvolume( 2 );
+		noncinematic();
+		clearletterbox( 2 );
+		cueplayer( 2 );
+		releaseplayer();
+		level_ai( 1 );
+	}
+
+
+void End_Cinematic_Fast()
+	{
+		$fakeplayer.hideweapon( 0 );
+		setcvar( "timescale", "1" );
+		removefakeplayer();
+		$player.allow_cheshire(1);
+		$player.hideweapon( 0 );
+		restoremusicvolume( 2 );
+		noncinematic();
+		clearletterbox( 2 );
+		cueplayer( 0 );
+		releaseplayer();
+		level_ai( 1 );
+	}
+
+void Null()
+	{
+	}
+
+## ===== scripts/sound.scr (1111 bytes) =====
+void Func_Sound_Init()
+	{
+		print("Initializing Func_Sound_Init\n");
+		alias( "snd_earthquake1", "sound/ambience/special/quake1.wav" );
+		alias( "snd_earthquake2", "sound/ambience/special/quake2.wav" );
+		alias( "snd_noammo", "sound/weapon/noammo.wav" );
+		alias( "snd_pickup", "sound/item/pickup.wav" );
+		alias( "impact_sever1", "sound/weapon/shared/splat1.wav" );
+		alias( "impact_sever2", "sound/weapon/shared/splat2.wav" );
+		alias( "impact_sever3", "sound/weapon/shared/splat3.wav" );
+		alias( "snd_sever1", "sound/weapon/shared/splat1.wav" );
+		alias( "snd_sever2", "sound/weapon/shared/splat2.wav" );
+		alias( "snd_sever3", "sound/weapon/shared/splat3.wav" );
+		alias( "snd_gib1",   "sound/weapon/shared/gib1.wav");
+		alias( "snd_gib2",   "sound/weapon/shared/gib2.wav");
+		alias( "snd_gib3",   "sound/weapon/shared/gib3.wav");
+		alias( "snd_gibhit",   "sound/weapon/shared/gib1.wav");
+		alias( "snd_decap",  "sound/weapon/shared/splat4.wav" );
+		alias( "impact_softland",  "sound/character/shared/soft_land.wav" );
+		alias( "snd_burned",  "sound/character/shared/burned.wav" );
+	}
+
+## ===== maps/cinematics/centipede1_cinematics.scr (3736 bytes) =====
+// VOID
+
+float brave_ants = 0;
+float brave_killer = 0;
+
+void Centipede1_Cinematics_Init()
+	{
+		// INITIALIZE DIALOG WINDOWS
+		Init_Dialog();
+
+		// SETUP CAMERA PATHS
+		cam.load( "centipede1_path1" );
+
+		// SETUP ACTORS
+		$centipede_actor1.maxmouthangle( 45 );
+		$centipede_actor1.ai_off();
+		$centipede_actor1.hide();
+		$ant_runner1.ai_off();
+		$ant_runner2.ai_off();
+		$ant_runner3.ai_off();
+	}
+
+void Centipede1_Brave_Killer_Killed()
+{
+	brave_killer -= 1;
+}
+
+void Centipede1_Brave_Killer()
+{
+	while( 1 )
+	{
+		if( brave_ants < 3 )
+		{
+			trigger( "$brave_killer1" );
+			wait( 0.1 );
+
+			brave_killer += 1;
+
+			$ant_killer.killthread( "Centipede1_Brave_Killer_Killed" );
+			$ant_killer.attackplayer();
+		}
+
+		wait( 3.0 );
+	}
+}
+
+void Centipede1_Brave_Ants_Killed()
+{
+	brave_ants -= 1;
+}
+
+void Centipede1_Brave_Ants()
+{
+	while( 1 )
+	{
+		if( brave_ants < 3 )
+		{
+			trigger( "$brave_spawn1" );
+			wait( 0.1 );
+
+			brave_ants += 1;
+
+			$ant_attack.killthread( "Centipede1_Brave_Ants_Killed" );
+			$ant_attack.attackplayer();
+		}
+
+		wait( 3.0 );
+	}
+}
+
+void Centipede1_BraveAttack()
+	{
+		$ant_runner1.runto_pathnode( "$ant_brave_pos1" );
+		$ant_runner2.runto_pathnode( "$ant_brave_pos2" );
+		$ant_runner3.runto_pathnode( "$ant_brave_pos3" );
+	}
+
+void Centipede1_Talk1()
+	{
+		dialogtext.dt_clear();
+		dialogtext.dt_fadetime(4);
+		$centipede_actor1.playdialog( "sound/character/centipede/vo/cpd001.wav" );
+		waitForDialog( $centipede_actor1, 1 );
+	}
+
+void Centipede1_Cinematic_Fakeplayer()
+	{
+		$player.hideweapon( 1 );
+		fakeplayer();
+		$fakeplayer.rendereffects( "+betterlighting" );
+	}
+
+void Centipede1_CentAnims()
+	{
+		$centipede_actor1.anim( "idle_yawn" );
+		waitfor( $centipede_actor1 );
+		$centipede_actor1.anim( "idle_snarl" );
+		waitfor( $centipede_actor1 );
+	}
+
+void C1_End()
+	{
+		level_ai( 0 );
+		cam_fadeout( .5, 1, 1, 1, 1, 0 );
+		wait( .5 );
+		$centipede_actor1.remove();
+		End_Cinematic_Fast();
+		cam_fadein( .5, 1, 1, 1, 1, 0 );
+		level_ai( 1 );
+		$ant_runner1.ai_on();
+		$ant_runner2.ai_on();
+		$ant_runner3.ai_on();
+		$player.minhealth( 10 );
+		trigger( "$ant_at_end1" );
+		trigger( "$ant_at_end2" );
+		thread Centipede1_Brave_Ants();
+		thread Centipede1_Brave_Killer();
+		wait( 4 );
+		map( "centipede2$centipede2_start1" );
+	}
+
+void Skipthread_C1()
+	{
+		skipthread( "Null" );
+		killthread( "Centipede1_Ambush_Cinema1" );
+		killthread( "Centipede1_CentAnims" );
+		thread C1_End();
+	}
+
+void Centipede1_Ambush_Cinema1()
+	{
+		level_ai( 0 );
+		$ant_runner1.runto_pathnode( "$ant_brave_pos1" );
+		$ant_runner2.runto_pathnode( "$ant_brave_pos2" );
+		$ant_runner3.runto_pathnode( "$ant_brave_pos3" );
+		wait( 2 );
+		Centipede1_Cinematic_Fakeplayer();
+		Start_Cinematic();
+		skipthread( "Skipthread_C1" );
+		wait( .5 );
+		cam_fadeout( .5, 1, 1, 1, 1, 0 );
+		wait( .5 );
+		$centipede_actor1.show();
+		$centipede_actor1.warpto( "$cent_posx1" );
+		$alice_watch1.follow( $centipede1_path1 );
+		$alice_watch1.cut();
+		cuecamera( $alice_watch1, 0 );
+		cam_fadein( .5, 1, 1, 1, 1, 0 );
+		thread Centipede1_CentAnims();
+		dialogtext.dt_clear();
+		dialogtext.dt_fadetime(4);
+		$centipede_actor1.playdialog( "sound/character/centipede/vo/cpd002.wav" );
+		waitForDialog( $centipede_actor1, 1 );
+		cam_fadeout( .5, 1, 1, 1, 1, 0 );
+		wait( .5 );
+		$centipede_actor1.remove();
+		cam_fadein( .5, 1, 1, 1, 1, 0 );
+		End_Cinematic_Fast();
+		level_ai( 1 );
+		$ant_runner1.ai_on();
+		$ant_runner2.ai_on();
+		$ant_runner3.ai_on();
+		$player.minhealth( 10 );
+		thread Centipede1_Brave_Ants();
+		thread Centipede1_Brave_Killer();
+		wait( 10 );
+		map( "centipede2$centipede2_start1" );
+	}
+
+## ===== maps/garden3.scr (880 bytes) =====
+#include "scripts/utils.scr"
+#include "scripts/cinematics.scr"
+#include "maps/cinematics/garden3_cinematics.scr"
+
+void Garden3_Pre_Init()
+	{
+		// BIND WORLD OBJECTS
+
+		$falling_pillar_shroom1.bind( $falling_pillar1 );
+		$shake_shroom1.bind( $shake_pillar1 );
+		$shake_shroom2.bind( $shake_pillar2 );
+		$shake_shroom3.bind( $shake_pillar3 );
+		$shake_shroom4.bind( $shake_pillar4 );
+	}
+
+void Garden3_World_Init()
+	{
+		// SET FARPLANE
+
+		setfarplane( '.33 .23 .1', 1800 );
+
+	}
+
+void main()
+	{
+		//thread Garden3_Enemies_Init();
+		thread Func_Sound_Init();
+		thread Garden3_Cinematics_Init();
+		thread Garden3_Pre_Init();
+		thread Garden3_World_Init();
+		soundtrack( "sound/music/garden3.mus" );
+		waitForPlayer();
+		//thread Garden3_Move_Movers();
+		//thread Garden3_Move_Enemies();
+		music( "normal", "normal" );
+		thread Garden3_Start();
+	}
+
+
+## ===== Morpheus: tokens do lexer/gramatica =====
+### de\tools\lcc\lburg\gram.y
+17: %token  <string>        ID TEMPLATE CODE
+18: %token  <n>             INT

@@ -524,3 +524,8 @@
 ## Lote 17a (2026-10-24 08:07)
 - 16z10g xemu: boot identico; Complete 16.93 s; heartbeat 41/82/122 (+40/2s); 343 obj -> REDE FORA DO BINARIO concluida
 - 17a: inventario dos .scr do Alice (75 arquivos, 888122 bytes): includes, keywords, funcoes (1425), metodos (169), $vars, amostra global (docs/probes/lote17a-scr.log), sem build
+
+## Lote 17b (2026-10-24 08:09)
+- 17a: 75 scr/888 KB; keywords wait 2233, void 2073, thread 1192, waitfor 934; 169 metodos (anim/time/show/remove/bind...); 1425 funcoes = maioria labels proprios
+- DECISAO lote 17: TRADUTOR offline Alice->Morpheus (PowerShell no PC) gerando iso-stage\main\zz_lg_scr.pk3 (fora do repo); VM MOHAA reaproveitada; comandos ausentes = Events stub (17d)
+- 17b: amostras completas (centipede1/utils/cinematics/sound/centipede1_cinematics/garden3) + tokens Morpheus (docs/probes/lote17b-amostras.log), sem build
