@@ -1,0 +1,24 @@
+# Lote 17f 2026-10-24 09:22 - unknown command em expressao -> NIL
+opcode: OP_STORE_NIL
+ancoras: cmd_expr=1 method_expr=1
+numstat: 6	0	code/script/scriptcompiler.cpp
+BUILD_EXIT=0
+## Objetos ok / falhos:
+343
+0
+## Erros por arquivo:
+## Top mensagens:
+## Linker (simbolos):
+## Falhou:
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+exe: 4540928
+cxbe: Xbe::Export: Writing Section 0x0002 (.data)...OK
+cxbe: Xbe::Export: Writing Section 0x0003 (.tls)...OK
+cxbe: Xbe::Export: Writing Zero Padding...OK
+XBE 4554752 / ISO 666763264

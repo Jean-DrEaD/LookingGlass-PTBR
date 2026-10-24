@@ -553,3 +553,8 @@
 - Tentativas: -f do PS quebrou com '{ }' (usar marcador + .Replace()); probe.ps1 exige -Lote/-Nome; cxbe com Substring(15) errado (D:\openmohaa\ = 13) -> usar Substring('D:\openmohaa\'.Length)
 - 17e: scriptcompiler.cpp cmd/method_event_statement: eventnum==0 -> 'LG: cmd? X' (40 max) + break (+9 -0); build 343/0; XBE 4554752
 - Pendente 17f: cmd/method em expressao (cmd_event_expr:1148, method_event_expr:1191 -> precisa valor na pilha); scr2morph v3 p/ os 6 falhos
+
+## Lote 17f (2026-10-24 09:24)
+- 17e xemu: statements desconhecidos viram aviso (cam_fadeout/fadein, hideweapon, fakeplayer, dt_fadetime/fadeoutspeed/fadeinspeed/position/clear); para em 'SE unknown command: allow_cheshire' (uso em expressao) -> throw
+- 17f: cmd_event_expr + method_event_expr: eventnum==0 -> 'LG: cmd?e X' (40 max) + OP_STORE_NIL na pilha + break (+6 -0); XBE 4554752
+- Lista de comandos Alice ausentes = base p/ Events stub (17g); scr2morph v3 p/ os 6 falhos
