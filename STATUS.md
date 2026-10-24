@@ -588,3 +588,9 @@
 - 17k xemu: 'nul nottriggerable' + 'nul load' OK; novo 'SE Failed execution of command maxmouthangle for class Object Targetname centipede_actor1' -> throw (checkValidEvent)
 - ACHADO: centipede_actor1 spawnado como Object (classnames Alice sem mapeamento p/ Actor) -> lote futuro = tabela classname Alice -> classe OpenMoHAA
 - 17l: checkValidEvent sob NXDK -> 'LG: cev X classe' (5 max) + return (+3 -0); executeCommandInternal no log p/ validar; XBE 4554752
+
+## Lote 17m (2026-10-24 16:47)
+- 17l xemu: MARCO - level script traduzido EXECUTA sem throw; cev maxmouthangle/ai_off Object (5); Complete 16.39 s; heartbeat 41..202 (+40/2s)
+- 17l: secao executeCommandInternal vazia no log (regex nao casou) - irrelevante, skip validado no xemu
+- 17m: coleta classnames centipede1 x CLASS_DECLARATION OpenMoHAA + getClassDef + refs Rust (docs/probes/lote17m-classes.log), sem build
+- Plano 17n: tabela classname Alice -> classe OpenMoHAA (alias no getClassDef sob NXDK)

@@ -1,0 +1,187 @@
+# Lote 17m 2026-10-24 16:47 - classnames Alice x classes OpenMoHAA
+## classnames centipede1.bsp (total 408, unicos 35)
+135 info_pathnode
+104 light
+26 info_splinepath
+13 info_waypoint
+13 ambient_vine
+13 Enemies_EvilMushroom
+11 ambient_grasswall_03
+10 Enemies_Army-Ant
+9 Item_MetaEssence_Small
+7 func_spawnchain
+6 emitter_SmallFire1
+5 ambient_shroom_01
+5 info_notnull
+4 Enemies_Ladybug
+4 trigger_hurt
+4 ambient_shroom_07
+4 ambient_grasswall_01
+3 trigger_catmessage
+3 trigger_once
+3 ambient_shroom_06
+3 ambient_shroom_02
+3 Item_MetaEssence_Medium
+2 func_camera
+2 func_spawn
+2 Enemies_Snark
+2 Enemies_Bloodrose
+2 Enemies_AntLion-UnderGround
+2 Enemies_AntLion
+2 ambient_root
+1 Item_DarkenedLookingGlass
+1 Enemies_Centipede
+1 Item_WeaponPickup_DemonDice
+1 script_object
+1 info_player_start
+1 worldspawn
+## entidade centipede_actor1
+{
+"classname" "Enemies_Centipede"
+"scale" "1.0"
+"model" "c_centipede.tik"
+"angle" "0"
+"targetname" "centipede_actor1"
+"origin" "-656.00 5888.00 -512.00"
+}
+## classnames OpenMoHAA registrados: 132
+## Alice SEM classe (vira Object)
+13 ambient_vine
+13 Enemies_EvilMushroom
+11 ambient_grasswall_03
+10 Enemies_Army-Ant
+9 Item_MetaEssence_Small
+6 emitter_SmallFire1
+5 ambient_shroom_01
+4 Enemies_Ladybug
+4 ambient_shroom_07
+4 ambient_grasswall_01
+3 trigger_catmessage
+3 ambient_shroom_06
+3 ambient_shroom_02
+3 Item_MetaEssence_Medium
+2 Enemies_Snark
+2 Enemies_Bloodrose
+2 Enemies_AntLion-UnderGround
+2 Enemies_AntLion
+2 ambient_root
+1 Item_DarkenedLookingGlass
+1 Enemies_Centipede
+1 Item_WeaponPickup_DemonDice
+## Alice COM classe
+135 info_pathnode -> info_pathnode = PathNode : SimpleEntity (navigate.cpp)
+104 light -> light = Light : Entity (light.cpp)
+26 info_splinepath -> info_splinepath = SplinePath : Entity (bspline.cpp)
+13 info_waypoint -> info_waypoint = Waypoint : SimpleArchivedEntity (misc.cpp)
+7 func_spawnchain -> func_spawnchain = SpawnChain : Spawn (spawners.cpp)
+5 info_notnull -> info_notnull = InfoNotNull : Entity (misc.cpp)
+4 trigger_hurt -> trigger_hurt = TriggerHurt : Trigger (trigger.cpp)
+3 trigger_once -> trigger_once = TriggerOnce : Trigger (trigger.cpp)
+2 func_camera -> func_camera = Camera : Entity (camera.cpp)
+2 func_spawn -> func_spawn = Spawn : ScriptSlave (spawners.cpp)
+1 script_object -> script_object = ScriptSlave : Mover (scriptslave.cpp)
+1 info_player_start -> info_player_start = PlayerStart : SimpleArchivedEntity (playerstart.cpp)
+1 worldspawn -> worldspawn = World : Entity (worldspawn.cpp)
+## candidatos Actor/Sentient/Script*/Trigger/Func (OpenMoHAA)
+Actor = Actor : SimpleActor (actor.cpp)
+animate = Animate : Entity (animate.cpp)
+func_beam = FuncBeam : ScriptSlave (beam.cpp)
+func_remove = FuncRemove : Entity (misc.cpp)
+func_ladder = FuncLadder : Entity (misc.cpp)
+player = Player : Sentient (player.cpp)
+script_object = ScriptSlave : Mover (scriptslave.cpp)
+script_model = ScriptModel : ScriptSlave (scriptslave.cpp)
+trigger_multiple = Trigger : Animate (trigger.cpp)
+trigger_vehicle = TriggerVehicle : Trigger (trigger.cpp)
+trigger_multipleall = TriggerAll : Trigger (trigger.cpp)
+trigger_once = TriggerOnce : Trigger (trigger.cpp)
+trigger_save = TriggerSave : Trigger (trigger.cpp)
+trigger_relay = TriggerRelay : Trigger (trigger.cpp)
+trigger_secret = TriggerSecret : TriggerOnce (trigger.cpp)
+trigger_push = TriggerPush : Trigger (trigger.cpp)
+trigger_pushany = TriggerPushAny : Trigger (trigger.cpp)
+play_sound_triggered = TriggerPlaySound : Trigger (trigger.cpp)
+sound_speaker = TriggerSpeaker : TriggerPlaySound (trigger.cpp)
+trigger_changelevel = TriggerChangeLevel : Trigger (trigger.cpp)
+trigger_use = TriggerUse : Trigger (trigger.cpp)
+trigger_sideduse = TriggerSidedUse : TriggerUse (trigger.cpp)
+trigger_useonce = TriggerUseOnce : TriggerUse (trigger.cpp)
+trigger_hurt = TriggerHurt : Trigger (trigger.cpp)
+trigger_damagetargets = TriggerDamageTargets : Trigger (trigger.cpp)
+trigger_camerause = TriggerCameraUse : TriggerUse (trigger.cpp)
+trigger_exit = TriggerExit : Trigger (trigger.cpp)
+trigger_box = TriggerBox : Trigger (trigger.cpp)
+trigger_music = TriggerMusic : Trigger (trigger.cpp)
+trigger_music = TriggerReverb : Trigger (trigger.cpp)
+trigger_pushobject = TriggerByPushObject : TriggerOnce (trigger.cpp)
+trigger_givepowerup = TriggerGivePowerup : Trigger (trigger.cpp)
+trigger_clickitem = TriggerClickItem : Trigger (trigger.cpp)
+trigger_nodamage = TriggerNoDamage : TriggerUse (trigger.cpp)
+trigger_entity = TriggerEntity : Trigger (trigger.cpp)
+trigger_landmine = TriggerLandmine : TriggerEntity (trigger.cpp)
+## getClassDef / fallback Object
+28: #include "object.h"
+52: keyList.AddObject(otherlist.keyList.ObjectAt(i));
+53: valueList.AddObject(otherlist.valueList.ObjectAt(i));
+59: keyList.FreeObjectList();
+60: valueList.FreeObjectList();
+129: num = keyList.NumObjects();
+131: if (keyList.ObjectAt(i) == key) {
+132: return valueList.ObjectAt(i);
+144: num = keyList.NumObjects();
+146: if (keyList.ObjectAt(i) == key) {
+147: valueList.ObjectAt(i) = value;
+152: keyList.AddObject(str(key));
+204: ClassDef *SpawnArgs::getClassDef(qboolean *tikiWasStatic)
+205: {
+206:     const char  *classname;
+207:     ClassDef    *cls  = NULL;
+208:     dtiki_t     *tiki = NULL;
+209:     dtikianim_t *a    = NULL;
+210: 
+211:     classname = getArg("classname");
+212: 
+213:     if (tikiWasStatic) {
+214:         *tikiWasStatic = false;
+215:     }
+216: 
+217:     //
+218:     // check normal spawn functions
+219:     // see if the class name is stored within the model
+220:     //
+221:     if (classname) {
+222:         //
+223:         // explicitly inhibit lights
+224:         //
+225:         if (!Q_stricmp(classname, "light")) {
+226:             //
+227:             // HACK HACK HACK
+228:             // hack to suppress a warning message
+229:             //
+230:             if (tikiWasStatic) {
+231:                 *tikiWasStatic = true;
+232:             }
+233:             return NULL;
+234:         }
+235: 
+236:         cls = getClassForID(classname);
+237:         if (!cls) {
+238:             cls = getClass(classname);
+239:         }
+240:     }
+241: 
+242:     if (!cls) {
+243:         const char *model;
+244: 
+245:         //
+246:         // get Object in case we cannot find an alternative
+247:         //
+248:         cls   = &Object::ClassInfo;
+249:         model = getArg("model");
+250:         if (model) {
+251:             int i;
+252: 
+253:             model = CanonicalTikiName(model);
+254:             tiki  = gi.modeltiki(model);
+## Rust: refs classname (primeiras 40)
+bsp.rs:310: .filter(|e| e.get("classname").is_some_and(|c| c == "info_player_start"))
