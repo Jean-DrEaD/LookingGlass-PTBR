@@ -423,3 +423,31 @@ int lg_vsscanf(const char *str, const char *fmt, va_list ap) {
 }
 int vsscanf(const char *s, const char *f, va_list ap) { return lg_vsscanf(s, f, ap); }
 int sscanf(const char *s, const char *f, ...) { va_list ap; int r; va_start(ap, f); r = lg_vsscanf(s, f, ap); va_end(ap); return r; }
+
+/* LG 16z9g: cobre os simbolos publicos de stdlib_ext_.obj (nxdk) p/ a libc nao puxar
+   o objeto (dups strtod/strtof/strtold sem /FORCE:MULTIPLE); mbtowc deixa de ser assert */
+#include <stddef.h>
+unsigned short lg_bswap16(unsigned short x) __asm__("__byteswap_ushort");
+unsigned long lg_bswap32(unsigned long x) __asm__("__byteswap_ulong");
+unsigned long long lg_bswap64(unsigned long long x) __asm__("__byteswap_uint64");
+unsigned short lg_bswap16(unsigned short x) { return (unsigned short)((x >> 8) | (x << 8)); }
+unsigned long lg_bswap32(unsigned long x) { return __builtin_bswap32(x); }
+unsigned long long lg_bswap64(unsigned long long x) { return __builtin_bswap64(x); }
+
+int mbtowc(unsigned short *pwc, const char *s, size_t n)
+{
+    if (!s) return 0;
+    if (!n) return -1;
+    if (pwc) *pwc = (unsigned char)*s;
+    return *s ? 1 : 0;
+}
+
+int rand_s(unsigned int *out)
+{
+    static unsigned int st = 0;
+    if (!out) return 22;
+    if (!st) { unsigned int lo, hi; __asm__ volatile("rdtsc" : "=a"(lo), "=d"(hi)); st = (lo ^ (hi << 7)) | 1u; }
+    st ^= st << 13; st ^= st >> 17; st ^= st << 5;
+    *out = st;
+    return 0;
+}
