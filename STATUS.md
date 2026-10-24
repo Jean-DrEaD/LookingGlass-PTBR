@@ -451,3 +451,8 @@
 - 16z6d xemu: 'LG: scan n=3 [-32] [1492.5] [ab]' identico ao esperado -> lg_vsscanf vence o PDCLib; %f resolvido (printf + sscanf)
 - 16z6d2: teste one-shot removido (+0 -1)
 - Proximos: (a) g_gametype 0 sob NXDK; (b) remover breadcrumbs LG: sv/st/sl/sz/mp/cf/rf/fr/si/le/w/pl + LG_ParseVec3 (opcional); (c) remover /FORCE:MULTIPLE; (d) lote 17 = interpretador script Alice; (e) build cliente
+
+## Lote 16z7a (2026-10-23 21:19)
+- 16z6d2 xemu: build 378/0; heartbeat estavel 82..642 (+40/2s, t=47s); linha scan removida OK
+- 16z7a: coleta g_gametype (Cvar_Get, GT_SINGLE_PLAYER, sv_init 1015-1060, SV_ServerLoaded, cfgs) em docs/probes/lote16z7a-gametype.log, sem build
+- Risco: gametype 0 pode adiar SV_ServerLoaded ate conexao de cliente (inexistente no dedicado)

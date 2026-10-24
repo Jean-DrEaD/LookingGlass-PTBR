@@ -1,0 +1,276 @@
+
+##### Cvar_Get/Get g_gametype
+code\botlib\be_ai_goal.c:1786: g_gametype = LibVarValue("g_gametype", "0");
+code\cgame\cg_servercmds.c:135: cgs.gametype   = atoi(Info_ValueForKey(info, "g_gametype"));
+code\cgame\cg_servercmds.c:149: cgi.Cvar_Set("cg_gametype", Info_ValueForKey(info, "g_gametype"));
+code\fgame\gamecvars.cpp:485: g_gametype       = gi.Cvar_Get("g_gametype", "0", CVAR_USERINFO | CVAR_SERVERINFO | CVAR_LATCH);
+code\fgame\level.cpp:2067: if (!strstr(m_voteString.c_str(), "g_gametype")) {
+code\fgame\level.cpp:2074: if (strstr(p, "g_gametype")) {
+code\fgame\player.cpp:9891: && Q_stricmp(arg1.c_str(), "g_gametype") && Q_stricmp(arg1.c_str(), "kick")
+code\fgame\player.cpp:9943: if (!Q_stricmp(arg1.c_str(), "g_gametype")) {
+code\server\sv_ccmds.c:211: Cvar_Set( "g_gametype", "0" );
+code\server\sv_ccmds.c:215: Cvar_Get( "g_gametype", "0", CVAR_LATCH | CVAR_SERVERINFO );
+code\server\sv_ccmds.c:2423: Cvar_Set("g_gametype", "0");
+code\server\sv_ccmds.c:2425: Cvar_Get("g_gametype", "0", CVAR_LATCH | CVAR_SERVERINFO);
+code\server\sv_client.c:66: //if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER ) {
+code\server\sv_init.c:895: || Cvar_VariableIntegerValue( "g_gametype" ) == 0 )
+code\server\sv_init.c:1118: g_gametype = Cvar_Get ( "g_gametype", "1", CVAR_SERVERINFO | CVAR_LATCH );
+code\server\sv_init.c:1120: g_gametype = Cvar_Get ( "g_gametype", "0", CVAR_SERVERINFO | CVAR_LATCH );
+code\server\sv_main.c:502: if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER ) {
+code\server\sv_main.c:575: if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER || Cvar_VariableValue("ui_singlePlayerActive")) {
+
+##### GT_SINGLE_PLAYER (server + fgame)
+code\server\sv_ccmds.c:250: if (com_target_game->integer != TG_MOH && g_gametype->integer == GT_SINGLE_PLAYER) {
+code\server\sv_ccmds.c:271: if( g_gametype->integer == GT_SINGLE_PLAYER ) {
+code\server\sv_ccmds.c:307: if( g_gametype->integer == GT_SINGLE_PLAYER ) {
+code\server\sv_ccmds.c:1835: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\server\sv_ccmds.c:2418: || com_sv_running && com_sv_running->integer && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\server\sv_ccmds.c:2529: } else if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\server\sv_client.c:66: //if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER ) {
+code\server\sv_client.c:834: if ( client->state != CS_CONNECTED && g_gametype->integer == GT_SINGLE_PLAYER ) {
+code\server\sv_init.c:434: if( g_gametype->integer != GT_SINGLE_PLAYER ) {
+code\server\sv_init.c:540: if( g_gametype->integer != GT_SINGLE_PLAYER ) {
+code\server\sv_init.c:988: if( g_gametype->integer != GT_SINGLE_PLAYER ) {
+code\server\sv_init.c:1035: if( g_gametype->integer != GT_SINGLE_PLAYER ) {
+code\server\sv_main.c:502: if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER ) {
+code\server\sv_main.c:575: if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER || Cvar_VariableValue("ui_singlePlayerActive")) {
+code\server\sv_snapshot.c:721: } else if (g_gametype->integer != GT_SINGLE_PLAYER && ent->s.parent < svs.iNumClients) {
+code\server\sv_snapshot.c:752: if (g_gametype->integer != GT_SINGLE_PLAYER && !(ent->r.svFlags & SVF_NOFARPLANE)) {
+code\server\sv_snapshot.c:802: if (g_gametype->integer != GT_SINGLE_PLAYER && ent->s.number < svs.iNumClients) {
+code\server\sv_snapshot.c:1236: if (g_gametype->integer <= GT_SINGLE_PLAYER || client->serverIdAcknowledge == sv.serverId || client->serverIdAcknowledge == sv.restartedServerId) {
+code\fgame\actor.cpp:6611: if (g_gametype->integer != GT_SINGLE_PLAYER || G_GetEntity(0)) {
+code\fgame\actor.cpp:11241: if (g_gametype->integer == GT_SINGLE_PLAYER || m_Team == TEAM_AMERICAN) {
+code\fgame\bg_public.h:127: GT_SINGLE_PLAYER, // single player
+code\fgame\bg_public.h:610: #define DM_FLAG(flag)             (g_gametype->integer != GT_SINGLE_PLAYER && ((int)dmflags->integer & (flag)))
+code\fgame\dm_manager.cpp:1117: if (g_gametype->integer > GT_SINGLE_PLAYER) {
+code\fgame\entity.cpp:3579: if (doCallback && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\entity.cpp:3674: if (g_gametype->integer == GT_SINGLE_PLAYER && (ret->forcesubtitle || !checkSubtitle || g_subtitle->integer) && ret->subtitle) {
+code\fgame\entity.cpp:5045: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\entity.cpp:5057: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\entity.cpp:6208: if (g_gametype->integer == GT_SINGLE_PLAYER && !g_realismmode->integer) {
+code\fgame\entity.cpp:6221: if (g_gametype->integer != GT_SINGLE_PLAYER && !g_realismmode->integer) {
+code\fgame\entity.cpp:6247: if (g_gametype->integer == GT_SINGLE_PLAYER && g_realismmode->integer) {
+code\fgame\entity.cpp:6260: if (g_gametype->integer != GT_SINGLE_PLAYER && g_realismmode->integer) {
+code\fgame\entity.cpp:6443: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\fixedturret.cpp:93: if (g_gametype->integer == GT_SINGLE_PLAYER && mod == MOD_GRENADE) {
+code\fgame\fixedturret.cpp:99: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\g_bot.cpp:683: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_bot.cpp:962: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\g_client.cpp:590: case GT_SINGLE_PLAYER:
+code\fgame\g_client.cpp:933: if (g_gametype->integer != GT_SINGLE_PLAYER || !cl_running->integer || clientNum != 0) {
+code\fgame\g_client.cpp:966: if (firstTime && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_client.cpp:999: if (ent->entity->IsSubclassOfPlayer() && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_client.cpp:1023: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_main.cpp:285: if (developer->integer && g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\g_main.cpp:297: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_main.cpp:513: if (g_gametype->integer != GT_SINGLE_PLAYER && g_maxintermission->value != 0.0f) {
+code\fgame\g_main.cpp:571: showentnums = (sv_showentnums->integer && (g_gametype->integer == GT_SINGLE_PLAYER || sv_cheats->integer));
+code\fgame\g_main.cpp:679: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_main.cpp:760: if ((!sv_showbboxes->integer) || (g_gametype->integer != GT_SINGLE_PLAYER && !sv_cheats->integer)) {
+code\fgame\g_main.cpp:807: if (g_gametype->integer != GT_SINGLE_PLAYER && !sv_cheats->integer) {
+code\fgame\g_main.cpp:1871: if (level.intermissiontime || g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_main.cpp:1932: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_main.cpp:2074: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\g_spawn.cpp:1069: if ( g_gametype->integer == GT_SINGLE_PLAYER ) {
+code\fgame\g_spawn.cpp:1076: // check for "notteam" flag (GT_FFA, GT_TOURNAMENT, GT_SINGLE_PLAYER)
+code\fgame\g_utils.cpp:2085: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\gamecmds.cpp:179: allowDev = g_gametype->integer == GT_SINGLE_PLAYER;
+code\fgame\gamecvars.cpp:488: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\gamecvars.cpp:531: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\gamecvars.cpp:564: case GT_SINGLE_PLAYER:
+code\fgame\gibs.cpp:141: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\health.cpp:189: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\huddraw.cpp:50: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\huddraw.cpp:72: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\huddraw.cpp:88: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\huddraw.cpp:109: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\huddraw.cpp:129: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\huddraw.cpp:147: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\huddraw.cpp:162: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\huddraw.cpp:175: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\item.cpp:783: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\item.cpp:791: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\item.cpp:799: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\item.cpp:807: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:879: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:1058: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:1233: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:1241: if (game.maxclients == 1 && g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:1276: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:1546: if (!g_navigation_legacy->integer && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:1647: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:1657: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\level.cpp:1877: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player_conditionals.cpp:871: && (g_target_game > target_game_e::TG_MOH || g_gametype->integer != GT_SINGLE_PLAYER)) {
+code\fgame\player_conditionals.cpp:905: if (g_gametype->integer != GT_SINGLE_PLAYER && !m_bAllowFighting) {
+code\fgame\player_conditionals.cpp:930: if (g_gametype->integer != GT_SINGLE_PLAYER && !m_bAllowFighting) {
+code\fgame\player_conditionals.cpp:945: if (g_gametype->integer != GT_SINGLE_PLAYER && !m_bAllowFighting) {
+code\fgame\player_conditionals.cpp:970: if (g_gametype->integer != GT_SINGLE_PLAYER && !m_bAllowFighting) {
+code\fgame\player.cpp:2243: if (g_gametype->integer != GT_SINGLE_PLAYER && dmManager.PlayerCount()) {
+code\fgame\player.cpp:2276: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:2370: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:2441: if (g_gametype->integer == GT_SINGLE_PLAYER && !g_realismmode->integer) {
+code\fgame\player.cpp:2443: } else if (g_gametype->integer != GT_SINGLE_PLAYER && pDMHealth->integer > 0) {
+code\fgame\player.cpp:2478: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:2529: if (g_gametype->integer != GT_SINGLE_PLAYER && IsSpectator()) {
+code\fgame\player.cpp:2680: if (g_gametype->integer != GT_SINGLE_PLAYER && !IsSpectator()) {
+code\fgame\player.cpp:2691: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:2726: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:2781: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:3077: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:3124: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:3141: if (g_gametype->integer != GT_SINGLE_PLAYER && attacker && attacker->IsSubclassOfPlayer()) {
+code\fgame\player.cpp:3163: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:3416: if (g_gametype->integer != GT_SINGLE_PLAYER && attacker && attacker->client && attacker != this) {
+code\fgame\player.cpp:3453: if (g_gametype->integer != GT_SINGLE_PLAYER && IsSpectator()) {
+code\fgame\player.cpp:3599: if ((deadflag == DEAD_NO || getMoveType() == MOVETYPE_NOCLIP) || (g_gametype->integer != GT_SINGLE_PLAYER && IsSpectator())) {
+code\fgame\player.cpp:3714: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:3734: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:4101: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:4123: && g_gametype->integer != GT_SINGLE_PLAYER && groundentity && groundentity->entity
+code\fgame\player.cpp:4270: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:4418: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:4491: if (g_gametype->integer != GT_SINGLE_PLAYER && dm_team == TEAM_SPECTATOR && !IsSpectator()) {
+code\fgame\player.cpp:4552: if (g_gametype->integer != GT_SINGLE_PLAYER && g_smoothClients->integer) {
+code\fgame\player.cpp:4562: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:4672: if (g_gametype->integer == GT_SINGLE_PLAYER && g_playermodel->modified) {
+code\fgame\player.cpp:4682: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:4722: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:4948: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:4970: if (g_healrate->value && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:5712: if (g_gametype->integer == GT_SINGLE_PLAYER || !weapon->IsSubclassOfInventoryItem()) {
+code\fgame\player.cpp:5761: if (g_gametype->integer == GT_SINGLE_PLAYER || !weapon->IsSubclassOfInventoryItem()) {
+code\fgame\player.cpp:5788: if (g_gametype->integer == GT_SINGLE_PLAYER
+code\fgame\player.cpp:6087: if( g_gametype->integer != GT_SINGLE_PLAYER && !developer->integer )
+code\fgame\player.cpp:6171: if (g_gametype->integer == GT_SINGLE_PLAYER || !DM_FLAG(DF_NO_FALLING)) {
+code\fgame\player.cpp:6981: if (g_gametype->integer != GT_SINGLE_PLAYER && IsSpectator() && m_iPlayerSpectating != 0) {
+code\fgame\player.cpp:7169: if (g_gametype->integer != GT_SINGLE_PLAYER && g_smoothClients->integer) {
+code\fgame\player.cpp:7298: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:7929: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:8603: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:9508: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:9546: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:9635: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:9755: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:9812: //     if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:9823: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:9948: if (gametypeNum <= GT_SINGLE_PLAYER || gametypeNum >= GT_MAX_GAME_TYPE) {
+code\fgame\player.cpp:10199: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:10344: if (g_target_game > TG_MOH || g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:10447: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:10745: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:11952: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:11979: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:12205: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:12343: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\player.cpp:12389: if ((g_gametype->integer != GT_SINGLE_PLAYER && IsSpectator()) || IsDead()) {
+code\fgame\scriptthread.cpp:4543: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\sentient.cpp:1411: if ((!isClient() || g_gametype->integer != GT_SINGLE_PLAYER)
+code\fgame\sentient.cpp:1414: } else if (isClient() && attacker && attacker->IsSubclassOfActor() && g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\sentient.cpp:1520: && ((g_gametype->integer != GT_SINGLE_PLAYER) || !(attacker) || (attacker) == this
+code\fgame\sentient.cpp:3169: if (!iRunning && g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\trigger.cpp:1880: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\vehicle.cpp:3848: if (g_gametype->integer == GT_SINGLE_PLAYER || min_type == 2) {
+code\fgame\VehicleTank.cpp:112: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\vehicleturret.cpp:317: if (g_gametype->integer == GT_SINGLE_PLAYER && m_pRemoteOwner && m_pRemoteOwner->isSubclassOf(Player)) {
+code\fgame\vehicleturret.cpp:1974: if (g_gametype->integer == GT_SINGLE_PLAYER && m_PrimaryTurret->edict->s.renderfx & RF_DEPTHHACK) {
+code\fgame\vehicleturret.cpp:2032: if (g_gametype->integer == GT_SINGLE_PLAYER && m_pRemoteOwner && m_pRemoteOwner->isSubclassOf(Player)) {
+code\fgame\weapon.cpp:887: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:900: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:949: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:962: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:1457: if ((g_target_game == TG_MOH || g_gametype->integer == GT_SINGLE_PLAYER) && owner
+code\fgame\weapon.cpp:1607: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:2096: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:2349: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:2361: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3170: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3182: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3263: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3277: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3316: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3338: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3367: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3380: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3401: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3414: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3427: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3446: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3465: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3477: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3490: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3506: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3566: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3906: if (g_protocol <= protocol_e::PROTOCOL_MOH && g_gametype->integer != GT_SINGLE_PLAYER) {
+code\fgame\weapon.cpp:3918: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weaputils.cpp:1265: if (g_gametype->integer == GT_SINGLE_PLAYER && weap) {
+code\fgame\weaputils.cpp:1449: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weaputils.cpp:1878: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weaputils.cpp:1988: if (g_gametype->integer != GT_SINGLE_PLAYER && proj->dmlife) {
+code\fgame\weaputils.cpp:1998: if (g_gametype->integer != GT_SINGLE_PLAYER && proj->dmlife) {
+code\fgame\weaputils.cpp:2027: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weaputils.cpp:2340: if (g_gametype->integer == GT_SINGLE_PLAYER && !iNumHit) {
+code\fgame\weaputils.cpp:2532: if (g_gametype->integer == GT_SINGLE_PLAYER && weap) {
+code\fgame\weaputils.cpp:2819: if (g_gametype->integer != GT_SINGLE_PLAYER && proj->dmlife) {
+code\fgame\weaputils.cpp:2829: if (g_gametype->integer != GT_SINGLE_PLAYER && proj->dmlife) {
+code\fgame\weaputils.cpp:2842: if (g_gametype->integer == GT_SINGLE_PLAYER) {
+code\fgame\weaputils.cpp:2972: if (explosion->life || (g_gametype->integer != GT_SINGLE_PLAYER && explosion->dmlife)) {
+code\fgame\weaputils.cpp:2975: if (g_gametype->integer != GT_SINGLE_PLAYER && explosion->dmlife) {
+code\fgame\weaputils.cpp:3137: if (g_gametype->integer == GT_SINGLE_PLAYER && weap) {
+code\fgame\worldspawn.cpp:866: if (g_gametype->integer != GT_SINGLE_PLAYER) {
+
+##### sv_init.c 1015-1060
+1015: 					// was connected before the level change
+1016: 					SV_DropClient( &svs.clients[ i ], denied );
+1017: 				} else {
+1018: 					// send the client's last usercmd
+1019: 					SV_ClientEnterWorld( &svs.clients[ i ], &svs.clients[ i ].lastUsercmd );
+1020: 				}
+1021: 			}
+1022: 		}
+1023: 	}
+1024: 
+1025: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+1026: 	Q_strncpyz(svs.gameName, "current", sizeof(svs.gameName) );
+1027: 
+1028: 	iEnd = Sys_Milliseconds();
+1029: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+1030: 	Com_Printf( "------ Server Initialization Complete ------ %5.2f seconds\n", ( float )iEnd / 1000.0f );
+1031: 
+1032: 	Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+1033: 	UI_LoadResource( "*143" );
+1034: 
+1035: 	if( g_gametype->integer != GT_SINGLE_PLAYER ) {
+1036: 		Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+1037: 		SV_ServerLoaded();
+1038: 	}
+1039: }
+1040: 
+1041: /*
+1042: ===============
+1043: SV_ServerLoaded
+1044: ===============
+1045: */
+1046: void SV_ServerLoaded( void ) {
+1047: 	const char	*p;
+1048: 
+1049: 	if( !com_sv_running->integer ) {
+1050: 		return;
+1051: 	}
+1052: 
+1053: 	if( sv.state == SS_GAME ) {
+1054: 		return;
+1055: 	}
+1056: 
+1057: 	sv.state = SS_GAME;
+1058: 	sv.timeResidual = 0;
+1059: 	svs.startTime = svs.time - svs.mapTime;
+1060: 	if( svs.startTime < 0 )
+
+##### chamadas SV_ServerLoaded
+code\client\cl_ui.cpp:4012: SV_ServerLoaded();
+code\server\sv_client.c:938: SV_ServerLoaded();
+code\server\sv_init.c:1037: SV_ServerLoaded();
+code\server\sv_init.c:1046: void SV_ServerLoaded( void ) {
+
+##### cfgs com g_gametype (iso-stage\main)
