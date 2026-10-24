@@ -510,3 +510,7 @@
 ## Lote 16z10d (2026-10-24 07:11)
 - 16z10c xemu: boot identico; Complete 18.29 s; heartbeat 41..202 (+40/2s); 376 obj
 - 16z10d: build sem -I lwIP/nforceif FALHOU -> probe restaurado; erros em docs/probes/lote16z10d-openmohaa-build.log
+
+## Lote 16z10e (2026-10-24 07:25)
+- 16z10d: sem -I lwIP -> 23 falhos 'lwip/sockets.h' (gcd_common gsAssert/gsAvailable/gsCore/gsCrypt/gsDebug...): gamespy.cmake ainda compila gcd_*; probe restaurado
+- 16z10e: coleta objetos falhos + includes de rede (code/shims) + refs gcd_/gamespy no CMake + includes q_gamespy.c (docs/probes/lote16z10e-lwip.log), sem build

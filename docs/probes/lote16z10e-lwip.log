@@ -1,0 +1,87 @@
+##### 1) objetos falhos (16z10d)
+##### 2) includes de rede em code\ e shims
+code\gamespy\common\gsPlatform.h:72: #include <winsock2.h>
+code\gamespy\common\gsPlatform.h:74: #include <winsock.h>
+code\gamespy\common\gsPlatform.h:87: #include <sys/socket.h>
+code\gamespy\common\gsPlatform.h:89: #include <netinet/in.h>
+code\gamespy\common\gsPlatform.h:90: #include <arpa/inet.h>
+code\gamespy\common\gsPlatform.h:138: #include <sys/socket.h>
+code\gamespy\common\gsPlatform.h:141: #include <sys/socket.h>
+code\gamespy\common\gsPlatform.h:143: #include <netinet/in.h>
+code\gamespy\common\gsPlatform.h:156: #include <arpa/inet.h>
+code\gamespy\common\gsPlatform.h:161: #include <netinet/tcp.h>
+code\gamespy\common\gsPlatform.h:203: #include <sys/socket.h>
+code\gamespy\common\gsPlatform.h:208: #include <netinet/in.h>
+code\gamespy\common\gsPlatform.h:209: #include <arpa/inet.h>
+code\qcommon\common.c:29: #include <netinet/in.h>
+code\qcommon\common.c:32: #include <winsock.h>
+code\qcommon\net_ip.c:27: #	include <winsock2.h>
+code\qcommon\net_ip.c:28: #	include <ws2tcpip.h>
+code\qcommon\net_ip.c:34: #			include "wspiapi.h"
+code\qcommon\net_ip.c:36: #			include <wspiapi.h>
+code\qcommon\net_ip.c:75: #	include <sys/socket.h>
+code\qcommon\net_ip.c:78: #	include <netinet/in.h>
+code\qcommon\net_ip.c:79: #	include <arpa/inet.h>
+code\thirdparty\curl-8.15.0\include\curl\curl.h:82: #include <winsock2.h>
+code\thirdparty\curl-8.15.0\include\curl\curl.h:83: #include <ws2tcpip.h>
+code\thirdparty\curl-8.15.0\include\curl\curl.h:101: #include <sys/socket.h>
+code\thirdparty\curl-8.15.0\include\curl\system.h:382: #  include <sys/socket.h>
+code\thirdparty\opusfile-0.12\src\http.c:214: #  include <winsock2.h>
+code\thirdparty\opusfile-0.12\src\http.c:215: #  include <ws2tcpip.h>
+code\thirdparty\opusfile-0.12\src\http.c:342: #  include <sys/socket.h>
+code\thirdparty\opusfile-0.12\src\http.c:343: #  include <arpa/inet.h>
+code\thirdparty\opusfile-0.12\src\http.c:344: #  include <netinet/in.h>
+code\thirdparty\opusfile-0.12\src\http.c:345: #  include <netinet/tcp.h>
+tools\nxdk-shims\winsock.h:3: #include <lwip/sockets.h>
+tools\nxdk-shims\winsock.h:4: #include <lwip/netdb.h>
+tools\nxdk-shims\winsock.h:5: #include <lwip/inet.h>
+tools\nxdk-shims\winsock2.h:2: #include "winsock.h"
+tools\nxdk-shims\ws2tcpip.h:3: #include <winsock.h>
+tools\nxdk-shims\ws2tcpip.h:4: #include <lwip/netdb.h>
+tools\nxdk-shims\ws2tcpip.h:5: #include <lwip/sockets.h>
+tools\nxdk-shims\wspiapi.h:3: #include <ws2tcpip.h>
+##### 3) gcd_*/gamespy no CMake
+cmake\client.cmake:31: ${SOURCE_DIR}/client/cl_uigamespy.cpp
+cmake\client.cmake:63: # Gamespy
+cmake\client.cmake:65: ${SOURCE_DIR}/gamespy/cl_gamespy.c
+cmake\gamespy.cmake:1: include_directories(${SOURCE_DIR}/gamespy/common)
+cmake\gamespy.cmake:2: include_directories(${SOURCE_DIR}/gamespy/gcdkey)
+cmake\gamespy.cmake:5: ${SOURCE_DIR}/gamespy/common/*.c
+cmake\gamespy.cmake:6: ${SOURCE_DIR}/gamespy/darray.c
+cmake\gamespy.cmake:7: ${SOURCE_DIR}/gamespy/gserver.c
+cmake\gamespy.cmake:8: ${SOURCE_DIR}/gamespy/gserverlist.c
+cmake\gamespy.cmake:9: ${SOURCE_DIR}/gamespy/hashtable.c
+cmake\gamespy.cmake:10: ${SOURCE_DIR}/gamespy/md5c.c
+cmake\gamespy.cmake:11: ${SOURCE_DIR}/gamespy/gutil.c
+cmake\gamespy.cmake:15: ${SOURCE_DIR}/gamespy/gcdkey/*.c
+cmake\gamespy.cmake:19: ${SOURCE_DIR}/gamespy/natneg/*.c
+cmake\gamespy.cmake:23: ${SOURCE_DIR}/gamespy/qr2/*.c
+cmake\gamespy.cmake:26: add_library(gcd_common STATIC ${SRCS_common})
+cmake\gamespy.cmake:27: add_library(gcd_key STATIC ${SRCS_gcdkey})
+cmake\gamespy.cmake:28: add_library(gcd_natneg STATIC ${SRCS_natneg})
+cmake\gamespy.cmake:29: add_library(gcd_qr2 STATIC ${SRCS_qr2})
+cmake\gamespy.cmake:32: set_property(TARGET gcd_common gcd_key PROPERTY POSITION_INDEPENDENT_CODE ON)
+cmake\gamespy.cmake:39: gcd_key
+cmake\gamespy.cmake:40: #	gcd_gp
+cmake\gamespy.cmake:41: #	gcd_gstats
+cmake\gamespy.cmake:42: gcd_natneg
+cmake\gamespy.cmake:43: #	gcd_pinger
+cmake\gamespy.cmake:44: #	gcd_pt
+cmake\gamespy.cmake:45: gcd_qr2
+cmake\gamespy.cmake:46: #	gcd_sake
+cmake\gamespy.cmake:47: #	gcd_sc
+cmake\gamespy.cmake:48: #	gcd_serverbrowsing
+cmake\gamespy.cmake:49: #	gcd_webservices
+cmake\gamespy.cmake:55: target_link_libraries(${LIB} PUBLIC gcd_common)
+cmake\gamespy.cmake:58: target_link_libraries(gcd_key PRIVATE gcd_qr2)
+cmake\gamespy.cmake:59: target_link_libraries(gcd_qr2 PRIVATE gcd_natneg)
+cmake\shared_sources.cmake:5: include(gamespy)
+cmake\shared_sources.cmake:35: ${SOURCE_DIR}/gamespy/q_gamespy.c
+cmake\shared_sources.cmake:98: # Gamespy
+cmake\shared_sources.cmake:101: #LG16z10c 	${SOURCE_DIR}/gamespy/sv_gamespy.c
+cmake\shared_sources.cmake:102: #LG16z10c 	${SOURCE_DIR}/gamespy/sv_gqueryreporting.c
+##### 4) includes do q_gamespy.c
+25: #include "q_gamespy.h"
+26: #include "../qcommon/qcommon.h"
+27: #include "cl_gamespy.h"
+28: #include "sv_gamespy.h"
