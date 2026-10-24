@@ -1,0 +1,4 @@
+##### definicoes/declaracoes G_Error
+code\fgame\g_local.h:411: void QDECL G_Error(const char *fmt, ...) Q_PRINTF_FUNC(1, 2);
+code\fgame\g_main.cpp:110: void QDECL G_Error(const char *fmt, ...)
+##### rename: D:\openmohaa\tools\nxdk-shims\lg_game_rename.h
