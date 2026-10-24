@@ -1,0 +1,4891 @@
+# Lote 18b 2026-10-24 18:28 - coleta NV2A/sys Xbox
+## ioq3 branch
+alice
+## ioq3 sys\xbox* (tamanho)
+code\renderernv2a\xbox_nv2a_dxt.c 8586
+code\renderernv2a\xbox_nv2a_model.c 16366
+code\renderernv2a\xbox_nv2a_shader.c 30986
+code\renderernv2a\xbox_nv2a_sky.c 9765
+code\renderernv2a\xbox_nv2a_world.c 51770
+code\renderernv2a\xbox_nv2a.c 140611
+code\renderernv2a\xbox_nv2a.h 12935
+code\sys\xbox_boot.c 3475
+code\sys\xbox_diag.c 1432
+code\sys\xbox_input_engine.c 339
+code\sys\xbox_input.c 27950
+code\sys\xbox_input.h 657
+code\sys\xbox_launch.c 4158
+code\sys\xbox_module_libc.c 25642
+code\sys\xbox_module.h 1337
+code\sys\xbox_modules.c 4384
+code\sys\xbox_net.c 5343
+code\sys\xbox_qcommon.c 1501
+code\sys\xbox_ref.c 7368
+code\sys\xbox_snd_engine.c 1950
+code\sys\xbox_snd.c 2030
+code\sys\xbox_snd.h 375
+## ioq3 arquivos com GLimp_Init / pbkit / pb_ / pbgl / nv2a
+code\renderercommon\tr_common.h:28: // The NV2A renderer has no GL; the shared image loaders only need this type.
+code\renderergl1\tr_init.c:176: ** is done by calling GLimp_Init (which gives us a working OGL subsystem) then
+code\renderergl2\tr_extensions.c:33: void GLimp_InitExtraExtensions(void)
+code\renderergl2\tr_init.c:245: ** is done by calling GLimp_Init (which gives us a working OGL subsystem) then
+code\renderergl2\tr_local.h:2035: void		GLimp_InitExtraExtensions( void );
+code\renderernv2a\xbox_nv2a_dxt.c:2: #include "xbox_nv2a.h"
+code\renderernv2a\xbox_nv2a_model.c:1: /* MD3 models and skins for the NV2A renderer, following ioq3 tr_model.c and tr_image.c. */
+code\renderernv2a\xbox_nv2a_shader.c:1: /* Q3 shader scripts and TGA/JPG images for the NV2A renderer. */
+code\renderernv2a\xbox_nv2a_sky.c:1: /* Sky box and cloud layers for the NV2A renderer, following ioq3 tr_sky.c. */
+code\renderernv2a\xbox_nv2a_world.c:1: /* Q3 BSP world for the NV2A renderer, following ioq3 tr_bsp.c, tr_world.c and tr_light.c. */
+code\renderernv2a\xbox_nv2a.c:1: #include "xbox_nv2a.h"
+code\renderernv2a\xbox_nv2a.h:1: #ifndef IOQUAKE3_XBOX_NV2A_H
+code\sdl\sdl_glimp.c:889: GLimp_InitExtensions
+code\sys\sys_xbox.c:7: #include "../renderernv2a/xbox_nv2a.h"
+code\sys\xbox_launch.c:10: #include "../renderernv2a/xbox_nv2a.h"
+code\sys\xbox_qcommon.c:6: #include "../renderernv2a/xbox_nv2a.h"
+code\sys\xbox_ref.c:4: #include "../renderernv2a/xbox_nv2a.h"
+code\thirdparty\xgu\nv2a_regs.h:2: * QEMU Geforce NV2A register definitions
+code\thirdparty\xgu\xgu.h:5: #include <pbkit/pbkit.h>
+code\thirdparty\xgu\xgux.h:13: uint32_t *p = pb_begin();
+## ioq3 build (Makefile/CMake: linhas xbox/nxdk/pbkit/renderer)
+cmake\libraries\freetype.cmake:5: if(NOT BUILD_RENDERER_GL1 AND NOT BUILD_RENDERER_GL2)
+cmake\libraries\freetype.cmake:11: list(APPEND RENDERER_INCLUDE_DIRS ${FREETYPE_INCLUDE_DIRS})
+cmake\libraries\freetype.cmake:12: list(APPEND RENDERER_LIBRARIES ${FREETYPE_LIBRARIES})
+cmake\libraries\jpeg.cmake:1: if(NOT BUILD_RENDERER_GL1 AND NOT BUILD_RENDERER_GL2)
+cmake\libraries\jpeg.cmake:15: list(APPEND RENDERER_LIBRARY_SOURCES ${JPEG_SOURCES})
+cmake\libraries\jpeg.cmake:20: list(APPEND RENDERER_LIBRARIES ${JPEG_LIBRARIES})
+cmake\libraries\jpeg.cmake:21: list(APPEND RENDERER_INCLUDE_DIRS ${JPEG_INCLUDE_DIRS})
+cmake\libraries\jpeg.cmake:22: list(APPEND RENDERER_DEFINITIONS ${JPEG_DEFINTIONS})
+cmake\libraries\sdl.cmake:24: list(APPEND RENDERER_DEFINITIONS USE_INTERNAL_SDL_HEADERS)
+cmake\libraries\sdl.cmake:62: list(APPEND RENDERER_LIBRARIES ${SDL2_LIBRARIES})
+cmake\libraries\sdl.cmake:63: list(APPEND RENDERER_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS})
+cmake\libraries\sdl.cmake:64: list(APPEND RENDERER_COMPILE_OPTIONS ${SDL2_CFLAGS_OTHER})
+cmake\platforms\emscripten.cmake:12: set(BUILD_RENDERER_GL1 OFF CACHE INTERNAL "")
+cmake\platforms\emscripten.cmake:13: set(USE_RENDERER_DLOPEN OFF CACHE INTERNAL "")
+cmake\platforms\linux.cmake:8: list(APPEND RENDERER_DEFINITIONS USE_ICON)
+cmake\platforms\macos.cmake:9: enable_language(OBJC)
+cmake\platforms\macos.cmake:15: list(APPEND RENDERER_LIBRARIES "-framework OpenGL")
+cmake\platforms\macos.cmake:65: if(USE_RENDERER_DLOPEN)
+cmake\platforms\macos.cmake:68: if(BUILD_RENDERER_GL1)
+cmake\platforms\macos.cmake:69: set_output_dirs(${RENDERER_GL1_BINARY} SUBDIRECTORY ${MACOS_APP_BINARY_DIR})
+cmake\platforms\macos.cmake:70: add_dependencies(${CLIENT_BINARY} ${RENDERER_GL1_BINARY})
+cmake\platforms\macos.cmake:73: if(BUILD_RENDERER_GL2)
+cmake\platforms\macos.cmake:74: set_output_dirs(${RENDERER_GL2_BINARY} SUBDIRECTORY ${MACOS_APP_BINARY_DIR})
+cmake\platforms\macos.cmake:75: add_dependencies(${CLIENT_BINARY} ${RENDERER_GL2_BINARY})
+cmake\utils\add_git_dependency.cmake:35: PROPERTIES OBJECT_DEPENDS ${GIT_FILE})
+cmake\utils\qvm_tools.cmake:73: COMMENT "Building C object ${ASM_FILE_COMMENT}")
+cmake\client.cmake:9: include(renderer_common)
+cmake\client.cmake:52: if(USE_RENDERER_DLOPEN)
+cmake\client.cmake:53: list(APPEND CLIENT_DEFINITIONS USE_RENDERER_DLOPEN)
+cmake\client.cmake:89: if(NOT USE_RENDERER_DLOPEN)
+cmake\client.cmake:92: ${RENDERER_GL1_BINARY_SOURCES}
+cmake\client.cmake:93: ${RENDERER_GL2_BINARY_SOURCES})
+cmake\client.cmake:95: target_include_directories( ${CLIENT_BINARY} PRIVATE ${RENDERER_INCLUDE_DIRS})
+cmake\client.cmake:96: target_compile_definitions( ${CLIENT_BINARY} PRIVATE ${RENDERER_DEFINITIONS})
+cmake\client.cmake:97: target_compile_options(     ${CLIENT_BINARY} PRIVATE ${RENDERER_COMPILE_OPTIONS})
+cmake\client.cmake:98: target_link_libraries(      ${CLIENT_BINARY} PRIVATE ${RENDERER_LIBRARIES})
+cmake\renderer_common.cmake:3: set(RENDERER_COMMON_SOURCES
+cmake\renderer_common.cmake:4: ${SOURCE_DIR}/renderercommon/tr_font.c
+cmake\renderer_common.cmake:5: ${SOURCE_DIR}/renderercommon/tr_image_bmp.c
+cmake\renderer_common.cmake:6: ${SOURCE_DIR}/renderercommon/tr_image_jpg.c
+cmake\renderer_common.cmake:7: ${SOURCE_DIR}/renderercommon/tr_image_pcx.c
+cmake\renderer_common.cmake:8: ${SOURCE_DIR}/renderercommon/tr_image_png.c
+cmake\renderer_common.cmake:9: ${SOURCE_DIR}/renderercommon/tr_image_pvr.c
+cmake\renderer_common.cmake:10: ${SOURCE_DIR}/renderercommon/tr_image_tga.c
+cmake\renderer_common.cmake:11: ${SOURCE_DIR}/renderercommon/tr_noise.c
+cmake\renderer_common.cmake:12: ${SOURCE_DIR}/renderercommon/puff.c
+cmake\renderer_common.cmake:15: set(SDL_RENDERER_SOURCES
+cmake\renderer_common.cmake:20: set(DYNAMIC_RENDERER_SOURCES
+cmake\renderer_common.cmake:21: ${SOURCE_DIR}/renderercommon/tr_subs.c
+cmake\renderer_common.cmake:27: list(APPEND RENDERER_DEFINITIONS BUILD_FREETYPE)
+cmake\renderer_common.cmake:30: if(USE_RENDERER_DLOPEN)
+cmake\renderer_common.cmake:31: list(APPEND RENDERER_DEFINITIONS USE_RENDERER_DLOPEN)
+cmake\renderer_common.cmake:32: elseif(BUILD_RENDERER_GL1 AND BUILD_RENDERER_GL2)
+cmake\renderer_common.cmake:33: message(FATAL_ERROR "Multiple static renderers enabled; choose one")
+cmake\renderer_common.cmake:34: elseif(NOT BUILD_RENDERER_GL1 AND NOT BUILD_RENDERER_GL2)
+cmake\renderer_common.cmake:35: message(FATAL_ERROR "Zero static renderers enabled; choose one")
+cmake\renderer_common.cmake:38: list(APPEND RENDERER_LIBRARIES ${COMMON_LIBRARIES})
+cmake\renderer_gl1.cmake:1: if(NOT BUILD_CLIENT OR NOT BUILD_RENDERER_GL1)
+cmake\renderer_gl1.cmake:6: include(renderer_common)
+cmake\renderer_gl1.cmake:8: set(RENDERER_GL1_SOURCES
+cmake\renderer_gl1.cmake:9: ${SOURCE_DIR}/renderergl1/tr_altivec.c
+cmake\renderer_gl1.cmake:10: ${SOURCE_DIR}/renderergl1/tr_animation.c
+cmake\renderer_gl1.cmake:11: ${SOURCE_DIR}/renderergl1/tr_backend.c
+cmake\renderer_gl1.cmake:12: ${SOURCE_DIR}/renderergl1/tr_bsp.c
+cmake\renderer_gl1.cmake:13: ${SOURCE_DIR}/renderergl1/tr_cmds.c
+cmake\renderer_gl1.cmake:14: ${SOURCE_DIR}/renderergl1/tr_curve.c
+cmake\renderer_gl1.cmake:15: ${SOURCE_DIR}/renderergl1/tr_flares.c
+cmake\renderer_gl1.cmake:16: ${SOURCE_DIR}/renderergl1/tr_image.c
+cmake\renderer_gl1.cmake:17: ${SOURCE_DIR}/renderergl1/tr_init.c
+cmake\renderer_gl1.cmake:18: ${SOURCE_DIR}/renderergl1/tr_light.c
+cmake\renderer_gl1.cmake:19: ${SOURCE_DIR}/renderergl1/tr_main.c
+cmake\renderer_gl1.cmake:20: ${SOURCE_DIR}/renderergl1/tr_marks.c
+cmake\renderer_gl1.cmake:21: ${SOURCE_DIR}/renderergl1/tr_mesh.c
+cmake\renderer_gl1.cmake:22: ${SOURCE_DIR}/renderergl1/tr_model.c
+cmake\renderer_gl1.cmake:23: ${SOURCE_DIR}/renderergl1/tr_model_iqm.c
+cmake\renderer_gl1.cmake:24: ${SOURCE_DIR}/renderergl1/tr_scene.c
+cmake\renderer_gl1.cmake:25: ${SOURCE_DIR}/renderergl1/tr_shade.c
+cmake\renderer_gl1.cmake:26: ${SOURCE_DIR}/renderergl1/tr_shade_calc.c
+cmake\renderer_gl1.cmake:27: ${SOURCE_DIR}/renderergl1/tr_shader.c
+cmake\renderer_gl1.cmake:28: ${SOURCE_DIR}/renderergl1/tr_shadows.c
+## CONTEUDO code\renderernv2a\xbox_nv2a_dxt.c
+/* Load-time DXT1/DXT5 encoder; colour blocks follow stb_dxt's PCA endpoints and refinement. */
+#include "xbox_nv2a.h"
+
+#include <math.h>
+#include <stdint.h>
+#include <string.h>
+
+#define XBOX_DXT_POWER_ITERATIONS 4
+/* Below this the block has no usable principal axis; stb_dxt then uses luminance weights. */
+#define XBOX_DXT_MIN_AXIS 4.0f
+
+static unsigned int XboxDxtPack(const float *rgb)
+{
+	static const float scale[3] = {31.0f / 255.0f, 63.0f / 255.0f, 31.0f / 255.0f};
+	static const int top[3] = {31, 63, 31};
+	int value[3];
+	int k;
+
+	for (k = 0; k < 3; ++k) {
+		value[k] = (int)(rgb[k] * scale[k] + 0.5f);
+		if (value[k] < 0)
+			value[k] = 0;
+		else if (value[k] > top[k])
+			value[k] = top[k];
+	}
+	return (unsigned int)((value[0] << 11) | (value[1] << 5) | value[2]);
+}
+
+static void XboxDxtUnpack(unsigned int color, int *rgb)
+{
+	int r = (color >> 11) & 31;
+	int g = (color >> 5) & 63;
+	int b = color & 31;
+
+	rgb[0] = (r << 3) | (r >> 2);
+	rgb[1] = (g << 2) | (g >> 4);
+	rgb[2] = (b << 3) | (b >> 2);
+}
+
+/* Palette index per texel along the c1-c0 line, as if c0 > c1; returns the squared error. */
+static int XboxDxtIndexes(const byte (*texels)[4], unsigned int c0, unsigned int c1,
+	uint32_t *indexes)
+{
+	int palette[4][3];
+	int axis[3];
+	int lengthSq;
+	int error = 0;
+	int i, k;
+
+	XboxDxtUnpack(c0, palette[0]);
+	XboxDxtUnpack(c1, palette[1]);
+	for (k = 0; k < 3; ++k) {
+		palette[2][k] = (2 * palette[0][k] + palette[1][k] + 1) / 3;
+		palette[3][k] = (palette[0][k] + 2 * palette[1][k] + 1) / 3;
+		axis[k] = palette[0][k] - palette[1][k];
+	}
+	lengthSq = axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2];
+	*indexes = 0;
+	for (i = 0; i < 16; ++i) {
+		int p = 0;
+
+		if (lengthSq) {
+			/* Six times the position on the line; entries 1, 3, 2, 0 sit at 0, 2, 4 and 6. */
+			int step = 6 * ((texels[i][0] - palette[1][0]) * axis[0] +
+				(texels[i][1] - palette[1][1]) * axis[1] +
+				(texels[i][2] - palette[1][2]) * axis[2]);
+
+			p = step < lengthSq ? 1 : step < 3 * lengthSq ? 3 : step < 5 * lengthSq ? 2 : 0;
+		}
+		for (k = 0; k < 3; ++k) {
+			int d = texels[i][k] - palette[p][k];
+
+			error += d * d;
+		}
+		*indexes |= (uint32_t)p << (i * 2);
+	}
+	return error;
+}
+
+/* The two texels farthest apart along the colour covariance's principal axis. */
+static void XboxDxtEndpoints(const byte (*texels)[4], float *high, float *low)
+{
+	float mean[3] = {0.0f, 0.0f, 0.0f};
+	float cov[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+	float axis[3];
+	int minColor[3] = {255, 255, 255};
+	int maxColor[3] = {0, 0, 0};
+	float minDot = 1e30f, maxDot = -1e30f;
+	int minTexel = 0, maxTexel = 0;
+	int i, k;
+
+	for (i = 0; i < 16; ++i) {
+		for (k = 0; k < 3; ++k) {
+			mean[k] += texels[i][k];
+			if (texels[i][k] < minColor[k])
+				minColor[k] = texels[i][k];
+			if (texels[i][k] > maxColor[k])
+				maxColor[k] = texels[i][k];
+		}
+	}
+	for (k = 0; k < 3; ++k)
+		mean[k] *= 1.0f / 16.0f;
+	for (i = 0; i < 16; ++i) {
+		float r = texels[i][0] - mean[0];
+		float g = texels[i][1] - mean[1];
+		float b = texels[i][2] - mean[2];
+
+		cov[0] += r * r;
+		cov[1] += r * g;
+		cov[2] += r * b;
+		cov[3] += g * g;
+		cov[4] += g * b;
+		cov[5] += b * b;
+	}
+	for (k = 0; k < 3; ++k)
+		axis[k] = (float)(maxColor[k] - minColor[k]);
+	for (i = 0; i < XBOX_DXT_POWER_ITERATIONS; ++i) {
+		float x = axis[0] * cov[0] + axis[1] * cov[1] + axis[2] * cov[2];
+		float y = axis[0] * cov[1] + axis[1] * cov[3] + axis[2] * cov[4];
+		float z = axis[0] * cov[2] + axis[1] * cov[4] + axis[2] * cov[5];
+		float largest = fabsf(x);
+
+		if (fabsf(y) > largest)
+			largest = fabsf(y);
+		if (fabsf(z) > largest)
+			largest = fabsf(z);
+		if (largest < XBOX_DXT_MIN_AXIS) {
+			axis[0] = 0.299f;
+			axis[1] = 0.587f;
+			axis[2] = 0.114f;
+			break;
+		}
+		axis[0] = x / largest;
+		axis[1] = y / largest;
+		axis[2] = z / largest;
+	}
+	for (i = 0; i < 16; ++i) {
+		float d = texels[i][0] * axis[0] + texels[i][1] * axis[1] + texels[i][2] * axis[2];
+
+		if (d < minDot) {
+			minDot = d;
+			minTexel = i;
+		}
+		if (d > maxDot) {
+			maxDot = d;
+			maxTexel = i;
+		}
+	}
+	for (k = 0; k < 3; ++k) {
+		high[k] = texels[maxTexel][k];
+		low[k] = texels[minTexel][k];
+	}
+}
+
+/* Least-squares endpoints for fixed indexes (stb_dxt RefineBlock); qfalse when all indexes match. */
+static qboolean XboxDxtRefine(const byte (*texels)[4], uint32_t indexes, float *high, float *low)
+{
+	static const float weights[4] = {1.0f, 0.0f, 2.0f / 3.0f, 1.0f / 3.0f};
+	float aa = 0.0f, ab = 0.0f, bb = 0.0f;
+	float ax[3] = {0.0f, 0.0f, 0.0f};
+	float bx[3] = {0.0f, 0.0f, 0.0f};
+	float det;
+	int i, k;
+
+	for (i = 0; i < 16; ++i) {
+		float a = weights[(indexes >> (i * 2)) & 3];
+		float b = 1.0f - a;
+
+		aa += a * a;
+		ab += a * b;
+		bb += b * b;
+		for (k = 0; k < 3; ++k) {
+			ax[k] += a * texels[i][k];
+			bx[k] += b * texels[i][k];
+		}
+	}
+	det = aa * bb - ab * ab;
+	if (fabsf(det) < 1e-6f)
+		return qfalse;
+	det = 1.0f / det;
+	for (k = 0; k < 3; ++k) {
+		high[k] = (bb * ax[k] - ab * bx[k]) * det;
+		low[k] = (aa * bx[k] - ab * ax[k]) * det;
+	}
+	return qtrue;
+}
+
+static void XboxDxtCompressBlock(const byte (*texels)[4], uint32_t *out)
+{
+	float high[3], low[3];
+	unsigned int c0, c1;
+	uint32_t indexes;
+	int error;
+
+	XboxDxtEndpoints(texels, high, low);
+	c0 = XboxDxtPack(high);
+	c1 = XboxDxtPack(low);
+	error = XboxDxtIndexes(texels, c0, c1, &indexes);
+	if (error && XboxDxtRefine(texels, indexes, high, low)) {
+		unsigned int r0 = XboxDxtPack(high);
+		unsigned int r1 = XboxDxtPack(low);
+		uint32_t refined;
+
+		if (XboxDxtIndexes(texels, r0, r1, &refined) < error) {
+			c0 = r0;
+			c1 = r1;
+			indexes = refined;
+		}
+	}
+	/* Four-colour mode needs c0 > c1; with equal endpoints index 3 would be transparent. */
+	if (c0 < c1) {
+		unsigned int swap = c0;
+
+		c0 = c1;
+		c1 = swap;
+		indexes ^= 0x55555555u;
+	} else if (c0 == c1) {
+		indexes = 0;
+	}
+	out[0] = c0 | (c1 << 16);
+	out[1] = indexes;
+}
+
+/* DXT5 alpha palette: a0 > a1 gives 8 steps, otherwise 6 steps plus exact 0 and 255. */
+static int XboxDxtAlphaIndexes(const byte (*texels)[4], int a0, int a1, uint64_t *indexes)
+{
+	int palette[8];
+	int error = 0;
+	int i, j;
+
+	palette[0] = a0;
+	palette[1] = a1;
+	if (a0 > a1) {
+		for (i = 1; i < 7; ++i)
+			palette[i + 1] = ((7 - i) * a0 + i * a1) / 7;
+	} else {
+		for (i = 1; i < 5; ++i)
+			palette[i + 1] = ((5 - i) * a0 + i * a1) / 5;
+		palette[6] = 0;
+		palette[7] = 255;
+	}
+	*indexes = 0;
+	for (i = 0; i < 16; ++i) {
+		int best = 0;
+		int bestError = 256 * 256;
+
+		for (j = 0; j < 8; ++j) {
+			int d = texels[i][3] - palette[j];
+
+			if (d * d < bestError) {
+				bestError = d * d;
+				best = j;
+			}
+		}
+		error += bestError;
+		*indexes |= (uint64_t)best << (i * 3);
+	}
+	return error;
+}
+
+/* Tries the full range in 8 steps, then the soft values in 6 steps with 0 and 255 kept exact. */
+static void XboxDxtCompressAlpha(const byte (*texels)[4], byte *out)
+{
+	int low = 255, high = 0, innerLow = 255, innerHigh = 0;
+	int a0, a1, i;
+	uint64_t indexes;
+
+	for (i = 0; i < 16; ++i) {
+		int a = texels[i][3];
+
+		if (a < low)
+			low = a;
+		if (a > high)
+			high = a;
+		if (a != 0 && a != 255) {
+			if (a < innerLow)
+				innerLow = a;
+			if (a > innerHigh)
+				innerHigh = a;
+		}
+	}
+	if (innerLow > innerHigh)
+		innerLow = innerHigh = 0;
+	a0 = high;
+	a1 = low;
+	if (high == low) {
+		indexes = 0;
+	} else {
+		int error = XboxDxtAlphaIndexes(texels, high, low, &indexes);
+		uint64_t inner;
+
+		if (error && (low == 0 || high == 255) &&
+			XboxDxtAlphaIndexes(texels, innerLow, innerHigh, &inner) < error) {
+			a0 = innerLow;
+			a1 = innerHigh;
+			indexes = inner;
+		}
+	}
+	out[0] = (byte)a0;
+	out[1] = (byte)a1;
+	for (i = 0; i < 6; ++i)
+		out[2 + i] = (byte)(indexes >> (i * 8));
+}
+
+void XboxNV2ADxt_Compress(const byte *rgba, int width, int height, void *out)
+{
+	byte texels[16][4];
+	uint32_t *block = (uint32_t *)out;
+	int x, y, row;
+
+	for (y = 0; y < height; y += 4) {
+		for (x = 0; x < width; x += 4) {
+			for (row = 0; row < 4; ++row)
+				memcpy(texels[row * 4], rgba + ((size_t)(y + row) * width + x) * 4, 16);
+			XboxDxtCompressBlock((const byte (*)[4])texels, block);
+			block += 2;
+		}
+	}
+}
+
+/* The colour block is the DXT1 one; it already never uses the 3-colour mode DXT5 lacks. */
+void XboxNV2ADxt_Compress5(const byte *rgba, int width, int height, void *out)
+{
+	byte texels[16][4];
+	byte *block = (byte *)out;
+	int x, y, row;
+
+	for (y = 0; y < height; y += 4) {
+		for (x = 0; x < width; x += 4) {
+			for (row = 0; row < 4; ++row)
+				memcpy(texels[row * 4], rgba + ((size_t)(y + row) * width + x) * 4, 16);
+			XboxDxtCompressAlpha((const byte (*)[4])texels, block);
+			XboxDxtCompressBlock((const byte (*)[4])texels, (uint32_t *)(block + 8));
+			block += 16;
+		}
+	}
+}
+## CONTEUDO code\renderernv2a\xbox_nv2a_model.c
+/* MD3 models and skins for the NV2A renderer, following ioq3 tr_model.c and tr_image.c. */
+#include "xbox_nv2a.h"
+#include "../qcommon/qcommon.h"
+#include "../renderercommon/tr_common.h"
+#include "../sys/sys_xbox.h"
+
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define XBOX_NV2A_MAX_MODELS 256
+#define XBOX_NV2A_MAX_SKINS 256
+/* ioq3 MAX_SKIN_SURFACES. */
+#define XBOX_NV2A_MAX_SKIN_SURFACES 256
+/* q3dm11's five players take 4057 KiB at LOD 1 (5150 at LOD 0, 3099 at LOD 2); the heap has ~5 MiB. */
+#define XBOX_NV2A_PLAYER_LOD 1
+#if defined(STANDALONEOA) || defined(MISSIONPACK)
+/* Hunk kept free after a hunk model: the next MD3 or TGA read (up to ~2 MiB) and sounds use temp hunk. */
+#define XBOX_NV2A_MODEL_HUNK_RESERVE (3 * 1024 * 1024)
+#endif
+
+typedef struct {
+	char name[MAX_QPATH];
+	md3Header_t *md3;
+	/* Hunk models go with the hunk at map change; only heap ones are freed. */
+	qboolean onHunk;
+	/* World submodel index for "*N" names, or -1. */
+	int brush;
+} xboxNV2AModel_t;
+
+typedef struct {
+	char name[MAX_QPATH];
+	int shader;
+} xboxNV2ASkinSurface_t;
+
+typedef struct {
+	char name[MAX_QPATH];
+	int numSurfaces;
+	xboxNV2ASkinSurface_t *surfaces;
+} xboxNV2ASkin_t;
+
+/* Index 0 is the bad model; failed loads keep an empty entry so they are not retried. */
+static xboxNV2AModel_t xboxNV2AModels[XBOX_NV2A_MAX_MODELS];
+static int xboxNV2AModelCount = 1;
+static xboxNV2ASkin_t xboxNV2ASkins[XBOX_NV2A_MAX_SKINS];
+static int xboxNV2ASkinCount = 1;
+
+static qboolean XboxModelRange(int length, int offset, int bytes)
+{
+	return offset >= 0 && bytes >= 0 && offset <= length && bytes <= length - offset;
+}
+
+/* Rejects files whose offsets or indexes would read outside the buffer. */
+static qboolean XboxModelValidate(const md3Header_t *md3, int length,
+	const char *name)
+{
+	const md3Surface_t *surface;
+	int i, j;
+
+	if (length < (int)sizeof(*md3) || md3->ident != MD3_IDENT ||
+		md3->version != MD3_VERSION) {
+		Sys_XboxLog("Xbox model: %s is not an MD3 v%d file\n", name, MD3_VERSION);
+		return qfalse;
+	}
+	if (md3->numFrames < 1 || md3->numFrames > MD3_MAX_FRAMES ||
+		md3->numSurfaces < 0 || md3->numSurfaces > MD3_MAX_SURFACES ||
+		md3->numTags < 0 || md3->numTags > MD3_MAX_TAGS ||
+		!XboxModelRange(length, md3->ofsFrames,
+			md3->numFrames * (int)sizeof(md3Frame_t)) ||
+		!XboxModelRange(length, md3->ofsTags,
+			md3->numFrames * md3->numTags * (int)sizeof(md3Tag_t)) ||
+		!XboxModelRange(length, md3->ofsSurfaces, 0)) {
+		Sys_XboxLog("Xbox model: %s has a bad header\n", name);
+		return qfalse;
+	}
+	surface = (const md3Surface_t *)((const byte *)md3 + md3->ofsSurfaces);
+	for (i = 0; i < md3->numSurfaces; ++i) {
+		int base = (int)((const byte *)surface - (const byte *)md3);
+		const md3Triangle_t *triangles;
+
+		if (!XboxModelRange(length, base, (int)sizeof(*surface)) ||
+			surface->ofsEnd <= 0 || !XboxModelRange(length, base, surface->ofsEnd) ||
+			surface->numFrames != md3->numFrames ||
+			surface->numVerts < 0 || surface->numVerts > XBOX_NV2A_TESS_VERTS ||
+			surface->numTriangles < 0 ||
+			surface->numTriangles > XBOX_NV2A_TESS_INDEXES / 3 ||
+			surface->numShaders < 0 || surface->numShaders > MD3_MAX_SHADERS ||
+			!XboxModelRange(surface->ofsEnd, surface->ofsShaders,
+				surface->numShaders * (int)sizeof(md3Shader_t)) ||
+			!XboxModelRange(surface->ofsEnd, surface->ofsTriangles,
+				surface->numTriangles * (int)sizeof(md3Triangle_t)) ||
+			!XboxModelRange(surface->ofsEnd, surface->ofsSt,
+				surface->numVerts * (int)sizeof(md3St_t)) ||
+			!XboxModelRange(surface->ofsEnd, surface->ofsXyzNormals,
+				surface->numVerts * surface->numFrames * (int)sizeof(md3XyzNormal_t))) {
+			Sys_XboxLog("Xbox model: %s surface %d is out of range\n", name, i);
+			return qfalse;
+		}
+		triangles = (const md3Triangle_t *)((const byte *)surface + surface->ofsTriangles);
+		for (j = 0; j < surface->numTriangles; ++j) {
+			if ((unsigned int)triangles[j].indexes[0] >= (unsigned int)surface->numVerts ||
+				(unsigned int)triangles[j].indexes[1] >= (unsigned int)surface->numVerts ||
+				(unsigned int)triangles[j].indexes[2] >= (unsigned int)surface->numVerts) {
+				Sys_XboxLog("Xbox model: %s surface %d has a bad index\n", name, i);
+				return qfalse;
+			}
+		}
+		surface = (const md3Surface_t *)((const byte *)surface + surface->ofsEnd);
+	}
+	return qtrue;
+}
+
+static md3Header_t *XboxModelLoadMD3(const char *name, qboolean *onHunk)
+{
+	void *buffer = NULL;
+	md3Header_t *md3;
+	md3Surface_t *surface;
+	long length;
+	int i, j;
+
+	*onHunk = qfalse;
+	length = ri.FS_ReadFile(name, &buffer);
+	if (length <= 0 || !buffer)
+		return NULL;
+	if (!XboxModelValidate((const md3Header_t *)buffer, (int)length, name)) {
+		ri.FS_FreeFile(buffer);
+		return NULL;
+	}
+#if defined(STANDALONEOA) || defined(MISSIONPACK)
+	/* ioq3 R_LoadMD3 keeps models on the hunk; OA maps and TA menus leave most of it idle. */
+	if (Hunk_MemoryRemaining() >= length + XBOX_NV2A_MODEL_HUNK_RESERVE) {
+		md3 = (md3Header_t *)ri.Hunk_Alloc((int)length, h_low);
+		*onHunk = qtrue;
+	} else
+#endif
+	md3 = (md3Header_t *)malloc((size_t)length);
+	if (!md3) {
+		ri.FS_FreeFile(buffer);
+		Sys_XboxLog("Xbox model: no memory for %s\n", name);
+		return NULL;
+	}
+	memcpy(md3, buffer, (size_t)length);
+	ri.FS_FreeFile(buffer);
+
+	/* ioq3 R_LoadMD3 stores the registered shader handle in shaderIndex. */
+	surface = (md3Surface_t *)((byte *)md3 + md3->ofsSurfaces);
+	for (i = 0; i < md3->numSurfaces; ++i) {
+		md3Shader_t *shader = (md3Shader_t *)((byte *)surface + surface->ofsShaders);
+		size_t nameLength;
+
+		/* ioq3 lowercases surface names for skins and drops a q3data "_1"/"_2" suffix. */
+		surface->name[sizeof(surface->name) - 1] = '\0';
+		Q_strlwr(surface->name);
+		nameLength = strlen(surface->name);
+		if (nameLength > 2 && surface->name[nameLength - 2] == '_')
+			surface->name[nameLength - 2] = '\0';
+		for (j = 0; j < surface->numShaders; ++j, ++shader) {
+			shader->name[sizeof(shader->name) - 1] = '\0';
+			shader->shaderIndex = XboxNV2AShader_RegisterModel(shader->name);
+		}
+		surface = (md3Surface_t *)((byte *)surface + surface->ofsEnd);
+	}
+	Sys_XboxLog("Xbox model: %s frames=%d surfaces=%d tags=%d bytes=%ld%s\n", name,
+		md3->numFrames, md3->numSurfaces, md3->numTags, length, *onHunk ? " hunk" : "");
+	return md3;
+}
+
+/* Player MD3s load only the name_N.md3 LOD; a missing one falls back toward LOD 0, as in ioq3. */
+static md3Header_t *XboxModelLoadLod(const char *name, qboolean *onHunk)
+{
+	char base[MAX_QPATH];
+	char path[MAX_QPATH];
+	md3Header_t *md3;
+	int lod;
+
+	if (Q_stricmpn(name, "models/players/", 15) || Q_stricmp(COM_GetExtension(name), "md3"))
+		return XboxModelLoadMD3(name, onHunk);
+	COM_StripExtension(name, base, sizeof(base));
+	for (lod = XBOX_NV2A_PLAYER_LOD; lod > 0; --lod) {
+		Com_sprintf(path, sizeof(path), "%s_%d.md3", base, lod);
+		md3 = XboxModelLoadMD3(path, onHunk);
+		if (md3)
+			return md3;
+	}
+	return XboxModelLoadMD3(name, onHunk);
+}
+
+static xboxNV2AModel_t *XboxModelFind(const char *name)
+{
+	int i;
+
+	for (i = 1; i < xboxNV2AModelCount; ++i) {
+		if (!Q_stricmp(xboxNV2AModels[i].name, name))
+			return &xboxNV2AModels[i];
+	}
+	return NULL;
+}
+
+static xboxNV2AModel_t *XboxModelAlloc(const char *name)
+{
+	xboxNV2AModel_t *model;
+
+	if (xboxNV2AModelCount >= XBOX_NV2A_MAX_MODELS) {
+		Sys_XboxLog("Xbox model: table full, skipped %s\n", name);
+		return NULL;
+	}
+	model = &xboxNV2AModels[xboxNV2AModelCount++];
+	Q_strncpyz(model->name, name, sizeof(model->name));
+	model->md3 = NULL;
+	model->onHunk = qfalse;
+	model->brush = -1;
+	return model;
+}
+
+/* Brush models only exist once the world is loaded, so "*N" names never hit the file system. */
+qhandle_t XboxNV2AModel_Register(const char *name)
+{
+	xboxNV2AModel_t *model;
+
+	if (!name || !*name || strlen(name) >= MAX_QPATH)
+		return 0;
+	model = XboxModelFind(name);
+	if (!model) {
+		model = XboxModelAlloc(name);
+		if (!model)
+			return 0;
+		if (name[0] != '*')
+			model->md3 = XboxModelLoadLod(name, &model->onHunk);
+	}
+	return (model->md3 || model->brush >= 0) ? (qhandle_t)(model - xboxNV2AModels) : 0;
+}
+
+/* ioq3 R_LoadSubmodels registers "*N" so cgame can look inline models up by name. */
+void XboxNV2AModel_RegisterBrush(const char *name, int submodel)
+{
+	xboxNV2AModel_t *model = XboxModelFind(name);
+
+	if (!model)
+		model = XboxModelAlloc(name);
+	if (model)
+		model->brush = submodel;
+}
+
+void XboxNV2AModel_FreeAll(void)
+{
+	int i;
+
+	for (i = 1; i < xboxNV2AModelCount; ++i) {
+		if (!xboxNV2AModels[i].onHunk)
+			free(xboxNV2AModels[i].md3);
+	}
+	memset(xboxNV2AModels, 0, sizeof(xboxNV2AModels));
+	xboxNV2AModelCount = 1;
+}
+
+const md3Header_t *XboxNV2AModel_Get(qhandle_t handle)
+{
+	if (handle <= 0 || handle >= xboxNV2AModelCount)
+		return NULL;
+	return xboxNV2AModels[handle].md3;
+}
+
+int XboxNV2AModel_BrushIndex(qhandle_t handle)
+{
+	if (handle <= 0 || handle >= xboxNV2AModelCount)
+		return -1;
+	return xboxNV2AModels[handle].brush;
+}
+
+/* sin and cos of the 256 MD3 lat/long steps, the angles ioq3 reads from tr.sinTable. */
+static float xboxModelSin[256];
+static float xboxModelCos[256];
+static qboolean xboxModelTables;
+
+static void XboxModelDecodeNormal(short packed, float *out)
+{
+	int lat = (packed >> 8) & 0xff;
+	int lng = packed & 0xff;
+
+	out[0] = xboxModelCos[lat] * xboxModelSin[lng];
+	out[1] = xboxModelSin[lat] * xboxModelSin[lng];
+	out[2] = xboxModelCos[lng];
+}
+
+/* ioq3 LerpMeshVertexes: decode 1/64 unit positions and lat/long normals; backlerp 0 reads one frame. */
+void XboxNV2AModel_LerpSurface(const md3Surface_t *surface, int frame,
+	int oldFrame, float backlerp, float (*xyz)[3], float (*normal)[3])
+{
+	const md3XyzNormal_t *newVerts = (const md3XyzNormal_t *)((const byte *)surface +
+		surface->ofsXyzNormals) + frame * surface->numVerts;
+	const md3XyzNormal_t *oldVerts = (const md3XyzNormal_t *)((const byte *)surface +
+		surface->ofsXyzNormals) + oldFrame * surface->numVerts;
+	float frontlerp = 1.0f - backlerp;
+	int i, k;
+
+	if (!xboxModelTables) {
+		for (i = 0; i < 256; ++i) {
+			xboxModelSin[i] = sinf(i * (2.0f * (float)M_PI / 256.0f));
+			xboxModelCos[i] = cosf(i * (2.0f * (float)M_PI / 256.0f));
+		}
+		xboxModelTables = qtrue;
+	}
+	if (backlerp == 0.0f) {
+		for (i = 0; i < surface->numVerts; ++i) {
+			for (k = 0; k < 3; ++k)
+				xyz[i][k] = newVerts[i].xyz[k] * (float)MD3_XYZ_SCALE;
+			XboxModelDecodeNormal(newVerts[i].normal, normal[i]);
+		}
+		return;
+	}
+	for (i = 0; i < surface->numVerts; ++i) {
+		vec3_t n[2];
+
+		XboxModelDecodeNormal(newVerts[i].normal, n[0]);
+		XboxModelDecodeNormal(oldVerts[i].normal, n[1]);
+		for (k = 0; k < 3; ++k) {
+			xyz[i][k] = (newVerts[i].xyz[k] * frontlerp + oldVerts[i].xyz[k] * backlerp) *
+				(float)MD3_XYZ_SCALE;
+			normal[i][k] = n[0][k] * frontlerp + n[1][k] * backlerp;
+		}
+		VectorNormalize(normal[i]);
+	}
+}
+
+void XboxNV2AModel_Bounds(qhandle_t handle, vec3_t mins, vec3_t maxs)
+{
+	const md3Header_t *md3 = XboxNV2AModel_Get(handle);
+	const md3Frame_t *frame;
+
+	if (XboxNV2AModel_BrushIndex(handle) >= 0) {
+		XboxNV2AWorld_SubmodelBounds(XboxNV2AModel_BrushIndex(handle), mins, maxs);
+		return;
+	}
+	if (!md3) {
+		VectorClear(mins);
+		VectorClear(maxs);
+		return;
+	}
+	frame = (const md3Frame_t *)((const byte *)md3 + md3->ofsFrames);
+	VectorCopy(frame->bounds[0], mins);
+	VectorCopy(frame->bounds[1], maxs);
+}
+
+static const md3Tag_t *XboxModelGetTag(const md3Header_t *md3, int frame,
+	const char *tagName)
+{
+	const md3Tag_t *tag;
+	int i;
+
+	if (frame >= md3->numFrames)
+		frame = md3->numFrames - 1;
+	if (frame < 0)
+		frame = 0;
+	tag = (const md3Tag_t *)((const byte *)md3 + md3->ofsTags) + frame * md3->numTags;
+	for (i = 0; i < md3->numTags; ++i, ++tag) {
+		if (!strcmp(tag->name, tagName))
+			return tag;
+	}
+	return NULL;
+}
+
+/* ioq3 R_LerpTag. */
+int XboxNV2AModel_LerpTag(orientation_t *tag, qhandle_t handle, int startFrame,
+	int endFrame, float frac, const char *tagName)
+{
+	const md3Header_t *md3 = XboxNV2AModel_Get(handle);
+	const md3Tag_t *start;
+	const md3Tag_t *end;
+	float backLerp = 1.0f - frac;
+	int i;
+
+	start = md3 ? XboxModelGetTag(md3, startFrame, tagName) : NULL;
+	end = md3 ? XboxModelGetTag(md3, endFrame, tagName) : NULL;
+	if (!start || !end) {
+		AxisClear(tag->axis);
+		VectorClear(tag->origin);
+		return qfalse;
+	}
+	for (i = 0; i < 3; ++i) {
+		tag->origin[i] = start->origin[i] * backLerp + end->origin[i] * frac;
+		tag->axis[0][i] = start->axis[0][i] * backLerp + end->axis[0][i] * frac;
+		tag->axis[1][i] = start->axis[1][i] * backLerp + end->axis[1][i] * frac;
+		tag->axis[2][i] = start->axis[2][i] * backLerp + end->axis[2][i] * frac;
+	}
+	VectorNormalize(tag->axis[0]);
+	VectorNormalize(tag->axis[1]);
+	VectorNormalize(tag->axis[2]);
+	return qtrue;
+}
+
+/* ioq3 CommaParse: like COM_Parse, but a comma also ends a word. */
+static char *XboxSkinCommaParse(char **text)
+{
+	static char token[MAX_TOKEN_CHARS];
+	char *data = *text;
+	int length = 0;
+	int c = 0;
+
+	token[0] = '\0';
+	if (!data) {
+## CONTEUDO code\renderernv2a\xbox_nv2a_shader.c
+/* Q3 shader scripts and TGA/JPG images for the NV2A renderer. */
+#include "xbox_nv2a.h"
+#include "../renderercommon/tr_common.h"
+#include "../sys/sys_xbox.h"
+
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define XBOX_SHADER_HASH_SIZE 1024
+
+typedef struct xboxShaderText_s {
+	char *name;
+	char *body;
+	struct xboxShaderText_s *next;
+} xboxShaderText_t;
+
+static char *xboxShaderText;
+static char *xboxShaderNames;
+static xboxShaderText_t *xboxShaderEntries;
+static xboxShaderText_t *xboxShaderHash[XBOX_SHADER_HASH_SIZE];
+static qboolean xboxShaderScriptsLoaded;
+
+static unsigned int XboxShaderHash(const char *name)
+{
+	unsigned int hash = 0;
+	int i;
+
+	for (i = 0; name[i]; ++i) {
+		char letter = (char)tolower((unsigned char)name[i]);
+
+		if (letter == '\\')
+			letter = '/';
+		hash += (unsigned int)(unsigned char)letter * (unsigned int)(i + 119);
+	}
+	return (hash ^ (hash >> 10) ^ (hash >> 20)) & (XBOX_SHADER_HASH_SIZE - 1);
+}
+
+static xboxShaderText_t *XboxShaderFindText(const char *name)
+{
+	xboxShaderText_t *entry;
+
+	for (entry = xboxShaderHash[XboxShaderHash(name)]; entry; entry = entry->next) {
+		if (!Q_stricmp(entry->name, name))
+			return entry;
+	}
+	return NULL;
+}
+
+void XboxNV2AShader_FreeScripts(void)
+{
+	free(xboxShaderText);
+	free(xboxShaderNames);
+	free(xboxShaderEntries);
+	xboxShaderText = NULL;
+	xboxShaderNames = NULL;
+	xboxShaderEntries = NULL;
+	memset(xboxShaderHash, 0, sizeof(xboxShaderHash));
+	xboxShaderScriptsLoaded = qfalse;
+}
+
+/* Returns the entry count; with entries set it also fills names and the hash. */
+static int XboxShaderIndex(char *text, char *names, xboxShaderText_t *entries,
+	size_t *nameBytes)
+{
+	char *p = text;
+	char name[MAX_QPATH];
+	int count = 0;
+	char *token;
+
+	*nameBytes = 0;
+	for (;;) {
+		token = COM_ParseExt(&p, qtrue);
+		if (!token[0])
+			break;
+		COM_StripExtension(token, name, sizeof(name));
+		token = COM_ParseExt(&p, qtrue);
+		if (token[0] != '{' || token[1]) {
+			ri.Printf(PRINT_WARNING, "Xbox shaders: expected '{' after %s\n", name);
+			break;
+		}
+		if (entries && !XboxShaderFindText(name)) {
+			unsigned int hash = XboxShaderHash(name);
+
+			entries[count].name = names + *nameBytes;
+			strcpy(entries[count].name, name);
+			entries[count].body = p;
+			entries[count].next = xboxShaderHash[hash];
+			xboxShaderHash[hash] = &entries[count];
+		}
+		*nameBytes += strlen(name) + 1;
+		count++;
+		if (!SkipBracedSection(&p, 1)) {
+			ri.Printf(PRINT_WARNING, "Xbox shaders: unbalanced braces in %s\n", name);
+			break;
+		}
+	}
+	return count;
+}
+
+/* ioq3 order: later script files are scanned first, so their definitions win. */
+static void XboxShaderLoadScripts(void)
+{
+	char **files;
+	int numFiles;
+	int i;
+	long total = 0;
+	size_t offset = 0;
+	size_t nameBytes;
+	int count;
+
+	xboxShaderScriptsLoaded = qtrue;
+#ifdef XBOX_DIAG_NO_SCRIPTS
+	/* DIAGNOSTIC bisection switch: implicit shaders only. */
+	return;
+#endif
+	files = ri.FS_ListFiles("scripts", ".shader", &numFiles);
+	if (!files || numFiles <= 0) {
+		if (files)
+			ri.FS_FreeFileList(files);
+		return;
+	}
+	for (i = 0; i < numFiles; ++i) {
+		char path[MAX_QPATH];
+		long length;
+
+		Com_sprintf(path, sizeof(path), "scripts/%s", files[i]);
+		length = ri.FS_ReadFile(path, NULL);
+		if (length > 0)
+			total += length + 1;
+	}
+	xboxShaderText = (char *)malloc((size_t)total + 1);
+	if (!xboxShaderText) {
+		ri.Printf(PRINT_WARNING, "Xbox shaders: no memory for %ld bytes\n", total);
+		ri.FS_FreeFileList(files);
+		return;
+	}
+	for (i = numFiles - 1; i >= 0; --i) {
+		char path[MAX_QPATH];
+		void *buffer;
+		long length;
+
+		Com_sprintf(path, sizeof(path), "scripts/%s", files[i]);
+		length = ri.FS_ReadFile(path, &buffer);
+		if (length <= 0 || !buffer || offset + (size_t)length + 1 > (size_t)total)
+			continue;
+		memcpy(xboxShaderText + offset, buffer, (size_t)length);
+		xboxShaderText[offset + length] = '\0';
+		ri.FS_FreeFile(buffer);
+		offset += (size_t)COM_Compress(xboxShaderText + offset);
+		xboxShaderText[offset++] = '\n';
+	}
+	xboxShaderText[offset] = '\0';
+	ri.FS_FreeFileList(files);
+
+	/* COM_ParseExt only reads the text, so a counting pass can size the index. */
+	count = XboxShaderIndex(xboxShaderText, NULL, NULL, &nameBytes);
+	xboxShaderNames = (char *)malloc(nameBytes ? nameBytes : 1);
+	xboxShaderEntries = (xboxShaderText_t *)calloc((size_t)(count ? count : 1),
+		sizeof(*xboxShaderEntries));
+	if (!xboxShaderNames || !xboxShaderEntries) {
+		ri.Printf(PRINT_WARNING, "Xbox shaders: no memory for the index\n");
+		XboxNV2AShader_FreeScripts();
+		xboxShaderScriptsLoaded = qtrue;
+		return;
+	}
+	XboxShaderIndex(xboxShaderText, xboxShaderNames, xboxShaderEntries, &nameBytes);
+	Sys_XboxLog("Xbox shaders: %d definitions from %d files, %u KiB\n",
+		count, numFiles, (unsigned int)((offset + nameBytes +
+		(size_t)count * sizeof(*xboxShaderEntries)) / 1024));
+}
+
+static int XboxShaderRoundDownPowerOfTwo(int value)
+{
+	int result = 1;
+
+	while (result * 2 <= value)
+		result *= 2;
+	if (result > XBOX_NV2A_MAX_TEXTURE_SIZE)
+		result = XBOX_NV2A_MAX_TEXTURE_SIZE;
+	return result;
+}
+
+/* Returns qtrue when libjpeg already decoded at half size (only asked for with half). */
+static qboolean XboxShaderReadImage(const char *base, const char *extension,
+	byte **pic, int *width, int *height, qboolean half)
+{
+	char path[MAX_QPATH];
+	qboolean halved = qfalse;
+
+	Com_sprintf(path, sizeof(path), "%s.%s", base, extension);
+	/* DIAGNOSTIC trace for the post-ui.qvm crash; remove once it is found. */
+	Sys_XboxLog("Xbox image: decode %s\n", path);
+#ifdef XBOX_DIAG_NO_JPG
+	/* DIAGNOSTIC bisection switch: never run libjpeg. */
+	if (!Q_stricmp(extension, "jpg")) {
+		*pic = NULL;
+		return qfalse;
+	}
+#endif
+	if (!Q_stricmp(extension, "jpg")) {
+		if (half)
+			halved = R_LoadJPGHalf(path, pic, width, height);
+		else
+			R_LoadJPG(path, pic, width, height);
+	} else {
+		R_LoadTGA(path, pic, width, height);
+	}
+	Sys_XboxLog("Xbox image: %s -> %s %dx%d%s\n", path, *pic ? "ok" : "missing",
+		*width, *height, halved ? " half decode" : "");
+	return halved;
+}
+
+#ifdef MISSIONPACK
+/* Font atlases stay 16-bit: DXT blocks would step their antialiased glyph edges. */
+static qboolean XboxShaderIsTextArt(const char *name)
+{
+	return !Q_stricmpn(name, "fonts/", 6) || !Q_stricmpn(name, "menu/art/font", 13) ||
+		!Q_stricmp(name, "gfx/2d/bigchars");
+}
+#endif
+
+/* Texel storage by shader flavor and final size; the result goes to XboxNV2A_CreateImage. */
+static int XboxShaderStorage(const char *name, int flavor, qboolean picmip, int width, int height)
+{
+#ifdef MISSIONPACK
+	/* TA menu art stays loaded in a match and filled the pool: 2D from 128 px goes DXT5/DXT1. */
+	if (flavor == XBOX_NV2A_SHADER_2D && width >= 128 && height >= 128 && !XboxShaderIsTextArt(name))
+		return XBOX_NV2A_IMAGE_DXT;
+#else
+	(void)name;
+#endif
+	/* The 6 MiB pool fills: picmip'd art compresses (2D alpha stays 16-bit), so do big menu images. */
+	if (picmip)
+		return flavor == XBOX_NV2A_SHADER_2D ? XBOX_NV2A_IMAGE_DXT1 : XBOX_NV2A_IMAGE_DXT;
+	if (flavor == XBOX_NV2A_SHADER_2D && width >= 512 && height >= 512)
+		return XBOX_NV2A_IMAGE_DXT;
+	if (flavor == XBOX_NV2A_SHADER_2D && width >= 256 && height >= 256)
+		return XBOX_NV2A_IMAGE_DXT1;
+	return XBOX_NV2A_IMAGE_16BIT;
+}
+
+/* ioq3 rounds non-power-of-two images down (r_roundImagesDown); NV2A swizzle needs it. */
+static int XboxShaderLoadImage(const char *name, qboolean picmip, qboolean mipmap, int flavor)
+{
+	char base[MAX_QPATH];
+	const char *extension = COM_GetExtension(name);
+	byte *pic = NULL;
+	int width = 0, height = 0;
+	int scaledWidth, scaledHeight;
+	int image;
+	int x, y;
+	int i;
+	qboolean halved;
+#ifdef STANDALONEOA
+	/* OA's 1024 JPG skies need 4 MiB to decode; picmip'd JPGs decode at half size instead. */
+	qboolean half = picmip && XBOX_NV2A_PICMIP > 0;
+#else
+	qboolean half = qfalse;
+#endif
+
+	if (!Q_stricmp(name, "*white") || !Q_stricmp(name, "$whiteimage"))
+		return XBOX_NV2A_WHITE_IMAGE;
+	COM_StripExtension(name, base, sizeof(base));
+	image = XboxNV2A_FindImage(base);
+	if (image)
+		return image;
+
+	if (!Q_stricmp(extension, "jpg")) {
+		halved = XboxShaderReadImage(base, "jpg", &pic, &width, &height, half);
+		if (!pic)
+			halved = XboxShaderReadImage(base, "tga", &pic, &width, &height, half);
+	} else {
+		halved = XboxShaderReadImage(base, "tga", &pic, &width, &height, half);
+		if (!pic)
+			halved = XboxShaderReadImage(base, "jpg", &pic, &width, &height, half);
+	}
+	if (!pic || width <= 0 || height <= 0) {
+		if (pic)
+			ri.Free(pic);
+		return 0;
+	}
+
+	scaledWidth = XboxShaderRoundDownPowerOfTwo(width);
+	scaledHeight = XboxShaderRoundDownPowerOfTwo(height);
+	/* A half decode is the first picmip step; keep the size cap the full path applies before it. */
+	if (halved && scaledWidth > XBOX_NV2A_MAX_TEXTURE_SIZE / 2)
+		scaledWidth = XBOX_NV2A_MAX_TEXTURE_SIZE / 2;
+	if (halved && scaledHeight > XBOX_NV2A_MAX_TEXTURE_SIZE / 2)
+		scaledHeight = XBOX_NV2A_MAX_TEXTURE_SIZE / 2;
+	/* In place: sizes only shrink, so the source offset never falls behind the destination. */
+	if (scaledWidth != width || scaledHeight != height) {
+		for (y = 0; y < scaledHeight; ++y) {
+			int sourceY = y * height / scaledHeight;
+
+			for (x = 0; x < scaledWidth; ++x) {
+				int sourceX = x * width / scaledWidth;
+
+				memmove(pic + ((size_t)y * scaledWidth + x) * 4,
+					pic + ((size_t)sourceY * width + sourceX) * 4, 4);
+			}
+		}
+	}
+	for (i = halved ? 1 : 0; picmip && i < XBOX_NV2A_PICMIP; ++i)
+		XboxNV2A_HalveImage(pic, &scaledWidth, &scaledHeight);
+	image = XboxNV2A_CreateImage(base, scaledWidth, scaledHeight, pic,
+		XboxShaderStorage(base, flavor, picmip, scaledWidth, scaledHeight), mipmap);
+	ri.Free(pic);
+	return image;
+}
+
+static unsigned int XboxShaderBlendFactor(const char *name)
+{
+	static const struct { const char *name; unsigned int value; } factors[] = {
+		{ "GL_ZERO", GL_ZERO }, { "GL_ONE", GL_ONE },
+		{ "GL_SRC_COLOR", GL_SRC_COLOR }, { "GL_ONE_MINUS_SRC_COLOR", GL_ONE_MINUS_SRC_COLOR },
+		{ "GL_SRC_ALPHA", GL_SRC_ALPHA }, { "GL_ONE_MINUS_SRC_ALPHA", GL_ONE_MINUS_SRC_ALPHA },
+		{ "GL_DST_ALPHA", GL_DST_ALPHA }, { "GL_ONE_MINUS_DST_ALPHA", GL_ONE_MINUS_DST_ALPHA },
+		{ "GL_DST_COLOR", GL_DST_COLOR }, { "GL_ONE_MINUS_DST_COLOR", GL_ONE_MINUS_DST_COLOR },
+		{ "GL_SRC_ALPHA_SATURATE", GL_SRC_ALPHA_SATURATE },
+	};
+	size_t i;
+
+	for (i = 0; i < ARRAY_LEN(factors); ++i) {
+		if (!Q_stricmp(name, factors[i].name))
+			return factors[i].value;
+	}
+	return GL_ONE;
+}
+
+static int XboxShaderWaveFunc(const char *name)
+{
+	if (!Q_stricmp(name, "square"))
+		return XBOX_NV2A_WAVE_SQUARE;
+	if (!Q_stricmp(name, "triangle"))
+		return XBOX_NV2A_WAVE_TRIANGLE;
+	if (!Q_stricmp(name, "sawtooth"))
+		return XBOX_NV2A_WAVE_SAWTOOTH;
+	if (!Q_stricmp(name, "inversesawtooth"))
+		return XBOX_NV2A_WAVE_INVERSE_SAWTOOTH;
+	if (!Q_stricmp(name, "noise"))
+		return XBOX_NV2A_WAVE_NOISE;
+	return XBOX_NV2A_WAVE_SIN;
+}
+
+/* Reads "func base amplitude phase frequency" from the current line. */
+static void XboxShaderParseWave(char **text, xboxNV2AWave_t *wave)
+{
+	wave->func = XboxShaderWaveFunc(COM_ParseExt(text, qfalse));
+	wave->base = atof(COM_ParseExt(text, qfalse));
+	wave->amplitude = atof(COM_ParseExt(text, qfalse));
+	wave->phase = atof(COM_ParseExt(text, qfalse));
+	wave->frequency = atof(COM_ParseExt(text, qfalse));
+}
+
+/* Reads "( a b c )" as in ioq3 Parse1DMatrix. */
+static void XboxShaderParseVector(char **text, int count, float *out)
+{
+	int i;
+
+	if (strcmp(COM_ParseExt(text, qfalse), "("))
+		return;
+	for (i = 0; i < count; ++i)
+		out[i] = atof(COM_ParseExt(text, qfalse));
+	COM_ParseExt(text, qfalse);
+}
+
+static void XboxShaderParseTexMod(char **text, xboxNV2AStage_t *stage)
+{
+	xboxNV2ATexMod_t *mod;
+	char *token;
+
+	if (stage->numTexMods == XBOX_NV2A_MAX_TEXMODS)
+		return;
+	mod = &stage->texMods[stage->numTexMods];
+	memset(mod, 0, sizeof(*mod));
+	token = COM_ParseExt(text, qfalse);
+	if (!Q_stricmp(token, "turb")) {
+		mod->type = XBOX_NV2A_TCMOD_TURB;
+		mod->wave.base = atof(COM_ParseExt(text, qfalse));
+		mod->wave.amplitude = atof(COM_ParseExt(text, qfalse));
+		mod->wave.phase = atof(COM_ParseExt(text, qfalse));
+		mod->wave.frequency = atof(COM_ParseExt(text, qfalse));
+	} else if (!Q_stricmp(token, "scale")) {
+		mod->type = XBOX_NV2A_TCMOD_SCALE;
+		mod->scale[0] = atof(COM_ParseExt(text, qfalse));
+		mod->scale[1] = atof(COM_ParseExt(text, qfalse));
+	} else if (!Q_stricmp(token, "scroll")) {
+		mod->type = XBOX_NV2A_TCMOD_SCROLL;
+		mod->scroll[0] = atof(COM_ParseExt(text, qfalse));
+		mod->scroll[1] = atof(COM_ParseExt(text, qfalse));
+	} else if (!Q_stricmp(token, "stretch")) {
+		mod->type = XBOX_NV2A_TCMOD_STRETCH;
+		XboxShaderParseWave(text, &mod->wave);
+	} else if (!Q_stricmp(token, "transform")) {
+		mod->type = XBOX_NV2A_TCMOD_TRANSFORM;
+		mod->matrix[0][0] = atof(COM_ParseExt(text, qfalse));
+		mod->matrix[0][1] = atof(COM_ParseExt(text, qfalse));
+		mod->matrix[1][0] = atof(COM_ParseExt(text, qfalse));
+		mod->matrix[1][1] = atof(COM_ParseExt(text, qfalse));
+## CONTEUDO code\renderernv2a\xbox_nv2a_sky.c
+/* Sky box and cloud layers for the NV2A renderer, following ioq3 tr_sky.c. */
+#include "xbox_nv2a.h"
+#include "../renderercommon/tr_common.h"
+
+#include <math.h>
+
+#define XBOX_SKY_HALF (XBOX_NV2A_SKY_SUBDIVISIONS / 2)
+#define XBOX_SKY_ON_EPSILON 0.1f
+#define XBOX_SKY_MAX_CLIP_VERTS 64
+/* ioq3 R_InitSkyTexCoords: a 4096-unit world sphere, built while zFar is 1024. */
+#define XBOX_SKY_RADIUS_WORLD 4096.0
+#define XBOX_SKY_TABLE_BOX_SIZE (1024.0f / 1.75f)
+
+enum { XBOX_SKY_FRONT, XBOX_SKY_BACK, XBOX_SKY_ON };
+
+/* ioq3 sky_clip: the planes through the box edges that split a polygon between sides. */
+static const vec3_t xboxSkyClip[6] = {
+	{1, 1, 0}, {1, -1, 0}, {0, -1, 1}, {0, 1, 1}, {1, 0, 1}, {-1, 0, 1}
+};
+
+static float xboxSkyCloudHeight;
+static float xboxSkyCloudTexCoords[XBOX_NV2A_SKY_SIDES][XBOX_NV2A_SKY_SUBDIVISIONS + 1]
+	[XBOX_NV2A_SKY_SUBDIVISIONS + 1][2];
+
+void XboxNV2ASky_Clear(xboxNV2ASkyBounds_t *bounds)
+{
+	int i;
+
+	for (i = 0; i < XBOX_NV2A_SKY_SIDES; ++i) {
+		bounds->mins[0][i] = bounds->mins[1][i] = 9999.0f;
+		bounds->maxs[0][i] = bounds->maxs[1][i] = -9999.0f;
+	}
+}
+
+/* ioq3 AddSkyPolygon: grows the (s, t) range of the side the polygon faces. */
+static void XboxSkyAddPolygon(xboxNV2ASkyBounds_t *bounds, int count, vec3_t *points)
+{
+	/* s = [0]/[2], t = [1]/[2]; a negative entry negates that component. */
+	static const int vecToSt[6][3] = {
+		{-2, 3, 1}, {2, 3, -1}, {1, 3, 2}, {-1, 3, -2}, {-2, -1, 3}, {-2, 1, -3}
+	};
+	vec3_t v, av;
+	int axis, i, j;
+
+	VectorClear(v);
+	for (i = 0; i < count; ++i)
+		VectorAdd(points[i], v, v);
+	av[0] = fabsf(v[0]);
+	av[1] = fabsf(v[1]);
+	av[2] = fabsf(v[2]);
+	if (av[0] > av[1] && av[0] > av[2])
+		axis = v[0] < 0 ? 1 : 0;
+	else if (av[1] > av[2] && av[1] > av[0])
+		axis = v[1] < 0 ? 3 : 2;
+	else
+		axis = v[2] < 0 ? 5 : 4;
+
+	for (i = 0; i < count; ++i) {
+		float dv, s, t;
+
+		j = vecToSt[axis][2];
+		dv = j > 0 ? points[i][j - 1] : -points[i][-j - 1];
+		if (dv < 0.001f)
+			continue;
+		j = vecToSt[axis][0];
+		s = (j < 0 ? -points[i][-j - 1] : points[i][j - 1]) / dv;
+		j = vecToSt[axis][1];
+		t = (j < 0 ? -points[i][-j - 1] : points[i][j - 1]) / dv;
+		if (s < bounds->mins[0][axis])
+			bounds->mins[0][axis] = s;
+		if (t < bounds->mins[1][axis])
+			bounds->mins[1][axis] = t;
+		if (s > bounds->maxs[0][axis])
+			bounds->maxs[0][axis] = s;
+		if (t > bounds->maxs[1][axis])
+			bounds->maxs[1][axis] = t;
+	}
+}
+
+/* ioq3 ClipSkyPolygon; points needs one spare slot, as the first point is copied past the last. */
+static void XboxSkyClipPolygon(xboxNV2ASkyBounds_t *bounds, int count, vec3_t *points,
+	int stage)
+{
+	float dists[XBOX_SKY_MAX_CLIP_VERTS];
+	int sides[XBOX_SKY_MAX_CLIP_VERTS];
+	vec3_t newPoints[2][XBOX_SKY_MAX_CLIP_VERTS];
+	int newCount[2];
+	qboolean front = qfalse, back = qfalse;
+	const float *normal;
+	int i, j;
+
+	if (count > XBOX_SKY_MAX_CLIP_VERTS - 2)
+		ri.Error(ERR_DROP, "ClipSkyPolygon: MAX_CLIP_VERTS");
+	if (stage == 6) {
+		XboxSkyAddPolygon(bounds, count, points);
+		return;
+	}
+	normal = xboxSkyClip[stage];
+	for (i = 0; i < count; ++i) {
+		float d = DotProduct(points[i], normal);
+
+		if (d > XBOX_SKY_ON_EPSILON) {
+			front = qtrue;
+			sides[i] = XBOX_SKY_FRONT;
+		} else if (d < -XBOX_SKY_ON_EPSILON) {
+			back = qtrue;
+			sides[i] = XBOX_SKY_BACK;
+		} else {
+			sides[i] = XBOX_SKY_ON;
+		}
+		dists[i] = d;
+	}
+	if (!front || !back) {
+		XboxSkyClipPolygon(bounds, count, points, stage + 1);
+		return;
+	}
+
+	sides[i] = sides[0];
+	dists[i] = dists[0];
+	VectorCopy(points[0], points[i]);
+	newCount[0] = newCount[1] = 0;
+	for (i = 0; i < count; ++i) {
+		float d;
+
+		/* VectorCopy is a macro that evaluates its destination three times. */
+		if (sides[i] != XBOX_SKY_BACK) {
+			VectorCopy(points[i], newPoints[0][newCount[0]]);
+			newCount[0]++;
+		}
+		if (sides[i] != XBOX_SKY_FRONT) {
+			VectorCopy(points[i], newPoints[1][newCount[1]]);
+			newCount[1]++;
+		}
+		if (sides[i] == XBOX_SKY_ON || sides[i + 1] == XBOX_SKY_ON || sides[i + 1] == sides[i])
+			continue;
+		d = dists[i] / (dists[i] - dists[i + 1]);
+		for (j = 0; j < 3; ++j) {
+			float e = points[i][j] + d * (points[i + 1][j] - points[i][j]);
+
+			newPoints[0][newCount[0]][j] = e;
+			newPoints[1][newCount[1]][j] = e;
+		}
+		newCount[0]++;
+		newCount[1]++;
+	}
+	XboxSkyClipPolygon(bounds, newCount[0], newPoints[0], stage + 1);
+	XboxSkyClipPolygon(bounds, newCount[1], newPoints[1], stage + 1);
+}
+
+/* ioq3 RB_ClipSkyPolygons for one sky surface. */
+void XboxNV2ASky_AddSurface(xboxNV2ASkyBounds_t *bounds,
+	const xboxNV2AWorldSurface_t *surface, const vec3_t origin)
+{
+	vec3_t points[5];
+	int i, j;
+
+	for (i = 0; i + 2 < surface->numIndexes; i += 3) {
+		for (j = 0; j < 3; ++j)
+			VectorSubtract(surface->verts[surface->indexes[i + j]].xyz, origin, points[j]);
+		XboxSkyClipPolygon(bounds, 3, points, 0);
+	}
+}
+
+/* ioq3 MakeSkyVec: s and t run from -1 to 1 across the side; st is clamped to [0, 1]. */
+static void XboxSkyMakeVec(float s, float t, int axis, float boxSize, float *st, vec3_t xyz)
+{
+	/* 1 = s, 2 = t, 3 = boxSize; a negative entry negates that component. */
+	static const int stToVec[6][3] = {
+		{3, -1, 2}, {-3, 1, 2}, {1, 3, 2}, {-1, -3, 2}, {-2, -1, 3}, {2, -1, -3}
+	};
+	vec3_t b;
+	int j;
+
+	b[0] = s * boxSize;
+	b[1] = t * boxSize;
+	b[2] = boxSize;
+	for (j = 0; j < 3; ++j) {
+		int k = stToVec[axis][j];
+
+		xyz[j] = k < 0 ? -b[-k - 1] : b[k - 1];
+	}
+	if (st) {
+		st[0] = Com_Clamp(0.0f, 1.0f, (s + 1.0f) * 0.5f);
+		st[1] = 1.0f - Com_Clamp(0.0f, 1.0f, (t + 1.0f) * 0.5f);
+	}
+}
+
+/* ioq3 R_InitSkyTexCoords, with p's squared terms collected and evaluated in double. */
+static void XboxSkyInitCloudTexCoords(float cloudHeight)
+{
+	const double radius = XBOX_SKY_RADIUS_WORLD;
+	const double height = cloudHeight;
+	int i, s, t;
+
+	for (i = 0; i < XBOX_NV2A_SKY_SIDES; ++i) {
+		for (t = 0; t <= XBOX_NV2A_SKY_SUBDIVISIONS; ++t) {
+			for (s = 0; s <= XBOX_NV2A_SKY_SUBDIVISIONS; ++s) {
+				vec3_t skyVec, v;
+				double d, p;
+
+				XboxSkyMakeVec((s - XBOX_SKY_HALF) / (float)XBOX_SKY_HALF,
+					(t - XBOX_SKY_HALF) / (float)XBOX_SKY_HALF, i, XBOX_SKY_TABLE_BOX_SIZE,
+					NULL, skyVec);
+				/* p puts p * skyVec on the cloud sphere, radius + height from its centre. */
+				d = DotProduct(skyVec, skyVec);
+				p = (-skyVec[2] * radius + sqrt(skyVec[2] * skyVec[2] * radius * radius +
+					d * height * (2.0 * radius + height))) / d;
+				VectorScale(skyVec, (float)p, v);
+				v[2] += (float)radius;
+				VectorNormalize(v);
+				xboxSkyCloudTexCoords[i][t][s][0] = acosf(Com_Clamp(-1.0f, 1.0f, v[0]));
+				xboxSkyCloudTexCoords[i][t][s][1] = acosf(Com_Clamp(-1.0f, 1.0f, v[1]));
+			}
+		}
+	}
+	xboxSkyCloudHeight = cloudHeight;
+}
+
+/* ioq3 DrawSkyBox/FillCloudBox: the covered part of a side, in whole subdivisions. */
+static qboolean XboxSkySideRange(const xboxNV2ASkyBounds_t *bounds, int side, int mins[2],
+	int maxs[2])
+{
+	int k;
+
+	for (k = 0; k < 2; ++k) {
+		float low = floorf(bounds->mins[k][side] * XBOX_SKY_HALF) / XBOX_SKY_HALF;
+		float high = ceilf(bounds->maxs[k][side] * XBOX_SKY_HALF) / XBOX_SKY_HALF;
+
+		if (low >= high)
+			return qfalse;
+		mins[k] = (int)(low * XBOX_SKY_HALF);
+		maxs[k] = (int)(high * XBOX_SKY_HALF);
+		if (mins[k] < -XBOX_SKY_HALF)
+			mins[k] = -XBOX_SKY_HALF;
+		else if (mins[k] > XBOX_SKY_HALF)
+			mins[k] = XBOX_SKY_HALF;
+		if (maxs[k] < -XBOX_SKY_HALF)
+			maxs[k] = -XBOX_SKY_HALF;
+		else if (maxs[k] > XBOX_SKY_HALF)
+			maxs[k] = XBOX_SKY_HALF;
+	}
+	return qtrue;
+}
+
+/* Appends one side's grid, two triangles per cell in ioq3 FillCloudySkySide order. */
+static int XboxSkyAddGrid(const int mins[2], const int maxs[2], int side, float boxSize,
+	qboolean clouds, int firstVert, float (*xyz)[3], float (*st)[2],
+	unsigned short *indexes, int *numIndexes)
+{
+	int width = maxs[0] - mins[0] + 1;
+	int height = maxs[1] - mins[1] + 1;
+	int v = firstVert;
+	int s, t;
+
+	if (width < 2 || height < 2)
+		return 0;
+	for (t = mins[1]; t <= maxs[1]; ++t) {
+		for (s = mins[0]; s <= maxs[0]; ++s, ++v) {
+			XboxSkyMakeVec(s / (float)XBOX_SKY_HALF, t / (float)XBOX_SKY_HALF, side, boxSize,
+				clouds ? NULL : st[v], xyz[v]);
+			if (clouds) {
+				st[v][0] = xboxSkyCloudTexCoords[side][t + XBOX_SKY_HALF][s + XBOX_SKY_HALF][0];
+				st[v][1] = xboxSkyCloudTexCoords[side][t + XBOX_SKY_HALF][s + XBOX_SKY_HALF][1];
+			}
+		}
+	}
+	for (t = 0; t < height - 1; ++t) {
+		for (s = 0; s < width - 1; ++s) {
+			int corner = firstVert + t * width + s;
+
+			indexes[(*numIndexes)++] = (unsigned short)corner;
+			indexes[(*numIndexes)++] = (unsigned short)(corner + width);
+			indexes[(*numIndexes)++] = (unsigned short)(corner + 1);
+			indexes[(*numIndexes)++] = (unsigned short)(corner + width);
+			indexes[(*numIndexes)++] = (unsigned short)(corner + width + 1);
+			indexes[(*numIndexes)++] = (unsigned short)(corner + 1);
+		}
+	}
+	return width * height;
+}
+
+int XboxNV2ASky_BoxSide(const xboxNV2ASkyBounds_t *bounds, int side, float boxSize,
+	float (*xyz)[3], float (*st)[2], unsigned short *indexes, int *numIndexes)
+{
+	int mins[2], maxs[2];
+
+	*numIndexes = 0;
+	if (!XboxSkySideRange(bounds, side, mins, maxs))
+		return 0;
+	return XboxSkyAddGrid(mins, maxs, side, boxSize, qfalse, 0, xyz, st, indexes,
+		numIndexes);
+}
+
+/* ioq3 R_BuildCloudData: every side except the bottom, one vertex set for all stages. */
+int XboxNV2ASky_Clouds(const xboxNV2ASkyBounds_t *bounds, float cloudHeight,
+	float boxSize, float (*xyz)[3], float (*st)[2], unsigned short *indexes,
+	int *numIndexes)
+{
+	int mins[2], maxs[2];
+	int numVerts = 0;
+	int side;
+
+	*numIndexes = 0;
+	if (cloudHeight <= 0.0f)
+		return 0;
+	if (cloudHeight != xboxSkyCloudHeight)
+		XboxSkyInitCloudTexCoords(cloudHeight);
+	for (side = 0; side < XBOX_NV2A_SKY_SIDES - 1; ++side) {
+		if (XboxSkySideRange(bounds, side, mins, maxs))
+			numVerts += XboxSkyAddGrid(mins, maxs, side, boxSize, qtrue, numVerts, xyz, st,
+				indexes, numIndexes);
+	}
+	return numVerts;
+}
+## CONTEUDO code\renderernv2a\xbox_nv2a_world.c
+/* Q3 BSP world for the NV2A renderer, following ioq3 tr_bsp.c, tr_world.c and tr_light.c. */
+#include "xbox_nv2a.h"
+#include "../qcommon/qcommon.h"
+#include "../renderercommon/tr_common.h"
+#include "../sys/sys_xbox.h"
+
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* ioq3 r_mapOverBrightBits 2 with tr.overbrightBits 0, as without hardware gamma. */
+#define XBOX_WORLD_LIGHT_SHIFT 2
+/* Equal Bezier steps on every 3x3 patch section keep shared patch edges crack-free. */
+#define XBOX_WORLD_PATCH_STEPS 4
+/* ioq3 R_CullSurface epsilon for face plane culling. */
+#define XBOX_WORLD_FACE_CULL_EPSILON 8.0f
+#define XBOX_WORLD_MAX_LIGHTMAPS 256
+#define XBOX_WORLD_DEFAULT_ZFAR 2048.0f
+#define XBOX_WORLD_MIN_ZFAR 64.0f
+/* ioq3 r_ambientScale and r_directedScale defaults. */
+#define XBOX_WORLD_AMBIENT_SCALE 0.6f
+#define XBOX_WORLD_DIRECTED_SCALE 1.0f
+/* ioq3 tr_marks.c MAX_VERTS_ON_POLY and its 64-surface list. */
+#define XBOX_WORLD_MARK_VERTS 64
+#define XBOX_WORLD_MARK_SURFACES 64
+
+enum { XBOX_WORLD_FRONT, XBOX_WORLD_BACK, XBOX_WORLD_ON };
+
+/* ioq3 mnode_t: contents is -1 for decision nodes and 0 for leafs. */
+typedef struct xboxWorldNode_s {
+	int contents;
+	int visFrame;
+	vec3_t mins;
+	vec3_t maxs;
+	struct xboxWorldNode_s *parent;
+	cplane_t *plane;
+	struct xboxWorldNode_s *children[2];
+	int cluster;
+	int area;
+	int firstMark;
+	int numMarks;
+} xboxWorldNode_t;
+
+typedef struct {
+	vec3_t bounds[2];
+	int firstSurface;
+	int numSurfaces;
+} xboxWorldModel_t;
+
+/* Arrays live on the hunk, which the client clears after the renderer shuts down. */
+typedef struct {
+	qboolean loaded;
+	char name[MAX_QPATH];
+	cplane_t *planes;
+	int numPlanes;
+	xboxWorldNode_t *nodes;
+	int numNodes;
+	int numDecisionNodes;
+	int *marks;
+	int numMarks;
+	xboxNV2AWorldSurface_t *surfaces;
+	int numSurfaces;
+	xboxWorldModel_t *models;
+	int numModels;
+	int numClusters;
+	qboolean vised;
+	byte *lightGrid;
+	vec3_t gridOrigin;
+	vec3_t gridSize;
+	vec3_t gridInverseSize;
+	int gridBounds[3];
+	char *entityString;
+	char *entityParse;
+	int lightmaps[XBOX_WORLD_MAX_LIGHTMAPS];
+	int numLightmaps;
+	xboxNV2AFog_t *fogs;
+	int numFogs;
+	vec3_t sunDirection;
+	int visCount;
+	int viewCount;
+	cplane_t frustum[4];
+	vec3_t visBounds[2];
+	/* Scene dlights, with origins in the space of the surfaces being added. */
+	const xboxNV2ADlight_t *dlights;
+	int numDlights;
+	vec3_t dlightOrigins[XBOX_NV2A_MAX_DLIGHTS];
+} xboxWorld_t;
+
+static xboxWorld_t xboxWorld;
+
+/* The BSP is read one lump at a time, so no step holds the whole file in hunk temp memory. */
+typedef struct {
+	fileHandle_t file;
+	int length;
+	int position;
+	dheader_t header;
+	/* Lowest Hunk_MemoryRemaining seen during the load, for the budget log. */
+	int lowestFree;
+} xboxWorldStream_t;
+
+/* dsurface_t fields still needed after the drawverts and surfaces lumps are freed. */
+typedef struct {
+	qboolean parsed;
+	int shaderNum;
+	int lightmapNum;
+	int fogNum;
+	int firstIndex;
+} xboxWorldPending_t;
+
+static xboxWorldStream_t xboxWorldStream;
+static xboxWorldPending_t *xboxWorldPending;
+/* The shader and fog lumps, copied to the heap for the shader registration. */
+static byte *xboxWorldLists;
+
+/* XboxNV2AWorld_Free runs this too; the renderer shutdown after an ERR_DROP reaches it. */
+static void XboxWorldEndLoad(void)
+{
+	if (xboxWorldStream.file)
+		FS_FCloseFile(xboxWorldStream.file);
+	xboxWorldStream.file = 0;
+	free(xboxWorldPending);
+	xboxWorldPending = NULL;
+	free(xboxWorldLists);
+	xboxWorldLists = NULL;
+}
+
+static void XboxWorldNoteFree(void)
+{
+	int remaining = Hunk_MemoryRemaining();
+
+	if (remaining < xboxWorldStream.lowestFree)
+		xboxWorldStream.lowestFree = remaining;
+}
+
+/* Returns the element count of a lump that fits the file and holds whole elements. */
+static int XboxWorldLumpCount(int lump, int elementSize)
+{
+	const lump_t *l = &xboxWorldStream.header.lumps[lump];
+
+	if (l->fileofs < 0 || l->filelen < 0 || l->fileofs > xboxWorldStream.length ||
+		l->filelen > xboxWorldStream.length - l->fileofs || l->filelen % elementSize)
+		ri.Error(ERR_DROP, "RE_LoadWorldMap: lump %d is corrupt in %s", lump,
+			xboxWorld.name);
+	return l->filelen / elementSize;
+}
+
+/* A pk3 FS_SEEK_SET inflates again from the file start, so forward moves skip from here. */
+static void XboxWorldRead(int offset, void *buffer, int bytes)
+{
+	xboxWorldStream_t *stream = &xboxWorldStream;
+
+	if (offset > stream->position)
+		FS_Seek(stream->file, offset - stream->position, FS_SEEK_CUR);
+	else if (offset < stream->position)
+		FS_Seek(stream->file, offset, FS_SEEK_SET);
+	stream->position = offset;
+	if (bytes > 0 && FS_Read(buffer, bytes, stream->file) != bytes)
+		ri.Error(ERR_DROP, "RE_LoadWorldMap: short read in %s", xboxWorld.name);
+	stream->position += bytes;
+}
+
+/* Hunk temp memory is a stack: free lumps in the reverse order of reading. */
+static void *XboxWorldReadLump(int lump, int elementSize, int *count)
+{
+	const lump_t *l = &xboxWorldStream.header.lumps[lump];
+	void *data;
+
+	*count = XboxWorldLumpCount(lump, elementSize);
+	data = ri.Hunk_AllocateTempMemory(l->filelen);
+	XboxWorldRead(l->fileofs, data, l->filelen);
+	XboxWorldNoteFree();
+	return data;
+}
+
+static void XboxWorldFreeLump(void *data)
+{
+	XboxWorldNoteFree();
+	ri.Hunk_FreeTempMemory(data);
+}
+
+/* ioq3 R_ColorShiftLightingBytes: scale up, then normalise by the brightest channel. */
+static void XboxWorldShiftColor(const byte *in, byte *out)
+{
+	int r = in[0] << XBOX_WORLD_LIGHT_SHIFT;
+	int g = in[1] << XBOX_WORLD_LIGHT_SHIFT;
+	int b = in[2] << XBOX_WORLD_LIGHT_SHIFT;
+
+	if ((r | g | b) > 255) {
+		int max = r > g ? r : g;
+
+		max = max > b ? max : b;
+		r = r * 255 / max;
+		g = g * 255 / max;
+		b = b * 255 / max;
+	}
+	out[0] = (byte)r;
+	out[1] = (byte)g;
+	out[2] = (byte)b;
+}
+
+static void XboxWorldCopyVert(const drawVert_t *in, xboxNV2AWorldVert_t *out)
+{
+	VectorCopy(in->xyz, out->xyz);
+	out->st[0] = in->st[0];
+	out->st[1] = in->st[1];
+	out->lightSt[0] = in->lightmap[0];
+	out->lightSt[1] = in->lightmap[1];
+	VectorCopy(in->normal, out->normal);
+	XboxWorldShiftColor(in->color, out->color);
+	out->color[3] = in->color[3];
+}
+
+static void XboxWorldSurfaceBounds(xboxNV2AWorldSurface_t *surface)
+{
+	int i;
+
+	ClearBounds(surface->bounds[0], surface->bounds[1]);
+	for (i = 0; i < surface->numVerts; ++i)
+		AddPointToBounds(surface->verts[i].xyz, surface->bounds[0], surface->bounds[1]);
+}
+
+/* Reads one lightmap at a time, so the lump is never in memory whole. */
+static void XboxWorldLoadLightmaps(void)
+{
+	const int lightmapBytes = LIGHTMAP_WIDTH * LIGHTMAP_HEIGHT * 3;
+	const lump_t *l = &xboxWorldStream.header.lumps[LUMP_LIGHTMAPS];
+	byte *source;
+	byte *rgba;
+	int count, i, j;
+
+	count = XboxWorldLumpCount(LUMP_LIGHTMAPS, 1) / lightmapBytes;
+	if (count > XBOX_WORLD_MAX_LIGHTMAPS) {
+		Sys_XboxLog("Xbox world: %d lightmaps, only %d kept\n", count,
+			XBOX_WORLD_MAX_LIGHTMAPS);
+		count = XBOX_WORLD_MAX_LIGHTMAPS;
+	}
+	if (!count)
+		return;
+	source = (byte *)ri.Hunk_AllocateTempMemory(lightmapBytes);
+	rgba = (byte *)ri.Hunk_AllocateTempMemory(LIGHTMAP_WIDTH * LIGHTMAP_HEIGHT * 4);
+	for (i = 0; i < count; ++i) {
+		char name[MAX_QPATH];
+
+		XboxWorldRead(l->fileofs + i * lightmapBytes, source, lightmapBytes);
+		for (j = 0; j < LIGHTMAP_WIDTH * LIGHTMAP_HEIGHT; ++j) {
+			XboxWorldShiftColor(source + j * 3, rgba + j * 4);
+			rgba[j * 4 + 3] = 255;
+		}
+		Com_sprintf(name, sizeof(name), "*lightmap%d", i);
+		/* R5G6B5 like the textures: half the pool of the old 32-bit lightmaps, some banding. */
+		xboxWorld.lightmaps[i] = XboxNV2A_CreateImage(name, LIGHTMAP_WIDTH,
+			LIGHTMAP_HEIGHT, rgba, XBOX_NV2A_IMAGE_16BIT, qfalse);
+	}
+	XboxWorldFreeLump(rgba);
+	XboxWorldFreeLump(source);
+	xboxWorld.numLightmaps = count;
+}
+
+static void XboxWorldLoadPlanes(const dplane_t *in, int count)
+{
+	int i;
+
+	xboxWorld.numPlanes = count;
+	xboxWorld.planes = (cplane_t *)ri.Hunk_Alloc(count * sizeof(cplane_t), h_low);
+	for (i = 0; i < count; ++i) {
+		cplane_t *out = &xboxWorld.planes[i];
+
+		VectorCopy(in[i].normal, out->normal);
+		out->dist = in[i].dist;
+		out->type = PlaneTypeForNormal(out->normal);
+		SetPlaneSignbits(out);
+	}
+}
+
+/* ioq3 R_LoadFogs geometry: fog 0 means none; the bounds come from the brush's six axial sides. */
+static void XboxWorldLoadFogVolumes(const dfog_t *fogs, int count, const dbrush_t *brushes,
+	int numBrushes, const dbrushside_t *sides, int numSides)
+{
+	int i, k;
+
+	xboxWorld.numFogs = count + 1;
+	xboxWorld.fogs = (xboxNV2AFog_t *)ri.Hunk_Alloc(xboxWorld.numFogs *
+		sizeof(*xboxWorld.fogs), h_low);
+	for (i = 0; i < count; ++i) {
+		xboxNV2AFog_t *out = &xboxWorld.fogs[i + 1];
+		const dbrush_t *brush;
+		int firstSide, side;
+
+		if (fogs[i].brushNum < 0 || fogs[i].brushNum >= numBrushes)
+			ri.Error(ERR_DROP, "fog brushNumber out of range");
+		brush = &brushes[fogs[i].brushNum];
+		firstSide = brush->firstSide;
+		if (firstSide < 0 || firstSide > numSides - 6)
+			ri.Error(ERR_DROP, "fog brush sideNumber out of range");
+		/* Brush sides start with the axial ones: -x, +x, -y, +y, -z, +z. */
+		for (k = 0; k < 6; ++k) {
+			if (sides[firstSide + k].planeNum < 0 ||
+				sides[firstSide + k].planeNum >= xboxWorld.numPlanes)
+				ri.Error(ERR_DROP, "fog brush plane out of range");
+		}
+		for (k = 0; k < 3; ++k) {
+			out->bounds[0][k] = -xboxWorld.planes[sides[firstSide + k * 2].planeNum].dist;
+			out->bounds[1][k] = xboxWorld.planes[sides[firstSide + k * 2 + 1].planeNum].dist;
+		}
+		/* The visible side's plane, turned to face into the fog. */
+		side = fogs[i].visibleSide;
+		if (side < 0 || firstSide + side >= numSides || sides[firstSide + side].planeNum < 0 ||
+			sides[firstSide + side].planeNum >= xboxWorld.numPlanes) {
+			out->hasSurface = qfalse;
+		} else {
+			const cplane_t *plane = &xboxWorld.planes[sides[firstSide + side].planeNum];
+
+			out->hasSurface = qtrue;
+			VectorNegate(plane->normal, out->surface);
+			out->surface[3] = -plane->dist;
+		}
+	}
+}
+
+/* ioq3 R_LoadFogs colour and depth, from the fog shader's fogParms. */
+static void XboxWorldRegisterFogs(const dfog_t *fogs, int count)
+{
+	int i, k;
+
+	for (i = 0; i < count; ++i) {
+		xboxNV2AFog_t *out = &xboxWorld.fogs[i + 1];
+		char name[MAX_QPATH];
+		vec3_t color;
+		float depth;
+
+		Q_strncpyz(name, fogs[i].shader, sizeof(name));
+		XboxNV2A_ShaderFogParms(XboxNV2AShader_RegisterWorld(name, XBOX_NV2A_SHADER_VERTEX),
+			color, &depth);
+		for (k = 0; k < 3; ++k)
+			out->color[k] = (byte)(255 * Com_Clamp(0.0f, 1.0f, color[k]));
+		out->color[3] = 255;
+		out->tcScale = 1.0f / ((depth < 1.0f ? 1.0f : depth) * 8);
+	}
+}
+
+/* Copies a planar face's or triangle soup's vertices; the indexes come with the drawindexes lump. */
+static qboolean XboxWorldParseTriangles(const dsurface_t *ds, const drawVert_t *verts,
+	int numVerts, int numIndexes, xboxNV2AWorldSurface_t *surface)
+{
+	int i;
+
+	if (ds->firstVert < 0 || ds->numVerts <= 0 || ds->firstVert > numVerts ||
+		ds->numVerts > numVerts - ds->firstVert || ds->firstIndex < 0 ||
+		ds->numIndexes <= 0 || ds->numIndexes % 3 || ds->firstIndex > numIndexes ||
+		ds->numIndexes > numIndexes - ds->firstIndex ||
+		ds->numVerts > XBOX_NV2A_TESS_VERTS || ds->numIndexes > XBOX_NV2A_TESS_INDEXES)
+		return qfalse;
+	surface->numVerts = ds->numVerts;
+	surface->numIndexes = ds->numIndexes;
+	surface->verts = (xboxNV2AWorldVert_t *)ri.Hunk_Alloc(surface->numVerts *
+		sizeof(*surface->verts), h_low);
+	surface->indexes = (unsigned short *)ri.Hunk_Alloc(surface->numIndexes *
+		sizeof(*surface->indexes), h_low);
+	for (i = 0; i < surface->numVerts; ++i)
+		XboxWorldCopyVert(&verts[ds->firstVert + i], &surface->verts[i]);
+	XboxWorldSurfaceBounds(surface);
+	return qtrue;
+}
+
+/* Quadratic Bezier through points[0], points[stride] and points[2 * stride]. */
+static void XboxWorldBezier(const xboxNV2AWorldVert_t *points, int stride, float t,
+	xboxNV2AWorldVert_t *out)
+{
+	const xboxNV2AWorldVert_t *a = &points[0];
+	const xboxNV2AWorldVert_t *b = &points[stride];
+	const xboxNV2AWorldVert_t *c = &points[stride * 2];
+	float wa = (1.0f - t) * (1.0f - t);
+	float wb = 2.0f * t * (1.0f - t);
+	float wc = t * t;
+	int k;
+
+	for (k = 0; k < 3; ++k) {
+		out->xyz[k] = a->xyz[k] * wa + b->xyz[k] * wb + c->xyz[k] * wc;
+		out->normal[k] = a->normal[k] * wa + b->normal[k] * wb + c->normal[k] * wc;
+	}
+	for (k = 0; k < 2; ++k) {
+		out->st[k] = a->st[k] * wa + b->st[k] * wb + c->st[k] * wc;
+		out->lightSt[k] = a->lightSt[k] * wa + b->lightSt[k] * wb + c->lightSt[k] * wc;
+	}
+	for (k = 0; k < 4; ++k)
+		out->color[k] = (byte)(a->color[k] * wa + b->color[k] * wb + c->color[k] * wc + 0.5f);
+}
+
+/* Step index to (section, t): the last step of a row ends its last section at t = 1. */
+static float XboxWorldPatchParam(int step, int steps, int sections, int *section)
+{
+	*section = step / steps;
+	if (*section >= sections)
+		*section = sections - 1;
+	return (float)(step - *section * steps) / (float)steps;
+}
+
+/* Uniform tessellation instead of ioq3's error-driven R_SubdividePatchToGrid. */
+static qboolean XboxWorldParsePatch(const dsurface_t *ds, const drawVert_t *verts,
+	int numVerts, xboxNV2AWorldSurface_t *surface)
+## CONTEUDO code\renderernv2a\xbox_nv2a.c
+#include "xbox_nv2a.h"
+
+#include "../qcommon/qcommon.h"
+#include "../sys/sys_xbox.h"
+
+#include <hal/video.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <windows.h>
+#include <xboxkrnl/xboxkrnl.h>
+
+/* q_shared.h and xgux.h define the same MIN macro. */
+#undef MIN
+#include "../thirdparty/xgu/xgu.h"
+#include "../thirdparty/xgu/xgux.h"
+
+#ifndef XBOX_NV2A_DIAGNOSTICS
+#define XBOX_NV2A_DIAGNOSTICS 0
+#endif
+
+/* renderercommon/tr_noise.c; tr_common.h would pull SDL_opengl.h into this file. */
+float R_NoiseGet4f(float x, float y, float z, double t);
+void R_NoiseInit(void);
+
+/* 28 bytes; the colour is R, G, B, A bytes, read as NV097 UB_OGL like pbgl and nxdk-gles11. */
+typedef struct {
+	float position[3];
+	byte color[4];
+	float texcoord[2];
+	float texcoord1[2];
+} XboxNV2AColoredVertex;
+
+typedef struct {
+	char name[MAX_QPATH];
+	void *memory;
+	int width;
+	int height;
+	XguTexFormatColor format;
+	/* Mip levels stored one after another from memory; 0 counts as 1. */
+	int levels;
+} XboxNV2AImage;
+
+typedef struct {
+	char name[MAX_QPATH];
+	int flavor;
+	float sort;
+	int cull;
+	qboolean polygonOffset;
+	qboolean isSky;
+	int skyBox[XBOX_NV2A_SKY_SIDES];
+	float cloudHeight;
+	qboolean isFog;
+	vec3_t fogColor;
+	float fogDepth;
+	int fogPass;
+	float portalRange;
+	qboolean noDlight;
+	int numDeforms;
+	xboxNV2ADeform_t *deforms;
+	int numStages;
+	xboxNV2AStage_t *stages;
+	/* Stages 0 and 1 draw as one multitextured pass. */
+	qboolean collapsed;
+	/* One pass whose colours and texcoords are plain world vertex data. */
+	qboolean fastWorld;
+} XboxNV2AShader;
+
+/* ioq3 tess: one batch of CPU vertices with one shader, drawn once per stage. */
+typedef struct {
+	int shader;
+	int lightmap;
+	qboolean is3D;
+	/* The sky never writes depth; its z sits just in front of the cleared far value. */
+	qboolean isSky;
+	int fogIndex;
+	/* dlighted batches stay apart; dlightBits ORs the bits of the surfaces in it. */
+	qboolean dlighted;
+	unsigned int dlightBits;
+	int numVerts;
+	int numIndexes;
+	double shaderTime;
+	const refEntity_t *entity;
+	vec3_t viewOrigin;
+	vec3_t ambientLight;
+	vec3_t directedLight;
+	vec3_t lightDir;
+	float xyz[XBOX_NV2A_TESS_VERTS][3];
+	float normal[XBOX_NV2A_TESS_VERTS][3];
+	float st[XBOX_NV2A_TESS_VERTS][2];
+	float lightSt[XBOX_NV2A_TESS_VERTS][2];
+	byte color[XBOX_NV2A_TESS_VERTS][4];
+	unsigned short indexes[XBOX_NV2A_TESS_INDEXES];
+	float stageSt[XBOX_NV2A_TESS_VERTS][2];
+	/* Texture unit 1 coordinates of a collapsed second stage, when multitexture is set. */
+	float stageSt1[XBOX_NV2A_TESS_VERTS][2];
+	qboolean multitexture;
+	byte stageColor[XBOX_NV2A_TESS_VERTS][4];
+	/* Signed distances in front of the near plane and a portal view's clip plane. */
+	float nearDist[XBOX_NV2A_TESS_VERTS];
+	float portalDist[XBOX_NV2A_TESS_VERTS];
+	qboolean clip;
+	/* The triangles one dlight reaches, for its pass. */
+	unsigned short dlightIndexes[XBOX_NV2A_TESS_INDEXES];
+	/* Stream indexes of one draw; a clipped triangle can become three. */
+	unsigned short drawIndexes[3 * XBOX_NV2A_TESS_INDEXES];
+	/* fastWorld surfaces no plane cuts; they skip the arrays above and stream as they are. */
+	const xboxNV2AWorldSurface_t *fast[XBOX_NV2A_TESS_VERTS];
+	int numFast;
+	int fastVerts;
+	int fastIndexes;
+} XboxNV2ATess;
+
+/* ioq3 srfPoly_t; verts points into xboxNV2APolyVerts. */
+typedef struct {
+	int shader;
+	int numVerts;
+	const polyVert_t *verts;
+} XboxNV2APoly;
+
+/* One surface of the current scene; md3, world and poly are all NULL for a sprite, beam or rail. */
+typedef struct {
+	const md3Surface_t *md3;
+	const xboxNV2AWorldSurface_t *world;
+	const XboxNV2APoly *poly;
+	int entity;
+	int shader;
+	int lightmap;
+	int fogIndex;
+	qboolean dlighted;
+	float sort;
+	int order;
+} XboxNV2ADrawSurf;
+
+/* One visible sky shader of the current view and the box area its surfaces cover. */
+typedef struct {
+	int shader;
+	xboxNV2ASkyBounds_t bounds;
+} XboxNV2ASky;
+
+#ifdef MISSIONPACK
+/* A TA match on mpteam1 registered 568 images (429 stored, 139 skipped for pool space). */
+#define XBOX_NV2A_MAX_IMAGES 768
+#else
+#define XBOX_NV2A_MAX_IMAGES 512
+#endif
+/* cl_cin.c MAX_VIDEO_HANDLES; each handle's scratch texture follows the pool images. */
+#define XBOX_NV2A_MAX_CINEMATICS 16
+#define XBOX_NV2A_MAX_SHADERS 1024
+#define XBOX_NV2A_TEXTURE_POOL_BYTES (6u * 1024u * 1024u)
+#define XBOX_NV2A_TEXTURE_ALIGN 128u
+/* Highest physical address the xgu samples allow for GPU memory. */
+#define XBOX_NV2A_MAX_RAM 0x03FFAFFF
+#define XBOX_NV2A_TRIANGLE_VERTS 3
+/* Holds a full tess plus 5 clipped corners for each of its 2000 triangles, so one draw always fits. */
+#define XBOX_NV2A_MAX_VERTS 12288u
+#define XBOX_NV2A_VERTEX_UB_OGL ((XguVertexArrayType)NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_UB_OGL)
+#define XBOX_NV2A_CLEAR_COLOR 0xff101820
+#define XBOX_NV2A_ZMAX ((float)0xFFFFFF)
+/* Release pbkit does not check for overflow; restart well below its 512 KiB limit. */
+#define XBOX_NV2A_PUSH_LIMIT_DWORDS (96u * 1024u)
+#define XBOX_NV2A_STATE_DWORDS 64u
+/* CRTC scanout address; pbkit's ISR writes it with the buffer's address & 0x03FFFFFF. */
+#define XBOX_NV2A_PCRTC_START 0x00600800
+#define XBOX_NV2A_PHYSICAL_MASK 0x03FFFFFFu
+/* NV097_SET_TEXTURE_FILTER min/mag: TENT_LOD0 is GL_LINEAR, TENT_NEARESTLOD ioq3's default
+   GL_LINEAR_MIPMAP_NEAREST; the LOD clamps are 4.8 fixed point. */
+#define XBOX_NV2A_FILTER_LINEAR 2
+#define XBOX_NV2A_FILTER_MIPMAP 4
+#define XBOX_NV2A_MAX_LOD_CLAMP 4095
+/* ioq3 MAX_REFENTITIES: every smoke puff, explosion and trail is an entity too. */
+#define XBOX_NV2A_MAX_SCENE_ENTITIES MAX_REFENTITIES
+#define XBOX_NV2A_MAX_SCENE_SURFACES 4096
+/* ioq3 R_SetupEntityLighting falloff constants. */
+#define XBOX_NV2A_DLIGHT_AT_RADIUS 16.0f
+#define XBOX_NV2A_DLIGHT_MINIMUM_RADIUS 16.0f
+/* ioq3 r_znear default; RDF_NOWORLDMODEL scenes use a 2048 far plane. */
+#define XBOX_NV2A_ZNEAR 4.0f
+#define XBOX_NV2A_ZFAR 2048.0f
+#define XBOX_NV2A_FUNCTABLE_SIZE 1024
+#define XBOX_NV2A_FUNCTABLE_SIZE2 10
+#define XBOX_NV2A_FUNCTABLE_MASK (XBOX_NV2A_FUNCTABLE_SIZE - 1)
+/* q3dm10 shows two sky shaders; ioq3 draws each one it sees. */
+#define XBOX_NV2A_MAX_SKIES 4
+/* ioq3 MAX_POLYS and MAX_POLYVERTS, the r_maxpolys and r_maxpolyverts defaults. */
+#define XBOX_NV2A_MAX_POLYS 600
+#define XBOX_NV2A_MAX_POLYVERTS 3000
+/* ioq3 r_railWidth, r_railCoreWidth and r_railSegmentLength defaults. */
+#define XBOX_NV2A_RAIL_WIDTH 16
+#define XBOX_NV2A_RAIL_CORE_WIDTH 6
+#define XBOX_NV2A_RAIL_SEGMENT_LENGTH 32.0f
+#define XBOX_NV2A_BEAM_SEGS 6
+/* ioq3 r_offsetfactor and r_offsetunits; nxdk-gles11 and pbgl pass GL's values to the NV2A as-is. */
+#define XBOX_NV2A_POLYGON_OFFSET_FACTOR (-1.0f)
+#define XBOX_NV2A_POLYGON_OFFSET_UNITS (-2.0f)
+/* ioq3 FOG_S, FOG_T and FOG_TABLE_SIZE. */
+#define XBOX_NV2A_FOG_S 256
+#define XBOX_NV2A_FOG_T 32
+#define XBOX_NV2A_FOG_TABLE_SIZE 256
+/* ioq3 depthRange(1, 1) for the sky; 64 units stay above float rounding near 2^24. */
+#define XBOX_NV2A_SKY_DEPTH (XBOX_NV2A_ZMAX - 64.0f)
+/* A triangle clipped by the near and portal planes has at most 5 corners. */
+#define XBOX_NV2A_CLIP_VERTS 6
+/* ioq3 RF_DEPTHHACK glDepthRange(0, 0.3). */
+#define XBOX_NV2A_DEPTHHACK_RANGE 0.3f
+/* ioq3 DLIGHT_SIZE: the dlight falloff image is 16x16. */
+#define XBOX_NV2A_DLIGHT_SIZE 16
+
+static XboxNV2AColoredVertex xboxNV2ATriangle[XBOX_NV2A_TRIANGLE_VERTS] = {
+	{{0.0f, 0.0f, 1.0f}, {255, 20, 10, 255}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+	{{0.0f, 0.0f, 1.0f}, {20, 255, 41, 255}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+	{{0.0f, 0.0f, 1.0f}, {20, 61, 255, 255}, {0.0f, 0.0f}, {0.0f, 0.0f}},
+};
+
+/* Vertices stream into contiguous memory; the GPU reads them with DRAW_ARRAYS. */
+static XboxNV2AColoredVertex *xboxNV2AVertexMemory;
+static unsigned int xboxNV2AVertexUsed;
+static XboxNV2ATess xboxNV2ATess;
+static byte *xboxNV2ATexturePool;
+static size_t xboxNV2ATexturePoolUsed;
+static XboxNV2AImage xboxNV2AImages[XBOX_NV2A_MAX_IMAGES + XBOX_NV2A_MAX_CINEMATICS];
+static unsigned int xboxNV2AImageCount;
+static unsigned int xboxNV2ADxtImageCount;
+static unsigned int xboxNV2ADxt5ImageCount;
+static unsigned int xboxNV2ACollapsedCount;
+static XboxNV2AShader xboxNV2AShaders[XBOX_NV2A_MAX_SHADERS];
+static unsigned int xboxNV2AShaderCount;
+/* Unit 0 holds the stage image; unit 1 a collapsed second stage's image, or white. */
+static int xboxNV2ABoundImage[2];
+static qboolean xboxNV2ABoundClamp[2];
+static unsigned int xboxNV2ABoundSrcBlend;
+static unsigned int xboxNV2ABoundDstBlend;
+static int xboxNV2ABoundAlphaFunc;
+static int xboxNV2ABoundDepthTest;
+static int xboxNV2ABoundDepthWrite;
+static int xboxNV2ABoundDepthEqual;
+static int xboxNV2ABoundCull;
+static int xboxNV2ABoundPolygonOffset;
+static qboolean xboxNV2ATransformIdentity;
+/* w row of the active 3D transform minus znear: the near-plane distance of a vertex. */
+static float xboxNV2ANearPlane[4];
+static unsigned int xboxNV2APushedDwords;
+static XguMatrix4x4 xboxNV2AScreenMatrix;
+static int xboxNV2AWidth;
+static int xboxNV2AHeight;
+/* TV overscan: the frame is scaled into the xb_* rectangle; the engine still sees the full size. */
+static float xboxNV2AScreenScaleX = 1.0f;
+static float xboxNV2AScreenScaleY = 1.0f;
+static float xboxNV2AScreenX;
+static float xboxNV2AScreenY;
+static qboolean xboxNV2AInitialized;
+static qboolean xboxNV2AInFrame;
+static qboolean xboxNV2ADebugScreen;
+static float xboxNV2AColor[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+static float xboxNV2ASinTable[XBOX_NV2A_FUNCTABLE_SIZE];
+static float xboxNV2ASquareTable[XBOX_NV2A_FUNCTABLE_SIZE];
+static float xboxNV2ATriangleTable[XBOX_NV2A_FUNCTABLE_SIZE];
+static float xboxNV2ASawToothTable[XBOX_NV2A_FUNCTABLE_SIZE];
+static float xboxNV2AInverseSawToothTable[XBOX_NV2A_FUNCTABLE_SIZE];
+static refEntity_t xboxNV2ASceneEntities[XBOX_NV2A_MAX_SCENE_ENTITIES];
+static int xboxNV2ASceneEntityCount;
+static int xboxNV2ASceneFirstEntity;
+static xboxNV2ADlight_t xboxNV2ADlights[XBOX_NV2A_MAX_DLIGHTS];
+static int xboxNV2ADlightCount;
+static int xboxNV2ASceneFirstDlight;
+static XboxNV2ADrawSurf xboxNV2ADrawSurfs[XBOX_NV2A_MAX_SCENE_SURFACES];
+static int xboxNV2ADrawSurfCount;
+static qboolean xboxNV2ADrawSurfOverflow;
+static XboxNV2ASky xboxNV2ASkies[XBOX_NV2A_MAX_SKIES];
+static int xboxNV2ASkyCount;
+static vec3_t xboxNV2ASkyOrigin;
+/* ioq3 sky_texorder: box side i shows skyBox[order[i]]. */
+static const int xboxNV2ASkyTexOrder[XBOX_NV2A_SKY_SIDES] = {0, 2, 1, 3, 4, 5};
+static XboxNV2APoly xboxNV2APolys[XBOX_NV2A_MAX_POLYS];
+static polyVert_t xboxNV2APolyVerts[XBOX_NV2A_MAX_POLYVERTS];
+static int xboxNV2APolyCount;
+static int xboxNV2APolyVertCount;
+static int xboxNV2ASceneFirstPoly;
+static int xboxNV2AFogImage;
+static float xboxNV2AFogTable[XBOX_NV2A_FOG_TABLE_SIZE];
+static int xboxNV2ADlightImage;
+static cvar_t *xboxNV2AFastSky;
+static cvar_t *xboxNV2ADynamicLight;
+static cvar_t *xboxNV2AMultitexture;
+static cvar_t *xboxNV2ASwapInterval;
+static cvar_t *xboxNV2AFlickerFilter;
+static cvar_t *xboxNV2ASoftenFilter;
+static cvar_t *xboxNV2AXOffset;
+static cvar_t *xboxNV2AYOffset;
+static cvar_t *xboxNV2AXStretch;
+static cvar_t *xboxNV2AYStretch;
+/* pbkit vblank counts at which the last two queued flips show; pbkit shows one per vblank. */
+static DWORD xboxNV2AFlipShow[2];
+static unsigned int xboxNV2AFlipsQueued;
+/* The view being drawn: the scene's own, or a mirror/portal view drawn just before it. */
+static qboolean xboxNV2AViewIsPortal;
+static qboolean xboxNV2AViewIsMirror;
+static vec3_t xboxNV2AViewOrigin;
+static vec3_t xboxNV2AViewAxis[3];
+static int xboxNV2AViewTime;
+/* Portal clip plane in world space and in the active transform's space; n.p >= d stays. */
+static float xboxNV2APortalPlane[4];
+static float xboxNV2APortalPlaneLocal[4];
+
+static float XboxNV2AClamp01(float value)
+{
+	if (value <= 0.0f)
+		return 0.0f;
+	if (value >= 1.0f)
+		return 1.0f;
+	return value;
+}
+
+static qboolean XboxNV2AIsPowerOfTwo(int value)
+{
+	return value > 0 && (value & (value - 1)) == 0;
+}
+
+static unsigned int XboxNV2ALog2(int value)
+{
+	unsigned int shift = 0;
+
+	while ((1 << shift) < value)
+		++shift;
+	return shift;
+}
+
+static unsigned int XboxNV2ASwizzledOffset(unsigned int x, unsigned int y,
+	unsigned int width, unsigned int height)
+{
+	unsigned int offset = 0;
+	unsigned int outputBit = 0;
+	unsigned int bit;
+
+	for (bit = 1; bit < width || bit < height; bit <<= 1) {
+		if (bit < width)
+			offset |= ((x & bit) ? 1u : 0u) << outputBit++;
+		if (bit < height)
+			offset |= ((y & bit) ? 1u : 0u) << outputBit++;
+	}
+	return offset;
+}
+
+/* DIAGNOSTIC: frame/scene trace and GPU-wait timeout for hardware tests; remove after. */
+#define XBOX_NV2A_TRACE_FRAMES 3
+#define XBOX_NV2A_TRACE_SCENES 16
+#define XBOX_NV2A_HEARTBEAT_FRAMES 600
+#define XBOX_NV2A_GPU_TIMEOUT_MS 2000
+/* DIAGNOSTIC: the perf line counts frames longer than this (30 fps). */
+#define XBOX_NV2A_SLOW_FRAME_MS 33
+static unsigned int xboxNV2AFrameCount;
+static unsigned int xboxNV2ASceneCount;
+static int xboxNV2ALastSceneSignature = -1;
+static const char *xboxNV2ALastShaderName = "none";
+/* Bit per generated surface type already logged; bit 31 is the scene poly. */
+static unsigned int xboxNV2ATracedTypes;
+#define XBOX_NV2A_TRACE_POLY 31
+/* Deform types use bits 8 to 13. */
+#define XBOX_NV2A_TRACE_DEFORM 8
+#define XBOX_NV2A_TRACE_DEPTHHACK 14
+#define XBOX_NV2A_TRACE_DLIGHT 15
+
+/* DIAGNOSTIC: sums over one heartbeat for the hardware log; times in performance counter ticks. */
+typedef struct {
+	unsigned int frames;
+	unsigned int draws;
+	unsigned int verts;
+	unsigned int fastVerts;
+	unsigned int indexes;
+	unsigned int streamWraps;
+	unsigned int pushResets;
+	unsigned int slowFrames;
+	LONGLONG frameTicks;
+	LONGLONG maxFrameTicks;
+	LONGLONG sceneTicks;
+	LONGLONG vblankTicks;
+	LONGLONG endWaitTicks;
+	LONGLONG midWaitTicks;
+	LONGLONG lastBegin;
+	LONGLONG sceneStart;
+} XboxNV2APerfCounters;
+static XboxNV2APerfCounters xboxNV2APerf;
+
+static LONGLONG XboxNV2ATicks(void)
+{
+	LARGE_INTEGER now;
+
+	QueryPerformanceCounter(&now);
+	return now.QuadPart;
+}
+
+/* Returns the ticks spent waiting. */
+static LONGLONG XboxNV2AWaitIdle(const char *where)
+{
+	DWORD start = GetTickCount();
+	LONGLONG ticks = XboxNV2ATicks();
+
+	while (pb_busy()) {
+		if (GetTickCount() - start > XBOX_NV2A_GPU_TIMEOUT_MS)
+## CONTEUDO code\renderernv2a\xbox_nv2a.h
+#ifndef IOQUAKE3_XBOX_NV2A_H
+#define IOQUAKE3_XBOX_NV2A_H
+
+#include "../qcommon/q_shared.h"
+#include "../qcommon/qfiles.h"
+#include "../renderercommon/tr_public.h"
+
+/* Index 0 of both tables is "unresolved" and is never drawn. */
+#define XBOX_NV2A_WHITE_IMAGE 1
+#define XBOX_NV2A_WHITE_SHADER 1
+#define XBOX_NV2A_MAX_TEXTURE_SIZE 1024
+/* ioq3 r_picmip default: mipmapped images drop one size level. */
+#define XBOX_NV2A_PICMIP 1
+#define XBOX_NV2A_MAX_STAGES 8
+#define XBOX_NV2A_MAX_TEXMODS 4
+#define XBOX_NV2A_MAX_ANIM_IMAGES 8
+/* ioq3 MAX_SHADER_DEFORMS. */
+#define XBOX_NV2A_MAX_DEFORMS 3
+/* ioq3 MAX_DLIGHTS; a surface's dlightBits has one bit per scene dlight. */
+#define XBOX_NV2A_MAX_DLIGHTS 32
+/* Same per-surface limits as ioq3's tess (SHADER_MAX_VERTEXES/INDEXES). */
+#define XBOX_NV2A_TESS_VERTS 1000
+#define XBOX_NV2A_TESS_INDEXES (6 * XBOX_NV2A_TESS_VERTS)
+/* ioq3 SKY_SUBDIVISIONS; the cloud grid needs 5 * 81 tess vertices at most. */
+#define XBOX_NV2A_SKY_SUBDIVISIONS 8
+#define XBOX_NV2A_SKY_SIDES 6
+
+/* Shader scripts name blend factors with these GL values; xbox_nv2a.c maps them to xgu. */
+#define GL_ZERO 0x0000
+#define GL_ONE 0x0001
+#define GL_SRC_COLOR 0x0300
+#define GL_ONE_MINUS_SRC_COLOR 0x0301
+#define GL_SRC_ALPHA 0x0302
+#define GL_ONE_MINUS_SRC_ALPHA 0x0303
+#define GL_DST_ALPHA 0x0304
+#define GL_ONE_MINUS_DST_ALPHA 0x0305
+#define GL_DST_COLOR 0x0306
+#define GL_ONE_MINUS_DST_COLOR 0x0307
+#define GL_SRC_ALPHA_SATURATE 0x0308
+
+/* ioq3 shaderSort_t values. */
+#define XBOX_NV2A_SORT_PORTAL 1.0f
+#define XBOX_NV2A_SORT_ENVIRONMENT 2.0f
+#define XBOX_NV2A_SORT_OPAQUE 3.0f
+#define XBOX_NV2A_SORT_DECAL 4.0f
+#define XBOX_NV2A_SORT_SEE_THROUGH 5.0f
+#define XBOX_NV2A_SORT_BANNER 6.0f
+#define XBOX_NV2A_SORT_FOG 7.0f
+#define XBOX_NV2A_SORT_UNDERWATER 8.0f
+#define XBOX_NV2A_SORT_BLEND0 9.0f
+#define XBOX_NV2A_SORT_BLEND1 10.0f
+#define XBOX_NV2A_SORT_NEAREST 16.0f
+
+typedef enum {
+	XBOX_NV2A_ALPHA_NONE,
+	XBOX_NV2A_ALPHA_GT0,
+	XBOX_NV2A_ALPHA_LT128,
+	XBOX_NV2A_ALPHA_GE128
+} xboxNV2AAlphaFunc_t;
+
+typedef enum {
+	XBOX_NV2A_WAVE_SIN,
+	XBOX_NV2A_WAVE_TRIANGLE,
+	XBOX_NV2A_WAVE_SQUARE,
+	XBOX_NV2A_WAVE_SAWTOOTH,
+	XBOX_NV2A_WAVE_INVERSE_SAWTOOTH,
+	XBOX_NV2A_WAVE_NOISE
+} xboxNV2AWaveFunc_t;
+
+typedef struct {
+	int func;
+	float base;
+	float amplitude;
+	float phase;
+	float frequency;
+} xboxNV2AWave_t;
+
+typedef enum {
+	XBOX_NV2A_TCMOD_SCALE,
+	XBOX_NV2A_TCMOD_SCROLL,
+	XBOX_NV2A_TCMOD_TURB,
+	XBOX_NV2A_TCMOD_ROTATE,
+	XBOX_NV2A_TCMOD_STRETCH,
+	XBOX_NV2A_TCMOD_TRANSFORM,
+	XBOX_NV2A_TCMOD_ENTITY_TRANSLATE
+} xboxNV2ATexModType_t;
+
+typedef struct {
+	int type;
+	xboxNV2AWave_t wave;
+	float matrix[2][2];
+	float translate[2];
+	float scale[2];
+	float scroll[2];
+	float rotateSpeed;
+} xboxNV2ATexMod_t;
+
+/* ioq3 deform_t; text and projectionShadow are not supported. */
+typedef enum {
+	XBOX_NV2A_DEFORM_WAVE,
+	XBOX_NV2A_DEFORM_NORMALS,
+	XBOX_NV2A_DEFORM_BULGE,
+	XBOX_NV2A_DEFORM_MOVE,
+	XBOX_NV2A_DEFORM_AUTOSPRITE,
+	XBOX_NV2A_DEFORM_AUTOSPRITE2
+} xboxNV2ADeformType_t;
+
+/* ioq3 deformStage_t. */
+typedef struct {
+	int type;
+	xboxNV2AWave_t wave;
+	float spread;
+	vec3_t moveVector;
+	float bulgeWidth;
+	float bulgeHeight;
+	float bulgeSpeed;
+} xboxNV2ADeform_t;
+
+typedef enum {
+	XBOX_NV2A_RGBGEN_IDENTITY_LIGHTING,
+	XBOX_NV2A_RGBGEN_IDENTITY,
+	XBOX_NV2A_RGBGEN_VERTEX,
+	XBOX_NV2A_RGBGEN_EXACT_VERTEX,
+	XBOX_NV2A_RGBGEN_ONE_MINUS_VERTEX,
+	XBOX_NV2A_RGBGEN_WAVE,
+	XBOX_NV2A_RGBGEN_CONST,
+	XBOX_NV2A_RGBGEN_ENTITY,
+	XBOX_NV2A_RGBGEN_ONE_MINUS_ENTITY,
+	XBOX_NV2A_RGBGEN_LIGHTING_DIFFUSE
+} xboxNV2ARgbGen_t;
+
+typedef enum {
+	XBOX_NV2A_ALPHAGEN_IDENTITY,
+	XBOX_NV2A_ALPHAGEN_VERTEX,
+	XBOX_NV2A_ALPHAGEN_ONE_MINUS_VERTEX,
+	XBOX_NV2A_ALPHAGEN_WAVE,
+	XBOX_NV2A_ALPHAGEN_CONST,
+	XBOX_NV2A_ALPHAGEN_ENTITY,
+	XBOX_NV2A_ALPHAGEN_ONE_MINUS_ENTITY,
+	XBOX_NV2A_ALPHAGEN_PORTAL
+} xboxNV2AAlphaGen_t;
+
+/* ioq3 acff_t: how a blended stage fades its colours inside fog. */
+typedef enum {
+	XBOX_NV2A_ACFF_NONE,
+	XBOX_NV2A_ACFF_MODULATE_RGB,
+	XBOX_NV2A_ACFF_MODULATE_RGBA,
+	XBOX_NV2A_ACFF_MODULATE_ALPHA
+} xboxNV2AAdjustForFog_t;
+
+/* ioq3 fogPass_t: opaque shaders fog with depth equal, fog volumes with depth less-equal. */
+typedef enum {
+	XBOX_NV2A_FOGPASS_NONE,
+	XBOX_NV2A_FOGPASS_EQUAL,
+	XBOX_NV2A_FOGPASS_LE
+} xboxNV2AFogPass_t;
+
+typedef enum {
+	XBOX_NV2A_TCGEN_TEXTURE,
+	XBOX_NV2A_TCGEN_LIGHTMAP,
+	XBOX_NV2A_TCGEN_ENVIRONMENT,
+	XBOX_NV2A_TCGEN_VECTOR
+} xboxNV2ATcGen_t;
+
+typedef enum {
+	XBOX_NV2A_CULL_FRONT,
+	XBOX_NV2A_CULL_BACK,
+	XBOX_NV2A_CULL_NONE
+} xboxNV2ACull_t;
+
+/* ioq3 lightmapIndex classes: each one gets a different implicit shader. */
+typedef enum {
+	XBOX_NV2A_SHADER_2D,
+	XBOX_NV2A_SHADER_MODEL,
+	XBOX_NV2A_SHADER_LIGHTMAP,
+	XBOX_NV2A_SHADER_VERTEX
+} xboxNV2AShaderFlavor_t;
+
+/* One ioq3 shader stage; blend factors hold GL values and GL_ONE/GL_ZERO is opaque. */
+typedef struct {
+	int images[XBOX_NV2A_MAX_ANIM_IMAGES];
+	int numImages;
+	float animFrequency;
+	/* $lightmap: the image comes from the drawn surface, not from images[]. */
+	qboolean isLightmap;
+	qboolean clamp;
+	unsigned int srcBlend;
+	unsigned int dstBlend;
+	int alphaFunc;
+	qboolean depthWrite;
+	qboolean depthEqual;
+	int rgbGen;
+	xboxNV2AWave_t rgbWave;
+	int alphaGen;
+	xboxNV2AWave_t alphaWave;
+	byte constant[4];
+	int tcGen;
+	vec3_t tcGenVectors[2];
+	int numTexMods;
+	xboxNV2ATexMod_t texMods[XBOX_NV2A_MAX_TEXMODS];
+	int adjustColorsForFog;
+} xboxNV2AStage_t;
+
+typedef struct {
+	int numStages;
+	float sort;
+	int cull;
+	qboolean polygonOffset;
+	qboolean isSky;
+	/* skyParms outer box in rt, bk, lf, ft, up, dn order; ioq3 draws none if side 0 is missing. */
+	int skyBox[XBOX_NV2A_SKY_SIDES];
+	float cloudHeight;
+	/* surfaceparm fog; fogParms colour and depthForOpaque. */
+	qboolean isFog;
+	vec3_t fogColor;
+	float fogDepth;
+	int fogPass;
+	/* alphaGen portal range; ioq3 skips portal views farther than this. */
+	float portalRange;
+	/* surfaceparm nodlight or sky: ioq3 draws no dlight pass on it. */
+	qboolean noDlight;
+	int numDeforms;
+	xboxNV2ADeform_t deforms[XBOX_NV2A_MAX_DEFORMS];
+	xboxNV2AStage_t stages[XBOX_NV2A_MAX_STAGES];
+} xboxNV2AShaderDef_t;
+
+/* World vertices keep ioq3 drawVert_t data with the lighting colour already shifted. */
+typedef struct {
+	float xyz[3];
+	float st[2];
+	float lightSt[2];
+	float normal[3];
+	byte color[4];
+} xboxNV2AWorldVert_t;
+
+typedef enum {
+	XBOX_NV2A_SURFACE_FACE,
+	XBOX_NV2A_SURFACE_GRID,
+	XBOX_NV2A_SURFACE_TRIANGLES
+} xboxNV2AWorldSurfaceType_t;
+
+typedef struct {
+	int type;
+	int shader;
+	int lightmap;
+	/* nomarks, noimpact, nodraw or fog: ioq3 R_BoxSurfaces_r never puts marks on it. */
+	qboolean noMarks;
+	int fogIndex;
+	int viewCount;
+	/* Scene dlights that reach it in the current view, as in ioq3's surface dlightBits. */
+	unsigned int dlightBits;
+	cplane_t plane;
+	vec3_t bounds[2];
+	int numVerts;
+	int numIndexes;
+	xboxNV2AWorldVert_t *verts;
+	unsigned short *indexes;
+} xboxNV2AWorldSurface_t;
+
+/* ioq3 fog_t; fog 0 means none, and surface is the visible side's plane facing into the fog. */
+typedef struct {
+	vec3_t bounds[2];
+	byte color[4];
+	float tcScale;
+	qboolean hasSurface;
+	float surface[4];
+} xboxNV2AFog_t;
+
+/* ioq3 dlight_t; radius is the intensity passed to AddLightToScene. */
+typedef struct {
+	vec3_t origin;
+	float radius;
+	vec3_t color;
+} xboxNV2ADlight_t;
+
+/* ioq3 sky_mins/sky_maxs: the (s, t) range of each box side that visible sky covers. */
+typedef struct {
+	float mins[2][XBOX_NV2A_SKY_SIDES];
+	float maxs[2][XBOX_NV2A_SKY_SIDES];
+} xboxNV2ASkyBounds_t;
+
+#define XBOX_NV2A_WORLD_ENTITY (-1)
+
+/* Texel storage for XboxNV2A_CreateImage; the fog and dlight images keep 32-bit alpha. */
+typedef enum {
+	XBOX_NV2A_IMAGE_16BIT,
+	XBOX_NV2A_IMAGE_32BIT,
+	/* Opaque images of 4x4 texels or more; others fall back to 16-bit. */
+	XBOX_NV2A_IMAGE_DXT1,
+	/* DXT1 when opaque, DXT5 with alpha; sides under 4 fall back to 16-bit. */
+	XBOX_NV2A_IMAGE_DXT,
+	/* What XBOX_NV2A_IMAGE_DXT becomes for an image with alpha. */
+	XBOX_NV2A_IMAGE_DXT5
+} xboxNV2AImageStorage_t;
+
+qboolean XboxNV2A_Init(void);
+void XboxNV2A_Shutdown(qboolean destroyWindow);
+void XboxNV2A_Kill(void);
+void XboxNV2A_ShowDebugScreen(void);
+qboolean XboxNV2A_OwnsScreen(void);
+void XboxNV2A_BeginRegistration(glconfig_t *config);
+void XboxNV2A_BeginFrame(stereoFrame_t stereoFrame);
+void XboxNV2A_EndFrame(int *frontEndMsec, int *backEndMsec);
+void XboxNV2A_SetColor(const float *rgba);
+int XboxNV2A_FindImage(const char *name);
+/* mipmap adds the box-filtered chain, halving rgba in place; a DXT chain stops at 4x4. */
+int XboxNV2A_CreateImage(const char *name, int width, int height,
+	byte *rgba, int storage, qboolean mipmap);
+/* ioq3 R_MipMap box filter, in place; a 1-texel side stays 1 texel. */
+void XboxNV2A_HalveImage(byte *pic, int *width, int *height);
+qboolean XboxNV2A_FindShader(const char *name, int flavor, qhandle_t *handle);
+qhandle_t XboxNV2A_CreateShader(const char *name, int flavor,
+	const xboxNV2AShaderDef_t *def);
+qboolean XboxNV2A_ShaderIsDrawable(qhandle_t shader);
+qboolean XboxNV2A_ShaderIsSky(qhandle_t shader);
+qboolean XboxNV2A_ShaderFogParms(qhandle_t shader, vec3_t color, float *depth);
+int XboxNV2A_ShaderCull(qhandle_t shader);
+void XboxNV2A_DrawStretchPic(float x, float y, float w, float h,
+	float s1, float t1, float s2, float t2, qhandle_t shader);
+void XboxNV2A_UploadCinematic(int cols, int rows, const byte *data, int client,
+	qboolean dirty);
+void XboxNV2A_DrawStretchRaw(int x, int y, int w, int h, int cols, int rows,
+	const byte *data, int client, qboolean dirty);
+void XboxNV2A_ClearScene(void);
+void XboxNV2A_AddRefEntity(const refEntity_t *entity);
+void XboxNV2A_AddLight(const vec3_t origin, float intensity, float r, float g,
+	float b);
+int XboxNV2A_SceneDlights(const xboxNV2ADlight_t **dlights);
+void XboxNV2A_AddWorldSurface(const xboxNV2AWorldSurface_t *surface, int entity);
+void XboxNV2A_AddSkySurface(const xboxNV2AWorldSurface_t *surface);
+void XboxNV2A_AddPoly(qhandle_t shader, int numVerts, const polyVert_t *verts,
+	int numPolys);
+void XboxNV2A_RenderScene(const refdef_t *fd);
+
+/* DXT1 blocks row by row, the NV2A layout; width and height are multiples of 4. */
+void XboxNV2ADxt_Compress(const byte *rgba, int width, int height, void *out);
+/* DXT5 blocks in the same layout: 8 alpha bytes, then a DXT1 colour block. */
+void XboxNV2ADxt_Compress5(const byte *rgba, int width, int height, void *out);
+
+/* Shader scripts and image files, in xbox_nv2a_shader.c. */
+qhandle_t XboxNV2AShader_Register(const char *name, qboolean mipRawImage);
+qhandle_t XboxNV2AShader_RegisterModel(const char *name);
+qhandle_t XboxNV2AShader_RegisterWorld(const char *name, int flavor);
+void XboxNV2AShader_FreeScripts(void);
+
+/* MD3 models, brush submodels and skins, in xbox_nv2a_model.c. */
+qhandle_t XboxNV2AModel_Register(const char *name);
+void XboxNV2AModel_RegisterBrush(const char *name, int submodel);
+void XboxNV2AModel_FreeAll(void);
+const md3Header_t *XboxNV2AModel_Get(qhandle_t handle);
+int XboxNV2AModel_BrushIndex(qhandle_t handle);
+void XboxNV2AModel_LerpSurface(const md3Surface_t *surface, int frame,
+	int oldFrame, float backlerp, float (*xyz)[3], float (*normal)[3]);
+void XboxNV2AModel_Bounds(qhandle_t handle, vec3_t mins, vec3_t maxs);
+int XboxNV2AModel_LerpTag(orientation_t *tag, qhandle_t handle, int startFrame,
+	int endFrame, float frac, const char *tagName);
+qhandle_t XboxNV2ASkin_Register(const char *name);
+int XboxNV2ASkin_Shader(qhandle_t skin, const char *surfaceName);
+void XboxNV2ASkin_FreeAll(void);
+
+/* BSP world, in xbox_nv2a_world.c. */
+void XboxNV2AWorld_Load(const char *name);
+void XboxNV2AWorld_Free(void);
+qboolean XboxNV2AWorld_Loaded(void);
+float XboxNV2AWorld_AddSurfaces(const refdef_t *fd, const vec3_t pvsOrigin);
+void XboxNV2AWorld_AddBrushModel(int submodel, int entity, const refEntity_t *ref);
+void XboxNV2AWorld_SubmodelBounds(int submodel, vec3_t mins, vec3_t maxs);
+void XboxNV2AWorld_SunDirection(vec3_t direction);
+qboolean XboxNV2AWorld_LightGrid(const vec3_t origin, vec3_t ambient,
+	vec3_t directed, vec3_t direction);
+qboolean XboxNV2AWorld_GetEntityToken(char *buffer, int size);
+qboolean XboxNV2AWorld_InPVS(const vec3_t p1, const vec3_t p2);
+int XboxNV2AWorld_NumFogs(void);
+const xboxNV2AFog_t *XboxNV2AWorld_Fog(int index);
+int XboxNV2AWorld_MarkFragments(int numPoints, const vec3_t *points,
+	const vec3_t projection, int maxPoints, vec3_t pointBuffer, int maxFragments,
+	markFragment_t *fragmentBuffer);
+
+/* Sky box and cloud grids, in xbox_nv2a_sky.c; positions are relative to the view origin. */
+void XboxNV2ASky_Clear(xboxNV2ASkyBounds_t *bounds);
+void XboxNV2ASky_AddSurface(xboxNV2ASkyBounds_t *bounds,
+	const xboxNV2AWorldSurface_t *surface, const vec3_t origin);
+int XboxNV2ASky_BoxSide(const xboxNV2ASkyBounds_t *bounds, int side, float boxSize,
+	float (*xyz)[3], float (*st)[2], unsigned short *indexes, int *numIndexes);
+int XboxNV2ASky_Clouds(const xboxNV2ASkyBounds_t *bounds, float cloudHeight,
+	float boxSize, float (*xyz)[3], float (*st)[2], unsigned short *indexes,
+	int *numIndexes);
+
+#endif
+## CONTEUDO code\sys\xbox_boot.c
+/* Copyright (C) 1999-2005 Id Software, Inc. Part of Quake III Arena source code. */
+
+#include "sys_xbox.h"
+#include "../qcommon/q_shared.h"
+#include "../qcommon/qcommon.h"
+#include "../client/client.h"
+
+#include <hal/video.h>
+
+/* 20, not 24: the native modules add ~4 MiB to the XBE image but no longer use the hunk. */
+#define XBOX_COM_HUNK_MEGS 20
+#ifdef MISSIONPACK
+/* TA menus use ~1 MiB of zone and Q3 games peaked at ~3 MiB; the TA image is 4 MiB larger. */
+#define XBOX_COM_ZONE_MEGS 6
+#else
+#define XBOX_COM_ZONE_MEGS 8
+#endif
+/* 1536 sound chunks (~3 MiB); 2 ran out of memory on Q3DM11, so snd_dma.c stores mono sounds as ADPCM. */
+#define XBOX_COM_SOUND_MEGS 1
+
+#define XBOX_STRINGIFY_VALUE(value) #value
+#define XBOX_STRINGIFY(value) XBOX_STRINGIFY_VALUE(value)
+
+/* DIAGNOSTIC: both netchan ends of the map-load connection; remove after. */
+static void XboxLogConnect(const char *tag)
+{
+	char server[160];
+
+	Sys_XboxServerTrace(server, sizeof(server));
+	Sys_XboxLog("Xbox %s: t=%d cl state=%d in=%d out=%d frag=%d/%d msg=%d %s\n", tag,
+		Sys_Milliseconds(), (int)clc.state, clc.netchan.incomingSequence,
+		clc.netchan.outgoingSequence, clc.netchan.fragmentSequence,
+		clc.netchan.fragmentLength, clc.serverMessageSequence, server);
+}
+
+int main(void)
+{
+	/* Room for the launch commands another XBE of this port passed (xbox_launch.c). */
+	char commandLine[1024] =
+		"+set com_hunkMegs " XBOX_STRINGIFY(XBOX_COM_HUNK_MEGS)
+		" +set com_zoneMegs " XBOX_STRINGIFY(XBOX_COM_ZONE_MEGS)
+		" +set com_soundMegs " XBOX_STRINGIFY(XBOX_COM_SOUND_MEGS)
+		/* IPv4 only, as on the PS3, PS4 and Wii U ports. */
+		" +set net_enabled 1"
+		/* Linked-in native modules; overrides archived vm_* values. A pure server
+		   drops clients without cgame/ui QVM pak refs, as on the PSP port. */
+		" +set vm_game 0 +set vm_cgame 0 +set vm_ui 0 +set sv_pure 0"
+#ifdef MISSIONPACK
+		/* The Team Arena XBE's native modules are the missionpack ones. */
+		" +set fs_game " BASETA
+#endif
+#ifdef XBOX_DIAG_NO_CINEMATIC
+		/* DIAGNOSTIC bisection switch: any non-set command skips idlogo.RoQ. */
+		" +wait"
+#endif
+		;
+
+	Sys_XboxHeapInit();
+	XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+	Sys_XboxLogOpen();
+	Sys_XboxLog(XBOX_TITLE "\n");
+	Sys_XboxAppendLaunchCommands(commandLine, sizeof(commandLine));
+	{
+		unsigned int physicalMegs = Sys_XboxPhysicalMegs();
+
+		Sys_XboxLog("Xbox RAM: %u MiB physical, %s unit detected\n", physicalMegs,
+			physicalMegs > 64 ? "128 MB" : "64 MB");
+	}
+	Sys_XboxLog("Xbox startup budget: hunk=%d MiB zone=%d MiB sound=%d units\n",
+		XBOX_COM_HUNK_MEGS, XBOX_COM_ZONE_MEGS, XBOX_COM_SOUND_MEGS);
+	Sys_XboxInitDefaultPlayerName();
+	/* Before Com_Init, so the DHCP/link-local wait still shows on the debug screen. */
+	Sys_XboxNetInit();
+	Sys_XboxMemoryReport("before Com_Init");
+	Com_Init(commandLine);
+	NET_Init();
+	Sys_XboxMemoryReport("after Com_Init");
+	/* The Xbox renderer never calls ri.IN_Init, and bindings need Com_Init done. */
+	IN_Init(NULL);
+	Sys_XboxLog(
+		"Xbox active budget: hunk=%d MiB zone=%d MiB sound=%d units "
+		"hunk_remaining=%d KiB\n",
+		Cvar_VariableIntegerValue("com_hunkMegs"),
+		Cvar_VariableIntegerValue("com_zoneMegs"),
+		Cvar_VariableIntegerValue("com_soundMegs"),
+		Hunk_MemoryRemaining() / 1024);
+	Cmd_ExecuteString("meminfo");
+	Sys_XboxStartWatchdog(XboxLogConnect);
+
+	for (;;)
+	{
+		Com_Frame();
+		Sys_XboxDiagFrame();
+		if (Sys_XboxExitRequested())
+		{
+			IN_Shutdown();
+			Com_Shutdown();
+			NET_Shutdown();
+			return 0;
+		}
+	}
+}
+## CONTEUDO code\sys\xbox_diag.c
+/* DIAGNOSTIC: server end of the map-load connection trace; bg_public.h blocks client.h here. */
+#include "../server/server.h"
+#include "sys_xbox.h"
+
+#include <windows.h>
+
+static volatile unsigned int xboxDiagFrames;
+static void (*xboxDiagReport)(const char *tag);
+
+void Sys_XboxServerTrace(char *buffer, int size)
+{
+	const client_t *client;
+
+	if (!com_sv_running || !com_sv_running->integer || !svs.clients) {
+		Q_strncpyz(buffer, "sv=off", size);
+		return;
+	}
+	client = &svs.clients[0];
+	Com_sprintf(buffer, size, "sv state=%d out=%d unsent=%d frag=%d/%d queued=%d time=%d",
+		client->state, client->netchan.outgoingSequence, client->netchan.unsentFragments,
+		client->netchan.unsentFragmentStart, client->netchan.unsentLength,
+		client->netchan_start_queue != NULL, sv.time);
+}
+
+void Sys_XboxDiagFrame(void)
+{
+	xboxDiagFrames++;
+}
+
+/* Reports only while Com_Frame is stuck; a CPU fault halts this thread too, so silence means a crash. */
+static DWORD WINAPI XboxDiagWatchdog(LPVOID unused)
+{
+	unsigned int last = xboxDiagFrames;
+	int reports = 0;
+
+	(void)unused;
+	while (reports < 5) {
+		Sleep(3000);
+		if (xboxDiagFrames == last) {
+			xboxDiagReport("stalled");
+			reports++;
+		}
+		last = xboxDiagFrames;
+	}
+	return 0;
+}
+
+void Sys_XboxStartWatchdog(void (*report)(const char *tag))
+{
+	xboxDiagReport = report;
+	if (!CreateThread(NULL, 0, XboxDiagWatchdog, NULL, 0, NULL))
+		Sys_XboxLog("Xbox diag: watchdog thread failed\n");
+}
+## CONTEUDO code\sys\xbox_input_engine.c
+/* ioQuake3 input-system boundary for the native Xbox controller service. */
+#include "xbox_input.h"
+
+void IN_Init(void *windowData)
+{
+	(void)windowData;
+	Sys_XboxInputInit();
+}
+
+void IN_Frame(void)
+{
+	Sys_XboxInputFrame();
+}
+
+void IN_Shutdown(void)
+{
+	Sys_XboxInputShutdown();
+}
+
+void IN_Restart(void)
+{
+	IN_Shutdown();
+	IN_Init(NULL);
+}
+## CONTEUDO code\sys\xbox_input.c
+/* Native Original Xbox XID controller service. */
+#include "xbox_input.h"
+
+#include <string.h>
+
+#include <usb.h>
+#include <usbh_lib.h>
+#include <xid_driver.h>
+#include <usbh_hid.h>
+#include <xboxkrnl/xboxkrnl.h>
+
+#include "../qcommon/qcommon.h"
+#include "../client/keycodes.h"
+
+#define XBOX_CONTROLLER_PORTS 4
+/* Analog face buttons report noise near 0; sticks drift near center. */
+#define XBOX_BUTTON_THRESHOLD 30
+#define XBOX_STICK_DEADZONE 7849
+#define XBOX_STICK_MAX 32767
+#define XBOX_MENU_CURSOR_SPEED 400.0f
+#define XBOX_FRAME_MAX_MS 50
+#define XBOX_HID_MAX_DEVICES 8
+#define HID_BOOT_KEYBOARD 1
+#define HID_BOOT_MOUSE 2
+#define HID_PROTOCOL_BOOT 0
+#define HID_PROTOCOL_REPORT 1
+#define HID_REPORT_MAX 16
+#define HID_DESCRIPTOR_MAX 1024
+#define HID_MOUSE_BUTTONS 5
+#define HID_PARSE_USAGES 32
+#define HID_PARSE_STACK 4
+/* Usages are (page << 16) | id. */
+#define HID_USAGE_BUTTON_1 0x00090001u
+#define HID_USAGE_X 0x00010030u
+#define HID_USAGE_Y 0x00010031u
+#define HID_USAGE_WHEEL 0x00010038u
+
+extern int Key_GetCatcher(void);
+extern void Key_SetBinding(int keynum, const char *binding);
+extern char *Key_GetBinding(int keynum);
+
+/* The first eight indices match bits 0-7 of the XID digital button mask. */
+enum
+{
+	XBOX_BTN_DPAD_UP,
+	XBOX_BTN_DPAD_DOWN,
+	XBOX_BTN_DPAD_LEFT,
+	XBOX_BTN_DPAD_RIGHT,
+	XBOX_BTN_START,
+	XBOX_BTN_BACK,
+	XBOX_BTN_LEFT_THUMB,
+	XBOX_BTN_RIGHT_THUMB,
+	XBOX_BTN_A,
+	XBOX_BTN_B,
+	XBOX_BTN_X,
+	XBOX_BTN_Y,
+	XBOX_BTN_BLACK,
+	XBOX_BTN_WHITE,
+	XBOX_BTN_LEFT_TRIGGER,
+	XBOX_BTN_RIGHT_TRIGGER,
+	XBOX_BTN_COUNT
+};
+
+static const int xboxButtonKeys[XBOX_BTN_COUNT] =
+{
+	K_UPARROW, K_DOWNARROW, K_LEFTARROW, K_RIGHTARROW,
+	K_ESCAPE, K_JOY11, K_JOY9, K_JOY10,
+	K_JOY1, K_JOY2, K_JOY3, K_JOY4, K_JOY5, K_JOY6, K_JOY7, K_JOY8
+};
+
+static xboxControllerState_t xboxControllers[XBOX_CONTROLLER_PORTS];
+/* Key sent on press, so the release matches even if the menu state changed. */
+static int xboxSentKey[XBOX_CONTROLLER_PORTS][XBOX_BTN_COUNT];
+static int xboxSentAxis[XBOX_CONTROLLER_PORTS][4];
+static float xboxCursorX;
+static float xboxCursorY;
+static int xboxLastFrameTime;
+static qboolean xboxInputStarted;
+static qboolean xboxInputStopping;
+
+typedef struct
+{
+	qboolean present;
+	qboolean isSigned;
+	uint8_t reportId;
+	uint8_t bitSize;
+	uint32_t bitOffset;
+} xboxHidField_t;
+
+typedef struct
+{
+	qboolean reportIds;
+	xboxHidField_t buttons[HID_MOUSE_BUTTONS];
+	xboxHidField_t x, y, wheel;
+} xboxHidMouseLayout_t;
+
+typedef struct
+{
+	int dx, dy, wheel;
+	int buttons, buttonMask;
+} xboxHidMouseSample_t;
+
+typedef struct
+{
+	uint32_t usagePage;
+	int32_t logicalMin;
+	uint32_t reportSize;
+	uint32_t reportCount;
+	uint32_t reportId;
+} xboxHidGlobals_t;
+
+typedef struct
+{
+	HID_DEV_T *device;
+	uint8_t protocol;
+	qboolean connected;
+	uint8_t reports[8][HID_REPORT_MAX];
+	uint8_t reportLengths[8];
+	uint8_t reportHead, reportCount;
+	int mouseX, mouseY;
+	xboxHidMouseLayout_t mouse;
+	uint8_t oldButtons;
+	qboolean capsLock;
+	uint8_t oldUsages[32];
+	int modifierKeys[4];
+} xboxHidState_t;
+
+static xboxHidState_t xboxHid[XBOX_HID_MAX_DEVICES];
+static void Sys_XboxInputKey(int time, int key, qboolean down);
+
+static void Sys_XboxHidSetField(xboxHidField_t *field, uint32_t reportId,
+	uint32_t bitOffset, uint32_t bitSize, qboolean isSigned)
+{
+	field->present = qtrue;
+	field->isSigned = isSigned;
+	field->reportId = (uint8_t)reportId;
+	field->bitSize = (uint8_t)bitSize;
+	field->bitOffset = bitOffset;
+}
+
+static void Sys_XboxHidBootMouseLayout(xboxHidMouseLayout_t *layout)
+{
+	int i;
+	memset(layout, 0, sizeof(*layout));
+	for (i = 0; i < HID_MOUSE_BUTTONS; ++i)
+		Sys_XboxHidSetField(&layout->buttons[i], 0, i, 1, qfalse);
+	Sys_XboxHidSetField(&layout->x, 0, 8, 8, qtrue);
+	Sys_XboxHidSetField(&layout->y, 0, 16, 8, qtrue);
+	Sys_XboxHidSetField(&layout->wheel, 0, 24, 8, qtrue);
+}
+
+static void Sys_XboxHidMatchMouseField(xboxHidMouseLayout_t *layout, uint32_t usage,
+	const xboxHidGlobals_t *globals, uint32_t bitOffset, qboolean relative)
+{
+	xboxHidField_t *field = NULL;
+	if (usage >= HID_USAGE_BUTTON_1 && usage < HID_USAGE_BUTTON_1 + HID_MOUSE_BUTTONS)
+		field = &layout->buttons[usage - HID_USAGE_BUTTON_1];
+	else if (relative && usage == HID_USAGE_X)
+		field = &layout->x;
+	else if (relative && usage == HID_USAGE_Y)
+		field = &layout->y;
+	else if (relative && usage == HID_USAGE_WHEEL)
+		field = &layout->wheel;
+	if (field && !field->present)
+		Sys_XboxHidSetField(field, globals->reportId, bitOffset,
+			globals->reportSize, globals->logicalMin < 0);
+}
+
+/* Finds the button, X, Y and wheel fields in a HID 1.11 report descriptor. */
+static qboolean Sys_XboxHidParseMouse(const uint8_t *desc, int length,
+	xboxHidMouseLayout_t *layout)
+{
+	xboxHidGlobals_t globals, stack[HID_PARSE_STACK];
+	uint32_t usages[HID_PARSE_USAGES];
+	uint32_t inputBits[256];
+	uint32_t usageMin = 0;
+	int usageCount = 0, stackDepth = 0, pos = 0;
+
+	memset(layout, 0, sizeof(*layout));
+	memset(&globals, 0, sizeof(globals));
+	memset(inputBits, 0, sizeof(inputBits));
+	while (pos < length)
+	{
+		uint8_t prefix = desc[pos++];
+		int size = (prefix & 3) == 3 ? 4 : prefix & 3;
+		int type = (prefix >> 2) & 3;
+		int tag = prefix >> 4;
+		uint32_t value = 0;
+		int32_t signedValue;
+		int i;
+
+		if (prefix == 0xFE)
+		{
+			/* Long item: a data size byte and a tag byte come before the data. */
+			if (pos >= length)
+				return qfalse;
+			pos += 2 + desc[pos];
+			continue;
+		}
+		if (pos + size > length)
+			return qfalse;
+		for (i = 0; i < size; ++i)
+			value |= (uint32_t)desc[pos + i] << (8 * i);
+		pos += size;
+		signedValue = size == 1 ? (int8_t)value : size == 2 ? (int16_t)value : (int32_t)value;
+
+		if (type == 1)
+		{
+			switch (tag)
+			{
+			case 0x0: globals.usagePage = value; break;
+			case 0x1: globals.logicalMin = signedValue; break;
+			case 0x7: globals.reportSize = value; break;
+			case 0x8: globals.reportId = value & 0xFF; layout->reportIds = qtrue; break;
+			case 0x9: globals.reportCount = value; break;
+			case 0xA: if (stackDepth < HID_PARSE_STACK) stack[stackDepth++] = globals; break;
+			case 0xB: if (stackDepth > 0) globals = stack[--stackDepth]; break;
+			default: break;
+			}
+		}
+		else if (type == 2)
+		{
+			if (tag == 0x0 && usageCount < HID_PARSE_USAGES)
+				usages[usageCount++] = value;
+			else if (tag == 0x1)
+				usageMin = value;
+			else if (tag == 0x2)
+			{
+				uint32_t usage;
+				for (usage = usageMin; usage <= value && usageCount < HID_PARSE_USAGES; ++usage)
+					usages[usageCount++] = usage;
+			}
+		}
+		else if (type == 0)
+		{
+			/* Input flags: bit 0 constant, bit 1 variable, bit 2 relative. */
+			if (tag == 0x8)
+			{
+				if (!(value & 1) && (value & 2) && usageCount &&
+					globals.reportSize >= 1 && globals.reportSize <= 32)
+				{
+					for (i = 0; i < (int)globals.reportCount && i < HID_PARSE_USAGES; ++i)
+					{
+						uint32_t usage = usages[i < usageCount ? i : usageCount - 1];
+						/* A usage shorter than 4 bytes takes the page in effect here. */
+						if (!(usage >> 16))
+							usage |= globals.usagePage << 16;
+						Sys_XboxHidMatchMouseField(layout, usage, &globals,
+							inputBits[globals.reportId] + (uint32_t)i * globals.reportSize,
+							(value & 4) != 0);
+					}
+				}
+				inputBits[globals.reportId] += globals.reportSize * globals.reportCount;
+			}
+			usageCount = 0;
+			usageMin = 0;
+		}
+	}
+	return layout->x.present && layout->y.present;
+}
+
+static qboolean Sys_XboxHidReadMouseLayout(HID_DEV_T *device, xboxHidMouseLayout_t *layout)
+{
+	/* Control transfers need DMA-safe memory from the USB pool. */
+	uint8_t *desc = (uint8_t *)usbh_alloc_mem(HID_DESCRIPTOR_MAX);
+	qboolean parsed = qfalse;
+
+	if (desc)
+	{
+		int length = usbh_hid_get_report_descriptor(device, desc, HID_DESCRIPTOR_MAX);
+		parsed = length > 0 && Sys_XboxHidParseMouse(desc, length, layout);
+		usbh_free_mem(desc, HID_DESCRIPTOR_MAX);
+	}
+	if (!parsed)
+		Sys_XboxHidBootMouseLayout(layout);
+	return parsed;
+}
+
+static qboolean Sys_XboxHidFieldValue(const xboxHidField_t *field, qboolean reportIds,
+	const uint8_t *report, uint32_t length, int *value)
+{
+	uint32_t raw = 0;
+	uint32_t i;
+
+	if (!field->present)
+		return qfalse;
+	if (reportIds)
+	{
+		if (!length || report[0] != field->reportId)
+			return qfalse;
+		++report;
+		--length;
+	}
+	if (field->bitOffset >= length * 8 || field->bitSize > length * 8 - field->bitOffset)
+		return qfalse;
+	for (i = 0; i < field->bitSize; ++i)
+	{
+		uint32_t bit = field->bitOffset + i;
+		if (report[bit >> 3] & (1 << (bit & 7)))
+			raw |= 1u << i;
+	}
+	if (field->isSigned && field->bitSize < 32 && (raw & (1u << (field->bitSize - 1))))
+		raw |= ~0u << field->bitSize;
+	*value = (int)raw;
+	return qtrue;
+}
+
+/* Also runs in the USB DPC, so it only reads the report and the fixed layout. */
+static void Sys_XboxHidMouseDecode(const xboxHidMouseLayout_t *layout,
+	const uint8_t *report, uint32_t length, xboxHidMouseSample_t *sample)
+{
+	int value;
+	int i;
+
+	memset(sample, 0, sizeof(*sample));
+	if (Sys_XboxHidFieldValue(&layout->x, layout->reportIds, report, length, &value))
+		sample->dx = value;
+	if (Sys_XboxHidFieldValue(&layout->y, layout->reportIds, report, length, &value))
+		sample->dy = value;
+	if (Sys_XboxHidFieldValue(&layout->wheel, layout->reportIds, report, length, &value))
+		sample->wheel = value;
+	for (i = 0; i < HID_MOUSE_BUTTONS; ++i)
+	{
+		if (Sys_XboxHidFieldValue(&layout->buttons[i], layout->reportIds, report, length, &value))
+		{
+			sample->buttonMask |= 1 << i;
+			if (value)
+				sample->buttons |= 1 << i;
+		}
+	}
+}
+
+static int Sys_XboxHidSlot(HID_DEV_T *device, qboolean allocate)
+{
+	int i;
+	for (i = 0; i < XBOX_HID_MAX_DEVICES; ++i)
+		if (xboxHid[i].device == device && (!allocate || xboxHid[i].connected))
+			return i;
+	if (allocate)
+		for (i = 0; i < XBOX_HID_MAX_DEVICES; ++i)
+			if (!xboxHid[i].device)
+			{
+				memset(&xboxHid[i], 0, sizeof(xboxHid[i]));
+				xboxHid[i].device = device;
+				xboxHid[i].protocol = device->bProtocolCode;
+				xboxHid[i].connected = qtrue;
+				device->user_data = &xboxHid[i];
+				return i;
+			}
+	return -1;
+}
+
+static void Sys_XboxHidRead(HID_DEV_T *device, uint16_t endpoint, int status,
+	uint8_t *report, uint32_t length)
+{
+	xboxHidState_t *state = device ? (xboxHidState_t *)device->user_data : NULL;
+	(void)endpoint;
+	if (!state || status || !report || !length)
+		return;
+	if (length > HID_REPORT_MAX)
+		length = HID_REPORT_MAX;
+	if (state->reportCount == 8)
+	{
+		state->reportHead = (state->reportHead + 1) & 7;
+		--state->reportCount;
+	}
+	{
+		int tail = (state->reportHead + state->reportCount) & 7;
+		memcpy(state->reports[tail], report, length);
+		state->reportLengths[tail] = (uint8_t)length;
+		++state->reportCount;
+	}
+	if (state->protocol == HID_BOOT_MOUSE)
+	{
+		xboxHidMouseSample_t sample;
+		Sys_XboxHidMouseDecode(&state->mouse, report, length, &sample);
+		state->mouseX += sample.dx;
+		state->mouseY += sample.dy;
+	}
+}
+
+static void Sys_XboxHidConnected(HID_DEV_T *device, int param)
+{
+	int slot;
+	uint8_t protocol = HID_PROTOCOL_BOOT;
+	(void)param;
+	if (!device || (device->bProtocolCode != HID_BOOT_KEYBOARD &&
+		device->bProtocolCode != HID_BOOT_MOUSE))
+		return;
+	slot = Sys_XboxHidSlot(device, qtrue);
+	if (slot < 0)
+		return;
+	/* Some mice ignore boot protocol, so decode their own layout in report protocol. */
+	if (device->bProtocolCode == HID_BOOT_MOUSE &&
+		Sys_XboxHidReadMouseLayout(device, &xboxHid[slot].mouse))
+		protocol = HID_PROTOCOL_REPORT;
+	/* Boot protocol gives the standard 8-byte keyboard and 3-byte mouse reports. */
+	(void)usbh_hid_set_protocol(device, protocol);
+	(void)usbh_hid_start_int_read(device, 0, Sys_XboxHidRead);
+}
+## CONTEUDO code\sys\xbox_input.h
+/* Native Original Xbox XID controller service. */
+#ifndef IOQUAKE3_XBOX_INPUT_H
+#define IOQUAKE3_XBOX_INPUT_H
+
+#include <stdint.h>
+
+#include "../qcommon/q_shared.h"
+
+typedef struct
+{
+	qboolean connected;
+	uint16_t buttons;
+	uint8_t a;
+	uint8_t b;
+	uint8_t x;
+	uint8_t y;
+	uint8_t black;
+	uint8_t white;
+	uint8_t leftTrigger;
+	uint8_t rightTrigger;
+	int16_t leftStickX;
+	int16_t leftStickY;
+	int16_t rightStickX;
+	int16_t rightStickY;
+} xboxControllerState_t;
+
+qboolean Sys_XboxInputInit(void);
+void Sys_XboxInputPoll(void);
+void Sys_XboxInputFrame(void);
+void Sys_XboxInputShutdown(void);
+const xboxControllerState_t *Sys_XboxInputState(int port);
+
+#endif
+## CONTEUDO code\sys\xbox_launch.c
+/* Copyright (C) 1999-2005 Id Software, Inc. Part of Quake III Arena source code. */
+
+/* Q3 and Team Arena XBEs hand a game switch to each other through launch data. */
+
+#include "sys_xbox.h"
+
+#include "../qcommon/q_shared.h"
+#include "../qcommon/qcommon.h"
+#include "../client/client.h"
+#include "../renderernv2a/xbox_nv2a.h"
+
+#include <hal/xbox.h>
+#include <xboxkrnl/xboxkrnl.h>
+
+#include <stdlib.h>
+#include <string.h>
+
+#if !defined(STANDALONEOA) && !defined(STANDALONEALICE)
+/* Marks our launch data, so data from a dashboard or another title is ignored. */
+#define XBOX_LAUNCH_MAGIC "ioq3-xbox-launch"
+#define XBOX_LAUNCH_COMMANDS 512
+
+/* Relative, so nxdk resolves it next to this XBE; "D:\\" would give \??\D:, gone after the reboot. */
+#ifdef MISSIONPACK
+#define XBOX_OTHER_XBE "default.xbe"
+#else
+#define XBOX_OTHER_XBE "ta.xbe"
+#endif
+
+typedef struct
+{
+	char magic[sizeof(XBOX_LAUNCH_MAGIC)];
+	char commands[XBOX_LAUNCH_COMMANDS];
+} xboxLaunchData_t;
+
+/* XLaunchXBEEx copies the whole LaunchData field, so the buffer has its size. */
+static union
+{
+	xboxLaunchData_t data;
+	UCHAR page[sizeof(((LAUNCH_DATA_PAGE *)0)->LaunchData)];
+} xboxLaunch;
+
+#endif
+
+void Sys_XboxAppendLaunchCommands(char *commandLine, int size)
+{
+#if !defined(STANDALONEOA) && !defined(STANDALONEALICE)
+	unsigned long type;
+	const unsigned char *data;
+	char commands[XBOX_LAUNCH_COMMANDS];
+	int i;
+
+	/* With no page, this allocates one at boot; a hand-over page allocated after shutdown froze TA. */
+	if (XGetLaunchInfo(&type, &data) != 0)
+		return;
+
+	if (type == LDT_TITLE && !memcmp(data, XBOX_LAUNCH_MAGIC, sizeof(XBOX_LAUNCH_MAGIC)))
+	{
+		Q_strncpyz(commands, (const char *)data + sizeof(XBOX_LAUNCH_MAGIC), sizeof(commands));
+		for (i = 0; commands[i]; i++)
+		{
+			if (commands[i] < ' ' || commands[i] > '~')
+			{
+				commands[0] = '\0';
+				break;
+			}
+		}
+		Q_strcat(commandLine, size, commands);
+		Sys_XboxLog("Xbox launch data:%s\n", commands);
+	}
+
+	/* Quit's quick reboot reads this page; an unpersisted empty one crashed Q3, so point it at the dashboard. */
+	MmPersistContiguousMemory(LaunchDataPage, sizeof(*LaunchDataPage), TRUE);
+	LaunchDataPage->Header.dwLaunchDataType = LDT_LAUNCH_DASHBOARD;
+	LaunchDataPage->Header.szLaunchPath[0] = '\0';
+	memset(LaunchDataPage->LaunchData, 0, sizeof(LaunchDataPage->LaunchData));
+#endif
+}
+
+void Sys_XboxHandOverGame(const char *game)
+{
+#if !defined(STANDALONEOA) && !defined(STANDALONEALICE)
+	char *commands = xboxLaunch.data.commands;
+	int size = sizeof(xboxLaunch.data.commands);
+	FILE *xbe;
+
+#ifdef MISSIONPACK
+	if (!Q_stricmp(game, BASETA))
+		return;
+#else
+	if (Q_stricmp(game, BASETA))
+		return;
+#endif
+
+	/* Without the other XBE the switch stays here, and that game runs as QVMs. */
+	xbe = Sys_FOpen("D:\\" XBOX_OTHER_XBE, "rb");
+	if (!xbe)
+	{
+		Com_Printf("Xbox: no D:\\" XBOX_OTHER_XBE ", %s stays in this XBE\n",
+			game[0] ? game : BASEGAME);
+		return;
+	}
+	fclose(xbe);
+
+	memset(&xboxLaunch, 0, sizeof(xboxLaunch));
+	memcpy(xboxLaunch.data.magic, XBOX_LAUNCH_MAGIC, sizeof(XBOX_LAUNCH_MAGIC));
+#ifdef MISSIONPACK
+	/* The Q3 XBE boots in baseq3 and runs any other mod as QVMs. */
+	if (game[0])
+		Q_strcat(commands, size, va(" +set fs_game %s", game));
+#endif
+	if (clc.demoplaying)
+		Q_strcat(commands, size, va(" +demo \"%s\"", clc.demoName));
+	else if (clc.state >= CA_CONNECTED && clc.serverAddress.type == NA_IP)
+		Q_strcat(commands, size, va(" +connect %s", NET_AdrToStringwPort(clc.serverAddress)));
+	else
+		/* Any startup command skips the intro cinematic. */
+		Q_strcat(commands, size, " +wait");
+
+	Com_Printf("Xbox: %s runs in " XBOX_OTHER_XBE ", relaunching with:%s\n",
+		game[0] ? game : BASEGAME, commands);
+
+	/* Com_Quit_f and Sys_Quit's shutdown plus main's USB stop; then launch instead of exit. */
+	VM_Forced_Unload_Start();
+	SV_Shutdown("Game directory changed");
+	CL_Shutdown("Game directory changed", qtrue, qtrue);
+	VM_Forced_Unload_Done();
+	IN_Shutdown();
+	Com_Shutdown();
+	FS_Shutdown(qtrue);
+	NET_Shutdown();
+	XboxNV2A_Kill();
+	Sys_XboxPlatformShutdown();
+	XLaunchXBEEx(XBOX_OTHER_XBE, &xboxLaunch);
+	/* Returns only if the path conversion failed; leave like quit does. */
+	exit(0);
+#endif
+}
+## CONTEUDO code\sys\xbox_module_libc.c
+/* Copyright (C) 1999-2005 Id Software, Inc. Part of Quake III Arena source code. */
+
+/* vsnprintf/sscanf for the native modules: nxdk's pdclib skips %f in both.
+   xbox_module.h maps the libc names here; the QVMs used bg_lib.c instead. */
+
+#include "../qcommon/q_shared.h"
+
+#define XFL_LEFT	0x01
+#define XFL_PLUS	0x02
+#define XFL_SPACE	0x04
+#define XFL_ALT		0x08
+#define XFL_ZERO	0x10
+
+#define XLEN_NONE	0
+#define XLEN_HH		1
+#define XLEN_H		2
+#define XLEN_L		3
+#define XLEN_LL		4
+#define XLEN_LD		5
+#define XLEN_SIZE	6
+
+/* Significant digits of the approximate path for values of 2^63 and up; the rest print as zeros. */
+#define XBOX_MAX_DIGITS 17
+
+typedef struct
+{
+	char *buffer;
+	size_t size;
+	size_t length;
+} xboxOut_t;
+
+static const double xboxPow10Table[] =
+{
+	1e0, 1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11,
+	1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19, 1e20, 1e21, 1e22
+};
+
+static double XboxPow10(int exponent)
+{
+	double value = 1.0;
+
+	while (exponent > 22)
+	{
+		value *= 1e22;
+		exponent -= 22;
+	}
+	return value * xboxPow10Table[exponent];
+}
+
+/* Division by an exact power keeps more precision than multiplying by 10^-n. */
+static double XboxScale10(double value, int exponent)
+{
+	if (exponent >= 0)
+		return value / XboxPow10(exponent);
+	return value * XboxPow10(-exponent);
+}
+
+static unsigned long long XboxPow10Int(int exponent)
+{
+	unsigned long long value = 1;
+
+	while (exponent-- > 0)
+		value *= 10;
+	return value;
+}
+
+static qboolean XboxIsNan(double value)
+{
+	return value != value;
+}
+
+static qboolean XboxIsInf(double value)
+{
+	return !XboxIsNan(value) && XboxIsNan(value - value);
+}
+
+static qboolean XboxSignBit(double value)
+{
+	union { double d; unsigned long long u; } bits;
+
+	bits.d = value;
+	return (bits.u >> 63) != 0;
+}
+
+/* Writes the decimal digits of value (count >= 1) with leading zeros. */
+static void XboxDigits(unsigned long long value, int count, char *out)
+{
+	while (count-- > 0)
+	{
+		out[count] = (char)('0' + (int)(value % 10));
+		value /= 10;
+	}
+}
+
+static int XboxCountDigits(unsigned long long value)
+{
+	int count = 1;
+
+	while (value >= 10)
+	{
+		value /= 10;
+		count++;
+	}
+	return count;
+}
+
+/* Binary fraction mantissa / 2^shift in [0, 1), read out one decimal digit at a time.
+   Bits dropped to avoid overflow set sticky; digits past the 16th significant may drift. */
+typedef struct
+{
+	unsigned long long mantissa;
+	int shift;
+	qboolean sticky;
+} xboxFraction_t;
+
+static void XboxFractionInit(xboxFraction_t *fraction, double value)
+{
+	union { double d; unsigned long long u; } bits;
+	int exponent;
+
+	bits.d = value;
+	exponent = (int)((bits.u >> 52) & 0x7ff);
+	fraction->mantissa = bits.u & 0xfffffffffffffULL;
+	if (exponent)
+		fraction->mantissa |= 1ULL << 52;
+	else
+		exponent = 1;
+	fraction->shift = value == 0.0 ? 1 : 1075 - exponent;
+	fraction->sticky = qfalse;
+}
+
+static char XboxFractionDigit(xboxFraction_t *fraction)
+{
+	int digit = 0;
+
+	if (fraction->shift > 60)
+	{
+		/* Times 10 as times 5 with one less shift; stay below 2^61 so the product fits. */
+		while (fraction->mantissa >= 1ULL << 61)
+		{
+			fraction->sticky |= (fraction->mantissa & 1) != 0;
+			fraction->mantissa >>= 1;
+			fraction->shift--;
+		}
+		fraction->mantissa *= 5;
+		fraction->shift--;
+	}
+	else
+	{
+		fraction->mantissa *= 10;
+	}
+
+	if (fraction->shift < 64)
+	{
+		digit = (int)(fraction->mantissa >> fraction->shift);
+		fraction->mantissa &= (1ULL << fraction->shift) - 1;
+	}
+	return (char)('0' + digit);
+}
+
+/* Compares the unread rest with one half: -1 below, 0 exact tie, 1 above. */
+static int XboxFractionHalf(const xboxFraction_t *fraction)
+{
+	unsigned long long half;
+
+	if (fraction->shift > 64)
+		return -1;
+	half = 1ULL << (fraction->shift - 1);
+	if (fraction->mantissa > half || (fraction->mantissa == half && fraction->sticky))
+		return 1;
+	return fraction->mantissa == half ? 0 : -1;
+}
+
+/* Rounds count digits up when the rest is above half, or on a tie to even like the C library.
+   Returns 1 when the carry leaves the first digit (all digits are then '0'). */
+static int XboxRoundDigits(char *digits, int count, int half)
+{
+	if (half < 0 || (half == 0 && !(digits[count - 1] & 1)))
+		return 0;
+	while (count-- > 0)
+	{
+		if (digits[count] != '9')
+		{
+			digits[count]++;
+			return 0;
+		}
+		digits[count] = '0';
+	}
+	return 1;
+}
+
+/* Approximate digits for values of 2^63 and up; digits past XBOX_MAX_DIGITS are zeros. */
+static int XboxScaledExpDigits(double value, int precision, char *digits)
+{
+	union { double d; unsigned long long u; } bits;
+	int exponent;
+	int used;
+	double scaled;
+	unsigned long long rounded;
+
+	bits.d = value;
+	exponent = (int)((double)((int)((bits.u >> 52) & 0x7ff) - 1023) * 0.30102999566398);
+	while (XboxScale10(value, exponent) >= 10.0)
+		exponent++;
+	while (XboxScale10(value, exponent) < 1.0)
+		exponent--;
+
+	used = precision < XBOX_MAX_DIGITS - 1 ? precision : XBOX_MAX_DIGITS - 1;
+	scaled = XboxScale10(value, exponent - used);
+	rounded = (unsigned long long)scaled;
+	if (scaled - (double)rounded >= 0.5)
+		rounded++;
+	if (rounded >= XboxPow10Int(used + 1))
+	{
+		rounded /= 10;
+		exponent++;
+	}
+
+	XboxDigits(rounded, used + 1, digits);
+	memset(digits + used + 1, '0', precision - used);
+	return exponent;
+}
+
+/* Rounds positive finite value to precision + 1 significant digits; returns the decimal exponent. */
+static int XboxExpDigits(double value, int precision, char *digits)
+{
+	xboxFraction_t fraction;
+	unsigned long long integer;
+	char integerText[20];
+	int needed = precision + 1;
+	int count;
+	int exponent;
+	int half;
+	int i;
+
+	if (value == 0.0)
+	{
+		memset(digits, '0', needed);
+		return 0;
+	}
+	if (value >= 9.2e18)
+		return XboxScaledExpDigits(value, precision, digits);
+
+	integer = (unsigned long long)value;
+	XboxFractionInit(&fraction, value - (double)integer);
+
+	if (integer)
+	{
+		count = XboxCountDigits(integer);
+		XboxDigits(integer, count, integerText);
+		exponent = count - 1;
+		if (count > needed)
+		{
+			memcpy(digits, integerText, needed);
+			half = integerText[needed] > '5' ? 1 : integerText[needed] < '5' ? -1 : 0;
+			for (i = needed + 1; i < count && half == 0; i++)
+			{
+				if (integerText[i] != '0')
+					half = 1;
+			}
+			if (half == 0 && (fraction.mantissa || fraction.sticky))
+				half = 1;
+		}
+		else
+		{
+			memcpy(digits, integerText, count);
+			while (count < needed)
+				digits[count++] = XboxFractionDigit(&fraction);
+			half = XboxFractionHalf(&fraction);
+		}
+	}
+	else
+	{
+		exponent = -1;
+		while ((digits[0] = XboxFractionDigit(&fraction)) == '0')
+			exponent--;
+		for (count = 1; count < needed; count++)
+			digits[count] = XboxFractionDigit(&fraction);
+		half = XboxFractionHalf(&fraction);
+	}
+
+	if (XboxRoundDigits(digits, needed, half))
+	{
+		digits[0] = '1';
+		exponent++;
+	}
+	return exponent;
+}
+
+/* Fixed-point digits of positive finite value: integer part, then precision fraction digits.
+   Returns the integer digit count. */
+static int XboxFixedDigits(double value, int precision, char *digits)
+{
+	xboxFraction_t fraction;
+	unsigned long long integer;
+	int integerDigits;
+	int i;
+
+	if (value >= 9.2e18)
+	{
+		char mantissa[XBOX_MAX_DIGITS];
+		int exponent = XboxScaledExpDigits(value, XBOX_MAX_DIGITS - 1, mantissa);
+
+		integerDigits = exponent + 1;
+		memcpy(digits, mantissa, XBOX_MAX_DIGITS);
+		memset(digits + XBOX_MAX_DIGITS, '0', integerDigits - XBOX_MAX_DIGITS + precision);
+		return integerDigits;
+	}
+
+	integer = (unsigned long long)value;
+	XboxFractionInit(&fraction, value - (double)integer);
+	integerDigits = XboxCountDigits(integer);
+	XboxDigits(integer, integerDigits, digits);
+	for (i = 0; i < precision; i++)
+		digits[integerDigits + i] = XboxFractionDigit(&fraction);
+
+	if (XboxRoundDigits(digits, integerDigits + precision, XboxFractionHalf(&fraction)))
+	{
+		memmove(digits + 1, digits, integerDigits + precision);
+		digits[0] = '1';
+		integerDigits++;
+	}
+	return integerDigits;
+}
+
+static void XboxPutChar(xboxOut_t *out, char c)
+{
+	if (out->length + 1 < out->size)
+		out->buffer[out->length] = c;
+	out->length++;
+}
+
+static void XboxPutRepeat(xboxOut_t *out, char c, int count)
+{
+	while (count-- > 0)
+		XboxPutChar(out, c);
+}
+
+static void XboxPutText(xboxOut_t *out, const char *text, int count)
+{
+	while (count-- > 0)
+		XboxPutChar(out, *text++);
+}
+
+/* Emits prefix, zeros, then body inside a width-wide field. */
+static void XboxPutField(xboxOut_t *out, const char *prefix, int prefixLength,
+	int zeros, const char *body, int bodyLength, int width, int flags)
+{
+	int pad = width - prefixLength - zeros - bodyLength;
+
+	if (pad < 0)
+		pad = 0;
+	if (!(flags & (XFL_LEFT | XFL_ZERO)))
+		XboxPutRepeat(out, ' ', pad);
+	XboxPutText(out, prefix, prefixLength);
+	if ((flags & XFL_ZERO) && !(flags & XFL_LEFT))
+		XboxPutRepeat(out, '0', pad);
+	XboxPutRepeat(out, '0', zeros);
+	XboxPutText(out, body, bodyLength);
+	if (flags & XFL_LEFT)
+		XboxPutRepeat(out, ' ', pad);
+}
+
+static int XboxSignPrefix(char *prefix, qboolean negative, int flags)
+{
+	if (negative)
+		prefix[0] = '-';
+	else if (flags & XFL_PLUS)
+		prefix[0] = '+';
+	else if (flags & XFL_SPACE)
+		prefix[0] = ' ';
+	else
+		return 0;
+	return 1;
+}
+
+static void XboxFormatInteger(xboxOut_t *out, unsigned long long value, qboolean negative,
+	qboolean isSigned, int base, qboolean upper, int flags, int width, int precision)
+{
+	const char *set = upper ? "0123456789ABCDEF" : "0123456789abcdef";
+	char body[24];
+	char prefix[3];
+	int prefixLength = 0;
+	int bodyLength = 0;
+	int zeros;
+	int i;
+	qboolean isZero = value == 0;
+
+	if (precision >= 0)
+		flags &= ~XFL_ZERO;
+	else
+		precision = 1;
+
+	while (value)
+	{
+		body[bodyLength++] = set[value % base];
+		value /= base;
+	}
+	for (i = 0; i < bodyLength / 2; i++)
+	{
+## CONTEUDO code\sys\xbox_module.h
+/* Copyright (C) 1999-2005 Id Software, Inc. Part of Quake III Arena source code. */
+
+/* Force-included into every native game-module file by Makefile.xbox. */
+
+#ifndef IOQUAKE3_XBOX_MODULE_H
+#define IOQUAKE3_XBOX_MODULE_H
+
+/* pdclib drops %f; xbox_module_libc.c supplies float-capable versions. */
+#define vsnprintf XboxModule_vsnprintf
+#define sscanf XboxModule_sscanf
+
+/* Unique entry names; the build localizes every other module symbol. */
+#if defined(QAGAME)
+#define vmMain vmMainQAG
+#define dllEntry dllEntryQAG
+#elif defined(CGAME)
+#define vmMain vmMainCG
+#define dllEntry dllEntryCG
+#elif defined(UI)
+#define vmMain vmMainUI
+#define dllEntry dllEntryUI
+#else
+#error "Native Xbox module without QAGAME, CGAME or UI"
+#endif
+
+/* Own sections per module, so xbox_modules.c can reset its state on each load. */
+#if defined(QAGAME)
+#pragma clang section bss=".bss$qag1" data=".data$qag1"
+#elif defined(CGAME)
+#pragma clang section bss=".bss$cg1" data=".data$cg1"
+#else
+#pragma clang section bss=".bss$ui1" data=".data$ui1"
+#endif
+
+/* OA modules build against their own vendored qcommon, as in the OA tree. */
+#ifdef STANDALONEOA
+#include "../../oa/code/qcommon/q_shared.h"
+#else
+#include "../qcommon/q_shared.h"
+#endif
+
+/* The entry points are linked into the XBE, not exported from a DLL. */
+#undef Q_EXPORT
+#define Q_EXPORT
+
+#endif
+## CONTEUDO code\sys\xbox_modules.c
+/* Copyright (C) 1999-2005 Id Software, Inc. Part of Quake III Arena source code. */
+
+/* Native qagame, cgame and ui, linked into the XBE by Makefile.xbox. */
+
+#include "sys_xbox.h"
+
+#include "../qcommon/q_shared.h"
+#include "../qcommon/qcommon.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+typedef void (*xboxDllEntry_t)(intptr_t (QDECL *syscallptr)(intptr_t, ...));
+
+#define XBOX_MODULE_DECLARE(suffix) \
+	intptr_t vmMain##suffix(int command, int arg0, int arg1, int arg2, int arg3, int arg4, \
+		int arg5, int arg6, int arg7, int arg8, int arg9, int arg10, int arg11); \
+	void dllEntry##suffix(intptr_t (QDECL *syscallptr)(intptr_t, ...)); \
+	extern char xbox##suffix##DataStart[], xbox##suffix##DataEnd[]; \
+	extern char xbox##suffix##BssStart[], xbox##suffix##BssEnd[]
+
+XBOX_MODULE_DECLARE(QAG);
+XBOX_MODULE_DECLARE(CG);
+XBOX_MODULE_DECLARE(UI);
+
+/* Empty markers around each module's .data$<tag>1/.bss$<tag>1 (see xbox_module.h).
+   lld orders same-named sections by their $ suffix, so 0 and 2 bracket 1. */
+#define XBOX_MODULE_MARKERS(tag, suffix) \
+	__asm__( \
+		".section .data$" tag "0,\"dw\"\n.globl _xbox" suffix "DataStart\n_xbox" suffix "DataStart:\n" \
+		".section .data$" tag "2,\"dw\"\n.globl _xbox" suffix "DataEnd\n_xbox" suffix "DataEnd:\n" \
+		".section .bss$" tag "0,\"bw\"\n.globl _xbox" suffix "BssStart\n_xbox" suffix "BssStart:\n" \
+		".section .bss$" tag "2,\"bw\"\n.globl _xbox" suffix "BssEnd\n_xbox" suffix "BssEnd:\n" \
+		".text\n")
+
+XBOX_MODULE_MARKERS("qag", "QAG");
+XBOX_MODULE_MARKERS("cg", "CG");
+XBOX_MODULE_MARKERS("ui", "UI");
+
+typedef struct
+{
+	const char *name;
+	vmMainProc vmMain;
+	xboxDllEntry_t dllEntry;
+	char *dataStart;
+	char *dataEnd;
+	char *bssStart;
+	char *bssEnd;
+	void *pristineData;
+	qboolean active;
+} xboxModule_t;
+
+#define XBOX_MODULE(name, suffix) \
+	{ name, vmMain##suffix, dllEntry##suffix, \
+		xbox##suffix##DataStart, xbox##suffix##DataEnd, \
+		xbox##suffix##BssStart, xbox##suffix##BssEnd, NULL, qfalse }
+
+static xboxModule_t xboxModules[] =
+{
+	XBOX_MODULE("qagame", QAG),
+	XBOX_MODULE("cgame", CG),
+	XBOX_MODULE("ui", UI),
+};
+
+static xboxModule_t *Sys_XboxFindModule(const char *name)
+{
+	int i;
+
+	for (i = 0; i < (int)ARRAY_LEN(xboxModules); i++)
+	{
+		if (!Q_stricmp(name, xboxModules[i].name))
+			return &xboxModules[i];
+	}
+	return NULL;
+}
+
+/* The Team Arena XBE links the missionpack modules; mods keep loading their own QVMs. */
+#ifdef MISSIONPACK
+#define XBOX_MODULE_GAME BASETA
+#else
+#define XBOX_MODULE_GAME BASEGAME
+#endif
+
+int Sys_XboxUseBuiltinModule(const char *name)
+{
+	return Sys_XboxFindModule(name) && !Q_stricmp(FS_GetCurrentGameDir(), XBOX_MODULE_GAME);
+}
+
+/* A QVM or DLL starts from fresh globals; restore .data and zero .bss to match. */
+static qboolean Sys_XboxResetModule(xboxModule_t *module)
+{
+	size_t dataSize = (size_t)(module->dataEnd - module->dataStart);
+	size_t bssSize = (size_t)(module->bssEnd - module->bssStart);
+
+	if (!module->pristineData)
+	{
+		/* First load: the module has never run, so .data is still the linked image. */
+		module->pristineData = malloc(dataSize ? dataSize : 1);
+		if (!module->pristineData)
+		{
+			Com_Printf("Xbox module %s: no memory for the %d byte data snapshot\n",
+				module->name, (int)dataSize);
+			return qfalse;
+		}
+		memcpy(module->pristineData, module->dataStart, dataSize);
+		Com_Printf("Xbox module %s: data %d KiB, bss %d KiB\n", module->name,
+			(int)(dataSize / 1024), (int)(bssSize / 1024));
+		return qtrue;
+	}
+
+	memcpy(module->dataStart, module->pristineData, dataSize);
+	memset(module->bssStart, 0, bssSize);
+	return qtrue;
+}
+
+void *Sys_LoadGameDll(const char *name, vmMainProc *entryPoint,
+	intptr_t (QDECL *systemcalls)(intptr_t, ...))
+{
+	xboxModule_t *module = Sys_XboxFindModule(name);
+
+	if (!module)
+	{
+		Com_Printf("Xbox module %s: not built in\n", name);
+		return NULL;
+	}
+	if (module->active)
+	{
+		Com_Printf("Xbox module %s: already loaded\n", name);
+		return NULL;
+	}
+
+	/* *entryPoint stays untouched on failure so vm.c can fall back to the QVM. */
+	if (!Sys_XboxResetModule(module))
+		return NULL;
+
+	module->active = qtrue;
+	*entryPoint = module->vmMain;
+	Com_Printf("Xbox module %s: native\n", module->name);
+	module->dllEntry(systemcalls);
+	return module;
+}
+
+void Sys_UnloadDll(void *handle)
+{
+	xboxModule_t *module = handle;
+
+	if (module >= xboxModules && module < xboxModules + ARRAY_LEN(xboxModules))
+		module->active = qfalse;
+}
+## CONTEUDO code\sys\xbox_net.c
+/* Copyright (C) 1999-2005 Id Software, Inc. Part of Quake III Arena source code. */
+
+#include "sys_xbox.h"
+
+#include <nxdk/net.h>
+#include <lwip/autoip.h>
+#include <lwip/dhcp.h>
+#include <lwip/dns.h>
+#include <lwip/ip4_addr.h>
+#include <lwip/netif.h>
+#include <lwip/netifapi.h>
+#include <lwip/netdb.h>
+#include <windows.h>
+
+#include <string.h>
+
+/* RFC 3927 probes plus the announce delay take up to about 9 s. */
+#define XBOX_NET_AUTOIP_WAIT_MSEC 12000
+#define XBOX_NET_POLL_MSEC 250
+/* One slot per master name; a result stays cached for later refreshes. */
+#define XBOX_NET_MAX_LOOKUPS 8
+/* A failed lookup answers from the cache this long, so the rerun command does not start it again. */
+#define XBOX_NET_LOOKUP_RETRY_MSEC 30000
+/* Stack size 0 would take the 1 MiB XBE stack; getaddrinfo needs a few KiB. */
+#define XBOX_NET_LOOKUP_STACK (32 * 1024)
+
+enum { XBOX_LOOKUP_FREE, XBOX_LOOKUP_RUNNING, XBOX_LOOKUP_DONE, XBOX_LOOKUP_FAILED };
+
+typedef struct
+{
+	char host[128];
+	volatile LONG state;
+	volatile uint32_t ip;
+	DWORD startedAt;
+	DWORD failedAt;
+} xboxNetLookup_t;
+
+extern struct netif *g_pnetif;
+
+static int xboxNetReady;
+static xboxNetLookup_t xboxNetLookups[XBOX_NET_MAX_LOOKUPS];
+
+static void Sys_XboxNetLogAddress(void)
+{
+	char ip[IP4ADDR_STRLEN_MAX];
+	char netmask[IP4ADDR_STRLEN_MAX];
+	char gateway[IP4ADDR_STRLEN_MAX];
+	char dns1[IPADDR_STRLEN_MAX];
+	char dns2[IPADDR_STRLEN_MAX];
+
+	ip4addr_ntoa_r(netif_ip4_addr(g_pnetif), ip, sizeof(ip));
+	ip4addr_ntoa_r(netif_ip4_netmask(g_pnetif), netmask, sizeof(netmask));
+	ip4addr_ntoa_r(netif_ip4_gw(g_pnetif), gateway, sizeof(gateway));
+	/* A dashboard manual DNS overrides DHCP; lwIP asks server 2 only after ~7 s on server 1. */
+	ipaddr_ntoa_r(dns_getserver(0), dns1, sizeof(dns1));
+	ipaddr_ntoa_r(dns_getserver(1), dns2, sizeof(dns2));
+	Sys_XboxLog("Xbox net: ip=%s netmask=%s gateway=%s dns=%s,%s link=%s\n", ip, netmask,
+		gateway, dns1, dns2, netif_is_link_up(g_pnetif) ? "up" : "down");
+}
+
+void Sys_XboxNetInit(void)
+{
+	int result;
+	int waited;
+
+	Sys_XboxLog("Xbox net: starting with the dashboard network settings\n");
+	result = nxNetInit(NULL);
+	if (result == -2 && netif_is_link_up(g_pnetif))
+	{
+		/* A System Link cable or a bare switch has no DHCP server, so use 169.254/16. */
+		Sys_XboxLog("Xbox net: no DHCP reply, using link-local addressing\n");
+		netifapi_dhcp_release_and_stop(g_pnetif);
+		netifapi_autoip_start(g_pnetif);
+		for (waited = 0; !autoip_supplied_address(g_pnetif) &&
+			waited < XBOX_NET_AUTOIP_WAIT_MSEC; waited += XBOX_NET_POLL_MSEC)
+			Sys_XboxSleep(XBOX_NET_POLL_MSEC);
+	}
+	else if (result == -2)
+	{
+		Sys_XboxLog("Xbox net: no link, DHCP waits for a cable\n");
+	}
+	else if (result != 0)
+	{
+		Sys_XboxLog("Xbox net: nxNetInit failed (%d), networking disabled\n", result);
+		return;
+	}
+
+	xboxNetReady = 1;
+	Sys_XboxNetLogAddress();
+}
+
+int Sys_XboxNetReady(void)
+{
+	return xboxNetReady;
+}
+
+/* lwIP getaddrinfo blocks its caller until DNS answers or times out (4 tries, ~7 s per server). */
+static DWORD WINAPI Sys_XboxLookupThread(LPVOID param)
+{
+	xboxNetLookup_t *lookup = param;
+	struct addrinfo hints;
+	struct addrinfo *result = NULL;
+	int error;
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
+	error = getaddrinfo(lookup->host, NULL, &hints, &result);
+	if (error == 0 && result) {
+		lookup->ip = ((struct sockaddr_in *)result->ai_addr)->sin_addr.s_addr;
+		Sys_XboxLog("Xbox net: DNS lookup of %s took %u ms\n", lookup->host,
+			(unsigned int)(GetTickCount() - lookup->startedAt));
+		lookup->state = XBOX_LOOKUP_DONE;
+	} else {
+		Sys_XboxLog("Xbox net: DNS lookup of %s failed (%d) after %u ms\n", lookup->host, error,
+			(unsigned int)(GetTickCount() - lookup->startedAt));
+		lookup->failedAt = GetTickCount();
+		lookup->state = XBOX_LOOKUP_FAILED;
+	}
+	if (result)
+		freeaddrinfo(result);
+	return 0;
+}
+
+int Sys_XboxResolveAsync(const char *host, uint32_t *ip)
+{
+	xboxNetLookup_t *lookup = NULL;
+	xboxNetLookup_t *freeSlot = NULL;
+	HANDLE thread;
+	int i;
+
+	if (!xboxNetReady || strlen(host) >= sizeof(lookup->host))
+		return 0;
+	for (i = 0; i < XBOX_NET_MAX_LOOKUPS; i++) {
+		if (xboxNetLookups[i].state == XBOX_LOOKUP_FREE) {
+			if (!freeSlot)
+				freeSlot = &xboxNetLookups[i];
+		} else if (!strcmp(xboxNetLookups[i].host, host)) {
+			lookup = &xboxNetLookups[i];
+			break;
+		}
+	}
+
+	if (lookup && lookup->state == XBOX_LOOKUP_FAILED &&
+		GetTickCount() - lookup->failedAt >= XBOX_NET_LOOKUP_RETRY_MSEC) {
+		freeSlot = lookup;
+		lookup = NULL;
+	}
+	if (!lookup) {
+		if (!freeSlot)
+			return 0;
+		strcpy(freeSlot->host, host);
+		freeSlot->startedAt = GetTickCount();
+		freeSlot->state = XBOX_LOOKUP_RUNNING;
+		thread = CreateThread(NULL, XBOX_NET_LOOKUP_STACK, Sys_XboxLookupThread, freeSlot, 0, NULL);
+		if (!thread) {
+			Sys_XboxLog("Xbox net: no thread for the DNS lookup of %s\n", host);
+			freeSlot->state = XBOX_LOOKUP_FREE;
+			return 0;
+		}
+		CloseHandle(thread);
+		return -1;
+	}
+
+	if (lookup->state == XBOX_LOOKUP_RUNNING)
+		return -1;
+	if (lookup->state == XBOX_LOOKUP_FAILED)
+		return 0;
+	*ip = lookup->ip;
+	return 1;
+}
+
+int Sys_XboxNetAddress(uint32_t *ip, uint32_t *netmask)
+{
+	if (!xboxNetReady || ip4_addr_isany_val(*netif_ip4_addr(g_pnetif)))
+		return 0;
+
+	*ip = ip4_addr_get_u32(netif_ip4_addr(g_pnetif));
+	*netmask = ip4_addr_get_u32(netif_ip4_netmask(g_pnetif));
+	return 1;
+}
+## CONTEUDO code\sys\xbox_qcommon.c
+/* Small nxdk ABI shims that are not supplied by the Xbox C runtime. */
+#include <assert.h>
+#include <stdlib.h>
+
+#include "sys_xbox.h"
+#include "../renderernv2a/xbox_nv2a.h"
+
+/* Keep atof out of the nxdk strtod assertion path used by this target. */
+double atof(const char *text)
+{
+	const char *p = text;
+	double value = 0.0;
+	double fraction = 0.1;
+	int sign = 1;
+	int exponent = 0;
+	int exponentSign = 1;
+
+	while (*p == ' ' || *p == '\t')
+		p++;
+	if (*p == '+' || *p == '-')
+	{
+		if (*p == '-')
+			sign = -1;
+		p++;
+	}
+	while (*p >= '0' && *p <= '9')
+		value = value * 10.0 + (*p++ - '0');
+	if (*p == '.')
+	{
+		p++;
+		while (*p >= '0' && *p <= '9')
+		{
+			value += (*p++ - '0') * fraction;
+			fraction *= 0.1;
+		}
+	}
+	if (*p == 'e' || *p == 'E')
+	{
+		p++;
+		if (*p == '+' || *p == '-')
+		{
+			if (*p == '-')
+				exponentSign = -1;
+			p++;
+		}
+		while (*p >= '0' && *p <= '9')
+			exponent = exponent * 10 + (*p++ - '0');
+		while (exponent-- > 0)
+			value *= exponentSign < 0 ? 0.1 : 10.0;
+	}
+	return sign * value;
+}
+
+/* Replaces pdclib's handler, which halts with its text on the hidden debug screen. */
+void _xbox_assert(char const * const expression, char const * const file_name,
+	char const * const function_name, unsigned long line)
+{
+	XboxNV2A_ShowDebugScreen();
+	Sys_XboxLog("Assertion failed: '%s' in function '%s', file '%s', line %lu\n",
+		expression, function_name, file_name, line);
+	Sys_XboxPlatformShutdown();
+	__asm__ __volatile__("cli\n1:\nhlt\njmp 1b" ::: "memory");
+	for (;;)
+		;
+}
+## CONTEUDO code\sys\xbox_ref.c
+/* Minimal in-process ref API for the native Xbox renderer shell. */
+#include "../qcommon/q_shared.h"
+#include "../renderercommon/tr_public.h"
+#include "../renderernv2a/xbox_nv2a.h"
+#include "sys_xbox.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+/* The ioq3 image loaders (tr_image_*.c) read this global. */
+refimport_t ri;
+
+static refexport_t xboxRefExport;
+
+/* Decoded images are transient; keep them out of the 8 MiB zone. Only the image loaders call this. */
+static void *XboxRefMalloc(int bytes)
+{
+	void *memory = malloc((size_t)(bytes > 0 ? bytes : 1));
+
+	if (!memory) {
+		Sys_XboxMemoryReport("at image decode failure");
+		ri.Error(ERR_DROP, "Xbox ref: out of memory for %d bytes", bytes);
+	}
+	Sys_XboxNoteDecodeMemory();
+	return memory;
+}
+
+static void XboxRefFree(void *memory)
+{
+	free(memory);
+}
+
+static qhandle_t XboxRefRegisterShader(const char *name)
+{
+	return XboxNV2AShader_Register(name, qtrue);
+}
+
+static qhandle_t XboxRefRegisterShaderNoMip(const char *name)
+{
+	return XboxNV2AShader_Register(name, qfalse);
+}
+
+static void XboxRefShutdown(qboolean destroyWindow)
+{
+	XboxNV2A_Shutdown(destroyWindow);
+}
+
+static void XboxRefBeginRegistration(glconfig_t *config)
+{
+	XboxNV2A_BeginRegistration(config);
+}
+
+static qhandle_t XboxRefRegisterModel(const char *name)
+{
+	return XboxNV2AModel_Register(name);
+}
+
+static qhandle_t XboxRefRegisterSkin(const char *name)
+{
+	return XboxNV2ASkin_Register(name);
+}
+
+/* CL_InitCGame calls this once the map and cgame media are loaded. */
+static void XboxRefEndRegistration(void)
+{
+	Sys_XboxHeapTrim();
+	Sys_XboxMemoryReport("after registration");
+}
+static void XboxRefLoadWorld(const char *name)
+{
+	XboxNV2AWorld_Load(name);
+}
+/* The world reads PVS rows through ri.CM_ClusterPVS instead. */
+static void XboxRefSetWorldVisData(const byte *vis) { (void)vis; }
+static void XboxRefClearScene(void)
+{
+	XboxNV2A_ClearScene();
+}
+static void XboxRefAddRefEntity(const refEntity_t *entity)
+{
+	XboxNV2A_AddRefEntity(entity);
+}
+static void XboxRefAddPoly(qhandle_t shader, int numVerts,
+	const polyVert_t *verts, int num)
+{
+	XboxNV2A_AddPoly(shader, numVerts, verts, num);
+}
+static int XboxRefLightForPoint(vec3_t point, vec3_t ambient,
+	vec3_t directed, vec3_t direction)
+{
+	return XboxNV2AWorld_LightGrid(point, ambient, directed, direction);
+}
+static void XboxRefAddLight(const vec3_t org, float intensity,
+	float r, float g, float b)
+{
+	XboxNV2A_AddLight(org, intensity, r, g, b);
+}
+static void XboxRefRenderScene(const refdef_t *fd)
+{
+	XboxNV2A_RenderScene(fd);
+}
+static void XboxRefSetColor(const float *rgba)
+{
+	XboxNV2A_SetColor(rgba);
+}
+static void XboxRefDrawStretchPic(float x, float y, float w, float h,
+	float s1, float t1, float s2, float t2, qhandle_t shader)
+{
+	XboxNV2A_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, shader);
+}
+static void XboxRefDrawStretchRaw(int x, int y, int w, int h, int cols,
+	int rows, const byte *data, int client, qboolean dirty)
+{
+	XboxNV2A_DrawStretchRaw(x, y, w, h, cols, rows, data, client, dirty);
+}
+static void XboxRefUploadCinematic(int w, int h, int cols, int rows,
+	const byte *data, int client, qboolean dirty)
+{
+	(void)w; (void)h;
+	XboxNV2A_UploadCinematic(cols, rows, data, client, dirty);
+}
+static void XboxRefBeginFrame(stereoFrame_t stereo)
+{
+	XboxNV2A_BeginFrame(stereo);
+}
+static void XboxRefEndFrame(int *front, int *back)
+{
+	XboxNV2A_EndFrame(front, back);
+}
+static int XboxRefMarkFragments(int numPoints, const vec3_t *points,
+	const vec3_t projection, int maxPoints, vec3_t pointBuffer,
+	int maxFragments, markFragment_t *fragmentBuffer)
+{
+	return XboxNV2AWorld_MarkFragments(numPoints, points, projection, maxPoints,
+		pointBuffer, maxFragments, fragmentBuffer);
+}
+static int XboxRefLerpTag(orientation_t *tag, qhandle_t model, int start,
+	int end, float frac, const char *tagName)
+{
+	return XboxNV2AModel_LerpTag(tag, model, start, end, frac, tagName);
+}
+static void XboxRefModelBounds(qhandle_t model, vec3_t mins, vec3_t maxs)
+{
+	XboxNV2AModel_Bounds(model, mins, maxs);
+}
+/* TA ui/cgame text: the prebuilt fonts/fontImage_<size>.dat that tr_font.c reads without FreeType.
+   The file is a raw little-endian fontInfo_t, the same layout on this 32-bit target. */
+static void XboxRefRegisterFont(const char *name, int size, fontInfo_t *font)
+{
+	char path[MAX_QPATH];
+	void *data;
+	long length;
+	int i;
+
+	memset(font, 0, sizeof(*font));
+	if (!name)
+		return;
+	if (size <= 0)
+		size = 12;
+	Com_sprintf(path, sizeof(path), "fonts/fontImage_%i.dat", size);
+	length = ri.FS_ReadFile(path, &data);
+	if (length != (long)sizeof(*font)) {
+		if (length > 0)
+			ri.FS_FreeFile(data);
+		ri.Printf(PRINT_WARNING, "Xbox ref: no prebuilt font %s\n", path);
+		return;
+	}
+	memcpy(font, data, sizeof(*font));
+	ri.FS_FreeFile(data);
+	Q_strncpyz(font->name, path, sizeof(font->name));
+	for (i = GLYPH_START; i <= GLYPH_END; i++) {
+		font->glyphs[i].shaderName[sizeof(font->glyphs[i].shaderName) - 1] = '\0';
+		font->glyphs[i].glyph = XboxRefRegisterShaderNoMip(font->glyphs[i].shaderName);
+	}
+}
+static void XboxRefRemapShader(const char *oldShader, const char *newShader,
+	const char *offsetTime)
+{
+	(void)oldShader; (void)newShader; (void)offsetTime;
+}
+static qboolean XboxRefGetEntityToken(char *buffer, int size)
+{
+	return XboxNV2AWorld_GetEntityToken(buffer, size);
+}
+static qboolean XboxRefInPVS(const vec3_t p1, const vec3_t p2)
+{
+	return XboxNV2AWorld_InPVS(p1, p2);
+}
+static void XboxRefTakeVideoFrame(int h, int w, byte *capture,
+	byte *encode, qboolean motionJpeg)
+{
+	(void)h; (void)w; (void)capture; (void)encode; (void)motionJpeg;
+}
+
+refexport_t *GetRefAPI(int apiVersion, refimport_t *rimp)
+{
+	if (apiVersion != REF_API_VERSION || !rimp)
+		return NULL;
+	ri = *rimp;
+	ri.Malloc = XboxRefMalloc;
+	ri.Free = XboxRefFree;
+	if (!XboxNV2A_Init())
+		return NULL;
+
+	memset(&xboxRefExport, 0, sizeof(xboxRefExport));
+	xboxRefExport.Shutdown = XboxRefShutdown;
+	xboxRefExport.BeginRegistration = XboxRefBeginRegistration;
+	xboxRefExport.RegisterModel = XboxRefRegisterModel;
+	xboxRefExport.RegisterSkin = XboxRefRegisterSkin;
+	xboxRefExport.RegisterShader = XboxRefRegisterShader;
+	xboxRefExport.RegisterShaderNoMip = XboxRefRegisterShaderNoMip;
+	xboxRefExport.LoadWorld = XboxRefLoadWorld;
+	xboxRefExport.SetWorldVisData = XboxRefSetWorldVisData;
+	xboxRefExport.EndRegistration = XboxRefEndRegistration;
+	xboxRefExport.ClearScene = XboxRefClearScene;
+	xboxRefExport.AddRefEntityToScene = XboxRefAddRefEntity;
+	xboxRefExport.AddPolyToScene = XboxRefAddPoly;
+	xboxRefExport.LightForPoint = XboxRefLightForPoint;
+	xboxRefExport.AddLightToScene = XboxRefAddLight;
+	xboxRefExport.AddAdditiveLightToScene = XboxRefAddLight;
+	xboxRefExport.RenderScene = XboxRefRenderScene;
+	xboxRefExport.SetColor = XboxRefSetColor;
+	xboxRefExport.DrawStretchPic = XboxRefDrawStretchPic;
+	xboxRefExport.DrawStretchRaw = XboxRefDrawStretchRaw;
+	xboxRefExport.UploadCinematic = XboxRefUploadCinematic;
+	xboxRefExport.BeginFrame = XboxRefBeginFrame;
+	xboxRefExport.EndFrame = XboxRefEndFrame;
+	xboxRefExport.MarkFragments = XboxRefMarkFragments;
+	xboxRefExport.LerpTag = XboxRefLerpTag;
+	xboxRefExport.ModelBounds = XboxRefModelBounds;
+	xboxRefExport.RegisterFont = XboxRefRegisterFont;
+	xboxRefExport.RemapShader = XboxRefRemapShader;
+	xboxRefExport.GetEntityToken = XboxRefGetEntityToken;
+	xboxRefExport.inPVS = XboxRefInPVS;
+	xboxRefExport.TakeVideoFrame = XboxRefTakeVideoFrame;
+	return &xboxRefExport;
+}
+## CONTEUDO code\sys\xbox_snd_engine.c
+/* ioquake3 base mixer -> native Xbox AC97 PCM bridge. */
+#include "xbox_snd.h"
+
+#include "../client/snd_local.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+#define XBOX_DMA_SAMPLES 32768
+/* The mixer runs at half the AC97's fixed 48 kHz to save CPU; each frame plays twice. */
+#define XBOX_DMA_OUTPUT_RATE 48000
+#define XBOX_DMA_UPSAMPLE 2
+
+static volatile int xboxDmaPos;
+static int xboxDmaRepeat;
+static qboolean xboxDmaStarted;
+
+static void XboxSoundFill(int16_t *samples, int sampleFrames, void *userData)
+{
+	const int16_t *buffer = (const int16_t *)dma.buffer;
+	int i;
+	int source;
+	(void)userData;
+
+	if (!xboxDmaStarted || !dma.buffer)
+	{
+		memset(samples, 0, sampleFrames * 2 * sizeof(*samples));
+		return;
+	}
+
+	source = xboxDmaPos;
+	for (i = 0; i < sampleFrames; ++i)
+	{
+		samples[i * 2] = buffer[source];
+		samples[i * 2 + 1] = buffer[source + 1];
+		if (++xboxDmaRepeat < XBOX_DMA_UPSAMPLE)
+			continue;
+		xboxDmaRepeat = 0;
+		source += 2;
+		if (source >= dma.samples)
+			source = 0;
+	}
+	xboxDmaPos = source;
+}
+
+qboolean SNDDMA_Init(void)
+{
+	if (xboxDmaStarted)
+		return qtrue;
+
+	dma.samplebits = 16;
+	dma.isfloat = qfalse;
+	dma.channels = 2;
+	dma.samples = XBOX_DMA_SAMPLES;
+	dma.fullsamples = dma.samples / dma.channels;
+	dma.submission_chunk = 1024;
+	dma.speed = XBOX_DMA_OUTPUT_RATE / XBOX_DMA_UPSAMPLE;
+	dma.buffer = (byte *)calloc((size_t)dma.samples, dma.samplebits / 8);
+	if (!dma.buffer)
+		return qfalse;
+
+	memset(dma.buffer, 0, (size_t)dma.samples * dma.samplebits / 8);
+	xboxDmaPos = 0;
+	xboxDmaRepeat = 0;
+	if (!Sys_XboxSoundInit(XboxSoundFill, NULL))
+	{
+		free(dma.buffer);
+		dma.buffer = NULL;
+		return qfalse;
+	}
+	xboxDmaStarted = qtrue;
+	return qtrue;
+}
+
+int SNDDMA_GetDMAPos(void)
+{
+	return xboxDmaPos;
+}
+
+void SNDDMA_Shutdown(void)
+{
+	if (!xboxDmaStarted)
+		return;
+	Sys_XboxSoundShutdown();
+	free(dma.buffer);
+	dma.buffer = NULL;
+	xboxDmaStarted = qfalse;
+}
+
+void SNDDMA_BeginPainting(void) {}
+void SNDDMA_Submit(void) {}
+## CONTEUDO code\sys\xbox_snd.c
+/* Native Original Xbox AC97 PCM service. */
+#include "xbox_snd.h"
+
+#include <string.h>
+
+#include <hal/audio.h>
+#include <xboxkrnl/xboxkrnl.h>
+
+#define XBOX_SOUND_SAMPLES 2048
+#define XBOX_SOUND_BUFFERS 3
+
+static xboxSoundFill_t xboxSoundFill;
+static void *xboxSoundUserData;
+static qboolean xboxSoundStarted;
+static int16_t *xboxSoundMemory;
+static int xboxSoundNext;
+
+static void Sys_XboxSoundQueue(void)
+{
+	int16_t *buffer = xboxSoundMemory + xboxSoundNext * XBOX_SOUND_SAMPLES;
+
+	if (xboxSoundFill)
+		xboxSoundFill(buffer, XBOX_SOUND_SAMPLES / 2, xboxSoundUserData);
+	else
+		memset(buffer, 0, sizeof(int16_t) * XBOX_SOUND_SAMPLES);
+	XAudioProvideSamples((unsigned char *)buffer,
+		sizeof(int16_t) * XBOX_SOUND_SAMPLES, 0);
+	xboxSoundNext = (xboxSoundNext + 1) % XBOX_SOUND_BUFFERS;
+}
+
+/* Runs as a DPC once per consumed buffer; buffers complete in queue order. */
+static void Sys_XboxSoundCallback(void *device, void *data)
+{
+	(void)device;
+	(void)data;
+	Sys_XboxSoundQueue();
+}
+
+qboolean Sys_XboxSoundInit(xboxSoundFill_t fill, void *userData)
+{
+	int i;
+
+	if (xboxSoundStarted)
+		return qtrue;
+	xboxSoundMemory = (int16_t *)MmAllocateContiguousMemoryEx(
+		sizeof(int16_t) * XBOX_SOUND_SAMPLES * XBOX_SOUND_BUFFERS, 0,
+		64 * 1024 * 1024, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
+	if (!xboxSoundMemory)
+		return qfalse;
+	memset(xboxSoundMemory, 0,
+		sizeof(int16_t) * XBOX_SOUND_SAMPLES * XBOX_SOUND_BUFFERS);
+	xboxSoundUserData = userData;
+	xboxSoundNext = 0;
+	XAudioInit(16, 2, Sys_XboxSoundCallback, NULL);
+	for (i = 0; i < XBOX_SOUND_BUFFERS; ++i)
+		Sys_XboxSoundQueue();
+	xboxSoundFill = fill;
+	XAudioPlay();
+	xboxSoundStarted = qtrue;
+	return qtrue;
+}
+
+void Sys_XboxSoundShutdown(void)
+{
+	if (!xboxSoundStarted)
+		return;
+	XAudioPause();
+	MmFreeContiguousMemory(xboxSoundMemory);
+	xboxSoundMemory = NULL;
+	xboxSoundFill = NULL;
+	xboxSoundUserData = NULL;
+	xboxSoundStarted = qfalse;
+}
+
+void Sys_XboxSoundSetPaused(qboolean paused)
+{
+	if (!xboxSoundStarted)
+		return;
+	if (paused)
+		XAudioPause();
+	else
+		XAudioPlay();
+}
+## CONTEUDO code\sys\xbox_snd.h
+/* Native Original Xbox AC97 PCM service. */
+#ifndef IOQUAKE3_XBOX_SND_H
+#define IOQUAKE3_XBOX_SND_H
+
+#include "../qcommon/q_shared.h"
+
+typedef void (*xboxSoundFill_t)(int16_t *samples, int sampleCount, void *userData);
+
+qboolean Sys_XboxSoundInit(xboxSoundFill_t fill, void *userData);
+void Sys_XboxSoundShutdown(void);
+void Sys_XboxSoundSetPaused(qboolean paused);
+
+#endif
+## openmohaa code\sdl: funcoes exportadas
+code\sdl\sdl_gamma.c:39: void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned char blue[256] )
+code\sdl\sdl_glimp.c:89: void GLimp_Shutdown( void )
+code\sdl\sdl_glimp.c:103: void GLimp_Minimize( void )
+code\sdl\sdl_glimp.c:114: void GLimp_LogComment( char *comment )
+code\sdl\sdl_glimp.c:1083: void GLimp_Init( qboolean fixedFunction )
+code\sdl\sdl_glimp.c:1190: void GLimp_EndFrame( void )
+code\sdl\sdl_input.c:1247: void IN_Frame( void )
+code\sdl\sdl_input.c:1295: void IN_Init( void *windowData )
+code\sdl\sdl_input.c:1340: void IN_Shutdown( void )
+code\sdl\sdl_input.c:1357: void IN_Restart( void )
+code\sdl\sdl_mouse.c:36: void IN_GetMousePosition(int *x, int *y) {
+code\sdl\sdl_mouse.c:40: qboolean IN_SetCursorFromImage(const byte *pic, int width, int height, pCursorFree cursorFreeFn) {
+code\sdl\sdl_mouse.c:54: void IN_FreeCursor() {
+code\sdl\sdl_mouse.c:67: qboolean IN_IsCursorActive()
+code\sdl\sdl_snd.c:186: qboolean SNDDMA_Init(void)
+code\sdl\sdl_snd.c:325: int SNDDMA_GetDMAPos(void)
+code\sdl\sdl_snd.c:335: void SNDDMA_Shutdown(void)
+code\sdl\sdl_snd.c:370: void SNDDMA_Submit(void)
+code\sdl\sdl_snd.c:380: void SNDDMA_BeginPainting (void)
+code\sdl\sdl_snd.c:387: void SNDDMA_StartCapture(void)
+code\sdl\sdl_snd.c:398: int SNDDMA_AvailableCaptureSamples(void)
+code\sdl\sdl_snd.c:408: void SNDDMA_Capture(int samples, byte *data)
+code\sdl\sdl_snd.c:423: void SNDDMA_StopCapture(void)
+code\sdl\sdl_snd.c:433: void SNDDMA_MasterGain( float val )
+## openmohaa renderercommon qgl.h (macros/listas)
+26: #ifndef __QGL_H__
+27: #define __QGL_H__
+35: extern void (APIENTRYP qglActiveTextureARB) (GLenum texture);
+36: extern void (APIENTRYP qglClientActiveTextureARB) (GLenum texture);
+37: extern void (APIENTRYP qglMultiTexCoord2fARB) (GLenum target, GLfloat s, GLfloat t);
+39: extern void (APIENTRYP qglLockArraysEXT) (GLint first, GLsizei count);
+40: extern void (APIENTRYP qglUnlockArraysEXT) (void);
+49: #define QGL_1_1_PROCS \
+94: #define QGL_1_1_FIXED_FUNCTION_PROCS \
+111: #define QGL_DESKTOP_1_1_PROCS \
+118: #define QGL_DESKTOP_1_1_FIXED_FUNCTION_PROCS \
+134: #define QGL_ES_1_1_PROCS \
+139: #define QGL_ES_1_1_FIXED_FUNCTION_PROCS \
+145: #define QGL_1_3_PROCS \
+151: #define QGL_ARB_occlusion_query_PROCS \
+160: #define QGL_1_5_PROCS \
+168: #define QGL_2_0_PROCS \
+201: #define GL_NVX_gpu_memory_info
+202: #define GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX          0x9047
+203: #define GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX    0x9048
+204: #define GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX  0x9049
+205: #define GL_GPU_MEMORY_INFO_EVICTION_COUNT_NVX            0x904A
+206: #define GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX            0x904B
+211: #define GL_ATI_meminfo
+212: #define GL_VBO_FREE_MEMORY_ATI                    0x87FB
+213: #define GL_TEXTURE_FREE_MEMORY_ATI                0x87FC
+214: #define GL_RENDERBUFFER_FREE_MEMORY_ATI           0x87FD
+219: #define GL_ARB_texture_float
+220: #define GL_TEXTURE_RED_TYPE_ARB             0x8C10
+221: #define GL_TEXTURE_GREEN_TYPE_ARB           0x8C11
+222: #define GL_TEXTURE_BLUE_TYPE_ARB            0x8C12
+223: #define GL_TEXTURE_ALPHA_TYPE_ARB           0x8C13
+224: #define GL_TEXTURE_LUMINANCE_TYPE_ARB       0x8C14
+225: #define GL_TEXTURE_INTENSITY_TYPE_ARB       0x8C15
+226: #define GL_TEXTURE_DEPTH_TYPE_ARB           0x8C16
+227: #define GL_UNSIGNED_NORMALIZED_ARB          0x8C17
+228: #define GL_RGBA32F_ARB                      0x8814
+229: #define GL_RGB32F_ARB                       0x8815
+230: #define GL_ALPHA32F_ARB                     0x8816
+231: #define GL_INTENSITY32F_ARB                 0x8817
+232: #define GL_LUMINANCE32F_ARB                 0x8818
+233: #define GL_LUMINANCE_ALPHA32F_ARB           0x8819
+234: #define GL_RGBA16F_ARB                      0x881A
+235: #define GL_RGB16F_ARB                       0x881B
+236: #define GL_ALPHA16F_ARB                     0x881C
+237: #define GL_INTENSITY16F_ARB                 0x881D
+238: #define GL_LUMINANCE16F_ARB                 0x881E
+239: #define GL_LUMINANCE_ALPHA16F_ARB           0x881F
+243: #define GL_ARB_half_float_pixel
+244: #define GL_HALF_FLOAT_ARB                   0x140B
+248: #define QGL_3_0_PROCS \
+252: #define QGL_ARB_framebuffer_object_PROCS \
+268: #define QGL_ARB_vertex_array_object_PROCS \
+274: #define GL_ARB_texture_compression_rgtc
+275: #define GL_COMPRESSED_RED_RGTC1                       0x8DBB
+276: #define GL_COMPRESSED_SIGNED_RED_RGTC1                0x8DBC
+277: #define GL_COMPRESSED_RG_RGTC2                        0x8DBD
+278: #define GL_COMPRESSED_SIGNED_RG_RGTC2                 0x8DBE
+282: #define GL_ARB_texture_compression_bptc
+283: #define GL_COMPRESSED_RGBA_BPTC_UNORM_ARB                 0x8E8C

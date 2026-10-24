@@ -615,3 +615,10 @@
 - 17p xemu: MARCO - centipede1 com 0 entidades Object; Complete 12.70 s; Hitch 5908 ms; heartbeat 41..283 (+40/2s); trigger_multiple OK
 - Dedicado encerrado como prova de boot; inicio do BUILD CLIENTE
 - 18a: inventario (options CMake, sdl.cmake, pastas cliente/renderer, usos SDL/qgl/OpenAL, GetRefAPI/dlopen, NV2A/input do ioQuake3-Xbox) em docs/probes/lote18a-cliente.log, sem build
+
+## Lote 18b (2026-10-24 18:28)
+- 18a: cliente = renderergl1 (32 arq, 968 qgl) + code\sdl (5 arq, 354 SDL_) + sys (39) + renderercommon (4); GetRefAPI estatico com USE_RENDERER_DLOPEN=OFF (cl_main.cpp:3340)
+- 18a: opcoes Xbox = CLIENT ON, SERVER OFF, GL2 OFF, RENDERER_DLOPEN OFF, OPENAL OFF, HTTP OFF, OPUS OFF; sdl.cmake precisa retornar sob NXDK
+- 18a: contagem OpenAL = falso positivo (regex al[A-Z]); filtro ioq3 casou 'Xbox' do nome da pasta -> invalido
+- 18a: ioq3 tem sys\xbox_input.c (usbh_lib), xbox_input_engine.c, xbox_snd.c (XAudioProvideSamples)
+- 18b: coleta focada ioq3 (sys\xbox*, GLimp/pbkit, build) + exports code\sdl + qgl.h (docs/probes/lote18b-nv2a.log), sem build
