@@ -573,3 +573,8 @@
 - 17h: 'alias' = EV_RegisterAlias da classe ScriptMaster (scriptmaster.cpp:103), nao da thread -> checkValidEvent (scriptvm.cpp:607) lanca; formato 'alias "a" "b"' correto
 - 17i: zz_lg_scr.pk3 pos-processado: 'local.lg_master = spawn ScriptMaster' + 'local.lg_master alias ...' (alias=527, spawns=31); ISO recriada, sem build
 - Pendente: levar a regra pro scr2morph v3; checkValidEvent sob NXDK -> aviso em vez de throw
+
+## Lote 17j (2026-10-24 16:07)
+- 17i xemu: alias OK via ScriptMaster (527 alias / 31 spawns); novo 'SE command nottriggerable applied to NULL listener' -> throw (entidade $nome inexistente)
+- 17j: coleta origem 'NULL listener' + nottriggerable (traduzido x original) + targetnames do centipede1.bsp (docs/probes/lote17j-nulllistener.log), sem build
+- Plano 17k: NULL listener sob NXDK -> aviso 'LG: nul X' + pula comando (comportamento do jogo original = so warning)

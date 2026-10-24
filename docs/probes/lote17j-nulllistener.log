@@ -1,0 +1,355 @@
+# Lote 17j 2026-10-24 16:07 - coleta 'applied to NULL listener' + nottriggerable
+## origem da mensagem
+### D:\openmohaa\code\script\scriptvm.cpp:723
+694:             // while iterating
+695:             ScriptVariable array = a;
+696:             array.CastConstArrayValue();
+697: 
+698:             for (uintptr_t i = arraysize; i > 0; i--) {
+699:                 Listener *const listener = array.listenerAt(i);
+700: 
+701:                 // if the listener is NULL, don't throw an exception
+702:                 // it would be unfair if the other listeners executed the command
+703:                 if (listener) {
+704:                     executeCommand<true>(listener, param, eventNum);
+705:                 }
+706:             }
+707:         } else {
+708:             ScriptVariable array = a;
+709:             // must cast into a const array value
+710:             array.CastConstArrayValue();
+711: 
+712:             for (uintptr_t i = array.arraysize(); i > 0; i--) {
+713:                 Listener *const listener = array.listenerAt(i);
+714:                 if (listener) {
+715:                     executeCommand<true>(listener, param, eventNum);
+716:                 }
+717:             }
+718:         }
+719:     } else {
+720:         // avoid useless allocations of const array
+721:         Listener *const listener = a.listenerValue();
+722:         if (!listener) {
+723:             throw ScriptException("command '%s' applied to NULL listener", Event::GetEventName(eventNum));
+724:         }
+725: 
+726:         executeCommand<true>(listener, param, eventNum);
+727:     }
+728: }
+729: 
+730: void ScriptVM::execMethodCommon(op_parmNum_t param)
+731: {
+732:     const ScriptVariable& a        = m_VMStack.Pop();
+733:     const op_ev_t         eventNum = fetchOpcodeValue<op_ev_t>();
+734: 
+735:     m_VMStack.Pop(param);
+### D:\openmohaa\code\script\scriptvm.cpp:742
+713:                 Listener *const listener = array.listenerAt(i);
+714:                 if (listener) {
+715:                     executeCommand<true>(listener, param, eventNum);
+716:                 }
+717:             }
+718:         }
+719:     } else {
+720:         // avoid useless allocations of const array
+721:         Listener *const listener = a.listenerValue();
+722:         if (!listener) {
+723:             throw ScriptException("command '%s' applied to NULL listener", Event::GetEventName(eventNum));
+724:         }
+725: 
+726:         executeCommand<true>(listener, param, eventNum);
+727:     }
+728: }
+729: 
+730: void ScriptVM::execMethodCommon(op_parmNum_t param)
+731: {
+732:     const ScriptVariable& a        = m_VMStack.Pop();
+733:     const op_ev_t         eventNum = fetchOpcodeValue<op_ev_t>();
+734: 
+735:     m_VMStack.Pop(param);
+736:     // push the return value
+737:     m_VMStack.Push();
+738: 
+739:     Listener *const listener = a.listenerValue();
+740:     if (!listener) {
+741:         m_VMStack.GetTop().Clear();
+742:         throw ScriptException("command '%s' applied to NULL listener", Event::GetEventName(eventNum));
+743:     }
+744: 
+745:     executeCommand<true, true>(listener, param, eventNum);
+746: }
+747: 
+748: void ScriptVM::execFunction(ScriptMaster& Director)
+749: {
+750:     if (!fetchOpcodeValue<bool>()) {
+751:         const op_name_t    label  = fetchOpcodeValue<op_name_t>();
+752:         const op_parmNum_t params = fetchOpcodeValue<op_parmNum_t>();
+753: 
+754:         Listener *listener;
+### D:\openmohaa\code\script\scriptvm.cpp:761
+732:     const ScriptVariable& a        = m_VMStack.Pop();
+733:     const op_ev_t         eventNum = fetchOpcodeValue<op_ev_t>();
+734: 
+735:     m_VMStack.Pop(param);
+736:     // push the return value
+737:     m_VMStack.Push();
+738: 
+739:     Listener *const listener = a.listenerValue();
+740:     if (!listener) {
+741:         m_VMStack.GetTop().Clear();
+742:         throw ScriptException("command '%s' applied to NULL listener", Event::GetEventName(eventNum));
+743:     }
+744: 
+745:     executeCommand<true, true>(listener, param, eventNum);
+746: }
+747: 
+748: void ScriptVM::execFunction(ScriptMaster& Director)
+749: {
+750:     if (!fetchOpcodeValue<bool>()) {
+751:         const op_name_t    label  = fetchOpcodeValue<op_name_t>();
+752:         const op_parmNum_t params = fetchOpcodeValue<op_parmNum_t>();
+753: 
+754:         Listener *listener;
+755: 
+756:         try {
+757:             listener = m_VMStack.GetTop().listenerValue();
+758: 
+759:             if (!listener) {
+760:                 const str& labelName = Director.GetString(label);
+761:                 throw ScriptException("function '" + labelName + "' applied to NULL listener");
+762:             }
+763:         } catch (...) {
+764:             m_VMStack.Pop(params);
+765:             throw;
+766:         }
+767: 
+768:         m_VMStack.Pop();
+769: 
+770:         Container<ScriptVariable> data;
+771:         data.Resize(params + 1);
+772: 
+773:         ScriptVariable *labelVar = &data.ObjectAt(data.AddObject(ScriptVariable()));
+### D:\openmohaa\code\script\scriptvm.cpp:798
+769: 
+770:         Container<ScriptVariable> data;
+771:         data.Resize(params + 1);
+772: 
+773:         ScriptVariable *labelVar = &data.ObjectAt(data.AddObject(ScriptVariable()));
+774:         labelVar->setConstStringValue(label);
+775: 
+776:         const ScriptVariable *var = &m_VMStack.Pop(params);
+777: 
+778:         for (int i = 0; i < params; var++, i++) {
+779:             data.AddObject(*var);
+780:         }
+781: 
+782:         m_VMStack.Push();
+783:         EnterFunction(std::move(data));
+784: 
+785:         GetScriptClass()->m_Self = listener;
+786:     } else {
+787:         const op_name_t    filename = fetchOpcodeValue<op_name_t>();
+788:         const op_name_t    label    = fetchOpcodeValue<op_name_t>();
+789:         const op_parmNum_t params   = fetchOpcodeValue<op_parmNum_t>();
+790: 
+791:         Listener *listener;
+792:         try {
+793:             listener = m_VMStack.GetTop().listenerValue();
+794: 
+795:             if (!listener) {
+796:                 const str& labelStr = Director.GetString(label);
+797:                 const str& fileStr  = Director.GetString(filename);
+798:                 throw ScriptException("function '" + labelStr + "' in '" + fileStr + "' applied to NULL listener");
+799:             }
+800:         } catch (...) {
+801:             m_VMStack.Pop(params);
+802:             throw;
+803:         }
+804: 
+805:         m_VMStack.Pop();
+806: 
+807:         ScriptVariable  constarray;
+808:         ScriptVariable *pVar = new ScriptVariable[2];
+809: 
+810:         pVar[0].setConstStringValue(filename);
+### D:\openmohaa\code\script\scriptvm.cpp:1436
+1407:                     break;
+1408:                 }
+1409: 
+1410:             case OP_JUMP4:
+1411:                 jump(fetchOpcodeValue<unsigned int>());
+1412:                 break;
+1413: 
+1414:             case OP_JUMP_BACK4:
+1415:                 jumpBack(fetchActualOpcodeValue<unsigned int>());
+1416:                 break;
+1417: 
+1418:             case OP_LOAD_ARRAY_VAR:
+1419:                 a = &m_VMStack.Pop();
+1420:                 b = &m_VMStack.Pop();
+1421:                 c = &m_VMStack.Pop();
+1422: 
+1423:                 b->setArrayAt(*a, *c);
+1424:                 break;
+1425: 
+1426:             case OP_LOAD_FIELD_VAR:
+1427:                 a = &m_VMStack.Pop();
+1428: 
+1429:                 try {
+1430:                     try {
+1431:                         listener = a->listenerValue();
+1432: 
+1433:                         if (listener == NULL) {
+1434:                             fieldNameIndex = fetchActualOpcodeValue<op_name_t>();
+1435:                             ScriptError(
+1436:                                 "Field '%s' applied to NULL listener", Director.GetString(fieldNameIndex).c_str()
+1437:                             );
+1438:                         }
+1439:                     } catch (...) {
+1440:                         skipField();
+1441:                         throw;
+1442:                     }
+1443: 
+1444:                     loadTop(listener);
+1445:                 } catch (...) {
+1446:                     m_VMStack.Pop();
+1447:                     throw;
+1448:                 }
+### D:\openmohaa\code\script\scriptvm.cpp:1588
+1559:                 } else {
+1560:                     m_VMStack.SetTop(*(m_StackPos + 1));
+1561:                     m_VMStack.GetTop().Clear();
+1562:                 }
+1563:                 break;
+1564: 
+1565:             case OP_RESTORE_STACK_POS:
+1566:                 m_VMStack.SetTop(*m_StackPos);
+1567:                 m_VMStack.m_bMarkStack = false;
+1568:                 break;
+1569: 
+1570:             case OP_STORE_ARRAY:
+1571:                 m_VMStack.Pop();
+1572:                 m_VMStack.GetTop().evalArrayAt(*(m_VMStack.GetTopPtr() + 1));
+1573:                 break;
+1574: 
+1575:             case OP_STORE_ARRAY_REF:
+1576:                 m_VMStack.Pop();
+1577:                 m_VMStack.GetTop().setArrayRefValue(*(m_VMStack.GetTopPtr() + 1));
+1578:                 break;
+1579: 
+1580:             case OP_STORE_FIELD_REF:
+1581:                 try {
+1582:                     try {
+1583:                         listener = m_VMStack.GetTop().listenerValue();
+1584: 
+1585:                         if (listener == nullptr) {
+1586:                             fieldNameIndex = fetchActualOpcodeValue<op_name_t>();
+1587:                             ScriptError(
+1588:                                 "Field '%s' applied to NULL listener", Director.GetString(fieldNameIndex).c_str()
+1589:                             );
+1590:                         }
+1591:                     } catch (...) {
+1592:                         skipField();
+1593:                         m_VMStack.GetTop().Clear();
+1594:                         throw;
+1595:                     }
+1596: 
+1597:                     ScriptVariable *const listenerVar = storeTop<true>(listener);
+1598: 
+1599:                     if (listenerVar) {
+1600:                         // having a listener variable means the variable was just created
+### D:\openmohaa\code\script\scriptvm.cpp:1616
+1587:                             ScriptError(
+1588:                                 "Field '%s' applied to NULL listener", Director.GetString(fieldNameIndex).c_str()
+1589:                             );
+1590:                         }
+1591:                     } catch (...) {
+1592:                         skipField();
+1593:                         m_VMStack.GetTop().Clear();
+1594:                         throw;
+1595:                     }
+1596: 
+1597:                     ScriptVariable *const listenerVar = storeTop<true>(listener);
+1598: 
+1599:                     if (listenerVar) {
+1600:                         // having a listener variable means the variable was just created
+1601:                         m_VMStack.GetTop().setRefValue(listenerVar);
+1602:                     }
+1603:                     break;
+1604:                 } catch (...) {
+1605:                     ScriptVariable *const pTop = m_VMStack.GetTopPtr();
+1606:                     pTop->setRefValue(pTop);
+1607:                     throw;
+1608:                 }
+1609: 
+1610:             case OP_STORE_FIELD:
+1611:                 try {
+1612:                     listener = m_VMStack.GetTop().listenerValue();
+1613: 
+1614:                     if (listener == nullptr) {
+1615:                         fieldNameIndex = fetchActualOpcodeValue<op_name_t>();
+1616:                         ScriptError("Field '%s' applied to NULL listener", Director.GetString(fieldNameIndex).c_str());
+1617:                     }
+1618:                 } catch (...) {
+1619:                     skipField();
+1620:                     m_VMStack.GetTop().Clear();
+1621:                     throw;
+1622:                 }
+1623: 
+1624:                 storeTop<true>(listener);
+1625:                 break;
+1626: 
+1627:             case OP_STORE_FLOAT:
+1628:                 m_VMStack.Push();
+### D:\openmohaa\code\fgame\actor.cpp:12591
+12562: ===============
+12563: */
+12564: void Actor::EventSetReloadCover(Event *ev)
+12565: {
+12566:     m_bNeedReload = ev->GetBoolean(1);
+12567: }
+12568: 
+12569: /*
+12570: ===============
+12571: Actor::EventBreakSpecial
+12572: ===============
+12573: */
+12574: void Actor::EventBreakSpecial(Event *ev)
+12575: {
+12576:     mbBreakSpecialAttack = true;
+12577: }
+12578: 
+12579: /*
+12580: ===============
+12581: Actor::EventCanShoot
+12582: ===============
+12583: */
+12584: void Actor::EventCanShoot(Event *ev)
+12585: {
+12586:     Entity *ent;
+12587: 
+12588:     ent = ev->GetEntity(1);
+12589: 
+12590:     if (!ent) {
+12591:         ScriptError("canshoot applied to NULL listener");
+12592:     }
+12593: 
+12594:     ev->AddInteger(CanShoot(ent));
+12595: }
+12596: 
+12597: /*
+12598: ===============
+12599: Actor::EventSetBalconyHeight
+12600: ===============
+12601: */
+12602: void Actor::EventSetBalconyHeight(Event *ev)
+12603: {
+## nottriggerable em D:\openmohaa\iso-stage\main\zz_lg_scr.pk3
+maps/centipede1.scr:461: $c1_changelevel nottriggerable
+(linhas: 1)
+## nottriggerable em D:\openmohaa\iso-stage\main\pak0.pk3
+maps/centipede1.scr:40: $c1_changelevel.nottriggerable();
+(linhas: 1)
+## targetnames do centipede1.bsp
+total unicos: 71
+alice_watch1 ant_at_end1 ant_at_end2 ant_brave_pos1 ant_brave_pos2 ant_brave_pos3 ant_runner1 ant_runner2 ant_runner3 ants-01 brave_killer1 brave_spawn1 cent_posx1 cent_posx2 centipede_actor1 centipede_watch1 centipede1_start1 lady1 lady2 lady3 lady4 shroom_lid t1 t13 t13b t15 t16 t18 t19 t2 t20 t21 t22 t23 t24 t25 t26 t27 t28 t29 t3 t30 t31 t32 t33 t34 t35 t36 t37 t38 t39 t4 t40 t41 t42 t43 t44 t45 t46 t47 t48 t48b t49 t5 t50 t51 t52 t53 t54 t7 t9
