@@ -1,0 +1,106 @@
+
+##### FORCE em tools/scripts/cmake (LookingGlass-PTBR + openmohaa)
+D:\LookingGlass-PTBR\tools\analyze.ps1:9: New-Item -ItemType Directory -Force -Path $project, $reports | Out-Null
+D:\LookingGlass-PTBR\tools\lote-15w.ps1:8: Copy-Item $xbe.FullName D:\openmohaa\iso-stage\default.xbe -Force
+D:\LookingGlass-PTBR\tools\probe.ps1:23: Copy-Item $log "D:\LookingGlass-PTBR\docs\probes\lote$Lote-openmohaa-$Nome.log" -Force
+D:\LookingGlass-PTBR\tools\test_ants.ps1:9: New-Item -ItemType Directory -Force -Path private/ants | Out-Null
+D:\LookingGlass-PTBR\tools\test_burrow.ps1:9: New-Item -ItemType Directory -Force -Path private/burrow | Out-Null
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:64: New-Item -ItemType Directory -Force -Path $dir | Out-Null
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:69: Remove-Item -Force
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:95: New-Item -ItemType Directory -Force -Path $WorkDir | Out-Null
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:120: Copy-Item -LiteralPath (Join-Path $dir 'report.json') -Destination (Join-Path $dir "report-$Difficulty.json") -Force -ErrorAction SilentlyContinue
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:125: Copy-Item -LiteralPath (Join-Path $dir 'report.json') -Destination (Join-Path $dir "report-$Difficulty-skip.json") -Force -ErrorAction SilentlyContinue
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:129: Copy-Item -LiteralPath (Join-Path $dir "report-$Difficulty.json") -Destination (Join-Path $dir 'report-first.json') -Force
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:157: Copy-Item -LiteralPath (Join-Path $dir 'report.json') -Destination (Join-Path $dir "report-gate-visit-$n.json") -Force -ErrorAction SilentlyContinue
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:167: if (Test-Path -LiteralPath $scratchGate) { Remove-Item -LiteralPath $scratchGate -Recurse -Force }
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:171: Copy-Item -LiteralPath (Join-Path $scratchGate 'private/campaign-chain/report.json') -Destination (Join-Path $dir "report-gate-visit-$n-$other.json") -Force -ErrorAction SilentlyContinue
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:190: Copy-Item -LiteralPath (Join-Path $dir 'report.json') -Destination (Join-Path $dir 'report-pinned-frontier-from-4.json') -Force -ErrorAction SilentlyContinue
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:194: if (Test-Path -LiteralPath $scratch) { Remove-Item -LiteralPath $scratch -Recurse -Force }
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:196: New-Item -ItemType Directory -Force -Path $checkpoints | Out-Null
+D:\LookingGlass-PTBR\tools\test_campaign_chain.ps1:204: if (Test-Path -LiteralPath $empty) { Remove-Item -LiteralPath $empty -Recurse -Force }
+D:\LookingGlass-PTBR\tools\test_chess.ps1:9: New-Item -ItemType Directory -Force -Path private/chess | Out-Null
+D:\LookingGlass-PTBR\tools\test_clock.ps1:9: New-Item -ItemType Directory -Force -Path private/clock | Out-Null
+D:\LookingGlass-PTBR\tools\test_imp.ps1:9: New-Item -ItemType Directory -Force -Path private/imp | Out-Null
+D:\LookingGlass-PTBR\tools\test_magma.ps1:9: New-Item -ItemType Directory -Force -Path private/magma | Out-Null
+D:\LookingGlass-PTBR\tools\test_render_fx.ps1:9: New-Item -ItemType Directory -Force -Path private/render-fx | Out-Null
+D:\LookingGlass-PTBR\tools\test_residents.ps1:9: New-Item -ItemType Directory -Force -Path private/residents | Out-Null
+D:\LookingGlass-PTBR\tools\test_sky_performance.ps1:9: New-Item -ItemType Directory -Force -Path private/sky-performance | Out-Null
+D:\LookingGlass-PTBR\tools\test_snarks.ps1:9: New-Item -ItemType Directory -Force -Path private/snarks | Out-Null
+D:\LookingGlass-PTBR\tools\test_visibility.ps1:23: New-Item -ItemType Directory -Force -Path private/visibility | Out-Null
+D:\LookingGlass-PTBR\tools\test_wildlife.ps1:9: New-Item -ItemType Directory -Force -Path private/wildlife | Out-Null
+D:\LookingGlass-PTBR\tools\windows_setup.ps1:91: if ($base -and $job.download -and $job.purge) { Remove-Item -LiteralPath $src -Force }
+D:\LookingGlass-PTBR\tools\windows_setup.ps1:103: if ($partial -and (Test-Path -LiteralPath $partial)) { Remove-Item -LiteralPath $partial -Force }
+D:\openmohaa\CMakeLists.txt:101: # NXDK_FORCE_MULTIPLE: corepp existe no engine e na libgame
+D:\openmohaa\CMakeLists.txt:103: target_link_options(omohaaded PRIVATE "/FORCE:MULTIPLE")
+D:\openmohaa\cmake\platforms\macos.cmake:97: COMMAND codesign --force --deep --options runtime
+
+##### CMakeCache.txt (linker flags)
+94: CMAKE_CXX_FLAGS:STRING=-I/shims -include/shims/lg_compat.h -I/usr/src/nxdk/lib/xboxrt/libc_extensions -I/usr/src/nxdk/lib/net/lwip/src/include -I/usr/src/nxdk/lib/net/nforceif/include -fexceptions -ferror-limit=20
+112: CMAKE_C_FLAGS:STRING=-I/shims -include/shims/lg_compat.h -I/usr/src/nxdk/lib/xboxrt/libc_extensions -I/usr/src/nxdk/lib/net/lwip/src/include -I/usr/src/nxdk/lib/net/nforceif/include -ferror-limit=20
+130: CMAKE_EXE_LINKER_FLAGS:STRING=/errorlimit:0 /STACK:4194304,4194304 /usr/src/nxdk/lib/libnxdk_net.lib /src/build-lgsys/lg_xboxsys.lib
+133: CMAKE_EXE_LINKER_FLAGS_DEBUG:STRING=
+136: CMAKE_EXE_LINKER_FLAGS_MINSIZEREL:STRING=
+139: CMAKE_EXE_LINKER_FLAGS_RELEASE:STRING=
+142: CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
+209: CMAKE_MODULE_LINKER_FLAGS:STRING=
+213: CMAKE_MODULE_LINKER_FLAGS_DEBUG:STRING=
+217: CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL:STRING=
+221: CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=
+225: CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
+268: CMAKE_SHARED_LINKER_FLAGS:STRING=
+272: CMAKE_SHARED_LINKER_FLAGS_DEBUG:STRING=
+276: CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL:STRING=
+280: CMAKE_SHARED_LINKER_FLAGS_RELEASE:STRING=
+284: CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO:STRING=
+295: CMAKE_STATIC_LINKER_FLAGS:STRING=
+299: CMAKE_STATIC_LINKER_FLAGS_DEBUG:STRING=
+303: CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL:STRING=
+307: CMAKE_STATIC_LINKER_FLAGS_RELEASE:STRING=
+311: CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
+516: //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS
+517: CMAKE_EXE_LINKER_FLAGS-ADVANCED:INTERNAL=1
+518: //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_DEBUG
+519: CMAKE_EXE_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+520: //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_MINSIZEREL
+521: CMAKE_EXE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+522: //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_RELEASE
+523: CMAKE_EXE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+524: //ADVANCED property for variable: CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO
+525: CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+577: //ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS
+578: CMAKE_MODULE_LINKER_FLAGS-ADVANCED:INTERNAL=1
+579: //ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_DEBUG
+580: CMAKE_MODULE_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+581: //ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL
+582: CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+583: //ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_RELEASE
+584: CMAKE_MODULE_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+585: //ADVANCED property for variable: CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO
+586: CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+603: //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS
+604: CMAKE_SHARED_LINKER_FLAGS-ADVANCED:INTERNAL=1
+605: //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_DEBUG
+606: CMAKE_SHARED_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+607: //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL
+608: CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+609: //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_RELEASE
+610: CMAKE_SHARED_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+611: //ADVANCED property for variable: CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO
+612: CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+617: //ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS
+618: CMAKE_STATIC_LINKER_FLAGS-ADVANCED:INTERNAL=1
+619: //ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_DEBUG
+620: CMAKE_STATIC_LINKER_FLAGS_DEBUG-ADVANCED:INTERNAL=1
+621: //ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL
+622: CMAKE_STATIC_LINKER_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1
+623: //ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_RELEASE
+624: CMAKE_STATIC_LINKER_FLAGS_RELEASE-ADVANCED:INTERNAL=1
+625: //ADVANCED property for variable: CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO
+626: CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
+
+##### comando de link real (build.ninja / link.txt)
+build-xbox\CMakeFiles\omohaaded.dir\link.txt:1: /usr/src/nxdk/bin/nxdk-link -I/shims -include/shims/lg_compat.h -I/usr/src/nxdk/lib/xboxrt/libc_extensions -I/usr/src/nxdk/lib/net/lwip/src/include -I/usr/src/nxdk/lib/net/nforceif/include -fexceptions -ferror-limit=20 /errorlimit:0 /STACK:4194304,4194304 /usr/src/nxdk/lib/libnxdk_net.lib /src/build
+
+##### avisos de duplicata no ultimo log de build (top 40)
+log: lote16z8b-openmohaa-build.log
+total dups: 0

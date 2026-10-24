@@ -467,3 +467,8 @@
 - 16z8b: removidos breadcrumbs sv/st/sl/sz/mp/cf/rf/fr/w/se/le/si + blocos 16n/16p/FindLabel ret restaurados ao comando original (9 arquivos, -101 +8)
 - Mantidos: CTI/SM 842/SetThread/FindLabel privado/scr falhou/level script pulado/SE (lote 17), heartbeat+auto map, fs_homepath, rede desativada, FAKK repack, LG_ParseVec3
 - Proximos: (a) remover /FORCE:MULTIPLE; (b) lote 17 = interpretador script Alice; (c) build cliente (g_gametype 0 via loopback)
+
+## Lote 16z9a (2026-10-23 21:35)
+- 16z8b xemu: breadcrumbs sumiram; 'Server Initialization Complete 18.86 seconds' (%f real OK); heartbeat 242..522 +40/2s; Hitch 11049 ms = frame do load (unico)
+- 16z8b: 'Restantes 1' = falso positivo (Select-String case-insensitive casou 'LG: SE' mantido)
+- 16z9a: coleta origem do /FORCE:MULTIPLE + dups do link (docs/probes/lote16z9a-force.log), sem build
