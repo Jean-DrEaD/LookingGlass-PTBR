@@ -472,3 +472,7 @@
 - 16z8b xemu: breadcrumbs sumiram; 'Server Initialization Complete 18.86 seconds' (%f real OK); heartbeat 242..522 +40/2s; Hitch 11049 ms = frame do load (unico)
 - 16z8b: 'Restantes 1' = falso positivo (Select-String case-insensitive casou 'LG: SE' mantido)
 - 16z9a: coleta origem do /FORCE:MULTIPLE + dups do link (docs/probes/lote16z9a-force.log), sem build
+
+## Lote 16z9b (2026-10-23 21:39)
+- 16z9a: /FORCE:MULTIPLE vem de CMakeLists.txt:103 (target_link_options); libnxdk_net.lib ainda em CMAKE_EXE_LINKER_FLAGS (lote rede)
+- 16z9b: link SEM FORCE falhou -> flag restaurada; duplicatas em docs/probes/lote16z9b-dups.log
