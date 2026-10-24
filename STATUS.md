@@ -496,3 +496,8 @@
 ## Lote 16z10a (2026-10-24 06:45)
 - 16z9g xemu: boot identico ao 16z8b sem FORCE; Complete 17.14 s; frame 41 + Hitch 10044 ms (load)
 - 16z10a: FLUXO atualizado; coleta refs de rede no link (docs/probes/lote16z10a-rede.log), sem build
+
+## Lote 16z10b (2026-10-24 06:51)
+- 16z10a: rede no link = libnxdk_net (probe.ps1) + gcd_key/qr2/natneg/common (sv_gamespy.c/sv_gqueryreporting.c em shared_sources.cmake:101-102); SV_ShutdownGamespy (sv_init.c:1212) sem guard
+- 16z10b: libnxdk_net removida do link; stubs de rede gerados: 24 (asm label, -1/NULL); XBE 4620288 bytes -> testar xemu
+- 16z10c (planejado): GameSpy fora (gamespy.cmake/shared_sources sob NXDK, SV_ShutdownGamespy guard, include lwIP fora)

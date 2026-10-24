@@ -451,3 +451,53 @@ int rand_s(unsigned int *out)
     *out = st;
     return 0;
 }
+
+/* LG 16z10b: stubs de rede (libnxdk_net fora do link; NET_Init no-op, GameSpy inativo) */
+void *lg_netstub_0(void) __asm__("_in6addr_any");
+void *lg_netstub_0(void) { return (void*)-1; }
+void *lg_netstub_1(void) __asm__("_inaddr_any");
+void *lg_netstub_1(void) { return (void*)-1; }
+void *lg_netstub_2(void) __asm__("_ip4addr_ntoa");
+void *lg_netstub_2(void) { return (void*)0; }
+void *lg_netstub_3(void) __asm__("_ipaddr_addr");
+void *lg_netstub_3(void) { return (void*)-1; }
+void *lg_netstub_4(void) __asm__("_ipaddr_ntoa");
+void *lg_netstub_4(void) { return (void*)0; }
+void *lg_netstub_5(void) __asm__("_lwip_bind");
+void *lg_netstub_5(void) { return (void*)-1; }
+void *lg_netstub_6(void) __asm__("_lwip_close");
+void *lg_netstub_6(void) { return (void*)-1; }
+void *lg_netstub_7(void) __asm__("_lwip_connect");
+void *lg_netstub_7(void) { return (void*)-1; }
+void *lg_netstub_8(void) __asm__("_lwip_freeaddrinfo");
+void *lg_netstub_8(void) { return (void*)-1; }
+void *lg_netstub_9(void) __asm__("_lwip_getaddrinfo");
+void *lg_netstub_9(void) { return (void*)-1; }
+void *lg_netstub_10(void) __asm__("_lwip_gethostbyname");
+void *lg_netstub_10(void) { return (void*)0; }
+void *lg_netstub_11(void) __asm__("_lwip_getsockname");
+void *lg_netstub_11(void) { return (void*)-1; }
+void *lg_netstub_12(void) __asm__("_lwip_getsockopt");
+void *lg_netstub_12(void) { return (void*)-1; }
+void *lg_netstub_13(void) __asm__("_lwip_htonl");
+void *lg_netstub_13(void) { return (void*)-1; }
+void *lg_netstub_14(void) __asm__("_lwip_htons");
+void *lg_netstub_14(void) { return (void*)-1; }
+void *lg_netstub_15(void) __asm__("_lwip_inet_ntop");
+void *lg_netstub_15(void) { return (void*)0; }
+void *lg_netstub_16(void) __asm__("_lwip_ioctl");
+void *lg_netstub_16(void) { return (void*)-1; }
+void *lg_netstub_17(void) __asm__("_lwip_recv");
+void *lg_netstub_17(void) { return (void*)-1; }
+void *lg_netstub_18(void) __asm__("_lwip_recvfrom");
+void *lg_netstub_18(void) { return (void*)-1; }
+void *lg_netstub_19(void) __asm__("_lwip_select");
+void *lg_netstub_19(void) { return (void*)-1; }
+void *lg_netstub_20(void) __asm__("_lwip_send");
+void *lg_netstub_20(void) { return (void*)-1; }
+void *lg_netstub_21(void) __asm__("_lwip_sendto");
+void *lg_netstub_21(void) { return (void*)-1; }
+void *lg_netstub_22(void) __asm__("_lwip_setsockopt");
+void *lg_netstub_22(void) { return (void*)-1; }
+void *lg_netstub_23(void) __asm__("_lwip_socket");
+void *lg_netstub_23(void) { return (void*)-1; }
