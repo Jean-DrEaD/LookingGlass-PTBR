@@ -564,3 +564,7 @@
 - Regra: total de debugPrint antes de um erro tem que caber na tela (~20 linhas)
 - 17g: lg_n++ < 40 -> < 5 (4 ocorrencias, +4 -4); coleta stub EH/SE em docs/probes/lote17g-limite.log; XBE 4554752
 - Proximo: stub EH reimprime a ultima mensagem SE antes de travar
+
+## Lote 17h (2026-10-24 15:53)
+- 17g xemu: 'cmd?e allow_cheshire' -> 'SE Failed execution of command alias' -> throw; COMPILACAO DO SCRIPT PASSOU, erro agora em execucao
+- 17h: coleta origem 'Failed execution of command' + evento alias + linhas alias no zz_lg_scr.pk3/pak0.pk3 (docs/probes/lote17h-alias.log), sem build

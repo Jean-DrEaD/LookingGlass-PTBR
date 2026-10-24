@@ -1,0 +1,307 @@
+# Lote 17h 2026-10-24 15:53 - coleta 'Failed execution of command' + alias
+## origem da mensagem
+### D:\openmohaa\code\corepp\listener.cpp:3447
+3423: =======================
+3424: */
+3425: ScriptVariable& Listener::ProcessEventReturn(Event *ev)
+3426: {
+3427:     ClassDef             *c         = classinfo();
+3428:     ResponseDef<Class>   *responses = NULL;
+3429:     Response              response  = NULL;
+3430:     static ScriptVariable m_Return;
+3431: 
+3432:     if (!ev->eventnum) {
+3433: #ifdef _DEBUG
+3434:         EVENT_DPrintf("^~^~^ Failed execution of event '%s' for class '%s'\n", ev->name, c->classname);
+3435: #else
+3436:         EVENT_DPrintf("^~^~^ Failed execution of event for class '%s'\n", c->classname);
+3437: #endif
+3438: 
+3439:         delete ev;
+3440:         return m_Return;
+3441:     }
+3442: 
+3443:     responses = c->responseLookup[ev->eventnum];
+3444: 
+3445:     if (responses == NULL) {
+3446:         EVENT_DPrintf(
+3447:             "^~^~^ Failed execution of command '%s' for class '%s'\n", Event::GetEventName(ev->eventnum), c->classname
+3448:         );
+3449:         delete ev;
+3450:         return m_Return;
+3451:     }
+3452: 
+3453:     response = responses->response;
+3454: 
+3455:     int previousArgs = ev->NumArgs();
+3456: 
+3457:     if (response) {
+### D:\openmohaa\code\script\scriptvm.cpp:607
+583: void ScriptVM::executeCommand<false, true>(Listener *listener, op_parmNum_t iParamCount, op_evName_t eventnum)
+584: {
+585:     ScriptCommandEvent ev = iParamCount ? ScriptCommandEvent(eventnum, iParamCount) : ScriptCommandEvent(eventnum);
+586:     return executeCommandInternal<true>(ev, listener, m_VMStack.GetTopArray(), iParamCount);
+587: }
+588: 
+589: template<>
+590: void ScriptVM::executeCommand<true, true>(Listener *listener, op_parmNum_t iParamCount, op_evName_t eventnum)
+591: {
+592:     ScriptCommandEvent ev = iParamCount ? ScriptCommandEvent(eventnum, iParamCount) : ScriptCommandEvent(eventnum);
+593:     return executeCommandInternal<true>(ev, listener, m_VMStack.GetTopArray(), iParamCount);
+594: }
+595: 
+596: void ScriptVM::transferVarsToEvent(Event& ev, ScriptVariable *fromVar, op_parmNum_t count)
+597: {
+598:     ev.CopyValues(fromVar, count);
+599: }
+600: 
+601: void ScriptVM::checkValidEvent(Event& ev, Listener *listener)
+602: {
+603:     ClassDef *c = listener->classinfo();
+604: 
+605:     if (!c->GetDef(&ev)) {
+606:         if (listener == m_Thread) {
+607:             ScriptError("Failed execution of command '%s'", ev.getName());
+608:         } else if (listener->isSubclassOf(SimpleEntity)) {
+609:             ScriptError(
+610:                 "Failed execution of command '%s' for class '%s' Targetname '%s'",
+611:                 ev.getName(),
+612:                 c->classname,
+613:                 static_cast<SimpleEntity *>(listener)->targetname.c_str()
+614:             );
+615:         } else {
+616:             ScriptError("Failed execution of command '%s' for class '%s'", ev.getName(), c->classname);
+617:         }
+### D:\openmohaa\code\script\scriptvm.cpp:610
+586:     return executeCommandInternal<true>(ev, listener, m_VMStack.GetTopArray(), iParamCount);
+587: }
+588: 
+589: template<>
+590: void ScriptVM::executeCommand<true, true>(Listener *listener, op_parmNum_t iParamCount, op_evName_t eventnum)
+591: {
+592:     ScriptCommandEvent ev = iParamCount ? ScriptCommandEvent(eventnum, iParamCount) : ScriptCommandEvent(eventnum);
+593:     return executeCommandInternal<true>(ev, listener, m_VMStack.GetTopArray(), iParamCount);
+594: }
+595: 
+596: void ScriptVM::transferVarsToEvent(Event& ev, ScriptVariable *fromVar, op_parmNum_t count)
+597: {
+598:     ev.CopyValues(fromVar, count);
+599: }
+600: 
+601: void ScriptVM::checkValidEvent(Event& ev, Listener *listener)
+602: {
+603:     ClassDef *c = listener->classinfo();
+604: 
+605:     if (!c->GetDef(&ev)) {
+606:         if (listener == m_Thread) {
+607:             ScriptError("Failed execution of command '%s'", ev.getName());
+608:         } else if (listener->isSubclassOf(SimpleEntity)) {
+609:             ScriptError(
+610:                 "Failed execution of command '%s' for class '%s' Targetname '%s'",
+611:                 ev.getName(),
+612:                 c->classname,
+613:                 static_cast<SimpleEntity *>(listener)->targetname.c_str()
+614:             );
+615:         } else {
+616:             ScriptError("Failed execution of command '%s' for class '%s'", ev.getName(), c->classname);
+617:         }
+618:     }
+619: }
+620: 
+### D:\openmohaa\code\script\scriptvm.cpp:616
+592:     ScriptCommandEvent ev = iParamCount ? ScriptCommandEvent(eventnum, iParamCount) : ScriptCommandEvent(eventnum);
+593:     return executeCommandInternal<true>(ev, listener, m_VMStack.GetTopArray(), iParamCount);
+594: }
+595: 
+596: void ScriptVM::transferVarsToEvent(Event& ev, ScriptVariable *fromVar, op_parmNum_t count)
+597: {
+598:     ev.CopyValues(fromVar, count);
+599: }
+600: 
+601: void ScriptVM::checkValidEvent(Event& ev, Listener *listener)
+602: {
+603:     ClassDef *c = listener->classinfo();
+604: 
+605:     if (!c->GetDef(&ev)) {
+606:         if (listener == m_Thread) {
+607:             ScriptError("Failed execution of command '%s'", ev.getName());
+608:         } else if (listener->isSubclassOf(SimpleEntity)) {
+609:             ScriptError(
+610:                 "Failed execution of command '%s' for class '%s' Targetname '%s'",
+611:                 ev.getName(),
+612:                 c->classname,
+613:                 static_cast<SimpleEntity *>(listener)->targetname.c_str()
+614:             );
+615:         } else {
+616:             ScriptError("Failed execution of command '%s' for class '%s'", ev.getName(), c->classname);
+617:         }
+618:     }
+619: }
+620: 
+621: bool ScriptVM::executeGetter(Listener *listener, op_evName_t eventName)
+622: {
+623:     int eventNum = Event::FindGetterEventNum(eventName);
+624: 
+625:     if (eventNum && listener->classinfo()->GetDef(eventNum)) {
+626:         ScriptCommandEvent ev(eventNum);
+## definicao do evento alias
+### D:\openmohaa\code\cgame\cg_commands.cpp:558
+555:     "stopaliaschannel",
+556:     EV_DEFAULT,
+557:     "s",
+558:     "alias",
+559:     "Stops the sound channel used by the specified alias."
+560: );
+561: Event EV_Client_LoopSound
+562: (
+563:     "loopsound",
+564:     EV_DEFAULT,
+565:     "sFFf",
+566:     "soundName volume min_distance pitch",
+567:     "Play the specified sound as a looping sound"
+568: );
+569: // Added in 2.0
+570: Event EV_Client_StopLoopSound
+### D:\openmohaa\code\cgame\cg_commands.cpp:612
+609: );
+610: Event EV_Client_Alias
+611: (
+612:     "alias",
+613:     EV_DEFAULT,
+614:     "ssSSSSSS",
+615:     "alias realPath arg1 arg2 arg3 arg4 arg5 arg6",
+616:     "Create an alias to the specified path"
+617: );
+618: Event EV_Client_CacheAlias
+619: (
+620:     "cachefromalias",
+621:     EV_DEFAULT,
+622:     "s",
+623:     "alias",
+624:     "Caches all data matching a previously specified alias"
+### D:\openmohaa\code\cgame\cg_commands.cpp:623
+620:     "cachefromalias",
+621:     EV_DEFAULT,
+622:     "s",
+623:     "alias",
+624:     "Caches all data matching a previously specified alias"
+625: );
+626: Event EV_Client_Footstep(
+627:     "footstep",
+628:     EV_DEFAULT,
+629:     "ssI",
+630:     "tag sRunning iEquipment",
+631:     "Play a footstep sound that is appropriate to the surface we are currently stepping on\n"
+632:     "sRunning should be set to run, walk, or ladder"
+633: );
+634: Event EV_Client_Landing
+635: (
+### D:\openmohaa\code\fgame\scriptmaster.cpp:103
+100: );
+101: Event EV_RegisterAlias
+102: (
+103:     "alias",
+104:     EV_DEFAULT,
+105:     "ssSSSS",
+106:     "alias_name real_name arg1 arg2 arg3 arg4",
+107:     "Sets up an alias."
+108: );
+109: Event EV_Cache
+110: (
+111:     "cache",
+112:     EV_CACHE,
+113:     "s",
+114:     "resourceName",
+115:     "pre-cache the given resource."
+### D:\openmohaa\code\qcommon\cmd.c:1106
+1103: 	Cmd_SetCommandCompletionFunc( "vstr", Cvar_CompleteCvarName );
+1104: 	Cmd_AddCommand ("echo",Cmd_Echo_f);
+1105: 	Cmd_AddCommand ("wait", Cmd_Wait_f);
+1106: 	Cmd_AddCommand( "alias", Cmd_Alias_f );
+1107: }
+1108: 
+### D:\openmohaa\code\thirdparty\curl-8.15.0\include\curl\options.h:45
+42: 
+43: /* Flag bits */
+44: 
+45: /* "alias" means it is provided for old programs to remain functional,
+46:    we prefer another name */
+47: #define CURLOT_FLAG_ALIAS (1<<0)
+48: 
+49: /* The CURLOPTTYPE_* id ranges can still be used to figure out what type/size
+50:    to use for curl_easy_setopt() for the given id */
+51: struct curl_easyoption {
+52:   const char *name;
+53:   CURLoption id;
+54:   curl_easytype type;
+55:   unsigned int flags;
+56: };
+57: 
+### D:\openmohaa\code\thirdparty\recastnavigation\Tests\Contrib\catch2\catch_amalgamated.cpp:10384
+10381:                  .endElement(XmlFormatting::Newline);
+10382:             auto aliasTag = m_xml.scopedElement("Aliases");
+10383:             for (auto const& alias : tag.spellings) {
+10384:                 m_xml.startElement("Alias", XmlFormatting::Indent)
+10385:                      .writeText(alias, XmlFormatting::None)
+10386:                      .endElement(XmlFormatting::Newline);
+10387:             }
+10388:         }
+10389:     }
+10390: 
+10391: } // end namespace Catch
+10392: 
+10393: #if defined(_MSC_VER)
+10394: #pragma warning(pop)
+10395: #endif
+## alias em D:\openmohaa\iso-stage\main\zz_lg_scr.pk3
+maps/centipede1.scr:11: alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+maps/centipede1.scr:12: alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+maps/centipede1.scr:13: alias "snd_noammo" "sound/weapon/noammo.wav"
+maps/centipede1.scr:14: alias "snd_pickup" "sound/item/pickup.wav"
+maps/centipede1.scr:15: alias "impact_sever1" "sound/weapon/shared/splat1.wav"
+maps/centipede1.scr:16: alias "impact_sever2" "sound/weapon/shared/splat2.wav"
+maps/facade.scr:9: alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+maps/facade.scr:10: alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+maps/facade.scr:11: alias "snd_noammo" "sound/weapon/noammo.wav"
+maps/facade.scr:12: alias "snd_pickup" "sound/item/pickup.wav"
+maps/facade.scr:13: alias "impact_sever1" "sound/weapon/shared/splat1.wav"
+maps/facade.scr:14: alias "impact_sever2" "sound/weapon/shared/splat2.wav"
+maps/fortress1.scr:9: alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+maps/fortress1.scr:10: alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+maps/fortress1.scr:11: alias "snd_noammo" "sound/weapon/noammo.wav"
+maps/fortress1.scr:12: alias "snd_pickup" "sound/item/pickup.wav"
+maps/fortress1.scr:13: alias "impact_sever1" "sound/weapon/shared/splat1.wav"
+maps/fortress1.scr:14: alias "impact_sever2" "sound/weapon/shared/splat2.wav"
+maps/garden1.scr:9: alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+maps/garden1.scr:10: alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+maps/garden1.scr:11: alias "snd_noammo" "sound/weapon/noammo.wav"
+maps/garden1.scr:12: alias "snd_pickup" "sound/item/pickup.wav"
+maps/garden1.scr:13: alias "impact_sever1" "sound/weapon/shared/splat1.wav"
+maps/garden1.scr:14: alias "impact_sever2" "sound/weapon/shared/splat2.wav"
+maps/garden2.scr:9: alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+maps/garden2.scr:10: alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+maps/garden2.scr:11: alias "snd_noammo" "sound/weapon/noammo.wav"
+maps/garden2.scr:12: alias "snd_pickup" "sound/item/pickup.wav"
+maps/garden2.scr:13: alias "impact_sever1" "sound/weapon/shared/splat1.wav"
+maps/garden2.scr:14: alias "impact_sever2" "sound/weapon/shared/splat2.wav"
+maps/garden3.scr:9: alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+maps/garden3.scr:10: alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+maps/garden3.scr:11: alias "snd_noammo" "sound/weapon/noammo.wav"
+maps/garden3.scr:12: alias "snd_pickup" "sound/item/pickup.wav"
+maps/garden3.scr:13: alias "impact_sever1" "sound/weapon/shared/splat1.wav"
+maps/garden3.scr:14: alias "impact_sever2" "sound/weapon/shared/splat2.wav"
+maps/grounds1.scr:9: alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+maps/grounds1.scr:10: alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+maps/grounds1.scr:11: alias "snd_noammo" "sound/weapon/noammo.wav"
+maps/grounds1.scr:12: alias "snd_pickup" "sound/item/pickup.wav"
+(linhas mostradas: 40)
+## alias em D:\openmohaa\iso-stage\main\pak0.pk3
+scripts/csb.scr:5: alias( "fortress2a", "sound/character/cheshire_cat/vo/catz112.wav" );
+scripts/csb.scr:6: alias( "fortress2b", "sound/character/cheshire_cat/vo/catz113.wav" );
+scripts/sound.scr:4: alias( "snd_earthquake1", "sound/ambience/special/quake1.wav" );
+scripts/sound.scr:5: alias( "snd_earthquake2", "sound/ambience/special/quake2.wav" );
+scripts/sound.scr:6: alias( "snd_noammo", "sound/weapon/noammo.wav" );
+scripts/sound.scr:7: alias( "snd_pickup", "sound/item/pickup.wav" );
+scripts/sound.scr:8: alias( "impact_sever1", "sound/weapon/shared/splat1.wav" );
+scripts/sound.scr:9: alias( "impact_sever2", "sound/weapon/shared/splat2.wav" );
+(linhas mostradas: 8)
