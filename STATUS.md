@@ -594,3 +594,9 @@
 - 17l: secao executeCommandInternal vazia no log (regex nao casou) - irrelevante, skip validado no xemu
 - 17m: coleta classnames centipede1 x CLASS_DECLARATION OpenMoHAA + getClassDef + refs Rust (docs/probes/lote17m-classes.log), sem build
 - Plano 17n: tabela classname Alice -> classe OpenMoHAA (alias no getClassDef sob NXDK)
+
+## Lote 17n (2026-10-24 17:17)
+- 17m: centipede1 = 35 classnames; 22 SEM classe (Enemies_*, Item_*, ambient_*, emitter_*, trigger_catmessage) -> Object; centipede_actor1 = Enemies_Centipede (c_centipede.tik)
+- 17m: getClassDef (g_spawn.cpp:204) cai em Object::ClassInfo e tenta classname via TIKI (formato Alice diferente)
+- 17n: tabela lg_alice_cls + LG_AliceClass sob NXDK; teste com 1 entrada Enemies_Centipede -> Actor; 'LG: cls X -> Y ok/FALHOU' (+24 -0); XBE 4554752
+- Plano 17o: se Actor sobreviver -> Enemies_* -> Actor, ambient_*/emitter_* -> script_model, trigger_catmessage -> trigger_multiple
