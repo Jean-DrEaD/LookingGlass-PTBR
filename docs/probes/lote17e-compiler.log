@@ -1,0 +1,229 @@
+# Lote 17e3 2026-10-24 09:13 - unknown command -> aviso
+ancoras: stmt=1 method=1
+numstat: 9	0	code/script/scriptcompiler.cpp
+### 382
+382: void ScriptCompiler::EmitConstArray(sval_t lhs, sval_t rhs, unsigned int sourcePos)
+383: {
+384:     uint32_t iCount = 1;
+385: 
+386:     EmitValue(lhs);
+387: 
+388:     for (const sval_t *node = rhs.node[0].node; node; node = node[1].node, iCount++) {
+389:         EmitValue(*node);
+390:     }
+391: 
+392:     EmitConstArrayOpcode(iCount);
+393: }
+394: 
+395: void ScriptCompiler::EmitConstArrayOpcode(int iCount)
+396: {
+397:     SetOpcodeVarStackOffset(OP_LOAD_CONST_ARRAY1, 1 - iCount);
+398:     EmitOpcode(OP_LOAD_CONST_ARRAY1, -1);
+399: 
+400:     EmitOpcodeValue((short)iCount, sizeof(short));
+401: }
+402: 
+403: void ScriptCompiler::EmitContinue(unsigned int sourcePos)
+404: {
+405:     if (bCanContinue) {
+406:         EmitOpcode(OP_JUMP4, sourcePos);
+407:         unsigned char *pos = code_pos;
+408:         code_pos += sizeof(unsigned int);
+409:         ClearPrevOpcode();
+### 799
+799: void ScriptCompiler::EmitMethodExpression(int iParamCount, int eventnum, unsigned int sourcePos)
+800: {
+801:     if (iParamCount > 5) {
+802:         SetOpcodeVarStackOffset(OP_EXEC_METHOD_COUNT1, -iParamCount);
+803:         EmitOpcode(OP_EXEC_METHOD_COUNT1, sourcePos);
+804: 
+805:         EmitOpcodeValue((byte)iParamCount, sizeof(byte));
+806:     } else {
+807:         EmitOpcode(OP_EXEC_METHOD0 + iParamCount, sourcePos);
+808:     }
+809: 
+810:     EmitOpcodeValue((unsigned int)eventnum, sizeof(unsigned int));
+811: }
+812: 
+813: void ScriptCompiler::EmitNil(unsigned int sourcePos)
+814: {
+815:     if (showopcodes->integer) {
+816:         glbs.DPrintf("\t\t%08d:\n", code_pos - code_ptr);
+817:     }
+818: }
+819: 
+820: void ScriptCompiler::EmitNop()
+821: {
+822:     EmitOpcode(OP_NOP, -1);
+823: }
+824: 
+825: int ScriptCompiler::EmitNot(unsigned int sourcePos)
+826: {
+### 813
+813: void ScriptCompiler::EmitNil(unsigned int sourcePos)
+814: {
+815:     if (showopcodes->integer) {
+816:         glbs.DPrintf("\t\t%08d:\n", code_pos - code_ptr);
+817:     }
+818: }
+819: 
+820: void ScriptCompiler::EmitNop()
+821: {
+822:     EmitOpcode(OP_NOP, -1);
+823: }
+824: 
+825: int ScriptCompiler::EmitNot(unsigned int sourcePos)
+826: {
+827:     int label = 0;
+828: 
+829:     if (PrevOpcode() == OP_BOOL_UN_NOT) {
+830:         AbsorbPrevOpcode();
+831: 
+832:         if (showopcodes->integer) {
+833:             label = current_label++;
+834:             glbs.DPrintf("BOOL_JUMP_TRUE <LABEL%d>\n", label);
+835:         }
+836: 
+837:         EmitBoolJumpTrue(sourcePos);
+838:     } else {
+839:         if (showopcodes->integer) {
+840:             label = current_label++;
+### 943
+943: int ScriptCompiler::EmitParameterList(sval_t event_parameter_list)
+944: {
+945:     sval_t  *node;
+946:     uint32_t iParamCount = 0;
+947: 
+948:     if (!event_parameter_list.node) {
+949:         return 0;
+950:     }
+951: 
+952:     for (node = event_parameter_list.node->node; node; node = node[1].node) {
+953:         EmitValue(*node);
+954: 
+955:         iParamCount++;
+956:     }
+957: 
+958:     return iParamCount;
+959: }
+960: 
+961: void ScriptCompiler::EmitRef(sval_t val, unsigned int sourcePos)
+962: {
+963:     unsigned int index;
+964:     const char  *name;
+965:     //str name_lowered;
+966: 
+967:     if (val.node[0].type != ENUM_field) {
+968:         if (val.node[0].type == ENUM_array_expr) {
+969:             EmitRef(val.node[1], sourcePos);
+970:             EmitValue(val.node[2]);
+### 1148
+1148:     case ENUM_cmd_event_expr:
+1149:         {
+1150:             const int      eventnum       = Event::FindReturnEventNum(val.node[1].stringValue);
+1151:             sval_t         parameter_list = val.node[2];
+1152:             const uint32_t iParamCount    = EmitParameterList(parameter_list);
+1153: 
+1154:             if (!eventnum) {
+1155:                 CompileError(val.node[3].sourcePosValue, "unknown command: %s", val.node[1].stringValue);
+1156:             }
+1157: 
+1158:             EmitOpcode(OP_STORE_LOCAL, val.node[3].sourcePosValue);
+1159:             EmitMethodExpression(iParamCount, eventnum, val.node[3].sourcePosValue);
+1160:             break;
+1161:         }
+1162: 
+1163:     case ENUM_method_event_statement:
+1164:         {
+1165:             const int      eventnum       = Event::FindNormalEventNum(val.node[2].stringValue);
+1166: #ifdef NXDK
+1167:             if (!eventnum) { static int lg_n; if (lg_n++ < 40) debugPrint("LG: cmd? %s\n", val.node[2].stringValue); break; }
+1168: #endif
+1169:             sval_t         parameter_list = val.node[3];
+1170:             const uint32_t iParamCount    = EmitParameterList(parameter_list);
+1171: 
+1172:             if (!eventnum) {
+1173:                 CompileError(val.node[4].sourcePosValue, "unknown command: %s", val.node[2].stringValue);
+1174:             }
+1175: 
+### 1191
+1191:     case ENUM_method_event_expr:
+1192:         {
+1193:             const int      eventnum       = Event::FindReturnEventNum(val.node[2].stringValue);
+1194:             sval_t         parameter_list = val.node[3];
+1195:             const uint32_t iParamCount    = EmitParameterList(parameter_list);
+1196: 
+1197:             if (!eventnum) {
+1198:                 CompileError(val.node[4].sourcePosValue, "unknown command: %s", val.node[2].stringValue);
+1199:             }
+1200: 
+1201:             EmitValue(val.node[1]);
+1202:             EmitMethodExpression(iParamCount, eventnum, val.node[4].sourcePosValue);
+1203:             break;
+1204:         }
+1205: 
+1206:     case ENUM_const_array_expr:
+1207:         EmitConstArray(val.node[1], val.node[2], val.node[3].sourcePosValue);
+1208:         break;
+1209: 
+1210:     case ENUM_continue:
+1211:         EmitContinue(val.node[1].sourcePosValue);
+1212:         break;
+1213: 
+1214:     case ENUM_do:
+1215:         EmitDoWhileJump(val.node[1], val.node[2], val.node[3].sourcePosValue);
+1216:         break;
+1217: 
+1218:     case ENUM_field:
+### 1461
+1461: void ScriptCompiler::CompileError(unsigned int sourcePos, const char *format, ...)
+1462: {
+1463:     char    buffer[4000];
+1464:     va_list va;
+1465: 
+1466:     va_start(va, format);
+1467:     Q_vsnprintf(buffer, sizeof(buffer), format, va);
+1468:     va_end(va);
+1469: 
+1470:     compileSuccess = false;
+1471: 
+1472:     glbs.DPrintf("%s\n", buffer);
+1473:     script->PrintSourcePos(sourcePos, false);
+1474: 
+1475:     throw ScriptException(buffer);
+1476: }
+1477: 
+1478: int yyparse();
+1479: 
+1480: char *ScriptCompiler::Preprocess(char *sourceBuffer)
+1481: {
+1482:     return sourceBuffer;
+1483: }
+1484: 
+1485: void ScriptCompiler::Preclean(char *processedBuffer) {}
+1486: 
+1487: extern int          prev_yylex;
+1488: extern int          out_pos;
+BUILD_EXIT=0
+## Objetos ok / falhos:
+343
+0
+## Erros por arquivo:
+## Top mensagens:
+## Linker (simbolos):
+## Falhou:
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+exe: D:\openmohaa\build-xbox\Release\omohaaded.exe 4539904
+cxbe:   -DEBUGPATH:path
+cxbe: 
+cxbe:  *  Error : Could not open Exe filerel: build-xbox/Release/omohaaded.exe
+cxbe: Xbe::Export: Writing Section 0x0002 (.data)...OK
+cxbe: Xbe::Export: Writing Section 0x0003 (.tls)...OK
+cxbe: Xbe::Export: Writing Zero Padding...OK
+XBE 4554752 / ISO 666763264

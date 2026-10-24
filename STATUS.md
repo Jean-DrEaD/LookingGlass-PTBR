@@ -547,3 +547,9 @@
 - Regra PS: Add-Type nao redefine tipos na sessao -> nomes de classe versionados + -PassThru (sem type literal); abortar pk3/ISO se 0 ok
 - 17d: 'unknown command' = scriptcompiler.cpp:1126 (cmd_event_statement) e :1149 (cmd_event_expr), CompileError quando eventnum==0 -> alvo do 17e
 - 17d2: v2 rodado: 32 ok / 6 falhos (docs/probes/lote17d2-scr2morph.log); ISO recriada, sem build
+
+## Lote 17e (2026-10-24 09:18)
+- 17d2: v2 = 32 ok / 6 falhos; xemu igual (movetoent)
+- Tentativas: -f do PS quebrou com '{ }' (usar marcador + .Replace()); probe.ps1 exige -Lote/-Nome; cxbe com Substring(15) errado (D:\openmohaa\ = 13) -> usar Substring('D:\openmohaa\'.Length)
+- 17e: scriptcompiler.cpp cmd/method_event_statement: eventnum==0 -> 'LG: cmd? X' (40 max) + break (+9 -0); build 343/0; XBE 4554752
+- Pendente 17f: cmd/method em expressao (cmd_event_expr:1148, method_event_expr:1191 -> precisa valor na pilha); scr2morph v3 p/ os 6 falhos
