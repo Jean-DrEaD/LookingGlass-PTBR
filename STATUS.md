@@ -481,3 +481,8 @@
 - 16z9c: rename G_Error -> dup passou a ser lg_game_G_Error -> as 2 definicoes recebem o rename (game+cgame ou 2 TUs do game); FORCE e rename restaurados (openmohaa em da77ea6)
 - 16z9c xemu = ISO antiga (build falhou), boot igual ao 16z8b
 - 16z9d: coleta definicoes/alvos/llvm-nm de G_Error (docs/probes/lote16z9d-gerror.log), sem build
+
+## Lote 16z9f (2026-10-24 06:24)
+- 16z9e: G_Error RESOLVIDO (Error() do scriptexception.cpp virava G_Error via rename:376); sem FORCE restam _strtod/_strtof/_strtold (sys_xbox.c x PDCLib)
+- 16z9f: patch scriptexception reaplicado e commitado (FORCE ainda ativo); coleta membro libc que define strtod + refs (docs/probes/lote16z9f-strtod.log), sem build
+- Risco: Error() do script agora = G_Error fatal do g_main (antes throw ScriptException)

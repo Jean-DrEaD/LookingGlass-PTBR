@@ -1,0 +1,64 @@
+##### /usr/src/nxdk/lib/libxboxrt.lib : /usr/src/nxdk/lib/xboxrt/libc_extensions/stdlib_ext_.obj
+## definidos:
+??_C@_01GBGANLPD@0?$AA@
+??_C@_06CLHINHLM@rand_s?$AA@
+??_C@_06DIMDGBLI@strtof?$AA@
+??_C@_06KPFADDK@strtod?$AA@
+??_C@_06LNLHEEBO@mbtowc?$AA@
+??_C@_07MJIENDKK@strtold?$AA@
+??_C@_0BB@IDPDNGAL@randomValue?5?$CB?$DN?50?$AA@
+??_C@_0BC@NDMCCIID@bytes_read?5?$DN?$DN?5256?$AA@
+??_C@_0DH@FGABODBJ@?1usr?1src?1nxdk?1lib?1xboxrt?1libc_ex@
+??_C@_0M@HGCDHJAD@init_rand_s?$AA@
+__byteswap_uint64
+__byteswap_ulong
+__byteswap_ushort
+_init_flag
+_init_rand_s
+_mbtowc
+_rand_buffer
+_rand_mutex
+_rand_s
+_strtod
+_strtof
+_strtold
+##### sys_xbox.c define:
+grep: unrecognized option: include=sys_xbox.c
+BusyBox v1.37.0 (2025-05-26 20:04:45 UTC) multi-call binary.
+
+Usage: grep [-HhnlLoqvsrRiwFE] [-m N] [-A|B|C N] { PATTERN | -e PATTERN... | -f FILE... } [FILE]...
+
+Search for PATTERN in FILEs (or stdin)
+
+	-H	Add 'filename:' prefix
+	-h	Do not add 'filename:' prefix
+	-n	Add 'line_no:' prefix
+	-l	Show only names of files that match
+	-L	Show only names of files that don't match
+	-c	Show only count of matching lines
+	-o	Show only the matching part of line
+	-q	Quiet. Return 0 if PATTERN is found, 1 otherwise
+	-v	Select non-matching lines
+	-s	Suppress open and read errors
+	-r	Recurse
+	-R	Recurse and dereference symlinks
+	-i	Ignore case
+	-w	Match whole words only
+	-x	Match whole lines only
+	-F	PATTERN is a literal (not regexp)
+	-E	PATTERN is an extended regexp
+	-m N	Match up to N times per file
+	-A N	Print N lines of trailing context
+	-B N	Print N lines of leading context
+	-C N	Same as '-A N -B N'
+	-e PTRN	Pattern to match
+	-f FILE	Read pattern from file
+##### referencias indefinidas (U) nos objs do engine:
+     32 _atof
+     39 _atoi
+      3 _lg_strtod
+      1 _lg_strtof
+      3 _strtod
+      4 _strtok
+      1 _strtol
+      1 _strtoll
