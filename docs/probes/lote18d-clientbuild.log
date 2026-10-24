@@ -1,0 +1,373 @@
+# Lote 18d 2026-10-24 19:08 - coleta build cliente
+## CONTEUDO D:\LookingGlass-PTBR\tools\probe.ps1
+param(
+  [Parameter(Mandatory)][string]$Lote,
+  [Parameter(Mandatory)][string]$Nome,
+  [string]$Nota = ''
+)
+$flags = '-DCMAKE_TOOLCHAIN_FILE=$NXDK_DIR/share/toolchain-nxdk.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CLIENT=OFF -DBUILD_SERVER=ON -DBUILD_RENDERER_GL1=OFF -DBUILD_RENDERER_GL2=OFF -DBUILD_GAME_QVMS=OFF -DBUILD_GAME_LIBRARIES=ON -DUSE_RENDERER_DLOPEN=OFF -DUSE_OPENAL=OFF -DUSE_OPENAL_DLOPEN=OFF -DUSE_HTTP=OFF -DUSE_CODEC_VORBIS=OFF -DUSE_CODEC_OPUS=OFF -DUSE_CODEC_MAD=OFF -DUSE_INTERNAL_LIBS=ON -Wno-dev -DCMAKE_EXE_LINKER_FLAGS="/errorlimit:0 /STACK:4194304,4194304 /src/build-lgsys/lg_xboxsys.lib"'
+$cmd = @"
+INC="-I/shims -include/shims/lg_compat.h -I`$NXDK_DIR/lib/xboxrt/libc_extensions -I`$NXDK_DIR/lib/net/lwip/src/include -I`$NXDK_DIR/lib/net/nforceif/include"
+rm -rf build-xbox build-lgsys
+cmake -S /shims/xboxsys -B build-lgsys -DCMAKE_TOOLCHAIN_FILE=`$NXDK_DIR/share/toolchain-nxdk.cmake -DCMAKE_BUILD_TYPE=Release > lgsys.txt 2>&1 && cmake --build build-lgsys >> lgsys.txt 2>&1 && echo '## LGSYS ok' || { echo '## LGSYS falhou'; grep -E 'error' lgsys.txt | head -n 20; }
+cmake -S . -B build-xbox $flags -DCMAKE_C_FLAGS="`$INC -ferror-limit=20" -DCMAKE_CXX_FLAGS="`$INC -fexceptions -ferror-limit=20" > cfg.txt 2>&1 || { grep -E 'error' cfg.txt | head -n 20; exit 0; }
+cmake --build build-xbox -j 12 -- -k -Otarget > build.txt 2>&1; echo "BUILD_EXIT=`$?"
+echo '## Objetos ok / falhos:'; grep -c 'Building' build.txt; grep -c 'Error 1' build.txt
+echo '## Erros por arquivo:'; grep -E '^/src/[^:]+:[0-9]+:[0-9]+: (fatal )?error:' build.txt | sed 's|^/src/||' | awk -F: '!s[`$1]++' | sort | head -n 40
+echo '## Top mensagens:'; grep -oE '(fatal )?error: .*' build.txt | sed -E 's/[0-9]+//g' | sort | uniq -c | sort -rn | head -n 25
+echo '## Linker (simbolos):'; grep -oE 'undefined symbol: .*' build.txt | sort | uniq -c | sort -rn | head -n 300
+echo '## Falhou:'; grep 'Error 1' build.txt | head -n 5
+echo '## Alvos:'; find build-xbox \( -name '*.lib' -o -name '*.exe' -o -name '*.xbe' \) | head -n 25
+"@
+$log = "D:\openmohaa\xbox-probe$Lote.log"
+"# Probe $Lote $(Get-Date -Format 'yyyy-MM-dd HH:mm') @ $(git -C D:\openmohaa rev-parse --short HEAD) $Nota" | Set-Content $log
+docker run --rm -v "D:\openmohaa:/src" -v "D:\LookingGlass-PTBR\tools\nxdk-shims:/shims:ro" -w /src lg-nxdk sh -c ($cmd -replace "`r","") 2>&1 | Add-Content $log
+Copy-Item $log "D:\LookingGlass-PTBR\docs\probes\lote$Lote-openmohaa-$Nome.log" -Force
+Get-Content $log
+
+
+## CONTEUDO D:\openmohaa\cmake\client.cmake
+if(NOT BUILD_CLIENT)
+    return()
+endif()
+
+include(utils/add_git_dependency)
+include(utils/set_output_dirs)
+include(shared_sources)
+include(shared_script)
+
+include(renderer_common)
+
+set(CLIENT_SOURCES
+    ${SOURCE_DIR}/client/cl_avi.cpp
+    ${SOURCE_DIR}/client/cl_cgame.cpp
+    ${SOURCE_DIR}/client/cl_cin.cpp
+    ${SOURCE_DIR}/client/cl_consolecmds.cpp
+    ${SOURCE_DIR}/client/cl_curl.c
+    ${SOURCE_DIR}/client/cl_input.cpp
+    ${SOURCE_DIR}/client/cl_instantAction.cpp
+    ${SOURCE_DIR}/client/cl_inv.cpp
+    ${SOURCE_DIR}/client/cl_invrender.cpp
+    ${SOURCE_DIR}/client/cl_keys.cpp
+    ${SOURCE_DIR}/client/cl_main.cpp
+    ${SOURCE_DIR}/client/cl_net_chan.cpp
+    ${SOURCE_DIR}/client/cl_parse.cpp
+    ${SOURCE_DIR}/client/cl_scrn.cpp
+    ${SOURCE_DIR}/client/cl_ui.cpp
+    ${SOURCE_DIR}/client/cl_uibind.cpp
+    ${SOURCE_DIR}/client/cl_uidmbox.cpp
+    ${SOURCE_DIR}/client/cl_uifilepicker.cpp
+    ${SOURCE_DIR}/client/cl_uigamespy.cpp
+    ${SOURCE_DIR}/client/cl_uigmbox.cpp
+    ${SOURCE_DIR}/client/cl_uilangame.cpp
+    ${SOURCE_DIR}/client/cl_uiloadsave.cpp
+    ${SOURCE_DIR}/client/cl_uimaprotationsetup.cpp
+    ${SOURCE_DIR}/client/cl_uimaprunner.cpp
+    ${SOURCE_DIR}/client/cl_uiminicon.cpp
+    ${SOURCE_DIR}/client/cl_uimpmappicker.cpp
+    ${SOURCE_DIR}/client/cl_uiplayermodelpicker.cpp
+    ${SOURCE_DIR}/client/cl_uiradar.cpp
+    ${SOURCE_DIR}/client/cl_uiserverlist.cpp
+    ${SOURCE_DIR}/client/cl_uisoundpicker.cpp
+    ${SOURCE_DIR}/client/cl_uistd.cpp
+    ${SOURCE_DIR}/client/cl_uiview3d.cpp
+    ${SOURCE_DIR}/client/libmumblelink.c
+    ${SOURCE_DIR}/client/qal.c
+    ${SOURCE_DIR}/client/snd_codec_mp3.c
+    ${SOURCE_DIR}/client/snd_codec_ogg.c
+    ${SOURCE_DIR}/client/snd_codec_opus.c
+    ${SOURCE_DIR}/client/snd_codec_wav.c
+    ${SOURCE_DIR}/client/snd_codec.c
+    ${SOURCE_DIR}/client/snd_dma_new.cpp
+    ${SOURCE_DIR}/client/snd_info.cpp
+    ${SOURCE_DIR}/client/snd_mem_new.cpp
+    ${SOURCE_DIR}/client/snd_miles_new.cpp
+    ${SOURCE_DIR}/client/snd_openal_new.cpp
+    ${SOURCE_DIR}/client/usignal.cpp
+    ${SOURCE_DIR}/sdl/sdl_input.c
+    ${SOURCE_DIR}/sdl/sdl_mouse.c
+    ${CLIENT_PLATFORM_SOURCES}
+)
+
+# Gamespy
+list(APPEND CLIENT_SOURCES
+	${SOURCE_DIR}/gamespy/cl_gamespy.c
+)
+
+file(GLOB_RECURSE UI_SOURCES "${SOURCE_DIR}/uilib/*.c" "${SOURCE_DIR}/uilib/*.cpp")
+
+add_git_dependency(${SOURCE_DIR}/client/cl_console.c)
+
+set(CLIENT_BINARY ${CLIENT_NAME})
+
+list(APPEND CLIENT_DEFINITIONS BOTLIB)
+list(APPEND CLIENT_DEFINITIONS APP_MODULE)
+
+if(BUILD_STANDALONE)
+    list(APPEND CLIENT_DEFINITIONS STANDALONE)
+endif()
+
+if(USE_RENDERER_DLOPEN)
+    list(APPEND CLIENT_DEFINITIONS USE_RENDERER_DLOPEN)
+endif()
+
+if(USE_HTTP)
+    list(APPEND CLIENT_DEFINITIONS USE_HTTP)
+endif()
+
+if(USE_VOIP)
+    list(APPEND CLIENT_DEFINITIONS USE_VOIP)
+endif()
+
+if(USE_MUMBLE)
+    list(APPEND CLIENT_DEFINITIONS USE_MUMBLE)
+    list(APPEND CLIENT_LIBRARY_SOURCES ${SOURCE_DIR}/client/libmumblelink.c)
+endif()
+
+list(APPEND CLIENT_BINARY_SOURCES
+    ${SERVER_SOURCES}
+    ${CLIENT_SOURCES}
+    ${UI_SOURCES}
+    ${COMMON_SOURCES}
+    ${SCRIPT_SYSTEM_SOURCES}
+    ${BOTLIB_SOURCES}
+    ${SYSTEM_SOURCES}
+    ${ASM_SOURCES}
+    ${CLIENT_LIBRARY_SOURCES})
+
+add_executable(${CLIENT_BINARY} ${CLIENT_EXECUTABLE_OPTIONS} ${CLIENT_BINARY_SOURCES})
+
+target_include_directories(     ${CLIENT_BINARY} PRIVATE ${CLIENT_INCLUDE_DIRS})
+target_include_directories(     ${CLIENT_BINARY} PRIVATE ${SOURCE_DIR}/client)
+target_compile_definitions(     ${CLIENT_BINARY} PRIVATE ${CLIENT_DEFINITIONS})
+target_compile_options(         ${CLIENT_BINARY} PRIVATE ${CLIENT_COMPILE_OPTIONS})
+target_link_libraries(          ${CLIENT_BINARY} PRIVATE ${COMMON_LIBRARIES} ${CLIENT_LIBRARIES})
+target_link_options(            ${CLIENT_BINARY} PRIVATE ${CLIENT_LINK_OPTIONS})
+
+set_output_dirs(${CLIENT_BINARY})
+
+if(NOT USE_RENDERER_DLOPEN)
+    target_sources(${CLIENT_BINARY} PRIVATE
+        # These are never simultaneously populated
+        ${RENDERER_GL1_BINARY_SOURCES}
+        ${RENDERER_GL2_BINARY_SOURCES})
+
+    target_include_directories( ${CLIENT_BINARY} PRIVATE ${RENDERER_INCLUDE_DIRS})
+    target_compile_definitions( ${CLIENT_BINARY} PRIVATE ${RENDERER_DEFINITIONS})
+    target_compile_options(     ${CLIENT_BINARY} PRIVATE ${RENDERER_COMPILE_OPTIONS})
+    target_link_libraries(      ${CLIENT_BINARY} PRIVATE ${RENDERER_LIBRARIES})
+endif()
+
+foreach(LIBRARY IN LISTS CLIENT_DEPLOY_LIBRARIES)
+    add_custom_command(TARGET ${CLIENT_BINARY} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+            ${LIBRARY}
+            $<TARGET_FILE_DIR:${CLIENT_BINARY}>)
+
+    install(FILES ${LIBRARY} DESTINATION
+        # install() requires a relative path hence:
+        $<PATH:RELATIVE_PATH,$<TARGET_FILE_DIR:${CLIENT_BINARY}>,${CMAKE_BINARY_DIR}/$<CONFIG>>)
+endforeach()
+
+set_target_properties(${CLIENT_BINARY} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+
+INSTALL(TARGETS ${CLIENT_BINARY} DESTINATION ${INSTALL_BINDIR_FULL})
+
+if (MSVC)
+	target_link_options(${CLIENT_BINARY} PRIVATE "/MANIFEST:NO")
+	INSTALL(FILES $<TARGET_PDB_FILE:${CLIENT_BINARY}> DESTINATION ${INSTALL_BINDIR_FULL} OPTIONAL)
+endif()
+## CONTEUDO D:\openmohaa\cmake\renderer_common.cmake
+include_guard(GLOBAL)
+
+set(RENDERER_COMMON_SOURCES
+    ${SOURCE_DIR}/renderercommon/tr_font.c
+    ${SOURCE_DIR}/renderercommon/tr_image_bmp.c
+    ${SOURCE_DIR}/renderercommon/tr_image_jpg.c
+    ${SOURCE_DIR}/renderercommon/tr_image_pcx.c
+    ${SOURCE_DIR}/renderercommon/tr_image_png.c
+    ${SOURCE_DIR}/renderercommon/tr_image_pvr.c
+    ${SOURCE_DIR}/renderercommon/tr_image_tga.c
+    ${SOURCE_DIR}/renderercommon/tr_noise.c
+    ${SOURCE_DIR}/renderercommon/puff.c
+	${SOURCE_DIR}/tiki/tiki_mesh.cpp
+)
+
+set(SDL_RENDERER_SOURCES
+    ${SOURCE_DIR}/sdl/sdl_gamma.c
+    ${SOURCE_DIR}/sdl/sdl_glimp.c
+)
+
+set(DYNAMIC_RENDERER_SOURCES
+    ${SOURCE_DIR}/renderercommon/tr_subs.c
+    ${SOURCE_DIR}/qcommon/q_shared.c
+    ${SOURCE_DIR}/qcommon/q_math.c
+    ${SOURCE_DIR}/corepp/str.cpp
+)
+
+if(USE_FREETYPE)
+    list(APPEND RENDERER_DEFINITIONS BUILD_FREETYPE)
+endif()
+
+if(USE_RENDERER_DLOPEN)
+    list(APPEND RENDERER_DEFINITIONS USE_RENDERER_DLOPEN)
+    list(APPEND RENDERER_DEFINITIONS REF_DLL=1)
+elseif(BUILD_RENDERER_GL1 AND BUILD_RENDERER_GL2)
+    message(FATAL_ERROR "Multiple static renderers enabled; choose one")
+elseif(NOT BUILD_RENDERER_GL1 AND NOT BUILD_RENDERER_GL2)
+    message(FATAL_ERROR "Zero static renderers enabled; choose one")
+endif()
+
+list(APPEND RENDERER_LIBRARIES ${COMMON_LIBRARIES})
+
+## CONTEUDO D:\openmohaa\cmake\renderer_gl1.cmake
+if(NOT BUILD_CLIENT OR NOT BUILD_RENDERER_GL1)
+    return()
+endif()
+
+include(utils/set_output_dirs)
+include(renderer_common)
+
+set(RENDERER_GL1_SOURCES
+    ${SOURCE_DIR}/renderergl1/tr_backend.c
+    ${SOURCE_DIR}/renderergl1/tr_bsp.c
+    ${SOURCE_DIR}/renderergl1/tr_cmds.c
+    ${SOURCE_DIR}/renderergl1/tr_curve.c
+    ${SOURCE_DIR}/renderergl1/tr_draw.c
+    ${SOURCE_DIR}/renderergl1/tr_flares.c
+    ${SOURCE_DIR}/renderergl1/tr_font.cpp
+    ${SOURCE_DIR}/renderergl1/tr_ghost.cpp
+    ${SOURCE_DIR}/renderergl1/tr_image.c
+    ${SOURCE_DIR}/renderergl1/tr_init.c
+    ${SOURCE_DIR}/renderergl1/tr_light.c
+    ${SOURCE_DIR}/renderergl1/tr_main.c
+    ${SOURCE_DIR}/renderergl1/tr_marks_permanent.c
+    ${SOURCE_DIR}/renderergl1/tr_marks.c
+    ${SOURCE_DIR}/renderergl1/tr_model.cpp
+    ${SOURCE_DIR}/renderergl1/tr_scene.c
+    ${SOURCE_DIR}/renderergl1/tr_shade_calc.c
+    ${SOURCE_DIR}/renderergl1/tr_shade.c
+    ${SOURCE_DIR}/renderergl1/tr_shader.c
+    ${SOURCE_DIR}/renderergl1/tr_shadows.c
+    ${SOURCE_DIR}/renderergl1/tr_sky_portal.cpp
+    ${SOURCE_DIR}/renderergl1/tr_sky.c
+    ${SOURCE_DIR}/renderergl1/tr_sphere_shade.cpp
+    ${SOURCE_DIR}/renderergl1/tr_sprite.c
+    ${SOURCE_DIR}/renderergl1/tr_staticmodels.cpp
+    ${SOURCE_DIR}/renderergl1/tr_sun_flare.cpp
+    ${SOURCE_DIR}/renderergl1/tr_surface.c
+    ${SOURCE_DIR}/renderergl1/tr_swipe.cpp
+    ${SOURCE_DIR}/renderergl1/tr_terrain.c
+    ${SOURCE_DIR}/renderergl1/tr_util.cpp
+    ${SOURCE_DIR}/renderergl1/tr_vis.cpp
+    ${SOURCE_DIR}/renderergl1/tr_world.c
+)
+
+set(RENDERER_GL1_BASENAME renderer_opengl1)
+set(RENDERER_GL1_BINARY ${RENDERER_GL1_BASENAME})
+
+list(APPEND RENDERER_GL1_BINARY_SOURCES
+    ${RENDERER_COMMON_SOURCES}
+    ${RENDERER_GL1_SOURCES}
+    ${SDL_RENDERER_SOURCES}
+    ${RENDERER_LIBRARY_SOURCES})
+
+if(USE_RENDERER_DLOPEN)
+    list(APPEND RENDERER_GL1_BINARY_SOURCES ${DYNAMIC_RENDERER_SOURCES})
+
+    add_library(${RENDERER_GL1_BINARY} SHARED ${RENDERER_GL1_BINARY_SOURCES})
+
+    target_link_libraries(      ${RENDERER_GL1_BINARY} PRIVATE ${RENDERER_LIBRARIES})
+    target_include_directories( ${RENDERER_GL1_BINARY} PRIVATE ${RENDERER_INCLUDE_DIRS})
+    target_compile_definitions( ${RENDERER_GL1_BINARY} PRIVATE ${RENDERER_DEFINITIONS})
+    target_compile_options(     ${RENDERER_GL1_BINARY} PRIVATE ${RENDERER_COMPILE_OPTIONS})
+    target_link_options(        ${RENDERER_GL1_BINARY} PRIVATE ${RENDERER_LINK_OPTIONS})
+
+    set_output_dirs(${RENDERER_GL1_BINARY})
+
+	INSTALL(TARGETS ${RENDERER_GL1_BINARY} DESTINATION ${INSTALL_LIBDIR_FULL})
+
+	if(MSVC)
+		INSTALL(FILES $<TARGET_PDB_FILE:${RENDERER_GL1_BINARY}> DESTINATION ${INSTALL_LIBDIR_FULL} OPTIONAL)
+	endif()
+endif()
+## CMakeLists.txt: include/BUILD_CLIENT/sdl/sys/NXDK
+10: include(identity)
+15: option(BUILD_CLIENT "Build client" ON)
+34: option(USE_INTERNAL_SDL "Use internal SDL binary (if available)" ${USE_INTERNAL_LIBS})
+48: include(CheckIPOSupported)
+64: include(CTest)
+71: include(compilers/all)
+72: include(platforms/all)
+73: include(libraries/all)
+74: include(deploy/all)
+76: include(version)
+78: include(server)
+79: include(renderer_gl1)
+80: include(renderer_gl2)
+81: include(client)
+82: include(basegame)
+83: #include(missionpack)
+84: include(launcher)
+86: include(post_configure)
+87: #include(installer)
+89: # NXDK_STATIC_GAME: game linkado estatico no XBE
+90: if(NXDK AND TARGET omohaaded)
+95: message(STATUS "NXDK_STATIC_GAME: omohaaded <- ${_g}")
+101: # NXDK_FORCE_MULTIPLE: corepp existe no engine e na libgame
+102: if(NXDK AND TARGET omohaaded)
+106: # LG lote 15i: isolamento ODR engine x game (nxdk)
+108: target_compile_options(game PRIVATE "-include${CMAKE_SOURCE_DIR}/tools/nxdk-shims/lg_game_rename.h")
+## cmake\*.cmake: fontes sdl/sys do cliente
+cmake\platforms\macos.cmake:11: list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/sys_osx.m)
+cmake\platforms\unix.cmake:7: list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/sys_unix.c)
+cmake\platforms\unix.cmake:10: list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_passive.c)
+cmake\platforms\unix.cmake:12: list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_tty.c)
+cmake\platforms\unix.cmake:16: #    list(APPEND CLIENT_PLATFORM_SOURCES ${SOURCE_DIR}/client/cl_http_curl.c)
+cmake\platforms\unix.cmake:24: list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/new/sys_unix_new.c)
+cmake\platforms\windows.cmake:7: list(APPEND SYSTEM_PLATFORM_SOURCES
+cmake\platforms\windows.cmake:8: ${SOURCE_DIR}/sys/sys_win32.c
+cmake\platforms\windows.cmake:9: ${SOURCE_DIR}/sys/win_resource.rc
+cmake\platforms\windows.cmake:12: list(APPEND CLIENT_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_passive.c)
+cmake\platforms\windows.cmake:13: list(APPEND SERVER_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_win32.c)
+cmake\platforms\windows.cmake:17: #    list(APPEND CLIENT_PLATFORM_SOURCES ${SOURCE_DIR}/client/cl_http_windows.c)
+cmake\platforms\windows.cmake:33: set_source_files_properties(${SOURCE_DIR}/sys/win_resource.rc
+cmake\platforms\windows.cmake:59: list(REMOVE_ITEM CLIENT_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_passive.c)
+cmake\platforms\windows.cmake:60: list(APPEND CLIENT_PLATFORM_SOURCES ${SOURCE_DIR}/sys/con_win32.c)
+cmake\platforms\windows.cmake:64: list(APPEND SYSTEM_PLATFORM_SOURCES ${SOURCE_DIR}/sys/new/sys_win32_new.c)
+cmake\client.cmake:58: ${SOURCE_DIR}/sdl/sdl_input.c
+cmake\client.cmake:59: ${SOURCE_DIR}/sdl/sdl_mouse.c
+cmake\client.cmake:60: ${CLIENT_PLATFORM_SOURCES}
+cmake\launcher.cmake:6: ${SOURCE_DIR}/sys/win_resource.rc
+cmake\renderer_common.cmake:17: ${SOURCE_DIR}/sdl/sdl_gamma.c
+cmake\renderer_common.cmake:18: ${SOURCE_DIR}/sdl/sdl_glimp.c
+cmake\shared_sources.cmake:48: ${SOURCE_DIR}/sys/con_log.c
+cmake\shared_sources.cmake:49: ${SOURCE_DIR}/sys/sys_autoupdater.c
+cmake\shared_sources.cmake:50: ${SOURCE_DIR}/sys/sys_main.c
+cmake\shared_sources.cmake:51: ${SYSTEM_PLATFORM_SOURCES}
+cmake\shared_sources.cmake:67: ${SOURCE_DIR}/sys/new/sys_main_new.c
+cmake\shared_sources.cmake:68: ${SOURCE_DIR}/sys/win_bounds.cpp
+cmake\shared_sources.cmake:69: ${SOURCE_DIR}/sys/win_localization.cpp
+cmake\shared_sources.cmake:70: ${SOURCE_DIR}/sys/sys_curl.c
+cmake\shared_sources.cmake:71: ${SOURCE_DIR}/sys/sys_update_checker.cpp
+## code\sys: arquivos + main/WinMain
+code\sys\new\sys_main_new.c 7378
+code\sys\new\sys_unix_new.c 2218
+code\sys\new\sys_win32_new.c 3117
+code\sys\con_log.c 2954
+code\sys\con_passive.c 1547
+code\sys\con_tty.c 11829
+code\sys\con_win32.c 12226
+code\sys\sys_autoupdater.c 2189
+code\sys\sys_curl.c 5423
+code\sys\sys_main.c 18099
+code\sys\sys_unix.c 29888
+code\sys\sys_update_checker.cpp 9845
+code\sys\sys_win32.c 20129
+code\sys\win_bounds.cpp 4673
+code\sys\win_localization.cpp 14352
+code\sys\sys_main.c:782: int main( int argc, char **argv )
+## tipos fontheader_t / refEntity_t
+code\renderercommon\new\tr_types_new.h:64: } fontheader_t;
+code\renderercommon\tr_types.h:156: } refEntity_t;
+code\renderercommon\tr_types.h:280: } glconfig_t;

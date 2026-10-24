@@ -627,3 +627,9 @@
 - 18b: ioq3-Xbox tem RENDERER NV2A PROPRIO (code\renderernv2a, 7 arq ~260 KB: backend/DXT/shader/sky/world Q3/MD3) sobre xgu/pbkit; ligado via sys\xbox_ref.c; input usbh (xbox_input.c), audio XAudio (xbox_snd.c)
 - DECISAO: NAO portar qgl do GL1 (968 usos); adaptar renderernv2a ao refexport_t do OpenMoHAA (world -> BSP FAKK v42; MD3 -> TIKI/skeletor em lote proprio); xbox_input/xbox_snd substituem code\sdl
 - 18c: coleta tr_public.h (ioq3 x OpenMoHAA), xbox_ref.c, xbox_nv2a.h, input/snd, chamadas IN_/SNDDMA_/GLimp_ (docs/probes/lote18c-refapi.log), sem build
+
+## Lote 18d (2026-10-24 19:08)
+- 18c: refexport_t OpenMoHAA = 85 entradas (REF_API 14 x ioq3 8); xbox_ref.c cobre ~30; assinaturas mudam: AddRefEntityToScene(+parent), AddPolyToScene(qboolean), AddLightToScene(+type), DrawStretchRaw(components), MarkFragments(+fRadiusSquared); ~55 non-ioq3 = stubs
+- 18c: xbox_input_engine.c cobre IN_Init/Frame/Shutdown/Restart; faltam IN_MouseOn/Off/GetMousePosition/IsCursorActive/FreeCursor/SetCursorFromImage/ToggleMouse; xbox_snd_engine.c cobre SNDDMA_Init/GetDMAPos/Shutdown, faltam BeginPainting/Submit/Activate/MasterGain/captura
+- PLANO: 18e cliente com renderer NULO (85 stubs) + stubs IN_/SNDDMA_/GLimp_ -> validar client/cgame/uilib no nxdk + loopback g_gametype 0; 18f input/audio reais; 18g+ renderer NV2A (2D -> mundo FAKK)
+- 18d: coleta probe.ps1, client/renderer cmake, CMakeLists, code\sys, tipos (docs/probes/lote18d-clientbuild.log), sem build
