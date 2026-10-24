@@ -506,3 +506,7 @@
 - 16z10b xemu: boot identico; Complete 17.84 s; heartbeat 41/82/122/162 (+40/2s) -> G_Error do script sem efeito colateral
 - 16z10c: sv_gamespy.c + sv_gqueryreporting.c comentados (#LG16z10c) no shared_sources.cmake; libs gcd_* nao puxadas; stubs: 6; XBE 4554752 bytes -> testar xemu
 - Proximo: include lwIP/shim winsock fora (net_ip.c sob NXDK), depois lote 17 (script Alice) / build cliente
+
+## Lote 16z10d (2026-10-24 07:11)
+- 16z10c xemu: boot identico; Complete 18.29 s; heartbeat 41..202 (+40/2s); 376 obj
+- 16z10d: build sem -I lwIP/nforceif FALHOU -> probe restaurado; erros em docs/probes/lote16z10d-openmohaa-build.log
