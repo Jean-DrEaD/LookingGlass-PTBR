@@ -8,7 +8,7 @@
 - Depois: Sys_Error sem lixo na tela; lote 17 = interpretador script Alice; build cliente
 - Inicio de chat: & D:\LookingGlass-PTBR\tools\lg-status.ps1 -Show
 - Regra: comandos sempre completos
-- SINGLE PLAYER SEM REDE: remover lwIP/libnxdk_net/gcd_*/winsock do link (15y)
+- [ok 16z10g] SINGLE PLAYER SEM REDE: libnxdk_net/gcd_*/q_gamespy fora do link (31 stubs); -I lwIP so headers
 - Repos: port = github.com/Jean-DrEaD/LookingGlass-PTBR (xbox); engine = github.com/Jean-DrEaD/openmohaa (xbox); upstream = openmoh/openmohaa (nunca push)
 - Pipeline do lote (TODOS os passos): 0) Docker Desktop aberto (docker info) -> 1) probe.ps1 (build omohaaded.exe) -> 2) cxbe no container (exe -> xbe-out\default.xbe) -> 3) copiar p/ iso-stage + LastWriteTime -> 4) extract-xiso -> alice-test.iso -> 5) commit+push
 - probe.ps1 NAO gera XBE: o cxbe tem que estar no script do lote
@@ -520,3 +520,7 @@
 - 16z10e: lwIP via shim winsock em gsPlatform.h (gcd_*), net_ip.c, common.c; -I lwIP fica (headers nao entram no XBE)
 - 16z10f-a: sem gcd_*/q_gamespy so falta _Com_InitGameSpy; 16z10f-b falhou: comentario C com 'gcd_*/' fechou o /* (regra: nunca '*/' dentro de comentario gerado)
 - 16z10g: include(gamespy) -> include_directories; q_gamespy.c comentado; stub Com_InitGameSpy vazio; XBE 4554752 bytes -> testar xemu
+
+## Lote 17a (2026-10-24 08:07)
+- 16z10g xemu: boot identico; Complete 16.93 s; heartbeat 41/82/122 (+40/2s); 343 obj -> REDE FORA DO BINARIO concluida
+- 17a: inventario dos .scr do Alice (75 arquivos, 888122 bytes): includes, keywords, funcoes (1425), metodos (169), $vars, amostra global (docs/probes/lote17a-scr.log), sem build
