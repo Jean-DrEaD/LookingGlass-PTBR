@@ -501,3 +501,17 @@ void *lg_netstub_22(void) __asm__("_lwip_setsockopt");
 void *lg_netstub_22(void) { return (void*)-1; }
 void *lg_netstub_23(void) __asm__("_lwip_socket");
 void *lg_netstub_23(void) { return (void*)-1; }
+
+/* LG 16z10c: stubs GameSpy do servidor (sv_gamespy/sv_gqueryreporting fora do build) */
+int lg_gsstub_0(void) __asm__("_SV_CreateGamespyChallenge");
+int lg_gsstub_0(void) { return 0; }
+int lg_gsstub_1(void) __asm__("_SV_GamespyAuthorize");
+int lg_gsstub_1(void) { return 0; }
+int lg_gsstub_2(void) __asm__("_SV_GamespyClientDisconnect");
+int lg_gsstub_2(void) { return 0; }
+int lg_gsstub_3(void) __asm__("_SV_GamespyHeartbeat");
+int lg_gsstub_3(void) { return 0; }
+int lg_gsstub_4(void) __asm__("_SV_RestartGamespy_f");
+int lg_gsstub_4(void) { return 0; }
+int lg_gsstub_5(void) __asm__("_SV_ShutdownGamespy");
+int lg_gsstub_5(void) { return 0; }

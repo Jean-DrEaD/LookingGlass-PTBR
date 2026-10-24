@@ -1,0 +1,21 @@
+# Probe 16z10c-b 2026-10-24 06:58 @ 412521e sem GameSpy sv + 6 stubs
+## LGSYS ok
+BUILD_EXIT=0
+## Objetos ok / falhos:
+376
+0
+## Erros por arquivo:
+## Top mensagens:
+## Linker (simbolos):
+## Falhou:
+## Alvos:
+build-xbox/libgcd_common.lib
+build-xbox/libgcd_key.lib
+build-xbox/libgcd_natneg.lib
+build-xbox/libgcd_qr2.lib
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe

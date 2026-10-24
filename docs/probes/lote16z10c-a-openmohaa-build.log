@@ -1,0 +1,33 @@
+# Probe 16z10c-a 2026-10-24 06:57 @ 412521e sem sv_gamespy/sv_gqueryreporting
+## LGSYS ok
+BUILD_EXIT=2
+## Objetos ok / falhos:
+376
+1
+## Erros por arquivo:
+## Top mensagens:
+      1 error: undefined symbol: _SV_ShutdownGamespy
+      1 error: undefined symbol: _SV_RestartGamespy_f
+      1 error: undefined symbol: _SV_GamespyHeartbeat
+      1 error: undefined symbol: _SV_GamespyClientDisconnect
+      1 error: undefined symbol: _SV_GamespyAuthorize
+      1 error: undefined symbol: _SV_CreateGamespyChallenge
+## Linker (simbolos):
+      1 undefined symbol: _SV_ShutdownGamespy
+      1 undefined symbol: _SV_RestartGamespy_f
+      1 undefined symbol: _SV_GamespyHeartbeat
+      1 undefined symbol: _SV_GamespyClientDisconnect
+      1 undefined symbol: _SV_GamespyAuthorize
+      1 undefined symbol: _SV_CreateGamespyChallenge
+## Falhou:
+gmake[2]: *** [CMakeFiles/omohaaded.dir/build.make:1501: Release/omohaaded.exe] Error 1
+## Alvos:
+build-xbox/libgcd_common.lib
+build-xbox/libgcd_key.lib
+build-xbox/libgcd_natneg.lib
+build-xbox/libgcd_qr2.lib
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib

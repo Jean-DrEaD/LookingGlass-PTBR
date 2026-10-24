@@ -501,3 +501,8 @@
 - 16z10a: rede no link = libnxdk_net (probe.ps1) + gcd_key/qr2/natneg/common (sv_gamespy.c/sv_gqueryreporting.c em shared_sources.cmake:101-102); SV_ShutdownGamespy (sv_init.c:1212) sem guard
 - 16z10b: libnxdk_net removida do link; stubs de rede gerados: 24 (asm label, -1/NULL); XBE 4620288 bytes -> testar xemu
 - 16z10c (planejado): GameSpy fora (gamespy.cmake/shared_sources sob NXDK, SV_ShutdownGamespy guard, include lwIP fora)
+
+## Lote 16z10c (2026-10-24 07:00)
+- 16z10b xemu: boot identico; Complete 17.84 s; heartbeat 41/82/122/162 (+40/2s) -> G_Error do script sem efeito colateral
+- 16z10c: sv_gamespy.c + sv_gqueryreporting.c comentados (#LG16z10c) no shared_sources.cmake; libs gcd_* nao puxadas; stubs: 6; XBE 4554752 bytes -> testar xemu
+- Proximo: include lwIP/shim winsock fora (net_ip.c sob NXDK), depois lote 17 (script Alice) / build cliente
