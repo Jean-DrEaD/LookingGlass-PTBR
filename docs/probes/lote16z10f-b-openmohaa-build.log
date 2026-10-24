@@ -1,0 +1,10 @@
+# Probe 16z10f-b 2026-10-24 07:34 @ b85a69a sem gcd_* + 1 stubs
+## LGSYS falhou
+/shims/xboxsys/sys_xbox.c:519:38: error: unknown type name 'q_gamespy'
+/shims/xboxsys/sys_xbox.c:519:47: error: expected identifier or '('
+2 errors generated.
+    /usr/src/nxdk/bin/nxdk-cc  -I/usr/src/nxdk/lib -I/usr/src/nxdk/lib/xboxrt/libc_extensions -I/usr/src/nxdk/lib/pdclib/include -I/usr/src/nxdk/lib/pdclib/platform/xbox/include -I/usr/src/nxdk/lib/winapi -I/usr/src/nxdk/lib/xboxrt/vcruntime -I/shims -include/shims/lg_compat.h -I/usr/src/nxdk/lib/xboxrt/libc_extensions -I/usr/src/nxdk/lib/net/lwip/src/include -I/usr/src/nxdk/lib/net/nforceif/include -ferror-limit=20  -MD -MF CMakeFiles/cmTC_d5ea8.dir/testCCompiler.c.obj.d -o CMakeFiles/cmTC_d5ea8.dir/testCCompiler.c.obj -c /src/build-xbox/CMakeFiles/CMakeScratch/TryCompile-DGOBHH/testCCompiler.c
+    /usr/src/nxdk/bin/nxdk-link -I/shims -include/shims/lg_compat.h -I/usr/src/nxdk/lib/xboxrt/libc_extensions -I/usr/src/nxdk/lib/net/lwip/src/include -I/usr/src/nxdk/lib/net/nforceif/include -ferror-limit=20  /errorlimit:0 /STACK:4194304,4194304 /src/build-lgsys/lg_xboxsys.lib  CMakeFiles/cmTC_d5ea8.dir/testCCompiler.c.obj -out:cmTC_d5ea8.exe  /usr/src/nxdk/lib/libwinapi.lib /usr/src/nxdk/lib/xboxkrnl/libxboxkrnl.lib /usr/src/nxdk/lib/libxboxrt.lib  /usr/src/nxdk/lib/libpdclib.lib /usr/src/nxdk/lib/libnxdk_hal.lib /usr/src/nxdk/lib/libnxdk.lib /usr/src/nxdk/lib/nxdk_usb.lib
+    lld: warning: ignoring unknown argument '-ferror-limit=20'
+    lld: error: could not open '/src/build-lgsys/lg_xboxsys.lib': No such file or directory
+-- Configuring incomplete, errors occurred!
