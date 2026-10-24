@@ -600,3 +600,8 @@
 - 17m: getClassDef (g_spawn.cpp:204) cai em Object::ClassInfo e tenta classname via TIKI (formato Alice diferente)
 - 17n: tabela lg_alice_cls + LG_AliceClass sob NXDK; teste com 1 entrada Enemies_Centipede -> Actor; 'LG: cls X -> Y ok/FALHOU' (+24 -0); XBE 4554752
 - Plano 17o: se Actor sobreviver -> Enemies_* -> Actor, ambient_*/emitter_* -> script_model, trigger_catmessage -> trigger_multiple
+
+## Lote 17o (2026-10-24 18:15)
+- 17n xemu: 'cls Enemies_Centipede -> Actor ok' -> 'SE Can't find anim/pain.scr' -> throw: Actor MOHAA exige scripts de IA (global/anim) inexistentes no Alice
+- Decisao: Actor/IA FAKK2 adiado (lote proprio); inimigos como script_model (modelo + anim, sem IA)
+- 17o: 8 Enemies_* -> script_model; lookup getClassForID -> getClass; print cls limitado a 3 (+10 -3); XBE 4554752
