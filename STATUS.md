@@ -558,3 +558,9 @@
 - 17e xemu: statements desconhecidos viram aviso (cam_fadeout/fadein, hideweapon, fakeplayer, dt_fadetime/fadeoutspeed/fadeinspeed/position/clear); para em 'SE unknown command: allow_cheshire' (uso em expressao) -> throw
 - 17f: cmd_event_expr + method_event_expr: eventnum==0 -> 'LG: cmd?e X' (40 max) + OP_STORE_NIL na pilha + break (+6 -0); XBE 4554752
 - Lista de comandos Alice ausentes = base p/ Events stub (17g); scr2morph v3 p/ os 6 falhos
+
+## Lote 17g (2026-10-24 12:07)
+- 17f xemu: tela so com 'C++ throw sem runtime EH' -> avisos (ate 40+40) encheram a tela e o debugPrint apagou o resto (inclusive o 'LG: SE')
+- Regra: total de debugPrint antes de um erro tem que caber na tela (~20 linhas)
+- 17g: lg_n++ < 40 -> < 5 (4 ocorrencias, +4 -4); coleta stub EH/SE em docs/probes/lote17g-limite.log; XBE 4554752
+- Proximo: stub EH reimprime a ultima mensagem SE antes de travar

@@ -1,0 +1,91 @@
+# Lote 17g 2026-10-24 12:06 - limite de avisos 40 -> 5 + coleta stub EH
+ocorrencias lg_n++ < 40: 4
+numstat: 4	4	code/script/scriptcompiler.cpp
+## coleta stub EH / SE
+### D:\openmohaa\code\fgame\gamescript.cpp:1145
+1138: }
+1139: 
+1140: void ScriptThreadLabel::SetThread(const ScriptVariable& label)
+1141: {
+1142:     switch (label.GetType()) {
+1143:     case VARIABLE_STRING:
+1144:     case VARIABLE_CONSTSTRING:
+1145:         { ScriptClass *lgSc = Director.CurrentScriptClass(); m_Script = lgSc ? lgSc->GetScript() : NULL; if (!lgSc) { gi.Printf("LG: SetThread sem thread label=%s\n", label.stringValue().c_str()); } } /* LG16q */
+1146:         m_Label  = label.constStringValue();
+1147:         break;
+1148:     case VARIABLE_NONE:
+1149:         m_Script = NULL;
+1150:         m_Label  = STRING_EMPTY;
+1151:         break;
+1152:     case VARIABLE_CONSTARRAY:
+1153:         if (label.arraysize() > 1) {
+### D:\openmohaa\code\script\scriptexception.cpp:33
+26: #include "q_shared.h"
+27: 
+28: #include <cstdarg>
+29: 
+30: int ScriptException::next_abort      = 0;
+31: int ScriptException::next_bIsForAnim = 0;
+32: 
+33: #ifdef NXDK // LG16j: mostra ScriptException (sem runtime EH)
+34: extern "C" void debugPrint(const char *format, ...);
+35: #endif
+36: void ScriptException::CreateException(const char *data)
+37: {
+38: #ifdef NXDK
+39:     debugPrint("LG: SE %.200s\n", data ? data : "(null)");
+40: #endif
+41:     string = data;
+### D:\openmohaa\code\script\scriptexception.cpp:39
+32: 
+33: #ifdef NXDK // LG16j: mostra ScriptException (sem runtime EH)
+34: extern "C" void debugPrint(const char *format, ...);
+35: #endif
+36: void ScriptException::CreateException(const char *data)
+37: {
+38: #ifdef NXDK
+39:     debugPrint("LG: SE %.200s\n", data ? data : "(null)");
+40: #endif
+41:     string = data;
+42: 
+43:     bAbort          = next_abort;
+44:     next_abort      = 0;
+45:     bIsForAnim      = next_bIsForAnim;
+46:     next_bIsForAnim = 0;
+47: }
+### D:\LookingGlass-PTBR\tools\nxdk-shims\xboxsys\sys_xbox.c:90
+83: }
+84: float lg_strtof(const char *s, char **end) { return (float)lg_strtod(s, end); }
+85: double atof(const char *s) { return lg_strtod(s, NULL); }
+86: 
+87: /* ---- runtime C++ EH (STUB: throw aborta) ---- */
+88: void __std_terminate(void) { debugPrint("LG: std::terminate\n"); for(;;) Sleep(1000); }
+89: int  __CxxFrameHandler3(void *a, void *b, void *c, void *d) { (void)a; (void)b; (void)c; (void)d; return 1; /* ContinueSearch */ }
+90: void __stdcall _CxxThrowException(void *o, void *t) { (void)o; (void)t; debugPrint("LG: C++ throw sem runtime EH\n"); for(;;) Sleep(1000); }
+91: 
+92: /* ---- lote 15t: rede (lwIP) antes do NET_Init ---- */
+93: #include <nxdk/net.h>
+94: static void lg_net_init(void) {
+95:   int r;
+96:   debugPrint("LG: nxNetInit...\n");
+97:   r = nxNetInit(NULL);
+98:   debugPrint("LG: nxNetInit = %d\n", r);
+BUILD_EXIT=0
+## Objetos ok / falhos:
+343
+0
+## Erros por arquivo:
+## Top mensagens:
+## Linker (simbolos):
+## Falhou:
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+cxbe: Xbe::Export: Writing Section 0x0002 (.data)...OK
+cxbe: Xbe::Export: Writing Section 0x0003 (.tls)...OK
+cxbe: Xbe::Export: Writing Zero Padding...OK
+XBE 4554752 / ISO 666763264
