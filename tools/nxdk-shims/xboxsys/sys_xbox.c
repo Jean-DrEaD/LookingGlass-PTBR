@@ -515,3 +515,6 @@ int lg_gsstub_4(void) __asm__("_SV_RestartGamespy_f");
 int lg_gsstub_4(void) { return 0; }
 int lg_gsstub_5(void) __asm__("_SV_ShutdownGamespy");
 int lg_gsstub_5(void) { return 0; }
+/* LG 16z10g: stub q_gamespy - gcd e q_gamespy.c fora do build */
+void lg_qgs_init(void) __asm__("_Com_InitGameSpy");
+void lg_qgs_init(void) { }

@@ -4,7 +4,8 @@
 - 15o: Sys_ListFiles real (FindFirstFileA); ISO a partir de D:\openmohaa\iso-stage (default.xbe + main\ hardlinks de base\)
 - ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\iso-stage G:\xemu\alice-test.iso
 - 16z9g: MARCO - link LIMPO sem /FORCE:MULTIPLE (mbtowc/rand_s/byteswap/strto* proprios)
-- Depois: tirar libnxdk_net/gcd_*/lwIP do link; Sys_Error sem lixo na tela; lote 17 = interpretador script Alice; build cliente
+- 16z10: REDE FORA DO BINARIO - libnxdk_net (24 stubs lwip), GameSpy sv (6), gcd_*/q_gamespy (1); -I lwIP mantido so p/ headers (net_ip loopback no build cliente)
+- Depois: Sys_Error sem lixo na tela; lote 17 = interpretador script Alice; build cliente
 - Inicio de chat: & D:\LookingGlass-PTBR\tools\lg-status.ps1 -Show
 - Regra: comandos sempre completos
 - SINGLE PLAYER SEM REDE: remover lwIP/libnxdk_net/gcd_*/winsock do link (15y)
@@ -514,3 +515,8 @@
 ## Lote 16z10e (2026-10-24 07:25)
 - 16z10d: sem -I lwIP -> 23 falhos 'lwip/sockets.h' (gcd_common gsAssert/gsAvailable/gsCore/gsCrypt/gsDebug...): gamespy.cmake ainda compila gcd_*; probe restaurado
 - 16z10e: coleta objetos falhos + includes de rede (code/shims) + refs gcd_/gamespy no CMake + includes q_gamespy.c (docs/probes/lote16z10e-lwip.log), sem build
+
+## Lote 16z10g (2026-10-24 07:40)
+- 16z10e: lwIP via shim winsock em gsPlatform.h (gcd_*), net_ip.c, common.c; -I lwIP fica (headers nao entram no XBE)
+- 16z10f-a: sem gcd_*/q_gamespy so falta _Com_InitGameSpy; 16z10f-b falhou: comentario C com 'gcd_*/' fechou o /* (regra: nunca '*/' dentro de comentario gerado)
+- 16z10g: include(gamespy) -> include_directories; q_gamespy.c comentado; stub Com_InitGameSpy vazio; XBE 4554752 bytes -> testar xemu
