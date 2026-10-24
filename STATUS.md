@@ -461,3 +461,9 @@
 - 16z7a: dedicado cria g_gametype='1' (sv_init.c:1118); com 0, SV_ServerLoaded so via cliente (sv_client.c:938 / cl_ui.cpp:4012) -> sv.state nunca SS_GAME sem cliente
 - Decisao: g_gametype 0 ADIADO p/ build cliente (loopback dispara ServerLoaded); dedicado fica gametype 1 como prova de mapa
 - 16z8a: inventario de breadcrumbs 'LG:' + LG_ParseVec3 em docs/probes/lote16z8a-breadcrumbs.log, sem build
+
+## Lote 16z8b (2026-10-23 21:25)
+- 16z8a: 89 linhas 'LG:' em 19 arquivos (docs/probes/lote16z8a-breadcrumbs.log)
+- 16z8b: removidos breadcrumbs sv/st/sl/sz/mp/cf/rf/fr/w/se/le/si + blocos 16n/16p/FindLabel ret restaurados ao comando original (9 arquivos, -101 +8)
+- Mantidos: CTI/SM 842/SetThread/FindLabel privado/scr falhou/level script pulado/SE (lote 17), heartbeat+auto map, fs_homepath, rede desativada, FAKK repack, LG_ParseVec3
+- Proximos: (a) remover /FORCE:MULTIPLE; (b) lote 17 = interpretador script Alice; (c) build cliente (g_gametype 0 via loopback)
