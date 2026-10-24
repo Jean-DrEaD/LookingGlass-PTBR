@@ -1,0 +1,670 @@
+# Lote 17c 2026-10-24 08:20 - scr2morph v1
+## Resultado: 19 ok / 19 falhos de 38 mapas; pk3 61843 bytes
+## Falhas
+maps/centipede2.scr linha(expandida) 742: esperado ';' (token '=')
+maps/fortress2.scr linha(expandida) 412: esperado '{' (token ';')
+maps/funhouse.scr linha(expandida) 411: esperado '{' (token ';')
+maps/garden2.scr linha(expandida) 412: esperado '{' (token ';')
+maps/garden4.scr linha(expandida) 422: esperado ';' (token '=')
+maps/grounds1.scr linha(expandida) 1207: esperado '{' (token ';')
+maps/grounds2.scr linha(expandida) 645: esperado '{' (token ';')
+maps/gvillage.scr linha(expandida) 414: esperado '{' (token ';')
+maps/hatter1.scr linha(expandida) 412: esperado '{' (token ';')
+maps/hatter2.scr linha(expandida) 411: esperado '{' (token ';')
+maps/hedge1.scr linha(expandida) 411: esperado '{' (token ';')
+maps/oldqlair.scr linha(expandida) 412: esperado '{' (token ';')
+maps/pandemonium.scr linha(expandida) 411: esperado '{' (token ';')
+maps/qlair.scr linha(expandida) 412: esperado '{' (token ';')
+maps/rchess1.scr linha(expandida) 414: esperado '{' (token ';')
+maps/skool1.scr linha(expandida) 412: esperado '{' (token ';')
+maps/tower2.scr linha(expandida) 411: esperado '{' (token ';')
+maps/wchess1.scr linha(expandida) 410: esperado '{' (token ';')
+maps/wchess2.scr linha(expandida) 411: esperado '{' (token ';')
+## Avisos (distintos, top 150)
+maps/centipede2.scr: expressao sem efeito linha(expandida) 742
+maps/garden4.scr: expressao sem efeito linha(expandida) 422
+## Comandos do engine (ocorrencias, inclui includes repetidos)
+  1393 wait
+   629 alias
+   385 cam_fadein
+   382 waitfor
+   375 cam_fadeout
+   250 level_ai
+   186 freezeplayer
+   185 letterbox
+   185 cinematic
+   179 trigger
+   148 cuecamera
+   148 releaseplayer
+   148 clearletterbox
+   148 noncinematic
+   120 waitForDialog
+   111 musicvolume
+    96 fakeplayer
+    85 killthread
+    77 setcvar
+    75 drugview
+    75 cueplayer
+    74 clearfade
+    74 removefakeplayer
+    74 restoremusicvolume
+    74 fadeisactive
+    74 skipthread
+    37 print
+    31 waitForPlayer
+    18 soundtrack
+    18 music
+    10 map
+     3 spawn
+     2 setlightstyle
+     2 threadname
+## Metodos
+   515 anim
+   424 hideweapon
+   341 time
+   279 hide
+   235 remove
+   210 bind
+   193 moveDown
+   186 allow_cheshire
+   171 rendereffects
+   162 show
+   160 dt_clear
+   159 dt_fadetime
+   152 cut
+   147 load
+   138 follow
+   127 nottriggerable
+   126 playsound
+   122 playdialog
+   113 killdemons
+   111 farplane_color
+   111 farplane
+   110 followpath
+   100 warpto
+    90 ai_off
+    88 notsolid
+    83 triggerable
+    79 rotateY
+    74 rotateto
+    73 moveUp
+    55 solid
+    54 scale
+    53 rotateX
+    53 health
+    51 rotateZ
+    51 followspline
+    51 headwatch
+    46 angles
+    45 movetoent
+    40 god
+    38 dead
+    37 dt_fadeoutspeed
+    37 dt_fadeinspeed
+    37 dt_position
+    34 ai_on
+    32 maxmouthangle
+    32 runto_pathnode
+    30 alpha
+    29 setenemy
+    27 fadein
+    26 watchenemy
+    24 moveWest
+    24 pendulum
+    24 lookat
+    22 rotateYupto
+    21 visiondistance
+    20 rotateXupto
+    19 watch
+    19 walkto_pathnode
+    19 ai_dumb
+    18 fade
+    18 dmg
+    17 rotateZupto
+    17 setsize
+    17 rotateXdownto
+    15 rotateYdownto
+    14 killthread
+    13 moveSouth
+    12 attach
+    12 surface
+    11 bind_localangles
+    11 rotateZdownto
+    11 attack
+    11 loopsound
+    10 removeattachedmodel
+    10 stoploopsound
+     9 jumpto
+     9 watchoffset
+     9 max_inactive_time
+     8 full_stats
+     8 altarattach
+     8 bosslevel
+     8 gravity
+     8 moveNorth
+     8 moveEast
+     6 altardetach
+     6 playerclip
+     6 solidmask
+     6 angle
+     6 minhealth
+     6 detach
+     5 stop
+     5 continue
+     5 takedamage
+     5 rotateYdown
+     5 give
+     4 rotateYup
+     4 idle
+     4 unbind
+     4 model
+     4 lightStyle
+     4 lightRadius
+     4 gethealth
+     4 attackplayer
+     3 openportal
+     3 origin
+     3 camerafov
+     3 checkreload
+     3 altarhide
+     3 walkto_entity
+     2 rotateZup
+     2 getorigin
+     2 immortal
+     2 name
+     2 stop_motion
+     2 runto_entity
+     2 fadetime
+     2 speed
+     2 aaccelX
+     2 take
+     1 hurt
+     1 swimsinwater
+     1 hasmockturtleshell
+     1 nodamage
+     1 dt_resetdialog
+     1 orbit_height
+     1 follow_distance
+     1 attachmodel
+     1 earthquake
+     1 animonce
+     1 ignore_deadtime
+     1 item
+     1 aaccelZ
+     1 orbit
+     1 closeportal
+## ===== traduzido maps/centipede1.scr =====
+// LG scr2morph v1: maps/centipede1.scr
+level.fog_color = ( 0 0 0 )
+level.fog_distance = 0
+level.brave_ants = 0
+level.brave_killer = 0
+thread main
+end
+
+Func_Sound_Init:
+	print "Initializing Func_Sound_Init\n"
+	alias "snd_earthquake1" "sound/ambience/special/quake1.wav"
+	alias "snd_earthquake2" "sound/ambience/special/quake2.wav"
+	alias "snd_noammo" "sound/weapon/noammo.wav"
+	alias "snd_pickup" "sound/item/pickup.wav"
+	alias "impact_sever1" "sound/weapon/shared/splat1.wav"
+	alias "impact_sever2" "sound/weapon/shared/splat2.wav"
+	alias "impact_sever3" "sound/weapon/shared/splat3.wav"
+	alias "snd_sever1" "sound/weapon/shared/splat1.wav"
+	alias "snd_sever2" "sound/weapon/shared/splat2.wav"
+	alias "snd_sever3" "sound/weapon/shared/splat3.wav"
+	alias "snd_gib1" "sound/weapon/shared/gib1.wav"
+	alias "snd_gib2" "sound/weapon/shared/gib2.wav"
+	alias "snd_gib3" "sound/weapon/shared/gib3.wav"
+	alias "snd_gibhit" "sound/weapon/shared/gib1.wav"
+	alias "snd_decap" "sound/weapon/shared/splat4.wav"
+	alias "impact_softland" "sound/character/shared/soft_land.wav"
+	alias "snd_burned" "sound/character/shared/burned.wav"
+end
+
+setfarplane local.newcolor local.fdistance:
+	level.fog_color = local.newcolor
+	level.fog_distance = local.fdistance
+	$world farplane_color level.fog_color
+	$world farplane level.fog_distance
+end
+
+fadefog local.newcolor local.newdistance local.fogfadetime:
+	local.i = 0
+	local.n = 0
+	local.frontlerp = 0
+	local.backlerp = 0
+	local.oldcolor = ( 0 0 0 )
+	local.olddist = 0
+	local.oldcolor = level.fog_color
+	local.olddist = level.fog_distance
+	local.n = (local.fogfadetime / 0.05)
+	for (local.i = 0 ; (local.i < local.n) ; local.i++)
+	{
+		local.frontlerp = (local.i / local.n)
+		local.backlerp = (1.0 - local.frontlerp)
+		level.fog_color = ((local.oldcolor * local.backlerp) + (local.newcolor * local.frontlerp))
+		level.fog_distance = ((local.olddist * local.backlerp) + (local.newdistance * local.frontlerp))
+		$world farplane_color level.fog_color
+		$world farplane level.fog_distance
+		wait 0.05
+	}
+	$world farplane_color local.newcolor
+	$world farplane local.newdistance
+end
+
+FlipMove local.org local.tile local.destination local.rot local.height local.movetime:
+	local.vel = 0
+	local.acc = 0
+	local.t = 0
+	local.dist = 0
+	local.endtime = 0
+	local.r = ( 0 0 0 )
+	local.t = (0.1 / local.movetime)
+	local.vel = ((2 * local.t) * (local.height - (local.height * local.t)))
+	local.acc = (local.vel * local.t)
+	local.r = (local.rot * (local.t * 0.5))
+	local.endtime = (local.movetime * 20)
+	local.org time local.movetime
+	local.org movetoent local.destination
+	local.tile time 0.05
+	for (local.t = 0 ; (local.t < local.endtime) ; local.t++)
+	{
+		local.dist = (local.dist + local.vel)
+		local.tile rotateto (local.r * local.t)
+		local.tile playsound "sound/ambience/special/flip1.wav"
+		local.tile moveUp local.vel
+		waitfor local.tile
+		local.vel = (local.vel - local.acc)
+	}
+	if (local.dist)
+	{
+		local.tile moveDown local.dist
+		local.tile rotateto local.rot
+		waitfor local.tile
+	}
+end
+
+shrink_alice:
+	wait 0.1
+	$player god 0
+	freezeplayer
+	fakeplayer
+	$fakeplayer anim "death_falling"
+	local.scalecount = 1
+	for (local.scalecount = 1 ; (local.scalecount > 0) ; local.scalecount = (local.scalecount - 0.05))
+	{
+		$fakeplayer scale local.scalecount
+		wait 0.1
+	}
+	$fakeplayer hide
+	$player hide
+	$player health 0
+	$player dead
+end
+
+DrugFade:
+	local.lg_t1 = fadeisactive
+	if ((local.lg_t1 == 0))
+	{
+		cam_fadeout 0.15 0 0 0 1 0
+		wait 0.1
+		drugview 1
+		cam_fadein 0.6 1 1 1 1 2
+		wait 0.5
+		cam_fadeout 10 1 1 1 1 2
+		wait 4
+		drugview 0
+		cam_fadein 0.2 0 0 0 1 0
+		wait 0.2
+		clearfade
+	}
+end
+
+IceFade:
+	local.lg_t1 = fadeisactive
+	if ((local.lg_t1 == 0))
+	{
+		cam_fadein 0.4 0 0 0 1 3
+		wait 0.35
+		cam_fadeout 6 0 0 0 1 3
+		wait 6
+		clearfade
+	}
+end
+
+Cine_Fakeplayer:
+	$player hideweapon 1
+	fakeplayer
+	$fakeplayer rendereffects "+betterlighting"
+end
+
+C_Placeholder:
+end
+
+E_Placeholder:
+end
+
+Black_Fadein:
+	cam_fadein 1 0 0 0 1 0
+end
+
+Black_Fadeout:
+	cam_fadeout 1 0 0 0 1 0
+end
+
+White_Fadein:
+	cam_fadein 1 1 1 1 1 0
+end
+
+White_Fadeout:
+	cam_fadeout 1 0 0 0 1 0
+end
+
+Cinematic_BlackFadein:
+	freezeplayer
+	cinematic
+	cam_fadein 1 0 0 0 1 0
+	letterbox 1
+	wait 1
+end
+
+Cinematic_BlackFadeout:
+	cam_fadeout 1 0 0 0 1 0
+	clearletterbox 1
+	wait 1
+	noncinematic
+	releaseplayer
+end
+
+Cinematic_WhiteFadein:
+	freezeplayer
+	cinematic
+	cam_fadein 1 1 1 1 1 0
+	letterbox 1
+	wait 1
+end
+
+Cinematic_WhiteFadeout:
+	cam_fadeout 1 1 1 1 1 0
+	clearletterbox 1
+	wait 1
+	noncinematic
+	releaseplayer
+end
+
+Init_Dialog:
+	$dialogtext dt_fadetime 6
+	$dialogtext dt_fadeoutspeed 0.5
+	$dialogtext dt_fadeinspeed 0.5
+	$dialogtext dt_position 1
+	$dialogtext dt_clear
+end
+
+Start_Cinematic_AI_ON:
+	local.cattime = 0
+	local.lg_t1 = $player allow_cheshire 0
+	local.cattime = local.lg_t1
+	$player hideweapon 1
+	$player killdemons
+	musicvolume 0.5 2
+	$fakeplayer hideweapon 1
+	freezeplayer
+	cinematic
+	letterbox 1
+	if ((local.cattime > 0))
+	{
+		wait local.cattime
+	}
+end
+
+Start_Cinematic:
+	local.cattime = 0
+	level_ai 0
+	local.lg_t2 = $player allow_cheshire 0
+	local.cattime = local.lg_t2
+	$player hideweapon 1
+	$player killdemons
+	musicvolume 0.5 2
+	$fakeplayer hideweapon 1
+	freezeplayer
+	cinematic
+	letterbox 1
+	if ((local.cattime > 0))
+	{
+		wait local.cattime
+	}
+end
+
+Start_Cinematic_Fast:
+	local.cattime = 0
+	level_ai 0
+	local.lg_t2 = $player allow_cheshire 0
+	local.cattime = local.lg_t2
+	$player hideweapon 1
+	$player killdemons
+	musicvolume 0.5 2
+	$fakeplayer hideweapon 1
+	cinematic
+	letterbox 1
+	if ((local.cattime > 0))
+	{
+		wait local.cattime
+	}
+end
+
+End_Cinematic:
+	$fakeplayer hideweapon 0
+	setcvar "timescale" "1"
+	removefakeplayer
+	$player allow_cheshire 1
+	$player hideweapon 0
+	restoremusicvolume 2
+	noncinematic
+	clearletterbox 2
+	cueplayer 2
+	releaseplayer
+	level_ai 1
+end
+
+End_Cinematic_Fast:
+	$fakeplayer hideweapon 0
+	setcvar "timescale" "1"
+	removefakeplayer
+	$player allow_cheshire 1
+	$player hideweapon 0
+	restoremusicvolume 2
+	noncinematic
+	clearletterbox 2
+	cueplayer 0
+	releaseplayer
+	level_ai 1
+end
+
+Null:
+end
+
+Centipede1_Cinematics_Init:
+	waitthread Init_Dialog
+	$cam load "centipede1_path1"
+	$centipede_actor1 maxmouthangle 45
+	$centipede_actor1 ai_off
+	$centipede_actor1 hide
+	$ant_runner1 ai_off
+	$ant_runner2 ai_off
+	$ant_runner3 ai_off
+end
+
+Centipede1_Brave_Killer_Killed:
+	level.brave_killer = (level.brave_killer - 1)
+end
+
+Centipede1_Brave_Killer:
+	while (1)
+	{
+		if ((level.brave_ants < 3))
+		{
+			trigger $brave_killer1
+			wait 0.1
+			level.brave_killer = (level.brave_killer + 1)
+			$ant_killer killthread "Centipede1_Brave_Killer_Killed"
+			$ant_killer attackplayer
+		}
+		wait 3.0
+	}
+end
+
+Centipede1_Brave_Ants_Killed:
+	level.brave_ants = (level.brave_ants - 1)
+end
+
+Centipede1_Brave_Ants:
+	while (1)
+	{
+		if ((level.brave_ants < 3))
+		{
+			trigger $brave_spawn1
+			wait 0.1
+			level.brave_ants = (level.brave_ants + 1)
+			$ant_attack killthread "Centipede1_Brave_Ants_Killed"
+			$ant_attack attackplayer
+		}
+		wait 3.0
+	}
+end
+
+Centipede1_BraveAttack:
+	$ant_runner1 runto_pathnode "$ant_brave_pos1"
+	$ant_runner2 runto_pathnode "$ant_brave_pos2"
+	$ant_runner3 runto_pathnode "$ant_brave_pos3"
+end
+
+Centipede1_Talk1:
+	$dialogtext dt_clear
+	$dialogtext dt_fadetime 4
+	$centipede_actor1 playdialog "sound/character/centipede/vo/cpd001.wav"
+	waitForDialog $centipede_actor1 1
+end
+
+Centipede1_Cinematic_Fakeplayer:
+	$player hideweapon 1
+	fakeplayer
+	$fakeplayer rendereffects "+betterlighting"
+end
+
+Centipede1_CentAnims:
+	$centipede_actor1 anim "idle_yawn"
+	waitfor $centipede_actor1
+	$centipede_actor1 anim "idle_snarl"
+	waitfor $centipede_actor1
+end
+
+C1_End:
+	level_ai 0
+	cam_fadeout 0.5 1 1 1 1 0
+	wait 0.5
+	$centipede_actor1 remove
+	waitthread End_Cinematic_Fast
+	cam_fadein 0.5 1 1 1 1 0
+	level_ai 1
+	$ant_runner1 ai_on
+	$ant_runner2 ai_on
+	$ant_runner3 ai_on
+	$player minhealth 10
+	trigger $ant_at_end1
+	trigger $ant_at_end2
+	thread Centipede1_Brave_Ants
+	thread Centipede1_Brave_Killer
+	wait 4
+	map "centipede2$centipede2_start1"
+end
+
+Skipthread_C1:
+	skipthread "Null"
+	killthread "Centipede1_Ambush_Cinema1"
+	killthread "Centipede1_CentAnims"
+	thread C1_End
+end
+
+Centipede1_Ambush_Cinema1:
+	level_ai 0
+	$ant_runner1 runto_pathnode "$ant_brave_pos1"
+	$ant_runner2 runto_pathnode "$ant_brave_pos2"
+	$ant_runner3 runto_pathnode "$ant_brave_pos3"
+	wait 2
+	waitthread Centipede1_Cinematic_Fakeplayer
+	waitthread Start_Cinematic
+	skipthread "Skipthread_C1"
+	wait 0.5
+	cam_fadeout 0.5 1 1 1 1 0
+	wait 0.5
+	$centipede_actor1 show
+	$centipede_actor1 warpto "$cent_posx1"
+	$alice_watch1 follow $centipede1_path1
+	$alice_watch1 cut
+	cuecamera $alice_watch1 0
+	cam_fadein 0.5 1 1 1 1 0
+	thread Centipede1_CentAnims
+	$dialogtext dt_clear
+	$dialogtext dt_fadetime 4
+	$centipede_actor1 playdialog "sound/character/centipede/vo/cpd002.wav"
+	waitForDialog $centipede_actor1 1
+	cam_fadeout 0.5 1 1 1 1 0
+	wait 0.5
+	$centipede_actor1 remove
+	cam_fadein 0.5 1 1 1 1 0
+	waitthread End_Cinematic_Fast
+	level_ai 1
+	$ant_runner1 ai_on
+	$ant_runner2 ai_on
+	$ant_runner3 ai_on
+	$player minhealth 10
+	thread Centipede1_Brave_Ants
+	thread Centipede1_Brave_Killer
+	wait 10
+	map "centipede2$centipede2_start1"
+end
+
+ArmLadies:
+	local.bugname = ""
+	local.i = 0
+	while (1)
+	{
+		for (local.i = 1 ; (local.i < 5) ; local.i++)
+		{
+			local.bugname = ("lady" + local.i)
+			local.bug = $(local.bugname)
+			local.bug checkreload
+		}
+		wait 2
+	}
+end
+
+Centipede1_Enemies_Init:
+	thread ArmLadies
+end
+
+Centipede1_Move_Enemies:
+	$lady1 followspline "$t9" "loop" "normalangles"
+	$lady2 followspline "$t48" "loop" "normalangles"
+	$lady3 followspline "$t18" "loop" "normalangles"
+	$lady4 followspline "$t26" "loop" "normalangles"
+end
+
+Centipede1_Pre_Init:
+	$c1_changelevel nottriggerable
+end
+
+main:
+	thread Centipede1_Enemies_Init
+	thread Func_Sound_Init
+	thread Centipede1_Cinematics_Init
+	thread Centipede1_Pre_Init
+	soundtrack "sound/music/centipede1.mus"
+	drugview 0
+	waitForPlayer
+	thread Centipede1_Move_Enemies
+	music "normal" "normal"
+end
+

@@ -529,3 +529,9 @@
 - 17a: 75 scr/888 KB; keywords wait 2233, void 2073, thread 1192, waitfor 934; 169 metodos (anim/time/show/remove/bind...); 1425 funcoes = maioria labels proprios
 - DECISAO lote 17: TRADUTOR offline Alice->Morpheus (PowerShell no PC) gerando iso-stage\main\zz_lg_scr.pk3 (fora do repo); VM MOHAA reaproveitada; comandos ausentes = Events stub (17d)
 - 17b: amostras completas (centipede1/utils/cinematics/sound/centipede1_cinematics/garden3) + tokens Morpheus (docs/probes/lote17b-amostras.log), sem build
+
+## Lote 17c (2026-10-24 08:20)
+- 17b: amostras confirmam sintaxe Ritual C-like (tipos, params, globais, for/while/if, #include, getentity, vetores '...')
+- 17c: tools/scr2morph.cs (C# via Add-Type) traduz maps/*.scr -> Morpheus (includes inline, globais level., locais local., chamadas -> waitthread/cmd, metodos -> $e m args, hoist de chamadas em expressao)
+- 17c: 19 ok / 19 falhos de 38; saida iso-stage\main\zz_lg_scr.pk3 (fora do repo); ISO recriada sem build (docs/probes/lote17c-scr2morph.log)
+- Esperado xemu: sem parse error; provavel 'LG: SE' + trava (EH stub) no 1o comando desconhecido -> 17d = ScriptError sem throw
