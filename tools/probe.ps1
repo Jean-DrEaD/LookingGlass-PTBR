@@ -1,9 +1,11 @@
 param(
   [Parameter(Mandatory)][string]$Lote,
   [Parameter(Mandatory)][string]$Nome,
-  [string]$Nota = ''
+  [string]$Nota = '',
+  [switch]$Cliente
 )
 $flags = '-DCMAKE_TOOLCHAIN_FILE=$NXDK_DIR/share/toolchain-nxdk.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CLIENT=OFF -DBUILD_SERVER=ON -DBUILD_RENDERER_GL1=OFF -DBUILD_RENDERER_GL2=OFF -DBUILD_GAME_QVMS=OFF -DBUILD_GAME_LIBRARIES=ON -DUSE_RENDERER_DLOPEN=OFF -DUSE_OPENAL=OFF -DUSE_OPENAL_DLOPEN=OFF -DUSE_HTTP=OFF -DUSE_CODEC_VORBIS=OFF -DUSE_CODEC_OPUS=OFF -DUSE_CODEC_MAD=OFF -DUSE_INTERNAL_LIBS=ON -Wno-dev -DCMAKE_EXE_LINKER_FLAGS="/errorlimit:0 /STACK:4194304,4194304 /src/build-lgsys/lg_xboxsys.lib"'
+if ($Cliente) { $flags = $flags.Replace('-DBUILD_CLIENT=OFF','-DBUILD_CLIENT=ON').Replace('-DBUILD_RENDERER_GL1=OFF','-DBUILD_RENDERER_GL1=ON') }
 $cmd = @"
 INC="-I/shims -include/shims/lg_compat.h -I`$NXDK_DIR/lib/xboxrt/libc_extensions -I`$NXDK_DIR/lib/net/lwip/src/include -I`$NXDK_DIR/lib/net/nforceif/include"
 rm -rf build-xbox build-lgsys

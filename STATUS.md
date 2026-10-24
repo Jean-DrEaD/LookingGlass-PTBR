@@ -633,3 +633,8 @@
 - 18c: xbox_input_engine.c cobre IN_Init/Frame/Shutdown/Restart; faltam IN_MouseOn/Off/GetMousePosition/IsCursorActive/FreeCursor/SetCursorFromImage/ToggleMouse; xbox_snd_engine.c cobre SNDDMA_Init/GetDMAPos/Shutdown, faltam BeginPainting/Submit/Activate/MasterGain/captura
 - PLANO: 18e cliente com renderer NULO (85 stubs) + stubs IN_/SNDDMA_/GLimp_ -> validar client/cgame/uilib no nxdk + loopback g_gametype 0; 18f input/audio reais; 18g+ renderer NV2A (2D -> mundo FAKK)
 - 18d: coleta probe.ps1, client/renderer cmake, CMakeLists, code\sys, tipos (docs/probes/lote18d-clientbuild.log), sem build
+
+## Lote 18e (2026-10-24 19:14)
+- 18d: probe.ps1 com flags fixas; client.cmake inclui sdl_input/sdl_mouse + cl_gamespy; renderer_common exige 1 renderer estatico; main em sys_main.c:782
+- 18e: sob NXDK sdl.cmake retorna; renderer_gl1.cmake -> code/renderernull/tr_null.c (85 entradas, stub generico + float/struct/nomes proprios); client.cmake sem sdl_input/sdl_mouse/cl_gamespy
+- 18e: probe.ps1 -Cliente (CLIENT+GL1 ON); dedicado inalterado sem -Cliente; build diagnostico (link do cliente deve falhar) em docs/probes/lote18e-openmohaa-cliente.log; prototipos em lote18e-proto.log; sem XBE
