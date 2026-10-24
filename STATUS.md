@@ -622,3 +622,8 @@
 - 18a: contagem OpenAL = falso positivo (regex al[A-Z]); filtro ioq3 casou 'Xbox' do nome da pasta -> invalido
 - 18a: ioq3 tem sys\xbox_input.c (usbh_lib), xbox_input_engine.c, xbox_snd.c (XAudioProvideSamples)
 - 18b: coleta focada ioq3 (sys\xbox*, GLimp/pbkit, build) + exports code\sdl + qgl.h (docs/probes/lote18b-nv2a.log), sem build
+
+## Lote 18c (2026-10-24 19:06)
+- 18b: ioq3-Xbox tem RENDERER NV2A PROPRIO (code\renderernv2a, 7 arq ~260 KB: backend/DXT/shader/sky/world Q3/MD3) sobre xgu/pbkit; ligado via sys\xbox_ref.c; input usbh (xbox_input.c), audio XAudio (xbox_snd.c)
+- DECISAO: NAO portar qgl do GL1 (968 usos); adaptar renderernv2a ao refexport_t do OpenMoHAA (world -> BSP FAKK v42; MD3 -> TIKI/skeletor em lote proprio); xbox_input/xbox_snd substituem code\sdl
+- 18c: coleta tr_public.h (ioq3 x OpenMoHAA), xbox_ref.c, xbox_nv2a.h, input/snd, chamadas IN_/SNDDMA_/GLimp_ (docs/probes/lote18c-refapi.log), sem build

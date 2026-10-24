@@ -1,0 +1,1545 @@
+# Lote 18c 2026-10-24 19:06 - refexport ioq3 x OpenMoHAA
+## OpenMoHAA refexport_t: entradas
+total=85
+Shutdown BeginRegistration RegisterModel RegisterSkin RegisterShader RegisterShaderNoMip LoadWorld SetWorldVisData EndRegistration ClearScene AddRefEntityToScene AddPolyToScene LightForPoint AddLightToScene AddAdditiveLightToScene RenderScene SetColor DrawStretchRaw UploadCinematic BeginFrame EndFrame MarkFragments LerpTag ModelBounds A3D_RenderGeometry RegisterFont RemapShader GetEntityToken inPVS TakeVideoFrame SpawnEffectModel RegisterServerModel UnregisterServerModel RefreshShaderNoMip FreeModels PrintBSPFileSizes MapVersion AddRefSpriteToScene AddTerrainMarkToScene GetRenderEntity SavePerformanceCounters Set2DWindow DrawStretchPic DrawStretchPic2 DrawTilePic DrawTilePicOffset DrawTrianglePic DrawBackground DebugLine DrawBox AddBox Scissor DrawLineLoop MarkFragmentsForInlineModel GetInlineModelBounds GetLightingForDecal GetLightingForSmoke R_GatherLightSources ModelRadius R_Model_GetHandle DrawString GetFontHeight GetFontStringWidth LoadFont SwipeBegin SwipePoint SwipeEnd SetRenderTime Noise SetMode SetFullscreen GetShaderWidth GetShaderHeight GetShaderName GetModelName GetGraphicsInfo ForceUpdatePose TIKI_Orientation TIKI_IsOnGround SetFrameNumber ImageExists CountTextureMemory LoadRawImage FreeRawImage Set2DInitialShaderTime
+## CONTEUDO D:\ioQuake3-Xbox\\code\renderercommon\tr_public.h
+/*
+===========================================================================
+Copyright (C) 1999-2005 Id Software, Inc.
+
+This file is part of Quake III Arena source code.
+
+Quake III Arena source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+Quake III Arena source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Quake III Arena source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+===========================================================================
+*/
+#ifndef __TR_PUBLIC_H
+#define __TR_PUBLIC_H
+
+#include "tr_types.h"
+
+#define	REF_API_VERSION		8
+
+//
+// these are the functions exported by the refresh module
+//
+typedef struct {
+	// called before the library is unloaded
+	// if the system is just reconfiguring, pass destroyWindow = qfalse,
+	// which will keep the screen from flashing to the desktop.
+	void	(*Shutdown)( qboolean destroyWindow );
+
+	// All data that will be used in a level should be
+	// registered before rendering any frames to prevent disk hits,
+	// but they can still be registered at a later time
+	// if necessary.
+	//
+	// BeginRegistration makes any existing media pointers invalid
+	// and returns the current gl configuration, including screen width
+	// and height, which can be used by the client to intelligently
+	// size display elements
+	void	(*BeginRegistration)( glconfig_t *config );
+	qhandle_t (*RegisterModel)( const char *name );
+	qhandle_t (*RegisterSkin)( const char *name );
+	qhandle_t (*RegisterShader)( const char *name );
+	qhandle_t (*RegisterShaderNoMip)( const char *name );
+	void	(*LoadWorld)( const char *name );
+
+	// the vis data is a large enough block of data that we go to the trouble
+	// of sharing it with the clipmodel subsystem
+	void	(*SetWorldVisData)( const byte *vis );
+
+	// EndRegistration will draw a tiny polygon with each texture, forcing
+	// them to be loaded into card memory
+	void	(*EndRegistration)( void );
+
+	// a scene is built up by calls to R_ClearScene and the various R_Add functions.
+	// Nothing is drawn until R_RenderScene is called.
+	void	(*ClearScene)( void );
+	void	(*AddRefEntityToScene)( const refEntity_t *re );
+	void	(*AddPolyToScene)( qhandle_t hShader , int numVerts, const polyVert_t *verts, int num );
+	int		(*LightForPoint)( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir );
+	void	(*AddLightToScene)( const vec3_t org, float intensity, float r, float g, float b );
+	void	(*AddAdditiveLightToScene)( const vec3_t org, float intensity, float r, float g, float b );
+	void	(*RenderScene)( const refdef_t *fd );
+
+	void	(*SetColor)( const float *rgba );	// NULL = 1,1,1,1
+	void	(*DrawStretchPic) ( float x, float y, float w, float h, 
+		float s1, float t1, float s2, float t2, qhandle_t hShader );	// 0 = white
+
+	// Draw images for cinematic rendering, pass as 32 bit rgba
+	void	(*DrawStretchRaw) (int x, int y, int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty);
+	void	(*UploadCinematic) (int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty);
+
+	void	(*BeginFrame)( stereoFrame_t stereoFrame );
+
+	// if the pointers are not NULL, timing info will be returned
+	void	(*EndFrame)( int *frontEndMsec, int *backEndMsec );
+
+
+	int		(*MarkFragments)( int numPoints, const vec3_t *points, const vec3_t projection,
+				   int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer );
+
+	int		(*LerpTag)( orientation_t *tag,  qhandle_t model, int startFrame, int endFrame, 
+					 float frac, const char *tagName );
+	void	(*ModelBounds)( qhandle_t model, vec3_t mins, vec3_t maxs );
+
+#ifdef __USEA3D
+	void    (*A3D_RenderGeometry) (void *pVoidA3D, void *pVoidGeom, void *pVoidMat, void *pVoidGeomStatus);
+#endif
+	void	(*RegisterFont)(const char *fontName, int pointSize, fontInfo_t *font);
+	void	(*RemapShader)(const char *oldShader, const char *newShader, const char *offsetTime);
+	qboolean (*GetEntityToken)( char *buffer, int size );
+	qboolean (*inPVS)( const vec3_t p1, const vec3_t p2 );
+
+	void (*TakeVideoFrame)( int h, int w, byte* captureBuffer, byte *encodeBuffer, qboolean motionJpeg );
+} refexport_t;
+
+//
+// these are the functions imported by the refresh module
+//
+typedef struct {
+	// print message on the local console
+	void	(QDECL *Printf)( int printLevel, const char *fmt, ...) Q_PRINTF_FUNC(2, 3);
+
+	// abort the game
+	void	(QDECL *Error)( int errorLevel, const char *fmt, ...) Q_NO_RETURN Q_PRINTF_FUNC(2, 3);
+
+	// milliseconds should only be used for profiling, never
+	// for anything game related.  Get time from the refdef
+	int		(*Milliseconds)( void );
+
+	// stack based memory allocation for per-level things that
+	// won't be freed
+#ifdef HUNK_DEBUG
+	void	*(*Hunk_AllocDebug)( int size, ha_pref pref, char *label, char *file, int line );
+#else
+	void	*(*Hunk_Alloc)( int size, ha_pref pref );
+#endif
+	void	*(*Hunk_AllocateTempMemory)( int size );
+	void	(*Hunk_FreeTempMemory)( void *block );
+
+	// dynamic memory allocator for things that need to be freed
+	void	*(*Malloc)( int bytes );
+	void	(*Free)( void *buf );
+
+	cvar_t	*(*Cvar_Get)( const char *name, const char *value, int flags );
+	void	(*Cvar_Set)( const char *name, const char *value );
+	void	(*Cvar_SetValue) (const char *name, float value);
+	void	(*Cvar_CheckRange)( cvar_t *cv, float minVal, float maxVal, qboolean shouldBeIntegral );
+	void	(*Cvar_SetDescription)( cvar_t *cv, const char *description );
+
+	int		(*Cvar_VariableIntegerValue) (const char *var_name);
+
+	void	(*Cmd_AddCommand)( const char *name, void(*cmd)(void) );
+	void	(*Cmd_RemoveCommand)( const char *name );
+
+	int		(*Cmd_Argc) (void);
+	char	*(*Cmd_Argv) (int i);
+
+	void	(*Cmd_ExecuteText) (int exec_when, const char *text);
+
+	byte	*(*CM_ClusterPVS)(int cluster);
+
+	// visualization for debugging collision detection
+	void	(*CM_DrawDebugSurface)( void (*drawPoly)(int color, int numPoints, float *points) );
+
+	// a -1 return means the file does not exist
+	// NULL can be passed for buf to just determine existence
+	int		(*FS_FileIsInPAK)( const char *name, int *pCheckSum );
+	long		(*FS_ReadFile)( const char *name, void **buf );
+	void	(*FS_FreeFile)( void *buf );
+	char **	(*FS_ListFiles)( const char *name, const char *extension, int *numfilesfound );
+	void	(*FS_FreeFileList)( char **filelist );
+	void	(*FS_WriteFile)( const char *qpath, const void *buffer, int size );
+	qboolean (*FS_FileExists)( const char *file );
+
+	// cinematic stuff
+	void	(*CIN_UploadCinematic)(int handle);
+	int		(*CIN_PlayCinematic)( const char *arg0, int xpos, int ypos, int width, int height, int bits);
+	e_status (*CIN_RunCinematic) (int handle);
+
+	void	(*CL_WriteAVIVideoFrame)( const byte *buffer, int size );
+
+	// input event handling
+	void	(*IN_Init)( void *windowData );
+	void	(*IN_Shutdown)( void );
+	void	(*IN_Restart)( void );
+
+	// math
+	long    (*ftol)(float f);
+
+	// system stuff
+	void	(*Sys_SetEnv)( const char *name, const char *value );
+	void	(*Sys_GLimpSafeInit)( void );
+	void	(*Sys_GLimpInit)( void );
+	qboolean (*Sys_LowPhysicalMemory)( void );
+} refimport_t;
+
+
+// this is the only function actually exported at the linker level
+// If the module can't init to a valid rendering state, NULL will be
+// returned.
+#ifdef USE_RENDERER_DLOPEN
+typedef	refexport_t* (QDECL *GetRefAPI_t) (int apiVersion, refimport_t * rimp);
+#else
+refexport_t*GetRefAPI( int apiVersion, refimport_t *rimp );
+#endif
+
+#endif	// __TR_PUBLIC_H
+## CONTEUDO D:\openmohaa\code\renderercommon\tr_public.h
+/*
+===========================================================================
+Copyright (C) 1999-2005 Id Software, Inc.
+
+This file is part of Quake III Arena source code.
+
+Quake III Arena source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+Quake III Arena source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Quake III Arena source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+===========================================================================
+*/
+#ifndef __TR_PUBLIC_H
+#define __TR_PUBLIC_H
+
+#include "tr_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define	REF_API_VERSION		14
+
+typedef struct dtiki_s dtiki_t;
+typedef struct skelAnimFrame_s skelAnimFrame_t;
+
+
+//
+// these are the functions exported by the refresh module
+//
+typedef struct {
+	// called before the library is unloaded
+	// if the system is just reconfiguring, pass destroyWindow = qfalse,
+	// which will keep the screen from flashing to the desktop.
+	void	(*Shutdown)( qboolean destroyWindow );
+
+	// All data that will be used in a level should be
+	// registered before rendering any frames to prevent disk hits,
+	// but they can still be registered at a later time
+	// if necessary.
+	//
+	// BeginRegistration makes any existing media pointers invalid
+	// and returns the current gl configuration, including screen width
+	// and height, which can be used by the client to intelligently
+	// size display elements
+	void	(*BeginRegistration)( glconfig_t *config );
+	qhandle_t (*RegisterModel)( const char *name );
+	qhandle_t (*RegisterSkin)( const char *name );
+	qhandle_t (*RegisterShader)( const char *name );
+	qhandle_t (*RegisterShaderNoMip)( const char *name );
+	void	(*LoadWorld)( const char *name );
+
+	// the vis data is a large enough block of data that we go to the trouble
+	// of sharing it with the clipmodel subsystem
+	void	(*SetWorldVisData)( const byte *vis );
+
+	// EndRegistration will draw a tiny polygon with each texture, forcing
+	// them to be loaded into card memory
+	void	(*EndRegistration)( void );
+
+	// a scene is built up by calls to R_ClearScene and the various R_Add functions.
+	// Nothing is drawn until R_RenderScene is called.
+	void	(*ClearScene)( void );
+	void	(*AddRefEntityToScene)( const refEntity_t *re, int parentEntityNumber );
+	qboolean(*AddPolyToScene)( qhandle_t hShader , int numVerts, const polyVert_t *verts, int num );
+	int		(*LightForPoint)( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir );
+	void	(*AddLightToScene)( const vec3_t org, float intensity, float r, float g, float b, int type );
+	void	(*AddAdditiveLightToScene)( const vec3_t org, float intensity, float r, float g, float b );
+	void	(*RenderScene)( const refdef_t *fd );
+
+	void	(*SetColor)( const float *rgba );	// NULL = 1,1,1,1
+
+	// Draw images for cinematic rendering, pass as 32 bit rgba
+	void	(*DrawStretchRaw) (int x, int y, int w, int h, int cols, int rows, int components, const byte* data);
+	void	(*UploadCinematic) (int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty);
+
+	void	(*BeginFrame)( stereoFrame_t stereoFrame );
+
+	// if the pointers are not NULL, timing info will be returned
+	void	(*EndFrame)( int *frontEndMsec, int *backEndMsec );
+
+
+	int		(*MarkFragments)( int numPoints, const vec3_t *points, const vec3_t projection,
+				   int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer, float fRadiusSquared );
+
+	int		(*LerpTag)( orientation_t *tag,  qhandle_t model, int startFrame, int endFrame, 
+					 float frac, const char *tagName );
+	void	(*ModelBounds)( qhandle_t model, vec3_t mins, vec3_t maxs );
+
+#ifdef __USEA3D
+	void    (*A3D_RenderGeometry) (void *pVoidA3D, void *pVoidGeom, void *pVoidMat, void *pVoidGeomStatus);
+#endif
+	void	(*RegisterFont)(const char *fontName, int pointSize, fontInfo_t *font);
+	void	(*RemapShader)(const char *oldShader, const char *newShader, const char *offsetTime);
+	qboolean (*GetEntityToken)( char *buffer, int size );
+	qboolean (*inPVS)( const vec3_t p1, const vec3_t p2 );
+
+	void (*TakeVideoFrame)( int h, int w, byte* captureBuffer, byte *encodeBuffer, qboolean motionJpeg );
+
+	//
+	// non-ioq3
+	//
+    qhandle_t(*SpawnEffectModel)(const char* name, vec3_t pos, vec3_t axis[3]);
+    qhandle_t(*RegisterServerModel)(const char* name);
+    void (*UnregisterServerModel)(qhandle_t model);
+    qhandle_t(*RefreshShaderNoMip)(const char* name);
+    void (*FreeModels)();
+
+    void (*PrintBSPFileSizes)();
+    int (*MapVersion)();
+
+    void (*AddRefSpriteToScene)(const refEntity_t* ent);
+    void (*AddTerrainMarkToScene)(int terrainIndex, qhandle_t hShader, int numVerts, const polyVert_t* verts, int renderfx);
+
+    refEntity_t* (*GetRenderEntity)(int entityNumber);
+    void    (*SavePerformanceCounters)();
+
+    void    (*Set2DWindow)(int x, int y, int w, int h, float left, float right, float bottom, float top, float n, float f);
+	void	(*DrawStretchPic) ( float x, float y, float w, float h, 
+		float s1, float t1, float s2, float t2, qhandle_t hShader );	// 0 = white
+	void	(*DrawStretchPic2)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float sx, float sy, qhandle_t hShader);
+    void    (*DrawTilePic)(float x, float y, float w, float h, qhandle_t hShader);
+    void    (*DrawTilePicOffset)(float x, float y, float w, float h, qhandle_t hShader, int offsetX, int offsetY);
+    void    (*DrawTrianglePic)(const vec2_t vPoints[3], const vec2_t vTexCoords[3], qhandle_t hShader);
+    void    (*DrawBackground)(int cols, int rows, int bgr, uint8_t* data);
+
+    void    (*DebugLine)(const vec3_t start, const vec3_t end, float r, float g, float b, float alpha);
+    void    (*DrawBox)(float x, float y, float w, float h);
+    void    (*AddBox)(float x, float y, float w, float h);
+
+    void    (*Scissor)(int x, int y, int width, int height);
+    void    (*DrawLineLoop)(const vec2_t* points, int count, int stippleFactor, int stippleMask);
+   
+    int     (*MarkFragmentsForInlineModel)(clipHandle_t bmodel, const vec3_t vAngles, const vec3_t vOrigin, int numPoints,
+                const vec3_t* points, const vec3_t projection, int maxPoints, vec3_t pointBuffer,
+                int maxFragments, markFragment_t* fragmentBuffer, float fRadiusSquared);
+
+    void    (*GetInlineModelBounds)(int index, vec3_t mins, vec3_t maxs);
+    void    (*GetLightingForDecal)(vec3_t light, const vec3_t facing, const vec3_t origin);
+    void    (*GetLightingForSmoke)(vec3_t light, const vec3_t origin);
+    int     (*R_GatherLightSources)(const vec3_t pos, vec3_t* lightPos, vec3_t* lightIntensity, int maxLights);
+
+    float   (*ModelRadius)(qhandle_t handle);
+
+    dtiki_t*        (*R_Model_GetHandle)(qhandle_t handle);
+    void            (*DrawString)(fontheader_t* font, const char* text, float x, float y, int maxLen, const float *pvVirtualScreen);
+    float           (*GetFontHeight)(const fontheader_t* font);
+    float           (*GetFontStringWidth)(const fontheader_t* font, const char* string);
+    fontheader_t*   (*LoadFont)(const char* name);
+    void            (*SwipeBegin)(float thisTime, float life, qhandle_t hShader);
+    void            (*SwipePoint)(vec3_t point1, vec3_t point2, float time);
+    void            (*SwipeEnd)();
+    void            (*SetRenderTime)(int t);
+    float           (*Noise)(float x, float y, float z, double t);
+    qboolean        (*SetMode)(int mode, const glconfig_t* glConfig);
+    void            (*SetFullscreen)(qboolean fullScreen);
+    int             (*GetShaderWidth)(qhandle_t hShader);
+    int             (*GetShaderHeight)(qhandle_t hShader);
+	const char*		(*GetShaderName)(qhandle_t hShader);
+	const char*		(*GetModelName)(qhandle_t hModel);
+    const char*     (*GetGraphicsInfo)();
+    void            (*ForceUpdatePose)(refEntity_t* model);
+    orientation_t   (*TIKI_Orientation)(refEntity_t* model, int tagNum);
+    qboolean        (*TIKI_IsOnGround)(refEntity_t* model, int tagNum, float threshold);
+    void            (*SetFrameNumber)(int frameNumber);
+
+	qboolean (*ImageExists)(const char* name);
+	int (*CountTextureMemory)();
+
+    qboolean (*LoadRawImage)(const char *name, byte **pic, int *width, int *height);
+    void (*FreeRawImage)(byte *pic);
+
+    void (*Set2DInitialShaderTime)(float startTime);
+} refexport_t;
+
+//
+// these are the functions imported by the refresh module
+//
+typedef struct {
+	// print message on the local console
+	void	(QDECL *Printf)( int printLevel, const char *fmt, ...) Q_PRINTF_FUNC(2, 3);
+
+	// abort the game
+	void	(QDECL *Error)( int errorLevel, const char *fmt, ...) Q_NO_RETURN Q_PRINTF_FUNC(2, 3);
+
+	// milliseconds should only be used for profiling, never
+	// for anything game related.  Get time from the refdef
+	int		(*Milliseconds)( void );
+
+	// stack based memory allocation for per-level things that
+	// won't be freed
+#ifdef HUNK_DEBUG
+	void	*(*Hunk_AllocDebug)( int size, ha_pref pref, char *label, char *file, int line );
+#else
+	void	*(*Hunk_Alloc)( int size, ha_pref pref );
+#endif
+	void	*(*Hunk_AllocateTempMemory)( int size );
+	void	(*Hunk_FreeTempMemory)( void *block );
+
+	// dynamic memory allocator for things that need to be freed
+	void	*(*Malloc)( int bytes );
+	void	(*Free)( void *buf );
+
+	cvar_t	*(*Cvar_Get)( const char *name, const char *value, int flags );
+	void	(*Cvar_Set)( const char *name, const char *value );
+	void	(*Cvar_SetValue) (const char *name, float value);
+	void	(*Cvar_CheckRange)( cvar_t *cv, float minVal, float maxVal, qboolean shouldBeIntegral );
+	void	(*Cvar_SetDescription)( cvar_t *cv, const char *description );
+
+	int		(*Cvar_VariableIntegerValue) (const char *var_name);
+
+	void	(*Cmd_AddCommand)( const char *name, void(*cmd)(void) );
+	void	(*Cmd_RemoveCommand)( const char *name );
+
+	int		(*Cmd_Argc) (void);
+	char	*(*Cmd_Argv) (int i);
+
+	void	(*Cmd_ExecuteText) (int exec_when, const char *text);
+
+	byte	*(*CM_ClusterPVS)(int cluster);
+
+	// visualization for debugging collision detection
+	void	(*CM_DrawDebugSurface)( void (*drawPoly)(int color, int numPoints, float *points) );
+
+	// a -1 return means the file does not exist
+	// NULL can be passed for buf to just determine existence
+	int		(*FS_FileIsInPAK)( const char *name, int *pCheckSum );
+	long		(*FS_ReadFile)( const char *name, void **buf );
+	void	(*FS_FreeFile)( void *buf );
+	char **	(*FS_ListFiles)( const char *name, const char *extension, int *numfilesfound );
+	void	(*FS_FreeFileList)( char **filelist );
+	void	(*FS_WriteFile)( const char *qpath, const void *buffer, int size );
+	qboolean (*FS_FileExists)( const char *file );
+
+	// cinematic stuff
+	void	(*CIN_UploadCinematic)(int handle);
+	int		(*CIN_PlayCinematic)( const char *arg0, int xpos, int ypos, int width, int height, int bits);
+	e_status (*CIN_RunCinematic) (int handle);
+
+	void	(*CL_WriteAVIVideoFrame)( const byte *buffer, int size );
+
+	// input event handling
+	void	(*IN_Init)( void *windowData );
+	void	(*IN_Shutdown)( void );
+	void	(*IN_Restart)( void );
+
+	// math
+	long    (*ftol)(float f);
+
+	// system stuff
+	void	(*Sys_SetEnv)( const char *name, const char *value );
+	void	(*Sys_GLimpSafeInit)( void );
+	void	(*Sys_GLimpInit)( void );
+	qboolean (*Sys_LowPhysicalMemory)( void );
+
+    //
+    // non-ioq3
+    //
+    const char* (*LV_ConvertString)(const char* string);
+    void (*Hunk_Clear)();
+    void (*Clear)();
+    void (*Cvar_SetDefault)(cvar_t* var, const char* varValue);
+
+    long    (*FS_OpenFile)(const char* qpath, fileHandle_t *file, qboolean uniqueFILE, qboolean quiet);
+	fileHandle_t (*FS_OpenFileWrite)(const char* filename);
+    size_t  (*FS_Read)(void* buffer, size_t len, fileHandle_t fileHandle);
+	size_t (*FS_Write)(const void* buffer, size_t len, fileHandle_t h);
+    void    (*FS_CloseFile)(fileHandle_t fileHandle);
+    int     (*FS_Seek)(fileHandle_t fileHandle, long offset, int origin);
+    long     (*FS_ReadFileEx)(const char* qpath, void** buffer, qboolean quiet);
+	void	(*FS_CanonicalFilename)(char* filename);
+
+    void        (*CM_BoxTrace)(trace_t* results, const vec3_t start, const vec3_t end, const vec3_t mins, const vec3_t maxs, int model, int brushMask, int cylinder);
+    int         (*CM_TerrainSquareType)(int terrainPatch, int i, int j);
+    char*       (*CM_EntityString)();
+	const char* (*CM_MapTime)();
+    int         (*CG_PermanentMark)(vec3_t origin, vec3_t dir, float orientation, float sScale, float tScale, float red, float green, float blue, float alpha, qboolean doLighting, float sCenter, float tCenter, markFragment_t* markFragments, void* polyVerts);
+    int         (*CG_PermanentTreadMarkDecal)(treadMark_t* treadMark, qboolean startSegment, qboolean doLighting, markFragment_t* markFragments, void* polyVerts);
+    int         (*CG_PermanentUpdateTreadMark)(treadMark_t* treadMark, float alpha, float minSegment, float maxSegment, float maxOffset, float texScale);
+    void        (*CG_ProcessInitCommands)(dtiki_t* tiki, refEntity_t* ent);
+    void        (*CG_EndTiki)(dtiki_t* tiki);
+    void        (*SetPerformanceCounters)(int totalTris, int totalVerts, int totalTexels, int worldTris, int worldVerts, int characterLights);
+
+    debugline_t** DebugLines;
+    int* numDebugLines;
+    debugstring_t** DebugStrings;
+    int* numDebugStrings;
+
+    orientation_t (*TIKI_OrientationInternal)(dtiki_t *tiki, int entNum, int tagNum, float scale);
+    qboolean (*TIKI_IsOnGroundInternal)(dtiki_t *tiki, int entNum, int tagNum, float thresHold);
+    void (*TIKI_SetPoseInternal)(
+        void *skeletor, const frameInfo_t *frameInfo, const int *boneTag, const vec4_t *boneQuat, float actionWeight
+    );
+    void *(*TIKI_Alloc)(size_t size);
+    float (*GetRadiusInternal)(dtiki_t *tiki, int entNum, float scale);
+    float (*GetCentroidRadiusInternal)(dtiki_t *tiki, int entNum, float scale, vec3_t centroid);
+    void (*GetFrameInternal)(dtiki_t *tiki, int entNum, skelAnimFrame_t *newFrame);
+
+    void (*UI_LoadResource)(const char *name);
+
+    int (*CM_PointLeafnum)(const vec3_t p);
+    int (*CM_LeafCluster)(int leafnum);
+
+    //
+    // TIKI imports
+    //
+    void (*TIKI_CalcLodConsts)(lodControl_t *LOD);
+    void (*TIKI_CalculateBounds)(dtiki_t *pmdl, float scale, vec3_t mins, vec3_t maxs);
+    dtiki_t *(*TIKI_FindTiki)(const char *path);
+    dtiki_t *(*TIKI_RegisterTikiFlags)(const char *path, qboolean use);
+    void *(*TIKI_GetSkeletor)(dtiki_t *tiki, int entnum);
+    skelHeaderGame_t *(*TIKI_GetSkel)(int index);
+    void (*TIKI_GetSkelAnimFrame)(dtiki_t *tiki, skelBoneCache_t *bones, float *radius, vec3_t *mins, vec3_t *maxes);
+    float (*TIKI_GlobalRadius)(dtiki_t *pmdl);
+    skelcache_t *(*TIKI_FindSkelByHeader)(skelHeaderGame_t *skelmodel);
+    int (*TIKI_GetNumChannels)(dtiki_t *tiki);
+    int (*TIKI_GetLocalChannel)(dtiki_t *tiki, int channel);
+    int (*TIKI_GetLocalFromGlobal)(dtiki_t *tiki, int channel);
+
+    //
+    // Skeletor imports
+    //
+    int (*SKEL_GetMorphWeightFrame)(void *skeletor, int index, float time, int *data);
+    int (*SKEL_GetBoneParent)(void *skeletor, int boneIndex);
+} refimport_t;
+
+
+// this is the only function actually exported at the linker level
+// If the module can't init to a valid rendering state, NULL will be
+// returned.
+#ifdef USE_RENDERER_DLOPEN
+typedef	refexport_t* (QDECL *GetRefAPI_t) (int apiVersion, refimport_t * rimp);
+#else
+refexport_t*GetRefAPI( int apiVersion, refimport_t *rimp );
+#endif
+
+qboolean R_ImageExists(const char* name);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif	// __TR_PUBLIC_H
+## CONTEUDO D:\ioQuake3-Xbox\\code\sys\xbox_ref.c
+/* Minimal in-process ref API for the native Xbox renderer shell. */
+#include "../qcommon/q_shared.h"
+#include "../renderercommon/tr_public.h"
+#include "../renderernv2a/xbox_nv2a.h"
+#include "sys_xbox.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+/* The ioq3 image loaders (tr_image_*.c) read this global. */
+refimport_t ri;
+
+static refexport_t xboxRefExport;
+
+/* Decoded images are transient; keep them out of the 8 MiB zone. Only the image loaders call this. */
+static void *XboxRefMalloc(int bytes)
+{
+	void *memory = malloc((size_t)(bytes > 0 ? bytes : 1));
+
+	if (!memory) {
+		Sys_XboxMemoryReport("at image decode failure");
+		ri.Error(ERR_DROP, "Xbox ref: out of memory for %d bytes", bytes);
+	}
+	Sys_XboxNoteDecodeMemory();
+	return memory;
+}
+
+static void XboxRefFree(void *memory)
+{
+	free(memory);
+}
+
+static qhandle_t XboxRefRegisterShader(const char *name)
+{
+	return XboxNV2AShader_Register(name, qtrue);
+}
+
+static qhandle_t XboxRefRegisterShaderNoMip(const char *name)
+{
+	return XboxNV2AShader_Register(name, qfalse);
+}
+
+static void XboxRefShutdown(qboolean destroyWindow)
+{
+	XboxNV2A_Shutdown(destroyWindow);
+}
+
+static void XboxRefBeginRegistration(glconfig_t *config)
+{
+	XboxNV2A_BeginRegistration(config);
+}
+
+static qhandle_t XboxRefRegisterModel(const char *name)
+{
+	return XboxNV2AModel_Register(name);
+}
+
+static qhandle_t XboxRefRegisterSkin(const char *name)
+{
+	return XboxNV2ASkin_Register(name);
+}
+
+/* CL_InitCGame calls this once the map and cgame media are loaded. */
+static void XboxRefEndRegistration(void)
+{
+	Sys_XboxHeapTrim();
+	Sys_XboxMemoryReport("after registration");
+}
+static void XboxRefLoadWorld(const char *name)
+{
+	XboxNV2AWorld_Load(name);
+}
+/* The world reads PVS rows through ri.CM_ClusterPVS instead. */
+static void XboxRefSetWorldVisData(const byte *vis) { (void)vis; }
+static void XboxRefClearScene(void)
+{
+	XboxNV2A_ClearScene();
+}
+static void XboxRefAddRefEntity(const refEntity_t *entity)
+{
+	XboxNV2A_AddRefEntity(entity);
+}
+static void XboxRefAddPoly(qhandle_t shader, int numVerts,
+	const polyVert_t *verts, int num)
+{
+	XboxNV2A_AddPoly(shader, numVerts, verts, num);
+}
+static int XboxRefLightForPoint(vec3_t point, vec3_t ambient,
+	vec3_t directed, vec3_t direction)
+{
+	return XboxNV2AWorld_LightGrid(point, ambient, directed, direction);
+}
+static void XboxRefAddLight(const vec3_t org, float intensity,
+	float r, float g, float b)
+{
+	XboxNV2A_AddLight(org, intensity, r, g, b);
+}
+static void XboxRefRenderScene(const refdef_t *fd)
+{
+	XboxNV2A_RenderScene(fd);
+}
+static void XboxRefSetColor(const float *rgba)
+{
+	XboxNV2A_SetColor(rgba);
+}
+static void XboxRefDrawStretchPic(float x, float y, float w, float h,
+	float s1, float t1, float s2, float t2, qhandle_t shader)
+{
+	XboxNV2A_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, shader);
+}
+static void XboxRefDrawStretchRaw(int x, int y, int w, int h, int cols,
+	int rows, const byte *data, int client, qboolean dirty)
+{
+	XboxNV2A_DrawStretchRaw(x, y, w, h, cols, rows, data, client, dirty);
+}
+static void XboxRefUploadCinematic(int w, int h, int cols, int rows,
+	const byte *data, int client, qboolean dirty)
+{
+	(void)w; (void)h;
+	XboxNV2A_UploadCinematic(cols, rows, data, client, dirty);
+}
+static void XboxRefBeginFrame(stereoFrame_t stereo)
+{
+	XboxNV2A_BeginFrame(stereo);
+}
+static void XboxRefEndFrame(int *front, int *back)
+{
+	XboxNV2A_EndFrame(front, back);
+}
+static int XboxRefMarkFragments(int numPoints, const vec3_t *points,
+	const vec3_t projection, int maxPoints, vec3_t pointBuffer,
+	int maxFragments, markFragment_t *fragmentBuffer)
+{
+	return XboxNV2AWorld_MarkFragments(numPoints, points, projection, maxPoints,
+		pointBuffer, maxFragments, fragmentBuffer);
+}
+static int XboxRefLerpTag(orientation_t *tag, qhandle_t model, int start,
+	int end, float frac, const char *tagName)
+{
+	return XboxNV2AModel_LerpTag(tag, model, start, end, frac, tagName);
+}
+static void XboxRefModelBounds(qhandle_t model, vec3_t mins, vec3_t maxs)
+{
+	XboxNV2AModel_Bounds(model, mins, maxs);
+}
+/* TA ui/cgame text: the prebuilt fonts/fontImage_<size>.dat that tr_font.c reads without FreeType.
+   The file is a raw little-endian fontInfo_t, the same layout on this 32-bit target. */
+static void XboxRefRegisterFont(const char *name, int size, fontInfo_t *font)
+{
+	char path[MAX_QPATH];
+	void *data;
+	long length;
+	int i;
+
+	memset(font, 0, sizeof(*font));
+	if (!name)
+		return;
+	if (size <= 0)
+		size = 12;
+	Com_sprintf(path, sizeof(path), "fonts/fontImage_%i.dat", size);
+	length = ri.FS_ReadFile(path, &data);
+	if (length != (long)sizeof(*font)) {
+		if (length > 0)
+			ri.FS_FreeFile(data);
+		ri.Printf(PRINT_WARNING, "Xbox ref: no prebuilt font %s\n", path);
+		return;
+	}
+	memcpy(font, data, sizeof(*font));
+	ri.FS_FreeFile(data);
+	Q_strncpyz(font->name, path, sizeof(font->name));
+	for (i = GLYPH_START; i <= GLYPH_END; i++) {
+		font->glyphs[i].shaderName[sizeof(font->glyphs[i].shaderName) - 1] = '\0';
+		font->glyphs[i].glyph = XboxRefRegisterShaderNoMip(font->glyphs[i].shaderName);
+	}
+}
+static void XboxRefRemapShader(const char *oldShader, const char *newShader,
+	const char *offsetTime)
+{
+	(void)oldShader; (void)newShader; (void)offsetTime;
+}
+static qboolean XboxRefGetEntityToken(char *buffer, int size)
+{
+	return XboxNV2AWorld_GetEntityToken(buffer, size);
+}
+static qboolean XboxRefInPVS(const vec3_t p1, const vec3_t p2)
+{
+	return XboxNV2AWorld_InPVS(p1, p2);
+}
+static void XboxRefTakeVideoFrame(int h, int w, byte *capture,
+	byte *encode, qboolean motionJpeg)
+{
+	(void)h; (void)w; (void)capture; (void)encode; (void)motionJpeg;
+}
+
+refexport_t *GetRefAPI(int apiVersion, refimport_t *rimp)
+{
+	if (apiVersion != REF_API_VERSION || !rimp)
+		return NULL;
+	ri = *rimp;
+	ri.Malloc = XboxRefMalloc;
+	ri.Free = XboxRefFree;
+	if (!XboxNV2A_Init())
+		return NULL;
+
+	memset(&xboxRefExport, 0, sizeof(xboxRefExport));
+	xboxRefExport.Shutdown = XboxRefShutdown;
+	xboxRefExport.BeginRegistration = XboxRefBeginRegistration;
+	xboxRefExport.RegisterModel = XboxRefRegisterModel;
+	xboxRefExport.RegisterSkin = XboxRefRegisterSkin;
+	xboxRefExport.RegisterShader = XboxRefRegisterShader;
+	xboxRefExport.RegisterShaderNoMip = XboxRefRegisterShaderNoMip;
+	xboxRefExport.LoadWorld = XboxRefLoadWorld;
+	xboxRefExport.SetWorldVisData = XboxRefSetWorldVisData;
+	xboxRefExport.EndRegistration = XboxRefEndRegistration;
+	xboxRefExport.ClearScene = XboxRefClearScene;
+	xboxRefExport.AddRefEntityToScene = XboxRefAddRefEntity;
+	xboxRefExport.AddPolyToScene = XboxRefAddPoly;
+	xboxRefExport.LightForPoint = XboxRefLightForPoint;
+	xboxRefExport.AddLightToScene = XboxRefAddLight;
+	xboxRefExport.AddAdditiveLightToScene = XboxRefAddLight;
+	xboxRefExport.RenderScene = XboxRefRenderScene;
+	xboxRefExport.SetColor = XboxRefSetColor;
+	xboxRefExport.DrawStretchPic = XboxRefDrawStretchPic;
+	xboxRefExport.DrawStretchRaw = XboxRefDrawStretchRaw;
+	xboxRefExport.UploadCinematic = XboxRefUploadCinematic;
+	xboxRefExport.BeginFrame = XboxRefBeginFrame;
+	xboxRefExport.EndFrame = XboxRefEndFrame;
+	xboxRefExport.MarkFragments = XboxRefMarkFragments;
+	xboxRefExport.LerpTag = XboxRefLerpTag;
+	xboxRefExport.ModelBounds = XboxRefModelBounds;
+	xboxRefExport.RegisterFont = XboxRefRegisterFont;
+	xboxRefExport.RemapShader = XboxRefRemapShader;
+	xboxRefExport.GetEntityToken = XboxRefGetEntityToken;
+	xboxRefExport.inPVS = XboxRefInPVS;
+	xboxRefExport.TakeVideoFrame = XboxRefTakeVideoFrame;
+	return &xboxRefExport;
+}
+## CONTEUDO D:\ioQuake3-Xbox\\code\renderernv2a\xbox_nv2a.h
+#ifndef IOQUAKE3_XBOX_NV2A_H
+#define IOQUAKE3_XBOX_NV2A_H
+
+#include "../qcommon/q_shared.h"
+#include "../qcommon/qfiles.h"
+#include "../renderercommon/tr_public.h"
+
+/* Index 0 of both tables is "unresolved" and is never drawn. */
+#define XBOX_NV2A_WHITE_IMAGE 1
+#define XBOX_NV2A_WHITE_SHADER 1
+#define XBOX_NV2A_MAX_TEXTURE_SIZE 1024
+/* ioq3 r_picmip default: mipmapped images drop one size level. */
+#define XBOX_NV2A_PICMIP 1
+#define XBOX_NV2A_MAX_STAGES 8
+#define XBOX_NV2A_MAX_TEXMODS 4
+#define XBOX_NV2A_MAX_ANIM_IMAGES 8
+/* ioq3 MAX_SHADER_DEFORMS. */
+#define XBOX_NV2A_MAX_DEFORMS 3
+/* ioq3 MAX_DLIGHTS; a surface's dlightBits has one bit per scene dlight. */
+#define XBOX_NV2A_MAX_DLIGHTS 32
+/* Same per-surface limits as ioq3's tess (SHADER_MAX_VERTEXES/INDEXES). */
+#define XBOX_NV2A_TESS_VERTS 1000
+#define XBOX_NV2A_TESS_INDEXES (6 * XBOX_NV2A_TESS_VERTS)
+/* ioq3 SKY_SUBDIVISIONS; the cloud grid needs 5 * 81 tess vertices at most. */
+#define XBOX_NV2A_SKY_SUBDIVISIONS 8
+#define XBOX_NV2A_SKY_SIDES 6
+
+/* Shader scripts name blend factors with these GL values; xbox_nv2a.c maps them to xgu. */
+#define GL_ZERO 0x0000
+#define GL_ONE 0x0001
+#define GL_SRC_COLOR 0x0300
+#define GL_ONE_MINUS_SRC_COLOR 0x0301
+#define GL_SRC_ALPHA 0x0302
+#define GL_ONE_MINUS_SRC_ALPHA 0x0303
+#define GL_DST_ALPHA 0x0304
+#define GL_ONE_MINUS_DST_ALPHA 0x0305
+#define GL_DST_COLOR 0x0306
+#define GL_ONE_MINUS_DST_COLOR 0x0307
+#define GL_SRC_ALPHA_SATURATE 0x0308
+
+/* ioq3 shaderSort_t values. */
+#define XBOX_NV2A_SORT_PORTAL 1.0f
+#define XBOX_NV2A_SORT_ENVIRONMENT 2.0f
+#define XBOX_NV2A_SORT_OPAQUE 3.0f
+#define XBOX_NV2A_SORT_DECAL 4.0f
+#define XBOX_NV2A_SORT_SEE_THROUGH 5.0f
+#define XBOX_NV2A_SORT_BANNER 6.0f
+#define XBOX_NV2A_SORT_FOG 7.0f
+#define XBOX_NV2A_SORT_UNDERWATER 8.0f
+#define XBOX_NV2A_SORT_BLEND0 9.0f
+#define XBOX_NV2A_SORT_BLEND1 10.0f
+#define XBOX_NV2A_SORT_NEAREST 16.0f
+
+typedef enum {
+	XBOX_NV2A_ALPHA_NONE,
+	XBOX_NV2A_ALPHA_GT0,
+	XBOX_NV2A_ALPHA_LT128,
+	XBOX_NV2A_ALPHA_GE128
+} xboxNV2AAlphaFunc_t;
+
+typedef enum {
+	XBOX_NV2A_WAVE_SIN,
+	XBOX_NV2A_WAVE_TRIANGLE,
+	XBOX_NV2A_WAVE_SQUARE,
+	XBOX_NV2A_WAVE_SAWTOOTH,
+	XBOX_NV2A_WAVE_INVERSE_SAWTOOTH,
+	XBOX_NV2A_WAVE_NOISE
+} xboxNV2AWaveFunc_t;
+
+typedef struct {
+	int func;
+	float base;
+	float amplitude;
+	float phase;
+	float frequency;
+} xboxNV2AWave_t;
+
+typedef enum {
+	XBOX_NV2A_TCMOD_SCALE,
+	XBOX_NV2A_TCMOD_SCROLL,
+	XBOX_NV2A_TCMOD_TURB,
+	XBOX_NV2A_TCMOD_ROTATE,
+	XBOX_NV2A_TCMOD_STRETCH,
+	XBOX_NV2A_TCMOD_TRANSFORM,
+	XBOX_NV2A_TCMOD_ENTITY_TRANSLATE
+} xboxNV2ATexModType_t;
+
+typedef struct {
+	int type;
+	xboxNV2AWave_t wave;
+	float matrix[2][2];
+	float translate[2];
+	float scale[2];
+	float scroll[2];
+	float rotateSpeed;
+} xboxNV2ATexMod_t;
+
+/* ioq3 deform_t; text and projectionShadow are not supported. */
+typedef enum {
+	XBOX_NV2A_DEFORM_WAVE,
+	XBOX_NV2A_DEFORM_NORMALS,
+	XBOX_NV2A_DEFORM_BULGE,
+	XBOX_NV2A_DEFORM_MOVE,
+	XBOX_NV2A_DEFORM_AUTOSPRITE,
+	XBOX_NV2A_DEFORM_AUTOSPRITE2
+} xboxNV2ADeformType_t;
+
+/* ioq3 deformStage_t. */
+typedef struct {
+	int type;
+	xboxNV2AWave_t wave;
+	float spread;
+	vec3_t moveVector;
+	float bulgeWidth;
+	float bulgeHeight;
+	float bulgeSpeed;
+} xboxNV2ADeform_t;
+
+typedef enum {
+	XBOX_NV2A_RGBGEN_IDENTITY_LIGHTING,
+	XBOX_NV2A_RGBGEN_IDENTITY,
+	XBOX_NV2A_RGBGEN_VERTEX,
+	XBOX_NV2A_RGBGEN_EXACT_VERTEX,
+	XBOX_NV2A_RGBGEN_ONE_MINUS_VERTEX,
+	XBOX_NV2A_RGBGEN_WAVE,
+	XBOX_NV2A_RGBGEN_CONST,
+	XBOX_NV2A_RGBGEN_ENTITY,
+	XBOX_NV2A_RGBGEN_ONE_MINUS_ENTITY,
+	XBOX_NV2A_RGBGEN_LIGHTING_DIFFUSE
+} xboxNV2ARgbGen_t;
+
+typedef enum {
+	XBOX_NV2A_ALPHAGEN_IDENTITY,
+	XBOX_NV2A_ALPHAGEN_VERTEX,
+	XBOX_NV2A_ALPHAGEN_ONE_MINUS_VERTEX,
+	XBOX_NV2A_ALPHAGEN_WAVE,
+	XBOX_NV2A_ALPHAGEN_CONST,
+	XBOX_NV2A_ALPHAGEN_ENTITY,
+	XBOX_NV2A_ALPHAGEN_ONE_MINUS_ENTITY,
+	XBOX_NV2A_ALPHAGEN_PORTAL
+} xboxNV2AAlphaGen_t;
+
+/* ioq3 acff_t: how a blended stage fades its colours inside fog. */
+typedef enum {
+	XBOX_NV2A_ACFF_NONE,
+	XBOX_NV2A_ACFF_MODULATE_RGB,
+	XBOX_NV2A_ACFF_MODULATE_RGBA,
+	XBOX_NV2A_ACFF_MODULATE_ALPHA
+} xboxNV2AAdjustForFog_t;
+
+/* ioq3 fogPass_t: opaque shaders fog with depth equal, fog volumes with depth less-equal. */
+typedef enum {
+	XBOX_NV2A_FOGPASS_NONE,
+	XBOX_NV2A_FOGPASS_EQUAL,
+	XBOX_NV2A_FOGPASS_LE
+} xboxNV2AFogPass_t;
+
+typedef enum {
+	XBOX_NV2A_TCGEN_TEXTURE,
+	XBOX_NV2A_TCGEN_LIGHTMAP,
+	XBOX_NV2A_TCGEN_ENVIRONMENT,
+	XBOX_NV2A_TCGEN_VECTOR
+} xboxNV2ATcGen_t;
+
+typedef enum {
+	XBOX_NV2A_CULL_FRONT,
+	XBOX_NV2A_CULL_BACK,
+	XBOX_NV2A_CULL_NONE
+} xboxNV2ACull_t;
+
+/* ioq3 lightmapIndex classes: each one gets a different implicit shader. */
+typedef enum {
+	XBOX_NV2A_SHADER_2D,
+	XBOX_NV2A_SHADER_MODEL,
+	XBOX_NV2A_SHADER_LIGHTMAP,
+	XBOX_NV2A_SHADER_VERTEX
+} xboxNV2AShaderFlavor_t;
+
+/* One ioq3 shader stage; blend factors hold GL values and GL_ONE/GL_ZERO is opaque. */
+typedef struct {
+	int images[XBOX_NV2A_MAX_ANIM_IMAGES];
+	int numImages;
+	float animFrequency;
+	/* $lightmap: the image comes from the drawn surface, not from images[]. */
+	qboolean isLightmap;
+	qboolean clamp;
+	unsigned int srcBlend;
+	unsigned int dstBlend;
+	int alphaFunc;
+	qboolean depthWrite;
+	qboolean depthEqual;
+	int rgbGen;
+	xboxNV2AWave_t rgbWave;
+	int alphaGen;
+	xboxNV2AWave_t alphaWave;
+	byte constant[4];
+	int tcGen;
+	vec3_t tcGenVectors[2];
+	int numTexMods;
+	xboxNV2ATexMod_t texMods[XBOX_NV2A_MAX_TEXMODS];
+	int adjustColorsForFog;
+} xboxNV2AStage_t;
+
+typedef struct {
+	int numStages;
+	float sort;
+	int cull;
+	qboolean polygonOffset;
+	qboolean isSky;
+	/* skyParms outer box in rt, bk, lf, ft, up, dn order; ioq3 draws none if side 0 is missing. */
+	int skyBox[XBOX_NV2A_SKY_SIDES];
+	float cloudHeight;
+	/* surfaceparm fog; fogParms colour and depthForOpaque. */
+	qboolean isFog;
+	vec3_t fogColor;
+	float fogDepth;
+	int fogPass;
+	/* alphaGen portal range; ioq3 skips portal views farther than this. */
+	float portalRange;
+	/* surfaceparm nodlight or sky: ioq3 draws no dlight pass on it. */
+	qboolean noDlight;
+	int numDeforms;
+	xboxNV2ADeform_t deforms[XBOX_NV2A_MAX_DEFORMS];
+	xboxNV2AStage_t stages[XBOX_NV2A_MAX_STAGES];
+} xboxNV2AShaderDef_t;
+
+/* World vertices keep ioq3 drawVert_t data with the lighting colour already shifted. */
+typedef struct {
+	float xyz[3];
+	float st[2];
+	float lightSt[2];
+	float normal[3];
+	byte color[4];
+} xboxNV2AWorldVert_t;
+
+typedef enum {
+	XBOX_NV2A_SURFACE_FACE,
+	XBOX_NV2A_SURFACE_GRID,
+	XBOX_NV2A_SURFACE_TRIANGLES
+} xboxNV2AWorldSurfaceType_t;
+
+typedef struct {
+	int type;
+	int shader;
+	int lightmap;
+	/* nomarks, noimpact, nodraw or fog: ioq3 R_BoxSurfaces_r never puts marks on it. */
+	qboolean noMarks;
+	int fogIndex;
+	int viewCount;
+	/* Scene dlights that reach it in the current view, as in ioq3's surface dlightBits. */
+	unsigned int dlightBits;
+	cplane_t plane;
+	vec3_t bounds[2];
+	int numVerts;
+	int numIndexes;
+	xboxNV2AWorldVert_t *verts;
+	unsigned short *indexes;
+} xboxNV2AWorldSurface_t;
+
+/* ioq3 fog_t; fog 0 means none, and surface is the visible side's plane facing into the fog. */
+typedef struct {
+	vec3_t bounds[2];
+	byte color[4];
+	float tcScale;
+	qboolean hasSurface;
+	float surface[4];
+} xboxNV2AFog_t;
+
+/* ioq3 dlight_t; radius is the intensity passed to AddLightToScene. */
+typedef struct {
+	vec3_t origin;
+	float radius;
+	vec3_t color;
+} xboxNV2ADlight_t;
+
+/* ioq3 sky_mins/sky_maxs: the (s, t) range of each box side that visible sky covers. */
+typedef struct {
+	float mins[2][XBOX_NV2A_SKY_SIDES];
+	float maxs[2][XBOX_NV2A_SKY_SIDES];
+} xboxNV2ASkyBounds_t;
+
+#define XBOX_NV2A_WORLD_ENTITY (-1)
+
+/* Texel storage for XboxNV2A_CreateImage; the fog and dlight images keep 32-bit alpha. */
+typedef enum {
+	XBOX_NV2A_IMAGE_16BIT,
+	XBOX_NV2A_IMAGE_32BIT,
+	/* Opaque images of 4x4 texels or more; others fall back to 16-bit. */
+	XBOX_NV2A_IMAGE_DXT1,
+	/* DXT1 when opaque, DXT5 with alpha; sides under 4 fall back to 16-bit. */
+	XBOX_NV2A_IMAGE_DXT,
+	/* What XBOX_NV2A_IMAGE_DXT becomes for an image with alpha. */
+	XBOX_NV2A_IMAGE_DXT5
+} xboxNV2AImageStorage_t;
+
+qboolean XboxNV2A_Init(void);
+void XboxNV2A_Shutdown(qboolean destroyWindow);
+void XboxNV2A_Kill(void);
+void XboxNV2A_ShowDebugScreen(void);
+qboolean XboxNV2A_OwnsScreen(void);
+void XboxNV2A_BeginRegistration(glconfig_t *config);
+void XboxNV2A_BeginFrame(stereoFrame_t stereoFrame);
+void XboxNV2A_EndFrame(int *frontEndMsec, int *backEndMsec);
+void XboxNV2A_SetColor(const float *rgba);
+int XboxNV2A_FindImage(const char *name);
+/* mipmap adds the box-filtered chain, halving rgba in place; a DXT chain stops at 4x4. */
+int XboxNV2A_CreateImage(const char *name, int width, int height,
+	byte *rgba, int storage, qboolean mipmap);
+/* ioq3 R_MipMap box filter, in place; a 1-texel side stays 1 texel. */
+void XboxNV2A_HalveImage(byte *pic, int *width, int *height);
+qboolean XboxNV2A_FindShader(const char *name, int flavor, qhandle_t *handle);
+qhandle_t XboxNV2A_CreateShader(const char *name, int flavor,
+	const xboxNV2AShaderDef_t *def);
+qboolean XboxNV2A_ShaderIsDrawable(qhandle_t shader);
+qboolean XboxNV2A_ShaderIsSky(qhandle_t shader);
+qboolean XboxNV2A_ShaderFogParms(qhandle_t shader, vec3_t color, float *depth);
+int XboxNV2A_ShaderCull(qhandle_t shader);
+void XboxNV2A_DrawStretchPic(float x, float y, float w, float h,
+	float s1, float t1, float s2, float t2, qhandle_t shader);
+void XboxNV2A_UploadCinematic(int cols, int rows, const byte *data, int client,
+	qboolean dirty);
+void XboxNV2A_DrawStretchRaw(int x, int y, int w, int h, int cols, int rows,
+	const byte *data, int client, qboolean dirty);
+void XboxNV2A_ClearScene(void);
+void XboxNV2A_AddRefEntity(const refEntity_t *entity);
+void XboxNV2A_AddLight(const vec3_t origin, float intensity, float r, float g,
+	float b);
+int XboxNV2A_SceneDlights(const xboxNV2ADlight_t **dlights);
+void XboxNV2A_AddWorldSurface(const xboxNV2AWorldSurface_t *surface, int entity);
+void XboxNV2A_AddSkySurface(const xboxNV2AWorldSurface_t *surface);
+## CONTEUDO D:\ioQuake3-Xbox\\code\sys\xbox_input.c
+/* Native Original Xbox XID controller service. */
+#include "xbox_input.h"
+
+#include <string.h>
+
+#include <usb.h>
+#include <usbh_lib.h>
+#include <xid_driver.h>
+#include <usbh_hid.h>
+#include <xboxkrnl/xboxkrnl.h>
+
+#include "../qcommon/qcommon.h"
+#include "../client/keycodes.h"
+
+#define XBOX_CONTROLLER_PORTS 4
+/* Analog face buttons report noise near 0; sticks drift near center. */
+#define XBOX_BUTTON_THRESHOLD 30
+#define XBOX_STICK_DEADZONE 7849
+#define XBOX_STICK_MAX 32767
+#define XBOX_MENU_CURSOR_SPEED 400.0f
+#define XBOX_FRAME_MAX_MS 50
+#define XBOX_HID_MAX_DEVICES 8
+#define HID_BOOT_KEYBOARD 1
+#define HID_BOOT_MOUSE 2
+#define HID_PROTOCOL_BOOT 0
+#define HID_PROTOCOL_REPORT 1
+#define HID_REPORT_MAX 16
+#define HID_DESCRIPTOR_MAX 1024
+#define HID_MOUSE_BUTTONS 5
+#define HID_PARSE_USAGES 32
+#define HID_PARSE_STACK 4
+/* Usages are (page << 16) | id. */
+#define HID_USAGE_BUTTON_1 0x00090001u
+#define HID_USAGE_X 0x00010030u
+#define HID_USAGE_Y 0x00010031u
+#define HID_USAGE_WHEEL 0x00010038u
+
+extern int Key_GetCatcher(void);
+extern void Key_SetBinding(int keynum, const char *binding);
+extern char *Key_GetBinding(int keynum);
+
+/* The first eight indices match bits 0-7 of the XID digital button mask. */
+enum
+{
+	XBOX_BTN_DPAD_UP,
+	XBOX_BTN_DPAD_DOWN,
+	XBOX_BTN_DPAD_LEFT,
+	XBOX_BTN_DPAD_RIGHT,
+	XBOX_BTN_START,
+	XBOX_BTN_BACK,
+	XBOX_BTN_LEFT_THUMB,
+	XBOX_BTN_RIGHT_THUMB,
+	XBOX_BTN_A,
+	XBOX_BTN_B,
+	XBOX_BTN_X,
+	XBOX_BTN_Y,
+	XBOX_BTN_BLACK,
+	XBOX_BTN_WHITE,
+	XBOX_BTN_LEFT_TRIGGER,
+	XBOX_BTN_RIGHT_TRIGGER,
+	XBOX_BTN_COUNT
+};
+
+static const int xboxButtonKeys[XBOX_BTN_COUNT] =
+{
+	K_UPARROW, K_DOWNARROW, K_LEFTARROW, K_RIGHTARROW,
+	K_ESCAPE, K_JOY11, K_JOY9, K_JOY10,
+	K_JOY1, K_JOY2, K_JOY3, K_JOY4, K_JOY5, K_JOY6, K_JOY7, K_JOY8
+};
+
+static xboxControllerState_t xboxControllers[XBOX_CONTROLLER_PORTS];
+/* Key sent on press, so the release matches even if the menu state changed. */
+static int xboxSentKey[XBOX_CONTROLLER_PORTS][XBOX_BTN_COUNT];
+static int xboxSentAxis[XBOX_CONTROLLER_PORTS][4];
+static float xboxCursorX;
+static float xboxCursorY;
+static int xboxLastFrameTime;
+static qboolean xboxInputStarted;
+static qboolean xboxInputStopping;
+
+typedef struct
+{
+	qboolean present;
+	qboolean isSigned;
+	uint8_t reportId;
+	uint8_t bitSize;
+	uint32_t bitOffset;
+} xboxHidField_t;
+
+typedef struct
+{
+	qboolean reportIds;
+	xboxHidField_t buttons[HID_MOUSE_BUTTONS];
+	xboxHidField_t x, y, wheel;
+} xboxHidMouseLayout_t;
+
+typedef struct
+{
+	int dx, dy, wheel;
+	int buttons, buttonMask;
+} xboxHidMouseSample_t;
+
+typedef struct
+{
+	uint32_t usagePage;
+	int32_t logicalMin;
+	uint32_t reportSize;
+	uint32_t reportCount;
+	uint32_t reportId;
+} xboxHidGlobals_t;
+
+typedef struct
+{
+	HID_DEV_T *device;
+	uint8_t protocol;
+	qboolean connected;
+	uint8_t reports[8][HID_REPORT_MAX];
+	uint8_t reportLengths[8];
+	uint8_t reportHead, reportCount;
+	int mouseX, mouseY;
+## CONTEUDO D:\ioQuake3-Xbox\\code\sys\xbox_snd.c
+/* Native Original Xbox AC97 PCM service. */
+#include "xbox_snd.h"
+
+#include <string.h>
+
+#include <hal/audio.h>
+#include <xboxkrnl/xboxkrnl.h>
+
+#define XBOX_SOUND_SAMPLES 2048
+#define XBOX_SOUND_BUFFERS 3
+
+static xboxSoundFill_t xboxSoundFill;
+static void *xboxSoundUserData;
+static qboolean xboxSoundStarted;
+static int16_t *xboxSoundMemory;
+static int xboxSoundNext;
+
+static void Sys_XboxSoundQueue(void)
+{
+	int16_t *buffer = xboxSoundMemory + xboxSoundNext * XBOX_SOUND_SAMPLES;
+
+	if (xboxSoundFill)
+		xboxSoundFill(buffer, XBOX_SOUND_SAMPLES / 2, xboxSoundUserData);
+	else
+		memset(buffer, 0, sizeof(int16_t) * XBOX_SOUND_SAMPLES);
+	XAudioProvideSamples((unsigned char *)buffer,
+		sizeof(int16_t) * XBOX_SOUND_SAMPLES, 0);
+	xboxSoundNext = (xboxSoundNext + 1) % XBOX_SOUND_BUFFERS;
+}
+
+/* Runs as a DPC once per consumed buffer; buffers complete in queue order. */
+static void Sys_XboxSoundCallback(void *device, void *data)
+{
+	(void)device;
+	(void)data;
+	Sys_XboxSoundQueue();
+}
+
+qboolean Sys_XboxSoundInit(xboxSoundFill_t fill, void *userData)
+{
+	int i;
+
+	if (xboxSoundStarted)
+		return qtrue;
+	xboxSoundMemory = (int16_t *)MmAllocateContiguousMemoryEx(
+		sizeof(int16_t) * XBOX_SOUND_SAMPLES * XBOX_SOUND_BUFFERS, 0,
+		64 * 1024 * 1024, 0, PAGE_READWRITE | PAGE_WRITECOMBINE);
+	if (!xboxSoundMemory)
+		return qfalse;
+	memset(xboxSoundMemory, 0,
+		sizeof(int16_t) * XBOX_SOUND_SAMPLES * XBOX_SOUND_BUFFERS);
+	xboxSoundUserData = userData;
+	xboxSoundNext = 0;
+	XAudioInit(16, 2, Sys_XboxSoundCallback, NULL);
+	for (i = 0; i < XBOX_SOUND_BUFFERS; ++i)
+		Sys_XboxSoundQueue();
+	xboxSoundFill = fill;
+	XAudioPlay();
+	xboxSoundStarted = qtrue;
+	return qtrue;
+}
+
+void Sys_XboxSoundShutdown(void)
+{
+	if (!xboxSoundStarted)
+		return;
+	XAudioPause();
+	MmFreeContiguousMemory(xboxSoundMemory);
+	xboxSoundMemory = NULL;
+	xboxSoundFill = NULL;
+	xboxSoundUserData = NULL;
+	xboxSoundStarted = qfalse;
+}
+
+void Sys_XboxSoundSetPaused(qboolean paused)
+{
+	if (!xboxSoundStarted)
+		return;
+	if (paused)
+		XAudioPause();
+## CONTEUDO D:\ioQuake3-Xbox\\code\sys\xbox_snd_engine.c
+/* ioquake3 base mixer -> native Xbox AC97 PCM bridge. */
+#include "xbox_snd.h"
+
+#include "../client/snd_local.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+#define XBOX_DMA_SAMPLES 32768
+/* The mixer runs at half the AC97's fixed 48 kHz to save CPU; each frame plays twice. */
+#define XBOX_DMA_OUTPUT_RATE 48000
+#define XBOX_DMA_UPSAMPLE 2
+
+static volatile int xboxDmaPos;
+static int xboxDmaRepeat;
+static qboolean xboxDmaStarted;
+
+static void XboxSoundFill(int16_t *samples, int sampleFrames, void *userData)
+{
+	const int16_t *buffer = (const int16_t *)dma.buffer;
+	int i;
+	int source;
+	(void)userData;
+
+	if (!xboxDmaStarted || !dma.buffer)
+	{
+		memset(samples, 0, sampleFrames * 2 * sizeof(*samples));
+		return;
+	}
+
+	source = xboxDmaPos;
+	for (i = 0; i < sampleFrames; ++i)
+	{
+		samples[i * 2] = buffer[source];
+		samples[i * 2 + 1] = buffer[source + 1];
+		if (++xboxDmaRepeat < XBOX_DMA_UPSAMPLE)
+			continue;
+		xboxDmaRepeat = 0;
+		source += 2;
+		if (source >= dma.samples)
+			source = 0;
+	}
+	xboxDmaPos = source;
+}
+
+qboolean SNDDMA_Init(void)
+{
+	if (xboxDmaStarted)
+		return qtrue;
+
+	dma.samplebits = 16;
+	dma.isfloat = qfalse;
+	dma.channels = 2;
+	dma.samples = XBOX_DMA_SAMPLES;
+	dma.fullsamples = dma.samples / dma.channels;
+	dma.submission_chunk = 1024;
+	dma.speed = XBOX_DMA_OUTPUT_RATE / XBOX_DMA_UPSAMPLE;
+	dma.buffer = (byte *)calloc((size_t)dma.samples, dma.samplebits / 8);
+	if (!dma.buffer)
+		return qfalse;
+
+	memset(dma.buffer, 0, (size_t)dma.samples * dma.samplebits / 8);
+	xboxDmaPos = 0;
+	xboxDmaRepeat = 0;
+	if (!Sys_XboxSoundInit(XboxSoundFill, NULL))
+	{
+		free(dma.buffer);
+		dma.buffer = NULL;
+		return qfalse;
+	}
+	xboxDmaStarted = qtrue;
+	return qtrue;
+}
+
+int SNDDMA_GetDMAPos(void)
+{
+	return xboxDmaPos;
+}
+
+void SNDDMA_Shutdown(void)
+## CONTEUDO D:\ioQuake3-Xbox\\code\sys\xbox_input_engine.c
+/* ioQuake3 input-system boundary for the native Xbox controller service. */
+#include "xbox_input.h"
+
+void IN_Init(void *windowData)
+{
+	(void)windowData;
+	Sys_XboxInputInit();
+}
+
+void IN_Frame(void)
+{
+	Sys_XboxInputFrame();
+}
+
+void IN_Shutdown(void)
+{
+	Sys_XboxInputShutdown();
+}
+
+void IN_Restart(void)
+{
+	IN_Shutdown();
+	IN_Init(NULL);
+}
+## OpenMoHAA cliente: chamadas IN_/SNDDMA_/GLimp_ (fora de code\sdl)
+GLimp_EndFrame x1
+GLimp_FrontEndSleep x1
+GLimp_Init x1
+GLimp_LogComment x1
+GLimp_Minimize x1
+GLimp_RendererSleep x1
+GLimp_SetGamma x1
+GLimp_Shutdown x1
+GLimp_SpawnRenderThread x1
+GLimp_WakeRenderer x1
+IN_AttackPrimaryDown x1
+IN_AttackPrimaryUp x1
+IN_AttackSecondaryDown x1
+IN_AttackSecondaryUp x1
+IN_BackDown x1
+IN_BackUp x1
+IN_Button0Down x1
+IN_Button0Up x1
+IN_Button10Down x1
+IN_Button10Up x1
+IN_Button11Down x1
+IN_Button11Up x1
+IN_Button12Down x1
+IN_Button12Up x1
+IN_Button13Down x1
+IN_Button13Up x1
+IN_Button14Down x1
+IN_Button14Up x1
+IN_Button15Down x1
+IN_Button15Up x1
+IN_Button1Down x1
+IN_Button1Up x1
+IN_Button2Down x1
+IN_Button2Up x1
+IN_Button3Down x1
+IN_Button3Up x1
+IN_Button4Down x1
+IN_Button4Up x1
+IN_Button5Down x1
+IN_Button5Up x1
+IN_Button6Down x1
+IN_Button6Up x1
+IN_Button7Down x1
+IN_Button7Up x1
+IN_Button8Down x1
+IN_Button8Up x1
+IN_Button9Down x1
+IN_Button9Up x1
+IN_ButtonDown x1
+IN_ButtonUp x1
+IN_CenterView x3
+IN_DownDown x1
+IN_DownUp x1
+IN_ForwardDown x1
+IN_ForwardUp x1
+IN_Frame x2
+IN_FreeCursor x1
+IN_GetMousePosition x2
+IN_Init x1
+IN_IsCursorActive x2
+IN_KeyDown x36
+IN_KeyUp x36
+IN_LeanLeftDown x1
+IN_LeanLeftUp x1
+IN_LeanRightDown x1
+IN_LeanRightUp x1
+IN_LeftDown x1
+IN_LeftUp x1
+IN_LookdownDown x1
+IN_LookdownUp x1
+IN_LookupDown x1
+IN_LookupUp x1
+IN_MLookDown x1
+IN_MLookUp x1
+IN_MouseOff x9
+IN_MouseOn x9
+IN_MoveleftDown x1
+IN_MoveleftUp x1
+IN_MoverightDown x1
+IN_MoverightUp x1
+IN_Restart x2
+IN_RightDown x1
+IN_RightUp x1
+IN_SetCursorFromImage x1
+IN_Shutdown x1
+IN_SpeedDown x1
+IN_SpeedUp x1
+IN_StrafeDown x1
+IN_StrafeUp x1
+IN_ToggleMouse x2
+IN_UpDown x1
+IN_UpUp x1
+IN_UseDown x1
+IN_UseUp x1
+IN_VoipRecordDown x1
+IN_VoipRecordUp x1
+SNDDMA_Activate x1
+SNDDMA_AvailableCaptureSamples x2
+SNDDMA_BeginPainting x3
+SNDDMA_Capture x2
+SNDDMA_GetDMAPos x2
+SNDDMA_Init x2
+SNDDMA_MasterGain x2
+SNDDMA_Shutdown x2
+SNDDMA_StartCapture x2
+SNDDMA_StopCapture x2
+SNDDMA_Submit x3
+## OpenMoHAA code\sdl: arquivos
+sdl_gamma.c 2359
+sdl_glimp.c 32744
+sdl_icon.h 13409
+sdl_input.c 37452
+sdl_mouse.c 2050
+sdl_snd.c 10374
