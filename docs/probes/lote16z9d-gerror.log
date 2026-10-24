@@ -1,0 +1,18 @@
+
+##### definicoes G_Error no fonte (linha sem ';' final)
+
+##### arquivos fonte -> alvos CMake que os listam
+CMakeLists.txt:107: if(TARGET game)
+CMakeLists.txt:108: target_compile_options(game PRIVATE "-include${CMAKE_SOURCE_DIR}/tools/nxdk-shims/lg_game_rename.h")
+
+##### rename aplicado em quais alvos (flags.make)
+CMakeFiles\game.dir\flags.make
+
+##### llvm-nm: quem DEFINE G_Error (obj/lib)
+NM=/usr/bin/llvm-nm
+./CMakeFiles/game.dir/code/fgame/g_main.cpp.obj: 00000150 T ?lg_game_G_Error@@YAXHPBDZZ
+./CMakeFiles/game.dir/code/fgame/g_main.cpp.obj: 000000f0 T ?lg_game_G_Error@@YAXPBDZZ
+./CMakeFiles/game.dir/code/script/scriptexception.cpp.obj: 000002d0 T ?lg_game_G_Error@@YAXPBDZZ
+./Release/libgame.lib:g_main.cpp.obj: 00000150 T ?lg_game_G_Error@@YAXHPBDZZ
+./Release/libgame.lib:g_main.cpp.obj: 000000f0 T ?lg_game_G_Error@@YAXPBDZZ
+./Release/libgame.lib:scriptexception.cpp.obj: 000002d0 T ?lg_game_G_Error@@YAXPBDZZ

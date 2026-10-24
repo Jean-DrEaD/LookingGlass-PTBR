@@ -476,3 +476,8 @@
 ## Lote 16z9b (2026-10-23 21:39)
 - 16z9a: /FORCE:MULTIPLE vem de CMakeLists.txt:103 (target_link_options); libnxdk_net.lib ainda em CMAKE_EXE_LINKER_FLAGS (lote rede)
 - 16z9b: link SEM FORCE falhou -> flag restaurada; duplicatas em docs/probes/lote16z9b-dups.log
+
+## Lote 16z9d (2026-10-23 22:10)
+- 16z9c: rename G_Error -> dup passou a ser lg_game_G_Error -> as 2 definicoes recebem o rename (game+cgame ou 2 TUs do game); FORCE e rename restaurados (openmohaa em da77ea6)
+- 16z9c xemu = ISO antiga (build falhou), boot igual ao 16z8b
+- 16z9d: coleta definicoes/alvos/llvm-nm de G_Error (docs/probes/lote16z9d-gerror.log), sem build
