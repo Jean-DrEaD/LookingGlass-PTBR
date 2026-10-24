@@ -456,3 +456,8 @@
 - 16z6d2 xemu: build 378/0; heartbeat estavel 82..642 (+40/2s, t=47s); linha scan removida OK
 - 16z7a: coleta g_gametype (Cvar_Get, GT_SINGLE_PLAYER, sv_init 1015-1060, SV_ServerLoaded, cfgs) em docs/probes/lote16z7a-gametype.log, sem build
 - Risco: gametype 0 pode adiar SV_ServerLoaded ate conexao de cliente (inexistente no dedicado)
+
+## Lote 16z8a (2026-10-23 21:21)
+- 16z7a: dedicado cria g_gametype='1' (sv_init.c:1118); com 0, SV_ServerLoaded so via cliente (sv_client.c:938 / cl_ui.cpp:4012) -> sv.state nunca SS_GAME sem cliente
+- Decisao: g_gametype 0 ADIADO p/ build cliente (loopback dispara ServerLoaded); dedicado fica gametype 1 como prova de mapa
+- 16z8a: inventario de breadcrumbs 'LG:' + LG_ParseVec3 em docs/probes/lote16z8a-breadcrumbs.log, sem build

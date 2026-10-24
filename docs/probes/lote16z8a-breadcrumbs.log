@@ -1,0 +1,144 @@
+code\corepp\listener.cpp:4727: scriptClass = Director.CurrentScriptClass(); if (!scriptClass) { debugPrint("LG: CTI sem thread label=%s\n", label.stringValue().c_str()); return NULL; } /* LG16u */
+code\fgame\g_spawn.cpp:381: gi.Printf("LG: si inicio t=%d\n", gi.Milliseconds());
+code\fgame\g_spawn.cpp:385: gi.Printf("LG: si getclass cls=%p t=%d\n", (void *)cls, gi.Milliseconds());
+code\fgame\g_spawn.cpp:398: gi.Printf("LG: si cls ok %s t=%d\n", classname.c_str(), gi.Milliseconds());
+code\fgame\g_spawn.cpp:403: { obj = (Listener *)cls->newInstance(); gi.Printf("LG: si newinst ok t=%d\n", gi.Milliseconds()); /* LG16n si newinst ok */ }
+code\fgame\g_spawn.cpp:572: { gi.Printf("LG: si fim t=%d\n", gi.Milliseconds()); /* LG16n si fim */ return obj; }
+code\fgame\gamescript.cpp:267: { scriptClass = Director.CurrentScriptClass(); if (!scriptClass) { gi.Printf("LG: FindLabel privado '%s' t=%d\n", Director.GetString(label).c_str(), gi.Milliseconds()); } } /* LG16r */
+code\fgame\gamescript.cpp:280: { if (s->isprivate) { gi.Printf("LG: FindLabel ret t=%d\n", gi.Milliseconds()); } return s->codepos; } /* LG16r */
+code\fgame\gamescript.cpp:1145: { ScriptClass *lgSc = Director.CurrentScriptClass(); m_Script = lgSc ? lgSc->GetScript() : NULL; if (!lgSc) { gi.Printf("LG: SetThread sem thread label=%s\n", label.stringValue().c_str()); } } /* LG16q */
+code\fgame\level.cpp:1147: gi.Printf("LG: se inicio t=%d\n", gi.Milliseconds());
+code\fgame\level.cpp:1153: gi.Printf("LG: se skill t=%d\n", gi.Milliseconds());
+code\fgame\level.cpp:1160: gi.Printf("LG: se parse t=%d\n", gi.Milliseconds());
+code\fgame\level.cpp:1163: gi.Printf("LG: se world t=%d\n", gi.Milliseconds());
+code\fgame\level.cpp:1169: gi.Printf("LG: se nodes t=%d\n", gi.Milliseconds());
+code\fgame\level.cpp:1197: { static int lgN = 0; const char *lgC = args.getArg("classname"); gi.Printf("LG: le %d %s t=%d\n", ++lgN, lgC ? lgC : "?", gi.Milliseconds()); }
+code\fgame\level.cpp:1224: { gi.Printf("LG: pl ucfg t=%d\n", gi.Milliseconds()); /* LG16p */ world->UpdateConfigStrings(); }
+code\fgame\level.cpp:1229: { gi.Printf("LG: pl pending t=%d\n", gi.Milliseconds()); /* LG16p */ L_ProcessPendingEvents(); }
+code\fgame\level.cpp:1243: { gi.Printf("LG: pl player t=%d\n", gi.Milliseconds()); /* LG16p */ new Player; }
+code\fgame\level.cpp:1266: { gi.Printf("LG: pl dmwp t=%d\n", gi.Milliseconds()); /* LG16p */ ComputeDMWaypoints(); }
+code\fgame\level.cpp:1501: if (script) { Director.ExecuteThread(m_mapscript); } else { gi.Printf("LG: level script pulado\n"); } /* LG16x */
+code\fgame\scriptmaster.cpp:842: { ScriptThread *lgT = CurrentThread(); if (!lgT) { gi.Printf("LG: SM 842 sem thread t=%d\n", gi.Milliseconds()); return NULL; } return lgT->GetScriptClass(); } /* LG16q */
+code\fgame\scriptmaster.cpp:904: gi.Printf("LG: scr falhou %s\n", filename.c_str()); return NULL; /* LG16x */
+code\fgame\scriptmaster.cpp:927: gi.Printf("LG: scr falhou %s\n", filename.c_str()); return NULL; /* LG16x */
+code\fgame\scriptslave.cpp:847: { gi.Printf("LG: SS 847 Register t=%d\n", gi.Milliseconds()); /* LG16n SS 847 Register */ Register(0, Director.CurrentScriptThread()); }
+code\fgame\worldspawn.cpp:547: gi.Printf("LG: w ctor t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:558: gi.Printf("LG: w move t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:566: gi.Printf("LG: w cfgstr t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:570: gi.Printf("LG: w soundtrack t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:599: gi.Printf("LG: w fog t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:604: gi.Printf("LG: w sky t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:620: gi.Printf("LG: w soundman t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:634: gi.Printf("LG: w target t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:639: gi.Printf("LG: w bounds t=%d\n", gi.Milliseconds());
+code\fgame\worldspawn.cpp:642: gi.Printf("LG: w fim t=%d\n", gi.Milliseconds());
+code\qcommon\cm_load.c:820: /* LG lote 16a: BSP FAKK v42 (Alice) -> layout MOHAA */
+code\qcommon\cm_load.c:872: Com_Printf( "LG: FAKK repack lump %d: %d -> %d bytes\n", lg_last, g->length, outSize );
+code\qcommon\common.c:2241: #ifdef NXDK /* LG 15x heartbeat */
+code\qcommon\common.c:2242: { static int lg_fc = 0, lg_t = 0; int lg_n = Sys_Milliseconds(); lg_fc++; if (lg_fc == 40) { Com_Printf("LG: auto map centipede1\n"); Cbuf_AddText("map centipede1\n"); } if (lg_fc == 1 || lg_n - lg_t >= 2000) { lg_t = lg_n; Com_Printf("LG: frame %d t=%d\n", lg_fc, lg_n); } }
+code\qcommon\common.c:2386: { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: cf %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\qcommon\common.c:2388: { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: cf %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\qcommon\files.cpp:3582: #ifdef NXDK /* LG 15v3: DVD read-only -> homepath no HD */
+code\qcommon\files.cpp:3584: Com_Printf("LG: fs_homepath = %s\n", fs_homepath->string);
+code\qcommon\net_ip.c:1583: #ifdef NXDK /* LG 15u: single player, sem rede (loopback basta) */
+code\qcommon\net_ip.c:1584: Com_Printf("LG: rede desativada (NXDK)\n");
+code\qcommon\net_ip.c:1670: #ifdef NXDK /* LG 15x: sem sockets */
+code\qcommon\q_shared.c:1139: retval = lg_vsnprintf(str, size, format, ap); /* LG 16z6b */
+code\qcommon\qcommon.h:961: #define Q_vsnprintf lg_vsnprintf /* LG 16z6b */
+code\script\scriptexception.cpp:39: debugPrint("LG: SE %.200s\n", data ? data : "(null)");
+code\script\scriptvariable.cpp:1219: static int LG_ParseVec3(const char *s, float *x, float *y, float *z)
+code\script\scriptvariable.cpp:1252: if (LG_ParseVec3(string, &x, &y, &z) != 3) {
+code\server\sv_ccmds.c:269: { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: mp %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_init.c:458: Com_Printf("LG: st %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:460: Com_Printf("LG: st %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:466: Com_Printf("LG: st %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:470: Com_Printf("LG: st %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:474: Com_Printf("LG: st %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:609: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:627: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:632: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:636: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:650: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:657: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:665: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:672: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:716: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:719: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:722: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:724: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:727: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:734: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:737: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:743: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:753: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:756: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:770: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:777: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:780: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:785: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:792: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:802: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:811: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:822: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:829: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:835: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:842: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:848: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:852: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:856: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:873: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:881: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:904: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:920: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:930: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:933: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:937: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:941: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:943: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:951: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:954: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:962: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:969: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:972: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:985: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1009: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1025: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1029: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1032: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1036: Com_Printf("LG: sv %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1068: Com_Printf("LG: sl %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1070: Com_Printf("LG: sl %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1074: Com_Printf("LG: sl %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1076: Com_Printf("LG: sl %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1078: Com_Printf("LG: sl %d t=%d\n", __LINE__, Sys_Milliseconds());
+code\server\sv_init.c:1080: { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: sz %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_main.c:1135: { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: rf %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_main.c:1137: { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: rf %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_main.c:1153: if (sv.state == SS_GAME) { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: fr %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_main.c:1157: if (sv.state == SS_GAME) { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: fr %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_main.c:1161: if (sv.state == SS_GAME) { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: fr %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_main.c:1167: if (sv.state == SS_GAME) { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: fr %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_main.c:1174: if (sv.state == SS_GAME) { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: fr %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\server\sv_main.c:1177: if (sv.state == SS_GAME) { static int lg_n = 0; if (lg_n++ < 3) Com_Printf("LG: fr %d t=%d\n", __LINE__, Sys_Milliseconds()); }
+code\sys\sys_win32.c:99: #ifdef NXDK /* LG 15v3 */
+
+##### por arquivo
+63 code\server\sv_init.c
+11 code\fgame\level.cpp
+10 code\fgame\worldspawn.cpp
+8 code\server\sv_main.c
+5 code\fgame\g_spawn.cpp
+4 code\qcommon\common.c
+3 code\fgame\gamescript.cpp
+3 code\fgame\scriptmaster.cpp
+3 code\qcommon\net_ip.c
+2 code\qcommon\files.cpp
+2 code\qcommon\cm_load.c
+2 code\script\scriptvariable.cpp
+1 code\server\sv_ccmds.c
+1 code\corepp\listener.cpp
+1 code\qcommon\qcommon.h
+1 code\qcommon\q_shared.c
+1 code\fgame\scriptslave.cpp
+1 code\script\scriptexception.cpp
+1 code\sys\sys_win32.c
