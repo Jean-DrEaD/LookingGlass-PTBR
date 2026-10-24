@@ -446,3 +446,8 @@
 - 16z6d: sscanf/vsscanf definidos em sys_xbox.c (lg_vsscanf: d i u x o p f e g s c [ n %, *, largura, h/l/ll; float via lg_strtod) -> substitui PDCLib nos 47 usos
 - Teste one-shot apos 'frame 1': esperado 'LG: scan n=3 [-32] [1492.5] [ab]'
 - Proximo: se OK, remover teste + LG_ParseVec3 (16l) vira opcional; depois g_gametype 0 / limpeza de breadcrumbs
+
+## Lote 16z6d2 (2026-10-23 21:11)
+- 16z6d xemu: 'LG: scan n=3 [-32] [1492.5] [ab]' identico ao esperado -> lg_vsscanf vence o PDCLib; %f resolvido (printf + sscanf)
+- 16z6d2: teste one-shot removido (+0 -1)
+- Proximos: (a) g_gametype 0 sob NXDK; (b) remover breadcrumbs LG: sv/st/sl/sz/mp/cf/rf/fr/si/le/w/pl + LG_ParseVec3 (opcional); (c) remover /FORCE:MULTIPLE; (d) lote 17 = interpretador script Alice; (e) build cliente
