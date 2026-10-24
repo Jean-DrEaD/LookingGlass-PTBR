@@ -1,0 +1,257 @@
+# Lote 18a 2026-10-24 18:24 - inventario build cliente
+## CMake: options
+cmake\platforms\emscripten.cmake:32: option(EMSCRIPTEN_PRELOAD_FILE "Preload game files into .data file" OFF)
+cmake\platforms\macos.cmake:7: option(BUILD_MACOS_APP "Deploy as a macOS .app" ON)
+code\thirdparty\libmad\CMakeLists.txt:4: option(BUILD_SHARED_LIBS "Build dynamic library" ON)
+code\thirdparty\libmad\CMakeLists.txt:51: option(OPTIMIZE "Optimize for SPEED (default) or ACCURACY" SPEED)
+code\thirdparty\libmad\CMakeLists.txt:60: option(ASO "Enable CPU Architecture Specific Optimizations (x86, ARM, and MIPS only)" ON)
+code\thirdparty\libmad\CMakeLists.txt:63: option(FPM_64BIT "64 bit fixed point math" ON)
+code\thirdparty\libmad\CMakeLists.txt:66: option (FPM_INTEL "x86 fixed point math" ON)
+code\thirdparty\libmad\CMakeLists.txt:72: option (FPM_ARM "ARM fixed point math" ON)
+code\thirdparty\libmad\CMakeLists.txt:80: option(FPM_MIPS "MIPS fixed point math" ON)
+code\thirdparty\libmad\CMakeLists.txt:86: option(FPM_SPARC "SPARC fixed point math" ON)
+code\thirdparty\libmad\CMakeLists.txt:89: option(FPM_PPC "PowerPC fixed point math" ON)
+code\thirdparty\libmad\CMakeLists.txt:92: option(FPM_DEFAULT "Generic fixed-point math" ON)
+code\thirdparty\libmad\CMakeLists.txt:161: option(MADD_ASM "Enable if your MIPS CPU supports a 2-operand MADD instruction." OFF)
+code\thirdparty\libmad\CMakeLists.txt:166: option(MADD16_ASM "Enable if your MIPS CPU supports a 2-operand MADD16 instruction." OFF)
+code\thirdparty\recastnavigation\CMakeLists.txt:12: option(RECASTNAVIGATION_DEMO "Build demo" ON)
+code\thirdparty\recastnavigation\CMakeLists.txt:13: option(RECASTNAVIGATION_TESTS "Build tests" ON)
+code\thirdparty\recastnavigation\CMakeLists.txt:14: option(RECASTNAVIGATION_EXAMPLES "Build examples" ON)
+code\thirdparty\recastnavigation\CMakeLists.txt:15: option(RECASTNAVIGATION_DT_POLYREF64 "Use 64bit polyrefs instead of 32bit for Detour" OFF)
+code\thirdparty\recastnavigation\CMakeLists.txt:16: option(RECASTNAVIGATION_DT_VIRTUAL_QUERYFILTER "Use dynamic dispatch for dtQueryFilter in Detour to allow for custom filters" OFF)
+CMakeLists.txt:14: option(BUILD_SERVER "Build dedicated server" ON)
+CMakeLists.txt:15: option(BUILD_CLIENT "Build client" ON)
+CMakeLists.txt:16: option(BUILD_RENDERER_GL1 "Build GL1 renderer" ON)
+CMakeLists.txt:17: option(BUILD_RENDERER_GL2 "Build GL2 renderer" OFF)
+CMakeLists.txt:18: option(BUILD_GAME_LIBRARIES "Build game module libraries" ON)
+CMakeLists.txt:19: option(BUILD_GAME_QVMS "Build game module qvms" ON)
+CMakeLists.txt:20: option(BUILD_STANDALONE "Build binaries for standalone games" OFF)
+CMakeLists.txt:22: option(USE_RENDERER_DLOPEN "Dynamically load the renderer(s)" ON)
+CMakeLists.txt:23: option(USE_OPENAL "OpenAL audio" ON)
+CMakeLists.txt:24: option(USE_OPENAL_DLOPEN "Dynamically load OpenAL" ON)
+CMakeLists.txt:25: option(USE_HTTP "HTTP download support" ON)
+CMakeLists.txt:26: option(USE_CODEC_VORBIS "Ogg Vorbis support" ON)
+CMakeLists.txt:27: option(USE_CODEC_OPUS "Ogg Opus support" ON)
+CMakeLists.txt:28: option(USE_CODEC_MAD "MP3 support" ON)
+CMakeLists.txt:29: option(USE_VOIP "Voice chat" OFF)
+CMakeLists.txt:30: option(USE_MUMBLE "Mumble support" OFF)
+CMakeLists.txt:31: option(USE_FREETYPE "Freetype font rendering" OFF)
+CMakeLists.txt:33: option(USE_INTERNAL_LIBS "Use internally packaged libraries" ON)
+CMakeLists.txt:34: option(USE_INTERNAL_SDL "Use internal SDL binary (if available)" ${USE_INTERNAL_LIBS})
+CMakeLists.txt:35: option(USE_INTERNAL_ZLIB "Use internal copy of zlib" ${USE_INTERNAL_LIBS})
+CMakeLists.txt:36: option(USE_INTERNAL_JPEG "Use internal copy of libjpeg" ${USE_INTERNAL_LIBS})
+CMakeLists.txt:37: option(USE_INTERNAL_OGG "Use internal copy of ogg" ${USE_INTERNAL_LIBS})
+CMakeLists.txt:38: option(USE_INTERNAL_VORBIS "Use internal copy of vorbis" ${USE_INTERNAL_LIBS})
+CMakeLists.txt:39: option(USE_INTERNAL_OPUS "Use internal copy of opus" ${USE_INTERNAL_LIBS})
+CMakeLists.txt:40: option(USE_INTERNAL_MAD "Use internal copy of libmad" ${USE_INTERNAL_LIBS})
+## D:\openmohaa\cmake\libraries\sdl.cmake
+if(NOT BUILD_CLIENT)
+    return()
+endif()
+
+if(EMSCRIPTEN)
+    # Emscripten provides its own self contained SDL setup
+    list(APPEND CLIENT_COMPILE_OPTIONS -sUSE_SDL=2)
+    list(APPEND CLIENT_LINK_OPTIONS -sUSE_SDL=2)
+    return()
+endif()
+
+set(INTERNAL_SDL_DIR ${SOURCE_DIR}/thirdparty/SDL2-2.32.8)
+
+include(utils/arch)
+
+if(WIN32 OR APPLE)
+    # On Windows and macOS we have internal SDL binaries we can use
+    set(HAVE_INTERNAL_SDL true)
+endif()
+
+if(USE_INTERNAL_SDL AND HAVE_INTERNAL_SDL)
+    set(SDL2_INCLUDE_DIRS ${INTERNAL_SDL_DIR}/include)
+    list(APPEND CLIENT_DEFINITIONS USE_INTERNAL_SDL_HEADERS)
+    list(APPEND RENDERER_DEFINITIONS USE_INTERNAL_SDL_HEADERS)
+
+    if(WIN32)
+        if(ARCH STREQUAL "x86_64")
+            set(LIB_DIR ${SOURCE_DIR}/thirdparty/libs/win64)
+        elseif(ARCH STREQUAL "x86")
+            set(LIB_DIR ${SOURCE_DIR}/thirdparty/libs/win32)
+        else()
+            message(FATAL_ERROR "Unknown ARCH")
+        endif()
+
+        if(MINGW)
+            set(SDL2_LIBRARIES
+                ${LIB_DIR}/libSDL2main.a
+                ${LIB_DIR}/libSDL2.dll.a)
+        elseif(MSVC)
+            set(SDL2_LIBRARIES
+                ${LIB_DIR}/SDL2main.lib
+                ${LIB_DIR}/SDL2.lib)
+        endif()
+
+        list(APPEND CLIENT_DEPLOY_LIBRARIES ${LIB_DIR}/SDL2.dll)
+    elseif(APPLE)
+        set(SDL2_LIBRARIES
+            ${SOURCE_DIR}/thirdparty/libs/macos/libSDL2main.a
+            ${SOURCE_DIR}/thirdparty/libs/macos/libSDL2-2.0.0.dylib)
+        list(APPEND CLIENT_DEPLOY_LIBRARIES
+            ${SOURCE_DIR}/thirdparty/libs/macos/libSDL2-2.0.0.dylib)
+    else()
+        message(FATAL_ERROR "HAVE_INTERNAL_SDL set incorrectly; file a bug")
+    endif()
+else()
+    find_package(SDL2 REQUIRED)
+endif()
+
+list(APPEND CLIENT_LIBRARIES ${SDL2_LIBRARIES})
+list(APPEND CLIENT_INCLUDE_DIRS ${SDL2_INCLUDE_DIRS})
+## pastas cliente/renderer (arquivos .c/.cpp)
+cgame: 32
+client: 54
+qcommon: 28
+renderercommon: 10
+renderergl1: 32
+renderergl2: 44
+sdl: 5
+skeletor: 8
+sys: 15
+tiki: 12
+uilib: 31
+## usos por pasta (SDL_ / qgl / al[A-Z] OpenAL)
+botlib: SDL=0 qgl=0 OpenAL=12
+cgame: SDL=0 qgl=0 OpenAL=14
+client: SDL=0 qgl=0 OpenAL=815
+corepp: SDL=0 qgl=0 OpenAL=12
+fgame: SDL=0 qgl=0 OpenAL=55
+gamespy: SDL=0 qgl=0 OpenAL=24
+parser: SDL=0 qgl=0 OpenAL=3
+qcommon: SDL=1 qgl=0 OpenAL=9
+renderercommon: SDL=4 qgl=9 OpenAL=0
+renderergl1: SDL=0 qgl=968 OpenAL=7
+renderergl2: SDL=21 qgl=556 OpenAL=5
+script: SDL=0 qgl=0 OpenAL=6
+sdl: SDL=354 qgl=59 OpenAL=0
+server: SDL=0 qgl=0 OpenAL=2
+skeletor: SDL=0 qgl=0 OpenAL=7
+sys: SDL=39 qgl=0 OpenAL=0
+thirdparty: SDL=7849 qgl=3 OpenAL=618
+tiki: SDL=0 qgl=0 OpenAL=1
+tools: SDL=0 qgl=0 OpenAL=88
+uilib: SDL=0 qgl=0 OpenAL=28
+## GetRefAPI / renderer dlopen
+code\client\cl_curl.c:98: if(!(cURLLib = Sys_LoadDll(cl_cURLLib->string, qtrue)))
+code\client\cl_curl.c:102: if(!(cURLLib = Sys_LoadDll(ALTERNATE_CURL_LIB, qtrue)))
+code\client\cl_main.cpp:43: #ifdef USE_RENDERER_DLOPEN
+code\client\cl_main.cpp:142: #ifdef USE_RENDERER_DLOPEN
+code\client\cl_main.cpp:2907: #ifdef USE_RENDERER_DLOPEN
+code\client\cl_main.cpp:3193: #ifdef USE_RENDERER_DLOPEN
+code\client\cl_main.cpp:3194: GetRefAPI_t		GetRefAPI;
+code\client\cl_main.cpp:3202: #ifdef USE_RENDERER_DLOPEN
+code\client\cl_main.cpp:3207: if(!(rendererLib = Sys_LoadDll(dllName, qfalse)) && strcmp(cl_renderer->string, cl_renderer->resetString))
+code\client\cl_main.cpp:3213: rendererLib = Sys_LoadDll(dllName, qfalse);
+code\client\cl_main.cpp:3222: GetRefAPI = (GetRefAPI_t)Sys_LoadFunction(rendererLib, "GetRefAPI");
+code\client\cl_main.cpp:3223: if(!GetRefAPI)
+code\client\cl_main.cpp:3225: Com_Error(ERR_FATAL, "Can't load symbol GetRefAPI: '%s'",  Sys_LibraryError());
+code\client\cl_main.cpp:3340: ret = GetRefAPI( REF_API_VERSION, &ri );
+code\client\qal.c:150: if(!(OpenALLib = Sys_LoadDll(libname, qtrue)))
+code\renderercommon\tr_public.h:340: #ifdef USE_RENDERER_DLOPEN
+code\renderercommon\tr_public.h:341: typedef	refexport_t* (QDECL *GetRefAPI_t) (int apiVersion, refimport_t * rimp);
+code\renderercommon\tr_public.h:343: refexport_t*GetRefAPI( int apiVersion, refimport_t *rimp );
+code\renderergl1\tr_init.c:1842: GetRefAPI
+code\renderergl1\tr_init.c:1846: #ifdef USE_RENDERER_DLOPEN
+code\renderergl1\tr_init.c:1847: Q_EXPORT refexport_t* QDECL GetRefAPI ( int apiVersion, refimport_t *rimp ) {
+code\renderergl1\tr_init.c:1849: refexport_t *GetRefAPI ( int apiVersion, refimport_t *rimp ) {
+code\renderergl1\tr_public.h:244: refexport_t*GetRefAPI( int apiVersion, refimport_t *rimp );
+code\renderergl2\tr_init.c:40: #ifdef USE_RENDERER_DLOPEN
+code\renderergl2\tr_init.c:1331: #ifdef USE_RENDERER_DLOPEN
+code\renderergl2\tr_init.c:1953: GetRefAPI
+code\renderergl2\tr_init.c:1957: #ifdef USE_RENDERER_DLOPEN
+code\renderergl2\tr_init.c:1958: Q_EXPORT refexport_t* QDECL GetRefAPI ( int apiVersion, refimport_t *rimp ) {
+code\renderergl2\tr_init.c:1960: refexport_t *GetRefAPI ( int apiVersion, refimport_t *rimp ) {
+code\sys\new\sys_main_new.c:249: game_library = Sys_LoadDll(gamename, qfalse);
+## ioQuake3-Xbox: renderer/NV2A
+code\asm\ftola.c 2146
+code\asm\qasm-inline.h 1274
+code\asm\snapvector.c 1954
+code\botlib\aasfile.h 8932
+code\botlib\be_aas_bsp.h 3275
+code\botlib\be_aas_bspq3.c 11803
+code\botlib\be_aas_cluster.c 50990
+code\botlib\be_aas_cluster.h 1387
+code\botlib\be_aas_debug.c 23625
+code\botlib\be_aas_debug.h 2402
+code\botlib\be_aas_def.h 7934
+code\botlib\be_aas_entity.c 12959
+code\botlib\be_aas_entity.h 2518
+code\botlib\be_aas_file.c 24525
+code\botlib\be_aas_file.h 1540
+code\botlib\be_aas_funcs.h 1593
+code\botlib\be_aas_main.c 10571
+code\botlib\be_aas_main.h 1926
+code\botlib\be_aas_move.c 37217
+code\botlib\be_aas_move.h 2907
+code\botlib\be_aas_optimize.c 11001
+code\botlib\be_aas_optimize.h 1265
+code\botlib\be_aas_reach.c 152586
+code\botlib\be_aas_reach.h 2849
+code\botlib\be_aas_route.c 75156
+code\botlib\be_aas_route.h 2893
+code\botlib\be_aas_routealt.c 8283
+code\botlib\be_aas_routealt.h 1556
+code\botlib\be_aas_sample.c 44130
+code\botlib\be_aas_sample.h 3133
+code\botlib\be_aas.h 8063
+code\botlib\be_ai_char.c 19533
+code\botlib\be_ai_char.h 1975
+code\botlib\be_ai_chat.c 86859
+code\botlib\be_ai_chat.h 4502
+code\botlib\be_ai_gen.c 3941
+code\botlib\be_ai_gen.h 1349
+code\botlib\be_ai_goal.c 53159
+code\botlib\be_ai_goal.h 4884
+code\botlib\be_ai_move.c 111786
+code\botlib\be_ai_move.h 6044
+code\botlib\be_ai_weap.c 18030
+code\botlib\be_ai_weap.h 3232
+code\botlib\be_ai_weight.c 27027
+code\botlib\be_ai_weight.h 2908
+code\botlib\be_ea.c 13664
+code\botlib\be_ea.h 2296
+code\botlib\be_interface.c 28921
+code\botlib\be_interface.h 1904
+code\botlib\botlib.h 22689
+code\botlib\l_crc.c 5882
+code\botlib\l_crc.h 1301
+code\botlib\l_libvar.c 7702
+code\botlib\l_libvar.h 2485
+code\botlib\l_log.c 5268
+code\botlib\l_log.h 1705
+code\botlib\l_memory.c 13585
+code\botlib\l_memory.h 3032
+code\botlib\l_precomp.c 88494
+code\botlib\l_precomp.h 6184
+code\botlib\l_script.c 40433
+code\botlib\l_script.h 8274
+code\botlib\l_struct.c 12321
+code\botlib\l_struct.h 2515
+code\botlib\l_utils.h 1346
+code\cgame\cg_consolecmds.c 14655
+code\cgame\cg_draw.c 59098
+code\cgame\cg_drawtools.c 17401
+code\cgame\cg_effects.c 17173
+code\cgame\cg_ents.c 28841
+code\cgame\cg_event.c 34179
+code\cgame\cg_info.c 7906
+code\cgame\cg_local.h 50033
+code\cgame\cg_localents.c 22125
+code\cgame\cg_main.c 67119
+code\cgame\cg_marks.c 7845
+code\cgame\cg_newdraw.c 49800
+code\cgame\cg_particles.c 41121
+code\cgame\cg_players.c 70784
+code\cgame\cg_playerstate.c 15218
+## ioQuake3-Xbox: input/audio Xbox
+code\sdl\sdl_input.c:42: static SDL_GameController *gamepad = NULL;
+code\sys\xbox_input_engine.c:7: Sys_XboxInputInit();
+code\sys\xbox_input.c:7: #include <usbh_lib.h>
+code\sys\xbox_snd.c:26: XAudioProvideSamples((unsigned char *)buffer,

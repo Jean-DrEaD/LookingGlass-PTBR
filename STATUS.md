@@ -610,3 +610,8 @@
 - 17o xemu: inimigos como ScriptModel OK (cev ... ScriptModel); Complete 13.68 s; heartbeat 41..242 (+40/2s)
 - 17p: +14 entradas (8 ambient_*, emitter_SmallFire1, 4 Item_* -> script_model; trigger_catmessage -> trigger_multiple) -> 0 Object no centipede1; XBE 4554752
 - Pendente: Item_* com logica real (pickup), Actor/IA FAKK2, build cliente
+
+## Lote 18a (2026-10-24 18:24)
+- 17p xemu: MARCO - centipede1 com 0 entidades Object; Complete 12.70 s; Hitch 5908 ms; heartbeat 41..283 (+40/2s); trigger_multiple OK
+- Dedicado encerrado como prova de boot; inicio do BUILD CLIENTE
+- 18a: inventario (options CMake, sdl.cmake, pastas cliente/renderer, usos SDL/qgl/OpenAL, GetRefAPI/dlopen, NV2A/input do ioQuake3-Xbox) em docs/probes/lote18a-cliente.log, sem build
