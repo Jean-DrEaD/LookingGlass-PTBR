@@ -3,7 +3,8 @@
 - 16z4: MARCO - centipede1 (BSP FAKK v42 + 408 ents) RODANDO em SS_GAME a 20 fps estavel no xemu
 - 15o: Sys_ListFiles real (FindFirstFileA); ISO a partir de D:\openmohaa\iso-stage (default.xbe + main\ hardlinks de base\)
 - ISO: E:\Xbox\extract-xiso.exe -c D:\openmohaa\iso-stage G:\xemu\alice-test.iso
-- Depois: Sys_Error sem lixo na tela, remover /FORCE:MULTIPLE, mbtowc/strtold (stubs assert do nxdk)
+- 16z9g: MARCO - link LIMPO sem /FORCE:MULTIPLE (mbtowc/rand_s/byteswap/strto* proprios)
+- Depois: tirar libnxdk_net/gcd_*/lwIP do link; Sys_Error sem lixo na tela; lote 17 = interpretador script Alice; build cliente
 - Inicio de chat: & D:\LookingGlass-PTBR\tools\lg-status.ps1 -Show
 - Regra: comandos sempre completos
 - SINGLE PLAYER SEM REDE: remover lwIP/libnxdk_net/gcd_*/winsock do link (15y)
@@ -491,3 +492,7 @@
 - 16z9f: stdlib_ext_.obj (libxboxrt) define strtod/strtof/strtold + mbtowc/rand_s/_byteswap_* -> outro simbolo puxava o obj
 - 16z9g: sys_xbox.c define mbtowc/rand_s/_byteswap_* (asm label); /FORCE:MULTIPLE removido; LINK LIMPO; XBE 4784128 bytes -> testar xemu
 - mbtowc deixa de ser stub assert (pendencia do FLUXO)
+
+## Lote 16z10a (2026-10-24 06:45)
+- 16z9g xemu: boot identico ao 16z8b sem FORCE; Complete 17.14 s; frame 41 + Hitch 10044 ms (load)
+- 16z10a: FLUXO atualizado; coleta refs de rede no link (docs/probes/lote16z10a-rede.log), sem build

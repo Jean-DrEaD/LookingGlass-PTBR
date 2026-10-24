@@ -1,0 +1,79 @@
+##### CMake / probe: libnxdk_net, gcd, lwip, gamespy
+cmake\client.cmake:31: ${SOURCE_DIR}/client/cl_uigamespy.cpp
+cmake\client.cmake:63: # Gamespy
+cmake\client.cmake:65: ${SOURCE_DIR}/gamespy/cl_gamespy.c
+cmake\gamespy.cmake:1: include_directories(${SOURCE_DIR}/gamespy/common)
+cmake\gamespy.cmake:2: include_directories(${SOURCE_DIR}/gamespy/gcdkey)
+cmake\gamespy.cmake:5: ${SOURCE_DIR}/gamespy/common/*.c
+cmake\gamespy.cmake:6: ${SOURCE_DIR}/gamespy/darray.c
+cmake\gamespy.cmake:7: ${SOURCE_DIR}/gamespy/gserver.c
+cmake\gamespy.cmake:8: ${SOURCE_DIR}/gamespy/gserverlist.c
+cmake\gamespy.cmake:9: ${SOURCE_DIR}/gamespy/hashtable.c
+cmake\gamespy.cmake:10: ${SOURCE_DIR}/gamespy/md5c.c
+cmake\gamespy.cmake:11: ${SOURCE_DIR}/gamespy/gutil.c
+cmake\gamespy.cmake:15: ${SOURCE_DIR}/gamespy/gcdkey/*.c
+cmake\gamespy.cmake:19: ${SOURCE_DIR}/gamespy/natneg/*.c
+cmake\gamespy.cmake:23: ${SOURCE_DIR}/gamespy/qr2/*.c
+cmake\gamespy.cmake:26: add_library(gcd_common STATIC ${SRCS_common})
+cmake\gamespy.cmake:27: add_library(gcd_key STATIC ${SRCS_gcdkey})
+cmake\gamespy.cmake:28: add_library(gcd_natneg STATIC ${SRCS_natneg})
+cmake\gamespy.cmake:29: add_library(gcd_qr2 STATIC ${SRCS_qr2})
+cmake\gamespy.cmake:32: set_property(TARGET gcd_common gcd_key PROPERTY POSITION_INDEPENDENT_CODE ON)
+cmake\gamespy.cmake:39: gcd_key
+cmake\gamespy.cmake:40: #	gcd_gp
+cmake\gamespy.cmake:41: #	gcd_gstats
+cmake\gamespy.cmake:42: gcd_natneg
+cmake\gamespy.cmake:43: #	gcd_pinger
+cmake\gamespy.cmake:44: #	gcd_pt
+cmake\gamespy.cmake:45: gcd_qr2
+cmake\gamespy.cmake:46: #	gcd_sake
+cmake\gamespy.cmake:47: #	gcd_sc
+cmake\gamespy.cmake:48: #	gcd_serverbrowsing
+cmake\gamespy.cmake:49: #	gcd_webservices
+cmake\gamespy.cmake:55: target_link_libraries(${LIB} PUBLIC gcd_common)
+cmake\gamespy.cmake:58: target_link_libraries(gcd_key PRIVATE gcd_qr2)
+cmake\gamespy.cmake:59: target_link_libraries(gcd_qr2 PRIVATE gcd_natneg)
+cmake\shared_sources.cmake:5: include(gamespy)
+cmake\shared_sources.cmake:35: ${SOURCE_DIR}/gamespy/q_gamespy.c
+cmake\shared_sources.cmake:98: # Gamespy
+cmake\shared_sources.cmake:101: ${SOURCE_DIR}/gamespy/sv_gamespy.c
+cmake\shared_sources.cmake:102: ${SOURCE_DIR}/gamespy/sv_gqueryreporting.c
+probe.ps1:6: $flags = '-DCMAKE_TOOLCHAIN_FILE=$NXDK_DIR/share/toolchain-nxdk.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CLIENT=OFF -DBUILD_SERVER=ON -DBUILD_RENDERER_GL1=OFF -DBUILD_RENDERER_GL2=OFF -DBUILD_GAME_QVMS=OFF -DBUILD_GAME_LIBRARIES=ON -DUSE_RENDERER_DLOPEN=OFF -DUSE_OPENAL=OFF -DUSE_OPENAL_DLOPEN=OFF -DUSE_HTTP=OFF -DUSE_CODEC_VORBIS=OFF -DUSE_CODEC_OPUS=OFF -DUSE_CODEC_MAD=OFF -DUSE_INTERNAL_LIBS=ON -Wno-dev -DCMAKE_EXE_LINKER_FLAGS="/errorlimit:0 /STACK:4194304,4194304 $NXDK_DIR/lib/libnxdk_net.lib /src/build-lgsys/lg_xboxsys.lib"'
+probe.ps1:8: INC="-I/shims -include/shims/lg_compat.h -I`$NXDK_DIR/lib/xboxrt/libc_extensions -I`$NXDK_DIR/lib/net/lwip/src/include -I`$NXDK_DIR/lib/net/nforceif/include"
+##### link.txt do omohaaded (libs)
+-I/usr/src/nxdk/lib/net/lwip/src/include
+/usr/src/nxdk/lib/libnxdk_net.lib
+/src/build-lgsys/lg_xboxsys.lib
+Release/libgame.lib
+libgcd_key.lib
+libgcd_qr2.lib
+libgcd_natneg.lib
+libgcd_common.lib
+recastnav_crowd/libDetourCrowd.lib
+recastnav_detour/libDetour.lib
+recacstnav_recast/libRecast.lib
+/usr/src/nxdk/lib/libwinapi.lib
+/usr/src/nxdk/lib/xboxkrnl/libxboxkrnl.lib
+/usr/src/nxdk/lib/libxboxrt.lib
+/usr/src/nxdk/lib/libpdclib.lib
+/usr/src/nxdk/lib/libnxdk_hal.lib
+/usr/src/nxdk/lib/libnxdk.lib
+/usr/src/nxdk/lib/nxdk_usb.lib
+/usr/src/nxdk/lib/libc++.lib
+##### chamadas gamespy/qr2/gcd no code (fora de code/gamespy)
+code\client\cl_instantAction.cpp:148: game_name  = GS_GetGameName(com_target_game->integer);
+code\client\cl_instantAction.cpp:149: secret_key = GS_GetGameKey(com_target_game->integer);
+code\client\cl_instantAction.cpp:166: game_name  = GS_GetGameName(target_game_e::TG_MOHTT);
+code\client\cl_instantAction.cpp:167: secret_key = GS_GetGameKey(target_game_e::TG_MOHTT);
+code\client\cl_instantAction.cpp:184: game_name  = GS_GetGameName(target_game_e::TG_MOHTA);
+code\client\cl_instantAction.cpp:185: secret_key = GS_GetGameKey(target_game_e::TG_MOHTA);
+code\client\cl_main.cpp:2056: gcd_compute_response(cl_cdkey, Cmd_Argv(1), cls.gcdResponse, CDResponseMethod_REAUTH);
+code\client\cl_main.cpp:2421: gcd_compute_response(cl_cdkey, Cmd_Argv(1), cls.gcdResponse, CDResponseMethod_NEWAUTH);
+code\client\cl_uiserverlist.cpp:679: game_name  = GS_GetCurrentGameName();
+code\client\cl_uiserverlist.cpp:680: secret_key = GS_GetCurrentGameKey();
+code\client\cl_uiserverlist.cpp:700: game_name  = GS_GetGameName(target_game_e::TG_MOHTT);
+code\client\cl_uiserverlist.cpp:701: secret_key = GS_GetGameKey(target_game_e::TG_MOHTT);
+code\client\cl_uiserverlist.cpp:722: game_name  = GS_GetGameName(target_game_e::TG_MOHTA);
+code\client\cl_uiserverlist.cpp:723: secret_key = GS_GetGameKey(target_game_e::TG_MOHTA);
+code\server\sv_init.c:465: SV_InitGamespy();
+code\server\sv_init.c:1212: SV_ShutdownGamespy();
