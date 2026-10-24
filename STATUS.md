@@ -605,3 +605,8 @@
 - 17n xemu: 'cls Enemies_Centipede -> Actor ok' -> 'SE Can't find anim/pain.scr' -> throw: Actor MOHAA exige scripts de IA (global/anim) inexistentes no Alice
 - Decisao: Actor/IA FAKK2 adiado (lote proprio); inimigos como script_model (modelo + anim, sem IA)
 - 17o: 8 Enemies_* -> script_model; lookup getClassForID -> getClass; print cls limitado a 3 (+10 -3); XBE 4554752
+
+## Lote 17p (2026-10-24 18:22)
+- 17o xemu: inimigos como ScriptModel OK (cev ... ScriptModel); Complete 13.68 s; heartbeat 41..242 (+40/2s)
+- 17p: +14 entradas (8 ambient_*, emitter_SmallFire1, 4 Item_* -> script_model; trigger_catmessage -> trigger_multiple) -> 0 Object no centipede1; XBE 4554752
+- Pendente: Item_* com logica real (pickup), Actor/IA FAKK2, build cliente
