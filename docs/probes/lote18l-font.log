@@ -1,0 +1,96 @@
+# Lote 18l - fonte Verdana
+## Couldn't load font / verdana / ritualfont no code\
+code\cgame\cg_main.c:580: cgs.media.hudDrawFont              = cgi.R_LoadFont("verdana-14");
+code\client\cl_ui.cpp:4318: wnd->getChildSpace(), frame.pos.x, frame.pos.y, frame.size.width, frame.size.height, border_none, "verdana-12"
+code\client\cl_ui.cpp:4543: scoreboardlist->InitFrame(NULL, x, y, w, h, -1, "verdana-12");
+code\client\cl_uiview3d.cpp:122: setFont("verdana-14");
+code\client\cl_uiview3d.cpp:324: setFont("verdana-14");
+code\client\cl_uiview3d.cpp:472: setFont("verdana-14");
+code\client\cl_uiview3d.cpp:557: setFont("verdana-14");
+code\fgame\huddraw.cpp:361: verdana-12
+code\fgame\huddraw.cpp:362: verdana-14
+code\renderergl1\tr_font.cpp:155: if (ri.FS_ReadFile(va("fonts/%s.RitualFont", name), (void**)&theFile) == -1)
+code\renderergl1\tr_font.cpp:157: ri.Printf(PRINT_WARNING, "LoadFont: Couldn't load font %s\n", name);
+code\renderergl1\tr_font.cpp:325: if (ri.FS_ReadFile(va("fonts/%s.RitualFont", name), (void**)&theFile) == -1)
+code\renderergl1\tr_font.cpp:327: ri.Printf(PRINT_WARNING, "LoadFont: Couldn't load font %s\n", name);
+code\renderergl1\tr_init.c:1711: tr.pFontDebugStrings = R_LoadFont("verdana-14");
+code\renderergl2\tr_font.cpp:155: if (ri.FS_ReadFile(va("fonts/%s.RitualFont", name), (void**)&theFile) == -1)
+code\renderergl2\tr_font.cpp:157: ri.Printf(PRINT_WARNING, "LoadFont: Couldn't load font %s\n", name);
+code\renderergl2\tr_font.cpp:325: if (ri.FS_ReadFile(va("fonts/%s.RitualFont", name), (void**)&theFile) == -1)
+code\renderergl2\tr_font.cpp:327: ri.Printf(PRINT_WARNING, "LoadFont: Couldn't load font %s\n", name);
+code\renderergl2\tr_init.c:1781: tr.pFontDebugStrings = R_LoadFont("verdana-14");
+code\uilib\ui_init.cpp:129: uWinMan.Init(frame, "verdana-12");
+code\uilib\uiconsole.cpp:807: getChildSpace(), UIRect2D(0, 0, 20.0 * getHighResScale()[0], 20.0 * getHighResScale()[1]), 0, "verdana-12"
+code\uilib\uiconsole.cpp:814: getChildSpace(), UIRect2D(0, 0, 20.0 * getHighResScale()[0], 20.0 * getHighResScale()[1]), 0, "verdana-14"
+code\uilib\uifloatwnd.cpp:135: "verdana-12"
+code\uilib\uifloatwnd.cpp:138: m_childspace->InitFrame(this, UIRect2D(UIPoint2D(0, 0), m_frame.size), 0, "verdana-12");
+code\uilib\uifloatwnd.cpp:274: InitFrame(parent, rect.pos.x, rect.pos.y, rect.size.width, rect.size.height, 0, "verdana-14");
+code\uilib\uifont.cpp:268: m_font = uii.Rend_LoadFont("verdana-14");
+code\uilib\uifont.cpp:270: uii.Sys_Error(ERR_DROP, "Couldn't load font Verdana\n");
+code\uilib\uifont.cpp:277: name      = "verdana-14";
+code\uilib\uifont.cpp:299: uii.Sys_Error(ERR_DROP, "Couldn't load font %s\n", fontname);
+code\uilib\uilayout.cpp:150: widget->InitFrame(m_currentcontainer, 0, 0, 128, 64, -1, "verdana-12");
+code\uilib\uinotepad.cpp:342: m_edit->InitFrame(getChildSpace(), 0.0f, 0.0f, 20.0f, 20.0f, 0, "verdana-12");
+code\uilib\uinotepad.cpp:345: m_edit->setFont("verdana-14");
+code\uilib\uinotepad.cpp:348: m_status->InitFrame(getChildSpace(), 0.0f, 0.0f, 20.0f, 20.0f, 0, "verdana-12");
+code\uilib\uipopupmenu.cpp:177: setFont("verdana-12");
+code\uilib\uipulldownmenu.cpp:184: setFont("verdana-12");
+code\uilib\uivertscroll.cpp:395: InitFrame(parent, frameOut, -1, "verdana-12");
+code\uilib\uiwidget.h:221: const char *fontname = "verdana-12"
+code\uilib\uiwidget.h:223: void InitFrame(UIWidget *parentview, const UIRect2D& r, int border, const char *fontname = "verdana-12");
+## contexto code\renderergl1\tr_font.cpp 138-163
+138: 
+139:     error = qfalse;
+140: 
+141:     for (i = 0; i < s_numLoadedFonts_sgl; i++)
+142:     {
+143:         header = &s_loadedFonts_sgl[i];
+144:         if (!Q_stricmp(name, header->name)) {
+145:             return header;
+146:         }
+147:     }
+148: 
+149:     if (s_numLoadedFonts >= MAX_LOADED_FONTS)
+150:     {
+151:         ri.Printf(PRINT_WARNING, "LoadFont: Too many fonts loaded!  Couldn't load %s\n", name);
+152:         return NULL;
+153:     }
+154: 
+155:     if (ri.FS_ReadFile(va("fonts/%s.RitualFont", name), (void**)&theFile) == -1)
+156:     {
+157:         ri.Printf(PRINT_WARNING, "LoadFont: Couldn't load font %s\n", name);
+158:         return NULL;
+159:     }
+160: 
+161:     header = &s_loadedFonts_sgl[s_numLoadedFonts_sgl];
+162:     header->height = 0.0;
+163:     header->aspectRatio = 0.0;
+## fonts nos pk3 (iso-stage\main)
+fonts/ (0)
+fonts/asrafel-30.ritualfont (13697)
+fonts/asrafel.ritualfont (14415)
+fonts/backup/ (0)
+fonts/backup/asrafel.ritualfont (13892)
+fonts/backup/asrafel.tga (262188)
+fonts/backup/courier-14.ritualfont (13649)
+fonts/backup/courier-14.tga (65554)
+fonts/courier-10.ritualfont (13649)
+fonts/courier-14.ritualfont (13940)
+fonts/hapsburg-36.RitualFont (13773)
+fonts/hapsburg-40.RitualFont (13778)
+fonts/marlett.ritualfont (13620)
+fonts/verdana-10.ritualfont (13639)
+fonts/verdana-12.ritualfont (13648)
+fonts/verdana-14.ritualfont (13662)
+fonts/verdana-20.ritualfont (13724)
+fonts/verdana.ritualfont (13639)
+gfx/2d/fonts/verdana-12.tga (65554)
+gfx/fonts/verdana-12.tga (65554)
+## 'verdana' em arquivos de texto dos pk3
+ui/animate2.urc
+ui/animate3.urc
+ui/cinematicmenu.urc
+ui/zound.urc
+## Sys_Error/Sys_Quit/XReboot/HalReturnToFirmware
+sys_xbox.c:49: void Sys_PlatformExit(void) {}
+sys_xbox.c:56: void Sys_ErrorDialog(const char *e) { OutputDebugStringA(e); debugPrint("ERRO: %s\n", e); }

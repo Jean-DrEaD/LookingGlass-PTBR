@@ -665,3 +665,9 @@
 - 18j 1a tentativa: Select-String abortou (sys_xbox.c fica em tools\, nao em code\sys); nada aplicado
 - 18j: heartbeat imprime 'LG: ded=X cl=Y' (+1 -0); coleta em docs/probes/lote18j-ded.log
 - Regra PS: com ErrorActionPreference Stop, filtrar -Path com Test-Path antes do Select-String
+
+## Lote 18l (2026-10-25 11:44)
+- 18j xemu (ISO certa): MARCO - CLIENTE REAL: Client Initialization -> 'LG: renderer nulo (18e)' -> Sound Init sem OpenAL (0 ms) -> QKEY found
+- 18j: 'ERROR: Couldn't load font Verdana' -> Unloading ClientGame x3 -> lixo na tela -> REBOOT (volta ao 'OpenMoHAA Xbox boot')
+- 18i 'igual ao dedicado' = xemu com ISO errada; 18k descartado (nao rodado)
+- 18l: coleta origem do erro de fonte, fonts/ nos pk3, 'verdana' em urc/cfg, caminho Sys_Error->reboot (docs/probes/lote18l-font.log), sem build
