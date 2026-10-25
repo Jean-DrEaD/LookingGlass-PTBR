@@ -653,3 +653,8 @@
 - 18g: MARCO - cliente COMPILA inteiro (502 obj, 0 falhos); so o link do openmohaa.exe falha: al*/alc* (dllimport), QAL_*, ServerList*/ServerGet*/gcd_/GS_* (GameSpy UI), IN_*, Sys_GLimp*/PumpMessageLoop/LowPhysicalMemory, GetGameAPI
 - 18h: code/renderernull/lg_client_stubs.c (74 stubs, retorno 0/NULL/""); AL_LIBTYPE_STATIC no cliente; game estatico no openmohaa (CMakeLists.txt)
 - 18h: se linkar -> xbe-out\cliente.xbe (ISO do dedicado intacta); duplicatas/cxbe em docs/probes/lote18h-extras.log
+
+## Lote 18i (2026-10-25 10:26)
+- 18h: MARCO - CLIENTE LINKADO: 503 obj / 0 falhos, 0 duplicatas; openmohaa.exe 5415936; cliente.xbe 5427200 (cxbe = $NXDK_DIR/tools/cxbe/cxbe OK)
+- 18i: ISO separada G:\xemu\alice-cliente.iso (iso-cliente = default.xbe do cliente + hardlinks de iso-stage\main); ISO do dedicado intacta
+- Esperado xemu: boot LG -> 'LG: renderer nulo (18e)' -> Com_Init -> auto map centipede1 -> heartbeat (tela de debugPrint, sem grafico)
