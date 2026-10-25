@@ -1,0 +1,141 @@
+# Lote 18f - contexto dos erros do 18e
+## code\sys\sys_local.h 25-45
+25: 
+26: #ifdef __cplusplus
+27: extern "C" {
+28: #endif
+29: 
+30: #ifndef DEDICATED
+31: #ifdef USE_INTERNAL_SDL_HEADERS
+32: #	include "SDL_version.h"
+33: #else
+34: #	include <SDL_version.h>
+35: #endif
+36: 
+37: // Require a minimum version of SDL
+38: #define MINSDL_MAJOR 2
+39: #define MINSDL_MINOR 0
+40: #if SDL_VERSION_ATLEAST( 2, 0, 5 )
+41: #define MINSDL_PATCH 5
+42: #else
+43: #define MINSDL_PATCH 0
+44: #endif
+45: #endif
+## code\sys\sys_main.c 30-60
+30: #include <string.h>
+31: #include <ctype.h>
+32: #include <errno.h>
+33: 
+34: #ifdef __EMSCRIPTEN__
+35: #include <emscripten/emscripten.h>
+36: #endif
+37: 
+38: #ifndef DEDICATED
+39: #ifdef USE_INTERNAL_SDL_HEADERS
+40: #	include "SDL.h"
+41: #	include "SDL_cpuinfo.h"
+42: #else
+43: #	include <SDL.h>
+44: #	include <SDL_cpuinfo.h>
+45: #endif
+46: #endif
+47: 
+48: #include "sys_local.h"
+49: #include "sys_loadlib.h"
+50: 
+51: #include "../qcommon/q_shared.h"
+52: #include "../qcommon/qcommon.h"
+53: 
+54: static char binaryPath[ MAX_OSPATH ] = { 0 };
+55: static char installPath[ MAX_OSPATH ] = { 0 };
+56: 
+57: /*
+58: =================
+59: Sys_SetBinaryPath
+60: =================
+## code\sys\sys_loadlib.h 30-55
+30: #	else
+31: #	include <dlfcn.h>
+32: #		define Sys_LoadLibrary(f) dlopen(f,RTLD_NOW)
+33: #		define Sys_UnloadLibrary(h) dlclose(h)
+34: #		define Sys_LoadFunction(h,fn) dlsym(h,fn)
+35: #		define Sys_LibraryError() dlerror()
+36: #	endif
+37: #else
+38: #	ifdef USE_INTERNAL_SDL_HEADERS
+39: #		include "SDL.h"
+40: #		include "SDL_loadso.h"
+41: #	else
+42: #		include <SDL.h>
+43: #		include <SDL_loadso.h>
+44: #	endif
+45: #	define Sys_LoadLibrary(f) SDL_LoadObject(f)
+46: #	define Sys_UnloadLibrary(h) SDL_UnloadObject(h)
+47: #	define Sys_LoadFunction(h,fn) SDL_LoadFunction(h,fn)
+48: #	define Sys_LibraryError() SDL_GetError()
+49: #endif
+50: 
+51: void * QDECL Sys_LoadDll(const char *name, qboolean useSystemLib);
+## code\client\qal.h 30-60
+30: 
+31: #ifdef USE_OPENAL_DLOPEN
+32: #define AL_NO_PROTOTYPES
+33: #define ALC_NO_PROTOTYPES
+34: #endif
+35: 
+36: #ifdef USE_INTERNAL_OPENAL_HEADERS
+37: #include "AL/al.h"
+38: #include "AL/alc.h"
+39: #include "AL/alext.h"
+40: #else
+41: #if defined(_MSC_VER) || defined(__APPLE__)
+42:   // MSVC users must install the OpenAL SDK which doesn't use the AL/*.h scheme.
+43:   // OSX framework also needs this
+44:   #include <al.h>
+45:   #include <alc.h>
+46:   #include <alext.h>
+47: #else
+48:   #include <AL/al.h>
+49:   #include <AL/alc.h>
+50:   #include <AL/alext.h>
+51: #endif
+52: #endif
+53: 
+54: /* Hack to enable compiling both on OpenAL SDK and OpenAL-soft. */
+55: #ifndef ALC_ENUMERATE_ALL_EXT
+56: #  define ALC_ENUMERATE_ALL_EXT 1
+57: #  define ALC_DEFAULT_ALL_DEVICES_SPECIFIER        0x1012
+58: #  define ALC_ALL_DEVICES_SPECIFIER                0x1013
+59: #endif
+60: 
+## code\client\cl_uimpmappicker.cpp 110-135
+110:     if (game_type) {
+111:         gameType = game_type;
+112:     }
+113: 
+114:     SetupFiles();
+115: }
+116: 
+117: void MpMapPickerClass::GotoParentDirectory(void)
+118: {
+119:     uintptr_t i;
+120: 
+121:     if (currentDirectory == rootDirectory) {
+122:         return;
+123:     }
+124: 
+125:     for (i = currentDirectory.length() - 2; i > 0; i--) {
+126:         if (currentDirectory[i] == '/') {
+127:             break;
+128:         }
+129:     }
+130: 
+131:     if (currentDirectory[i] == '/') {
+132:         i++;
+133:     }
+134: 
+135:     currentDirectory = str(currentDirectory, 0, i);
+## quem inclui qal.h
+code\client\qal.c:28: #include "qal.h"
+code\client\snd_openal_new.h:25: #include "qal.h"
+code\client\snd_openal.c:30: #include "qal.h"

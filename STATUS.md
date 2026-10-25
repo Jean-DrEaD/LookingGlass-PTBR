@@ -638,3 +638,8 @@
 - 18d: probe.ps1 com flags fixas; client.cmake inclui sdl_input/sdl_mouse + cl_gamespy; renderer_common exige 1 renderer estatico; main em sys_main.c:782
 - 18e: sob NXDK sdl.cmake retorna; renderer_gl1.cmake -> code/renderernull/tr_null.c (85 entradas, stub generico + float/struct/nomes proprios); client.cmake sem sdl_input/sdl_mouse/cl_gamespy
 - 18e: probe.ps1 -Cliente (CLIENT+GL1 ON); dedicado inalterado sem -Cliente; build diagnostico (link do cliente deve falhar) em docs/probes/lote18e-openmohaa-cliente.log; prototipos em lote18e-proto.log; sem XBE
+
+## Lote 18f (2026-10-25 06:24)
+- 18e: cliente CONFIGUROU; 510 obj ok / 16 falhos; link nao alcancado; erros = launcher (spawn.h/cout), SDL.h em sys_local/sys_main/sys_loadlib, sys/mman.h (mumble), al.h (qal), str[uintptr_t] em cl_uimpmappicker.cpp:126
+- 18e xemu (XBE dedicado anterior): estavel, Complete 12.77 s, heartbeat 41..202
+- 18f: launcher.cmake retorna sob NXDK; includes SDL sob #ifndef NXDK; libmumblelink.c + qal.c fora; contexto em docs/probes/lote18f-ctx.log; build em lote18f-openmohaa-cliente.log; sem XBE
