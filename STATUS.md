@@ -658,3 +658,10 @@
 - 18h: MARCO - CLIENTE LINKADO: 503 obj / 0 falhos, 0 duplicatas; openmohaa.exe 5415936; cliente.xbe 5427200 (cxbe = $NXDK_DIR/tools/cxbe/cxbe OK)
 - 18i: ISO separada G:\xemu\alice-cliente.iso (iso-cliente = default.xbe do cliente + hardlinks de iso-stage\main); ISO do dedicado intacta
 - Esperado xemu: boot LG -> 'LG: renderer nulo (18e)' -> Com_Init -> auto map centipede1 -> heartbeat (tela de debugPrint, sem grafico)
+
+## Lote 18j (2026-10-25 11:28)
+- 18i xemu: MARCO - cliente.xbe BOOTA; centipede1 carrega; Complete 12.48 s; Hitch 5783 ms; heartbeat 41..242 (+40/2s)
+- 18i: tela igual a do dedicado; 'renderer nulo' nao visivel; 'No bots' = caminho SV_ServerLoaded do dedicado -> suspeita com_dedicated=1 (sys_main.c com DEDICATED, 18g)
+- 18j 1a tentativa: Select-String abortou (sys_xbox.c fica em tools\, nao em code\sys); nada aplicado
+- 18j: heartbeat imprime 'LG: ded=X cl=Y' (+1 -0); coleta em docs/probes/lote18j-ded.log
+- Regra PS: com ErrorActionPreference Stop, filtrar -Path com Test-Path antes do Select-String

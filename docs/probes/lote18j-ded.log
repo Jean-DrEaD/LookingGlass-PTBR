@@ -1,0 +1,70 @@
+# Lote 18j
+## renderer nulo / com_dedicated / CL_Init
+sys_xbox.c: D:\LookingGlass-PTBR\tools\nxdk-shims\xboxsys\sys_xbox.c
+D:\openmohaa\code\renderernull\tr_null.c:1: /* LG lote 18e: renderer nulo (tela preta) para validar o build cliente no nxdk. */
+D:\openmohaa\code\renderernull\tr_null.c:65: lgNullRi.Printf(PRINT_ALL, "LG: renderer nulo (18e)\n");
+D:\openmohaa\code\qcommon\common.c:44: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:83: cvar_t	*com_dedicated;
+D:\openmohaa\code\qcommon\common.c:125: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:258: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:259: if (com_dedicated && !com_dedicated->integer) {
+D:\openmohaa\code\qcommon\common.c:264: // echo to dedicated console and early console
+D:\openmohaa\code\qcommon\common.c:412: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:413: if (com_dedicated && !com_dedicated->integer) {
+D:\openmohaa\code\qcommon\common.c:514: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:1513: CL_Init();
+D:\openmohaa\code\qcommon\common.c:1539: // TTimo: centralizing the cl_cdkey stuff after I discovered a buffer overflow problem with the dedicated server version
+D:\openmohaa\code\qcommon\common.c:1540: //   not sure it's necessary to have different defaults for regular and dedicated, but I don't want to risk it
+D:\openmohaa\code\qcommon\common.c:1542: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:1609: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:1883: // get dedicated here for proper hunk megs initialization
+D:\openmohaa\code\qcommon\common.c:1884: #ifdef DEDICATED
+D:\openmohaa\code\qcommon\common.c:1885: com_dedicated = Cvar_Get ("dedicated", "1", CVAR_INIT);
+D:\openmohaa\code\qcommon\common.c:1886: Cvar_CheckRange( com_dedicated, 1, 2, qtrue );
+D:\openmohaa\code\qcommon\common.c:1888: com_dedicated = Cvar_Get ("dedicated", "0", CVAR_LATCH);
+D:\openmohaa\code\qcommon\common.c:1889: Cvar_CheckRange( com_dedicated, 0, 2, qtrue );
+D:\openmohaa\code\qcommon\common.c:1922: com_dedicated = Cvar_Get( "dedicated", "0", CVAR_LATCH );
+D:\openmohaa\code\qcommon\common.c:1926: com_cl_running = Cvar_Get( "cl_running", "0", CVAR_ROM );
+D:\openmohaa\code\qcommon\common.c:1938: if( com_dedicated->integer )
+D:\openmohaa\code\qcommon\common.c:1963: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:1980: com_dedicated->modified = qfalse;
+D:\openmohaa\code\qcommon\common.c:1982: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:1983: if( com_dedicated->integer )
+D:\openmohaa\code\qcommon\common.c:1989: CL_Init();
+D:\openmohaa\code\qcommon\common.c:2122: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:2138: // not needed for dedicated
+D:\openmohaa\code\qcommon\common.c:2139: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:2188: if ( com_dedicated->integer ) {
+D:\openmohaa\code\qcommon\common.c:2189: // dedicated servers don't want to clamp for a much longer
+D:\openmohaa\code\qcommon\common.c:2262: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:2263: if (!com_dedicated || !com_dedicated->integer)
+D:\openmohaa\code\qcommon\common.c:2283: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:2285: if (!com_dedicated || !com_dedicated->integer) {
+D:\openmohaa\code\qcommon\common.c:2303: if (com_dedicated->integer)
+D:\openmohaa\code\qcommon\common.c:2357: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:2358: if (com_dedicated->integer || CL_FinishedIntro())
+D:\openmohaa\code\qcommon\common.c:2365: //   On dedicated servers, the client part that runs buffered commands is never run.
+D:\openmohaa\code\qcommon\common.c:2388: // if "dedicated" has been modified, start up
+D:\openmohaa\code\qcommon\common.c:2392: if ( com_dedicated->modified ) {
+D:\openmohaa\code\qcommon\common.c:2394: Cvar_Get( "dedicated", "0", 0 );
+D:\openmohaa\code\qcommon\common.c:2395: com_dedicated->modified = qfalse;
+D:\openmohaa\code\qcommon\common.c:2396: if ( !com_dedicated->integer ) {
+D:\openmohaa\code\qcommon\common.c:2397: SV_Shutdown( "dedicated set to 0" );
+D:\openmohaa\code\qcommon\common.c:2400: CL_Shutdown("dedicated set to 1", qtrue, qtrue);
+D:\openmohaa\code\qcommon\common.c:2407: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:2800: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:2861: #ifndef DEDICATED
+D:\openmohaa\code\qcommon\common.c:2889: #ifndef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:38: #ifndef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:127: #ifndef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:161: #ifdef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:252: #ifndef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:299: #ifndef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:335: #ifndef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:647: #ifdef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:648: fprintf( stdout, Q3_VERSION " dedicated server (%s)\n", date );
+D:\openmohaa\code\sys\sys_main.c:772: #ifndef DEDICATED
+D:\openmohaa\code\sys\sys_main.c:802: #ifndef DEDICATED
+heartbeat 2241: { static int lg_fc = 0, lg_t = 0; int lg_n = Sys_Milliseconds(); lg_fc++; if (lg_fc == 40) { Com_Printf("LG: auto map centipede1\n"); Cbuf_AddText("map centipede1\n"); } if (lg_fc == 1 || lg_n - lg_t >= 2000) { lg_t = lg_n; Com_Printf("LG: frame %d t=%d\n", lg_fc, lg_n); } } | ant: #ifdef NXDK /* LG 15x heartbeat */
+diff: 1	0	code/qcommon/common.c
+XBE 5427200 / ISO 667811840
