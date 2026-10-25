@@ -1,0 +1,6 @@
+# Lote 18g - patches
+ok sys_local.h
+mappicker: 2 trocas
+ok lg_compat putenv
+al.h: D:\openmohaa\code\thirdparty\openal-soft-1.24.3\include\AL\al.h
+ok client.cmake

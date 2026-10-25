@@ -87,3 +87,10 @@ int lg_vsnprintf(char *buf, size_t size, const char *fmt, va_list ap);
 #ifdef __cplusplus
 }
 #endif
+
+/* LG18g: putenv ausente no nxdk */
+#ifndef LG_PUTENV
+#define LG_PUTENV
+static inline int lg_putenv(char *s) { (void)s; return 0; }
+#define putenv lg_putenv
+#endif

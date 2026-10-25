@@ -1,0 +1,118 @@
+# Probe 18g 2026-10-25 06:38 @ 63956a7 sys DEDICATED, putenv, str[int], al.h
+## LGSYS ok
+BUILD_EXIT=2
+## Objetos ok / falhos:
+502
+1
+## Erros por arquivo:
+## Top mensagens:
+      2 error: undefined symbol: __declspec(dllimport) _alSourcef
+      2 error: undefined symbol: _ServerListUpdate
+      1 error: undefined symbol: _gcd_compute_response
+      1 error: undefined symbol: __declspec(dllimport) _alcSuspendContext
+      1 error: undefined symbol: __declspec(dllimport) _alcProcessContext
+      1 error: undefined symbol: __declspec(dllimport) _alcOpenDevice
+      1 error: undefined symbol: __declspec(dllimport) _alcMakeContextCurrent
+      1 error: undefined symbol: __declspec(dllimport) _alcIsExtensionPresent
+      1 error: undefined symbol: __declspec(dllimport) _alcGetString
+      1 error: undefined symbol: __declspec(dllimport) _alcDestroyContext
+      1 error: undefined symbol: __declspec(dllimport) _alcCreateContext
+      1 error: undefined symbol: __declspec(dllimport) _alcCloseDevice
+      1 error: undefined symbol: __declspec(dllimport) _alSourcei
+      1 error: undefined symbol: __declspec(dllimport) _alSourcefv
+      1 error: undefined symbol: __declspec(dllimport) _alSourceUnqueueBuffers
+      1 error: undefined symbol: __declspec(dllimport) _alSourceStop
+      1 error: undefined symbol: __declspec(dllimport) _alSourceQueueBuffers
+      1 error: undefined symbol: __declspec(dllimport) _alSourcePlay
+      1 error: undefined symbol: __declspec(dllimport) _alSourcePause
+      1 error: undefined symbol: __declspec(dllimport) _alListenerfv
+      1 error: undefined symbol: __declspec(dllimport) _alListenerf
+      1 error: undefined symbol: __declspec(dllimport) _alIsSource
+      1 error: undefined symbol: __declspec(dllimport) _alIsExtensionPresent
+      1 error: undefined symbol: __declspec(dllimport) _alIsBuffer
+      1 error: undefined symbol: __declspec(dllimport) _alGetString
+## Linker (simbolos):
+      1 undefined symbol: _gcd_compute_response
+      1 undefined symbol: __declspec(dllimport) _alcSuspendContext
+      1 undefined symbol: __declspec(dllimport) _alcProcessContext
+      1 undefined symbol: __declspec(dllimport) _alcOpenDevice
+      1 undefined symbol: __declspec(dllimport) _alcMakeContextCurrent
+      1 undefined symbol: __declspec(dllimport) _alcIsExtensionPresent
+      1 undefined symbol: __declspec(dllimport) _alcGetString
+      1 undefined symbol: __declspec(dllimport) _alcDestroyContext
+      1 undefined symbol: __declspec(dllimport) _alcCreateContext
+      1 undefined symbol: __declspec(dllimport) _alcCloseDevice
+      1 undefined symbol: __declspec(dllimport) _alSourcei
+      1 undefined symbol: __declspec(dllimport) _alSourcefv
+      1 undefined symbol: __declspec(dllimport) _alSourcef
+      1 undefined symbol: __declspec(dllimport) _alSourceUnqueueBuffers
+      1 undefined symbol: __declspec(dllimport) _alSourceStop
+      1 undefined symbol: __declspec(dllimport) _alSourceQueueBuffers
+      1 undefined symbol: __declspec(dllimport) _alSourcePlay
+      1 undefined symbol: __declspec(dllimport) _alSourcePause
+      1 undefined symbol: __declspec(dllimport) _alSource3f
+      1 undefined symbol: __declspec(dllimport) _alListenerfv
+      1 undefined symbol: __declspec(dllimport) _alListenerf
+      1 undefined symbol: __declspec(dllimport) _alIsSource
+      1 undefined symbol: __declspec(dllimport) _alIsExtensionPresent
+      1 undefined symbol: __declspec(dllimport) _alIsBuffer
+      1 undefined symbol: __declspec(dllimport) _alGetString
+      1 undefined symbol: __declspec(dllimport) _alGetSourceiv
+      1 undefined symbol: __declspec(dllimport) _alGetSourcei
+      1 undefined symbol: __declspec(dllimport) _alGetSourcef
+      1 undefined symbol: __declspec(dllimport) _alGetProcAddress
+      1 undefined symbol: __declspec(dllimport) _alGetListenerfv
+      1 undefined symbol: __declspec(dllimport) _alGetInteger
+      1 undefined symbol: __declspec(dllimport) _alGetError
+      1 undefined symbol: __declspec(dllimport) _alGetBufferi
+      1 undefined symbol: __declspec(dllimport) _alGenSources
+      1 undefined symbol: __declspec(dllimport) _alGenBuffers
+      1 undefined symbol: __declspec(dllimport) _alDistanceModel
+      1 undefined symbol: __declspec(dllimport) _alDeleteSources
+      1 undefined symbol: __declspec(dllimport) _alDeleteBuffers
+      1 undefined symbol: __declspec(dllimport) _alBufferi
+      1 undefined symbol: __declspec(dllimport) _alBufferData
+      1 undefined symbol: _Sys_PumpMessageLoop
+      1 undefined symbol: _Sys_LowPhysicalMemory
+      1 undefined symbol: _Sys_GLimpSafeInit
+      1 undefined symbol: _Sys_GLimpInit
+      1 undefined symbol: _ServerListUpdate2
+      1 undefined symbol: _ServerListUpdate
+      1 undefined symbol: _ServerListThink
+      1 undefined symbol: _ServerListState
+      1 undefined symbol: _ServerListNew
+      1 undefined symbol: _ServerListLANUpdate
+      1 undefined symbol: _ServerListHalt
+      1 undefined symbol: _ServerListFree
+      1 undefined symbol: _ServerListCount
+      1 undefined symbol: _ServerListClear
+      1 undefined symbol: _ServerListAuxUpdate
+      1 undefined symbol: _ServerGetStringValue
+      1 undefined symbol: _ServerGetQueryPort
+      1 undefined symbol: _ServerGetPing
+      1 undefined symbol: _ServerGetIntValue
+      1 undefined symbol: _ServerGetAddress
+      1 undefined symbol: _QAL_Shutdown
+      1 undefined symbol: _QAL_Init
+      1 undefined symbol: _IN_Shutdown
+      1 undefined symbol: _IN_SetCursorFromImage
+      1 undefined symbol: _IN_Restart
+      1 undefined symbol: _IN_IsCursorActive
+      1 undefined symbol: _IN_Init
+      1 undefined symbol: _IN_GetMousePosition
+      1 undefined symbol: _IN_FreeCursor
+      1 undefined symbol: _IN_Frame
+      1 undefined symbol: _GetGameAPI
+      1 undefined symbol: _GS_GetGameName
+      1 undefined symbol: _GS_GetGameKey
+      1 undefined symbol: _GS_GetCurrentGameName
+      1 undefined symbol: _GS_GetCurrentGameKey
+## Falhou:
+gmake[2]: *** [CMakeFiles/openmohaa.dir/build.make:2629: Release/openmohaa.exe] Error 1
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe

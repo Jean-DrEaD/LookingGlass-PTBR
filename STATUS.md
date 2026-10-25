@@ -643,3 +643,8 @@
 - 18e: cliente CONFIGUROU; 510 obj ok / 16 falhos; link nao alcancado; erros = launcher (spawn.h/cout), SDL.h em sys_local/sys_main/sys_loadlib, sys/mman.h (mumble), al.h (qal), str[uintptr_t] em cl_uimpmappicker.cpp:126
 - 18e xemu (XBE dedicado anterior): estavel, Complete 12.77 s, heartbeat 41..202
 - 18f: launcher.cmake retorna sob NXDK; includes SDL sob #ifndef NXDK; libmumblelink.c + qal.c fora; contexto em docs/probes/lote18f-ctx.log; build em lote18f-openmohaa-cliente.log; sem XBE
+
+## Lote 18g (2026-10-25 06:40)
+- 18f: 502 ok / 9 falhos; restam SDL_VERSION_ATLEAST (sys_local.h), SDL_* em sys_main/sys_main_new/sys_curl/con_log, putenv (cl_main.cpp:1247), str[uintptr_t] (mappicker 126/131), al.h via snd_openal_new.h (snd_dma_new/snd_openal_new)
+- 18g: sys_local.h bloco SDL sob !NXDK; sys/* do cliente com COMPILE_DEFINITIONS DEDICATED (sem SDL, igual dedicado); lg_putenv no lg_compat.h; currentDirectory[(int)i]; -I do al.h interno se existir (docs/probes/lote18g-patches.log)
+- Risco: sys_main.c com DEDICATED pode omitir Sys_GLimp*/IN_* do cliente -> aparecem no link (stubs no proximo lote)
