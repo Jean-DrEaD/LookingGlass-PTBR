@@ -648,3 +648,8 @@
 - 18f: 502 ok / 9 falhos; restam SDL_VERSION_ATLEAST (sys_local.h), SDL_* em sys_main/sys_main_new/sys_curl/con_log, putenv (cl_main.cpp:1247), str[uintptr_t] (mappicker 126/131), al.h via snd_openal_new.h (snd_dma_new/snd_openal_new)
 - 18g: sys_local.h bloco SDL sob !NXDK; sys/* do cliente com COMPILE_DEFINITIONS DEDICATED (sem SDL, igual dedicado); lg_putenv no lg_compat.h; currentDirectory[(int)i]; -I do al.h interno se existir (docs/probes/lote18g-patches.log)
 - Risco: sys_main.c com DEDICATED pode omitir Sys_GLimp*/IN_* do cliente -> aparecem no link (stubs no proximo lote)
+
+## Lote 18h (2026-10-25 07:55)
+- 18g: MARCO - cliente COMPILA inteiro (502 obj, 0 falhos); so o link do openmohaa.exe falha: al*/alc* (dllimport), QAL_*, ServerList*/ServerGet*/gcd_/GS_* (GameSpy UI), IN_*, Sys_GLimp*/PumpMessageLoop/LowPhysicalMemory, GetGameAPI
+- 18h: code/renderernull/lg_client_stubs.c (74 stubs, retorno 0/NULL/""); AL_LIBTYPE_STATIC no cliente; game estatico no openmohaa (CMakeLists.txt)
+- 18h: se linkar -> xbe-out\cliente.xbe (ISO do dedicado intacta); duplicatas/cxbe em docs/probes/lote18h-extras.log

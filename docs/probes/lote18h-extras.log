@@ -1,0 +1,53 @@
+# Lote 18h - extras
+## duplicatas: 0
+## openmohaa.exe 5415936 bytes
+cxbe: Exe::Exe: Opening Exe file...OK
+cxbe: Exe::Exe: Reading DOS stub...Found, Ignoring...OK
+cxbe: Exe::Exe: Reading PE header...OK
+cxbe: Exe::Exe: Reading Optional Header...OK
+cxbe: Exe::Exe: Reading Section Headers...
+cxbe: Exe::Exe: Reading Section Header 0x0000...OK 0
+cxbe: Exe::Exe: Reading Section Header 0x0001...OK 1
+cxbe: Exe::Exe: Reading Section Header 0x0002...OK 2
+cxbe: Exe::Exe: Reading Section Header 0x0003...OK 3
+cxbe: Exe::Exe: Reading Sections...
+cxbe: Exe::Exe: Reading Section 0x0000...OK
+cxbe: Exe::Exe: Reading Section 0x0001...OK
+cxbe: Exe::Exe: Reading Section 0x0002...OK
+cxbe: Exe::Exe: Reading Section 0x0003...OK
+cxbe: Exe::Exe: Exe build-xbox/Release/openmohaa.exe was successfully opened.
+cxbe: Xbe::Xbe: Pass 1 (Simple Pass)...OK
+cxbe: Xbe::Xbe: Pass 2 (Calculating Requirements)...OK
+cxbe: Xbe::Xbe: Pass 3 (Generating Xbe)...
+cxbe: Xbe::Xbe: Encoding Retail Entry Point...OK (0xA8B4B03B)
+cxbe: Xbe::Xbe: Relocating TLS directory...OK (0x0049A484)
+cxbe: Xbe::Xbe: Found Extra Header Bytes...OK
+cxbe: Xbe::Xbe: Generating Section Headers...
+cxbe: Xbe::Xbe: Generating Section Header 0000...OK
+cxbe: Xbe::Xbe: Generating Section Header 0001...OK
+cxbe: Xbe::Xbe: Generating Section Header 0002...OK
+cxbe: Xbe::Xbe: Generating Section Header 0003...OK
+cxbe: Xbe::Xbe: Generating Logo Bitmap...OK (default)
+cxbe: Xbe::Xbe: Generating Sections...
+cxbe: Xbe::Xbe: Generating Section 0000...OK
+cxbe: Xbe::Xbe: Generating Section 0001...OK
+cxbe: Xbe::Xbe: Generating Section 0002...OK
+cxbe: Xbe::Xbe: Generating Section 0003...OK
+cxbe: Xbe::Xbe: Pass 4 (Finalizing)...
+cxbe: Xbe::Xbe: Relocating to Base 0x00010000...OK (0 Fixups)
+cxbe: Xbe::Export: Writing Xbe file...OK
+cxbe: Xbe::Export: Writing Image Header...OK
+cxbe: Xbe::Export: Writing Image Header Extra Bytes...OK
+cxbe: Xbe::Export: Writing Certificate...OK
+cxbe: Xbe::Export: Writing Section Headers...
+cxbe: Xbe::Export: Writing Section Header 0x0000...OK
+cxbe: Xbe::Export: Writing Section Header 0x0001...OK
+cxbe: Xbe::Export: Writing Section Header 0x0002...OK
+cxbe: Xbe::Export: Writing Section Header 0x0003...OK
+cxbe: Xbe::Export: Writing Sections...
+cxbe: Xbe::Export: Writing Section 0x0000 (.text)...OK
+cxbe: Xbe::Export: Writing Section 0x0001 (.rdata)...OK
+cxbe: Xbe::Export: Writing Section 0x0002 (.data)...OK
+cxbe: Xbe::Export: Writing Section 0x0003 (.tls)...OK
+cxbe: Xbe::Export: Writing Zero Padding...OK
+## cliente.xbe 5427200 bytes
