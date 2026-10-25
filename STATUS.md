@@ -671,3 +671,9 @@
 - 18j: 'ERROR: Couldn't load font Verdana' -> Unloading ClientGame x3 -> lixo na tela -> REBOOT (volta ao 'OpenMoHAA Xbox boot')
 - 18i 'igual ao dedicado' = xemu com ISO errada; 18k descartado (nao rodado)
 - 18l: coleta origem do erro de fonte, fonts/ nos pk3, 'verdana' em urc/cfg, caminho Sys_Error->reboot (docs/probes/lote18l-font.log), sem build
+
+## Lote 18m (2026-10-25 17:04)
+- 18l: verdana-*.ritualfont EXISTEM nos pk3; erro = stub LoadFont do renderer nulo (NULL) -> uifont.cpp:270 ERR_DROP -> reboot
+- 18m 1a: regex '.LoadFont =' nao casou; 2a: fontheader_s sem height/aspectRatio (so no fontheader_sgl_s); 3a: atribuicao inserida no return de um stub int (IndexOf GetRefAPI pegou prototipo)
+- 18m 4a: lg_null_LoadFont (fontheader_t estatico, so name, cache 16) ligado na variavel refexport_t real (designated ou antes do return dela)
+- Pendente: Sys_PlatformExit vazio / ERR_DROP->reboot apaga a mensagem

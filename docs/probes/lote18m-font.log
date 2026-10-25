@@ -1,0 +1,8 @@
+# Lote 18m (4a) - LoadFont na variavel refexport_t
+linha 56: NULL->LoadFont = lg_null_LoadFont; /* LG 18m */
+linha 56 removida
+modo: lgNullRe. (antes de 'return &lgNullRe;')
+agora 9: static fontheader_t *lg_null_LoadFont(const char *name) {
+agora 76: lgNullRe.LoadFont = lg_null_LoadFont; /* LG 18m */
+diff: 12	1	code/renderernull/tr_null.c
+XBE 5427200 / ISO 667811840
