@@ -677,3 +677,8 @@
 - 18m 1a: regex '.LoadFont =' nao casou; 2a: fontheader_s sem height/aspectRatio (so no fontheader_sgl_s); 3a: atribuicao inserida no return de um stub int (IndexOf GetRefAPI pegou prototipo)
 - 18m 4a: lg_null_LoadFont (fontheader_t estatico, so name, cache 16) ligado na variavel refexport_t real (designated ou antes do return dela)
 - Pendente: Sys_PlatformExit vazio / ERR_DROP->reboot apaga a mensagem
+
+## Lote 18n (2026-10-26 19:32)
+- 18m xemu: fonte Verdana OK (erro sumiu); novo: 'Called FadeSound with: 0.000000' -> 'ERRO: Error during initialization' (Com_Error dentro do setjmp do Com_Init, msg perdida)
+- 18m: rerun do 4a quebrou o ';' da linha 76 -> restaurado via git checkout (regra: scripts de patch idempotentes)
+- 18n: Sys_Error de init imprime com_errorMessage (+1 -1)

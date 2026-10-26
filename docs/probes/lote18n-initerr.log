@@ -1,0 +1,4 @@
+# Lote 18n - mensagem real do Error during initialization
+agora 1729: Sys_Error("Error during initialization: %s", com_errorMessage);
+diff: 1	1	code/qcommon/common.c
+XBE 5427200 / ISO 667811840
