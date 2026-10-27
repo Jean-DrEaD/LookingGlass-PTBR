@@ -1,0 +1,213 @@
+# Lote 18x - coleta statefile (mike_Legs.st)
+## .st nos pk3
+pak0.pk3: ai/cardguard_club.st (3077)
+pak0.pk3: ai/cardguard_diamond.st (5444)
+pak0.pk3: ai/cardguard_heart.st (3626)
+pak0.pk3: ai/cardguard_spade.st (4212)
+pak0.pk3: ai/c_antlion.st (3465)
+pak0.pk3: ai/c_armyant.st (4683)
+pak0.pk3: ai/c_armyantcorp.st (4050)
+pak0.pk3: ai/c_bloodrose.st (2766)
+pak0.pk3: ai/c_boojum.st (2170)
+pak0.pk3: ai/c_centipede.st (9798)
+pak0.pk3: ai/c_cheshire.st (1125)
+pak0.pk3: ai/c_chess_bishop.st (2325)
+pak0.pk3: ai/c_chess_king.st (2568)
+pak0.pk3: ai/c_chess_knight.st (2823)
+pak0.pk3: ai/c_chess_pawn.st (1701)
+pak0.pk3: ai/c_chess_rook.st (3471)
+pak0.pk3: ai/c_clockwork.st (3051)
+pak0.pk3: ai/c_demonking.st (3751)
+pak0.pk3: ai/c_demonlesser.st (1898)
+pak0.pk3: ai/c_demon_normal.st (2262)
+pak0.pk3: ai/c_duchess.st (2905)
+pak0.pk3: ai/c_evilmushroom.st (1918)
+pak0.pk3: ai/c_fireimp.st (1540)
+pak0.pk3: ai/c_fishfootman.st (2022)
+pak0.pk3: ai/c_fungi.st (1044)
+pak0.pk3: ai/c_gnomeold.st (791)
+pak0.pk3: ai/c_gryphon.st (853)
+pak0.pk3: ai/c_insanechild.st (622)
+pak0.pk3: ai/c_insanechild_chase.st (2791)
+pak0.pk3: ai/c_jabberspawn.st (3820)
+pak0.pk3: ai/c_jabberwock.st (6374)
+pak0.pk3: ai/c_ladybug.st (3988)
+pak0.pk3: ai/c_larva.st (2418)
+pak0.pk3: ai/c_madhatter.st (4355)
+pak0.pk3: ai/c_magmamen.st (3612)
+pak0.pk3: ai/c_mockturtle.st (786)
+pak0.pk3: ai/c_phantasm.st (3148)
+pak0.pk3: ai/c_queen1.st (4120)
+pak0.pk3: ai/c_queen1_bigtent.st (755)
+pak0.pk3: ai/c_queen2.st (6297)
+pak0.pk3: ai/c_queen2_halo.st (568)
+pak0.pk3: ai/c_queen2_tent1.st (1067)
+pak0.pk3: ai/c_queen2_tent2.st (3262)
+pak0.pk3: ai/c_queen2_tent3.st (674)
+pak0.pk3: ai/c_queen2_tent4.st (1063)
+pak0.pk3: ai/c_snark.st (1384)
+pak0.pk3: ai/c_snark_biteonly.st (991)
+pak0.pk3: ai/c_spider.st (3472)
+pak0.pk3: ai/c_torchgnome.st (714)
+pak0.pk3: ai/c_tweedle_dee.st (4513)
+pak0.pk3: ai/c_tweedle_dum.st (4770)
+pak0.pk3: ai/c_whiterabbit.st (1777)
+pak0.pk3: ai/fx_icewall.st (554)
+pak0.pk3: ai/grasshoppertea.st (1163)
+pak0.pk3: ai/reed.st (491)
+pak0.pk3: ai/root.st (301)
+pak0.pk3: ai/vine.st (301)
+pak0.pk3: ai/walkrock.st (998)
+pak0.pk3: global/alice_legs.st (8028)
+pak0.pk3: global/alice_torso.st (20364)
+pak0.pk3: global/jay_legs.st (7843)
+pak0.pk3: global/jay_torso.st (21123)
+pak0.pk3: global/joe_legs.st (6619)
+pak0.pk3: global/joe_torso.st (17382)
+pak0.pk3: global/old/alice-new_legs.st (3157)
+pak0.pk3: global/old/alice-new_torso.st (54)
+pak0.pk3: global/old/alice-strafe_legs.st (6611)
+pak0.pk3: global/old/alice-strafe_torso.st (17303)
+pak0.pk3: global/old/alice.st (2804)
+pak0.pk3: global/old/aliceold_legs.st (3355)
+pak0.pk3: global/old/aliceold_torso.st (15120)
+pak0.pk3: global/old/alicetest_legs.st (4265)
+pak0.pk3: global/old/alicetest_torso.st (16110)
+pak0.pk3: global/old/alice_legs.st (2020)
+pak0.pk3: global/old/alice_torso.st (5834)
+pak0.pk3: global/old/brandon_legs.st (3355)
+pak0.pk3: global/old/brandon_torso.st (11620)
+pak0.pk3: global/old/copy of alice-new_legs.st (3163)
+## amostra pak0.pk3:global/alice_legs.st
+  state STAND
+  {
+  	legs
+  	{
+  		ready_bigwep : IS_WEAPON_ACTIVE "righthand" "eyestaff"
+  		ready_bigwep : IS_WEAPON_ACTIVE "righthand" "icewand"
+  		ready_bigwep : IS_WEAPON_ACTIVE "righthand" "blunderbuss"
+  		ready : default
+  	}
+  
+  	states
+  	{
+  		CHESS_PUZZLE	: CHESSPUZZLE
+  		SLIDING		: ENV_SLIDING
+  		THERMAL		: ENV_THERMAL
+  
+  		RUN_JUMP_FALL	: FALLING !ALTITUDE "31"
+  		SWIM_IDLE		: IN_WATER "1"
+  
+  		RUN_FORWARD		: FORWARD ONGROUND RUN
+  		RUN_BACKWARD	: BACKWARD ONGROUND RUN
+  
+  		WALK_FORWARD	: FORWARD ONGROUND !CAN_FALL
+  		WALK_BACKWARD	: BACKWARD ONGROUND
+  
+  		RUN_FORWARD		: STRAFE_LEFT RUN ONGROUND
+  		RUN_FORWARD		: STRAFE_RIGHT RUN ONGROUND
+  
+  		WALK_FORWARD	: STRAFE_LEFT ONGROUND !CAN_FALL
+  		WALK_FORWARD	: STRAFE_RIGHT ONGROUND !CAN_FALL
+  
+  		START_JUMP		: ONGROUND +JUMP
+  
+  		STAND_2IDLE		: STATETIME_LEGS "25" !ATTACKRIGHT !ATTACK_ALTERNATE
+  
+  		STAND_RESET		: +HAS_WEAPON
+  		STAND_RESET		: -HAS_WEAPON
+  		STAND_RESET		: +USE
+  		STAND_RESET		: -USE
+  		STAND_RESET		: -ATTACKRIGHT
+  		STAND_RESET		: -ATTACK_ALTERNATE
+  	}
+  }
+  
+  state CHESS_PUZZLE
+  {
+  	legs
+  	{
+  		idle_base_01 : default
+  	}
+## amostra pak0.pk3:global/alice_torso.st
+  state STAND
+  {
+     camera behind
+     movetype legs
+  
+  	torso
+  	{
+  		burn	: ON_FIRE
+  	}
+  
+  	states
+  	{
+  		FROZEN		: FROZEN
+  		HELD			: IS_GRABBED
+  		CHESS_PUZZLE	: LEGS "CHESS_PUZZLE"
+  
+  		KILLED		: KILLED
+  		PAIN			: PAIN
+  
+  		LOOKINGGLASS		: LOOKINGGLASS
+  		GRASSHOPPER		: TEA
+  		RAGE_START		: RAGE
+  
+  		RAISE_WEAPON	: NEW_WEAPON
+  		PUTAWAY_RIGHT	: PUTAWAYRIGHT
+  
+  		OUT_OF_MANA		: ATTACKRIGHT !IS_CURRENT_WEAPON_MANA_OK "primary"
+  		OUT_OF_MANA		: ATTACK_ALTERNATE !IS_CURRENT_WEAPON_MANA_OK "alternate"
+  
+  		ATTACK_START		: ATTACKRIGHT
+  		ATTACK_START_ALTERNATE  : ATTACK_ALTERNATE
+  
+  		CLIMB_32		: ONGROUND !IN_WATER "2" +FORWARD !USE LEDGE_HEIGHT "31" "36"
+  		CLIMB_48		: ONGROUND !IN_WATER "2" +FORWARD !USE LEDGE_HEIGHT "40" "52"
+  		CLIMB_64		: ONGROUND !IN_WATER "2" +FORWARD !USE LEDGE_HEIGHT "60" "68"
+  
+  		ROPE_HANG         : !ONGROUND TOUCHED_ROPE
+  		ROPE_USE		: ONGROUND USE TOUCHED_ROPE
+  
+  	      HANG              : ONGROUND !IN_WATER "2" +FORWARD USE !CROUCH !BACKWARD !STRAFE_RIGHT !STRAFE_LEFT CAN_GRAB_LEDGE CAN_HANG
+  	      HANG              : !ONGROUND !IN_WATER "2" CAN_GRAB_LEDGE CAN_HANG
+  
+  		USE			: USE AT_DOOR		
+  		USE_USEOBJECT	: USE AT_USEOBJECT
+  
+  		IDLE_CAMERA		: LEGS "STAND_IDLE_PLAY" !VANGLECHANGE
+  
+  		SWIM 			: IN_WATER "2"
+  		STAND_RESET		: -ON_FIRE
+  	}
+## codigo: g_statefile / _Legs.st / _Torso.st / mike
+code\fgame\gamecvars.cpp:120: cvar_t *g_statefile;
+code\fgame\gamecvars.cpp:449: g_statefile   = gi.Cvar_Get("g_statefile", "global/mike", 0);
+code\fgame\gamecvars.h:125: extern cvar_t *g_statefile;
+code\fgame\player.cpp:5069: GetStatemap(str(g_statefile->string) + "_Legs.st", (Condition<Class> *)m_conditions, &legs_conditionals, false);
+code\fgame\player.cpp:5071: str(g_statefile->string) + "_Torso.st", (Condition<Class> *)m_conditions, &torso_conditionals, false
+code\fgame\player.cpp:12612: ev->AddString(g_statefile->string);
+code\fgame\player.h:1204: str(g_statefile->string) + "_Legs.st", (Condition<Class> *)m_conditions, &legs_conditionals, false
+code\fgame\player.h:1207: str(g_statefile->string) + "_Torso.st", (Condition<Class> *)m_conditions, &torso_conditionals, false
+## player.cpp @ 5069
+5064:         delete cond;
+5065:     }
+5066:     torso_conditionals.FreeObjectList();
+5067: 
+5068:     statemap_Legs =
+5069:         GetStatemap(str(g_statefile->string) + "_Legs.st", (Condition<Class> *)m_conditions, &legs_conditionals, false);
+5070:     statemap_Torso = GetStatemap(
+5071:         str(g_statefile->string) + "_Torso.st", (Condition<Class> *)m_conditions, &torso_conditionals, false
+5072:     );
+5073: 
+## player.cpp @ 5070
+5065:     }
+5066:     torso_conditionals.FreeObjectList();
+5067: 
+5068:     statemap_Legs =
+5069:         GetStatemap(str(g_statefile->string) + "_Legs.st", (Condition<Class> *)m_conditions, &legs_conditionals, false);
+5070:     statemap_Torso = GetStatemap(
+5071:         str(g_statefile->string) + "_Torso.st", (Condition<Class> *)m_conditions, &torso_conditionals, false
+5072:     );
+5073: 
+5074:     movecontrol = MOVECONTROL_LEGS;

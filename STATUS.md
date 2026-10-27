@@ -722,3 +722,8 @@
 - 18v: 'register sound ... soundsystem hasn't started' nao fatal (sem OpenAL); EAlogo ausente (intro)
 - 18v: 'ded=0 cl=1' impresso TODO frame -> esconde o pos-map e derruba fps
 - 18w: linha ded/cl one-shot em code/qcommon/common.c (+1 -1)
+
+## Lote 18x (2026-10-27 12:18)
+- 18w xemu: ded/cl one-shot OK; cliente ocioso ~90 fps (renderer nulo); auto map -> Server Init -> InitGame -> FAKK repack -> cls Item_* -> script (cmd?e/nul/cev) OK
+- 18w: FATAL '::LoadFile : Couldn't load global/mike_Legs.st' -> Server crashed: Player MOHAA exige statefile mike_*; Alice tem statefiles proprios
+- 18x: coleta .st nos pk3 + g_statefile/GetStatemap (docs/probes/lote18x-statefile.log), sem build
