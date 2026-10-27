@@ -1,0 +1,64 @@
+# Lote 18o - origem do global/inventory.txt
+## refs inventory.txt / LoadFile : Couldn
+code\client\cl_ui.cpp:5262: ui_inventoryfile       = Cvar_Get("ui_inventoryfile", "global/inventory.txt", 0);
+## ctx code\client\cl_ui.cpp:5262
+5250:     ui_gmbox           = Cvar_Get("ui_gmbox", "1", 1);
+5251:     ui_consoleposition = Cvar_Get("ui_consoleposition", "", 1);
+5252:     ui_console         = Cvar_Get("ui_console", "0", 1);
+5253:     ui_crosshair       = Cvar_Get("ui_crosshair", "1", 1);
+5254:     ui_weaponsbar      = Cvar_Get("ui_weaponsbar", "1", 1);
+5255:     ui_weaponsbartime  = Cvar_Get("ui_weaponsbartime", "2500", 1);
+5256:     ui_itemsbar        = Cvar_Get("ui_itemsbar", "0", 1);
+5257:     sound_overlay      = Cvar_Get("soundoverlay", "0", 0);
+5258:     ui_debugload       = Cvar_Get("ui_debugload", "0", 0);
+5259:     Cvar_Get("ui_signshader", "", 0);
+5260:     ui_compass             = Cvar_Get("ui_compass", "1", 0);
+5261:     ui_newvidmode          = Cvar_Get("ui_newvidmode", "-1", 0);
+5262:     ui_inventoryfile       = Cvar_Get("ui_inventoryfile", "global/inventory.txt", 0);
+5263:     ui_drawcoords          = Cvar_Get("ui_drawcoords", "0", 0);
+5264:     ui_health_start        = Cvar_Get("ui_health_start", "0", 0);
+5265:     ui_health_end          = Cvar_Get("ui_health_end", "0", 0);
+5266:     ui_GunneryEvaluation   = Cvar_Get("ui_GunneryEvaluation", "0", 0);
+5267:     ui_GroinShots          = Cvar_Get("ui_GroinShots", "0", 0);
+5268:     ui_RightArmShots       = Cvar_Get("ui_RightArmShots", "0", 0);
+5269:     ui_LeftArmShots        = Cvar_Get("ui_LeftArmShots", "0", 0);
+5270:     ui_RightLegShots       = Cvar_Get("ui_RightLegShots", "0", 0);
+5271:     ui_LeftLegShots        = Cvar_Get("ui_LeftLegShots", "0", 0);
+5272:     ui_TorsoShots          = Cvar_Get("ui_TorsoShots", "0", 0);
+5273:     ui_HeadShots           = Cvar_Get("ui_HeadShots", "0", 0);
+5274:     ui_NumEnemysKilled     = Cvar_Get("ui_NumEnemysKilled", "0", 0);
+## chamadores CL_LoadInventory / LoadInventory
+code\client\cl_inv.cpp:553: bool CL_LoadInventory(const char *filename, inventory_t *inv)
+code\client\cl_inv.h:214: bool              CL_LoadInventory(const char *filename, inventory_t *inv);
+code\client\cl_ui.cpp:4163: CL_LoadInventory(ui_inventoryfile->string, &client_inv);
+## global/ nos pk3 (iso-stage\main)
+pak0.pk3: global/ (0)
+pak0.pk3: global/alice_legs.st (8028)
+pak0.pk3: global/alice_torso.st (20364)
+pak0.pk3: global/emitters.scr (0)
+pak0.pk3: global/giveall.scr (498)
+pak0.pk3: global/inventory.scr (0)
+pak0.pk3: global/jay_legs.st (7843)
+pak0.pk3: global/jay_torso.st (21123)
+pak0.pk3: global/joe_legs.st (6619)
+pak0.pk3: global/joe_torso.st (17382)
+pak0.pk3: global/old/ (0)
+pak0.pk3: global/old/#alice_torso.st# (19427)
+pak0.pk3: global/old/#joe_torso.st# (16239)
+pak0.pk3: global/old/alice-new_legs.st (3157)
+pak0.pk3: global/old/alice-new_torso.st (54)
+pak0.pk3: global/old/alice-strafe_legs.st (6611)
+pak0.pk3: global/old/alice-strafe_torso.st (17303)
+pak0.pk3: global/old/alice.st (2804)
+pak0.pk3: global/old/aliceold_legs.st (3355)
+pak0.pk3: global/old/aliceold_torso.st (15120)
+pak0.pk3: global/old/alicetest_legs.st (4265)
+pak0.pk3: global/old/alicetest_torso.st (16110)
+pak0.pk3: global/old/alice_legs.st (2020)
+pak0.pk3: global/old/alice_lowmem.zip (54244)
+pak0.pk3: global/old/alice_states_102400.zip (106353)
+pak0.pk3: global/old/alice_torso.st (5834)
+pak0.pk3: global/old/brandon_legs.st (3355)
+pak0.pk3: global/old/brandon_torso.st (11620)
+pak0.pk3: global/old/copy of alice-new_legs.st (3163)
+pak0.pk3: global/old/old-inventory.scr (1222)
