@@ -1,0 +1,202 @@
+# Lote 18q2 - funcao que chama UI_LoadInventory_f (5315)
+## CL_InitializeUI linhas 5247..5495; chamada em 5315
+5300:     ui_legalscreen_fadeout = Cvar_Get("ui_legalscreen_fadeout", "1", 0);
+5301:     ui_legalscreen_stay    = Cvar_Get("ui_legalscreen_stay", "3", 0);
+5302:     cl_greenfps            = Cvar_Get("cl_greenfps", "0", 1);
+5303:     cl_playintro           = Cvar_Get("cl_playintro", "1", 0);
+5304:     cl_movieaudio          = Cvar_Get("cl_movieaudio", "1", 0);
+5305:     Cvar_Get("ui_startmap", "", 1);
+5306:     Cvar_Get("dlg_badsave", "This save game is invalid", 0);
+5307: 
+5308:     Cvar_Set("cg_hud", ui_hud ? "1" : "0");
+5309: 
+5310:     CL_FillUIDef();
+5311:     CL_FillUIImports();
+5312:     UI_InitExports();
+5313:     uie.Init();
+5314: 
+5315:     UI_LoadInventory_f();
+5316:     UI_CreateScoreboard();
+5317: 
+5318:     // New since mohta
+5319:     // Version number
+5320:     Cvar_Set("game_version", va("v%s", com_target_shortversion->string));
+5321: 
+5322:     // Add all commands
+5323:     Cmd_AddCommand("pushmenu", UI_PushMenu_f);
+5324:     Cmd_AddCommand("pushmenu_sp", UI_PushMenuSP_f);
+5325:     Cmd_AddCommand("pushmenu_dm", UI_PushMenuMP_f);
+5326:     Cmd_AddCommand("forcemenu", UI_ForceMenu_f);
+5327:     Cmd_AddCommand("popmenu", UI_PopMenu_f);
+5328:     Cmd_AddCommand("showmenu", UI_ShowMenu_f);
+5329:     Cmd_AddCommand("hidemenu", UI_HideMenu_f);
+5330:     Cmd_AddCommand("widgetcommand", UI_WidgetCommand_f);
+5331:     Cmd_AddCommand("globalwidgetcommand", UI_GlobalWidgetCommand_f);
+5332:     Cmd_AddCommand("listmenus", UI_ListMenus_f);
+5333:     Cmd_AddCommand("togglemenu", UI_ToggleMenu_f);
+5334:     Cmd_AddCommand("loadmenu", UI_LoadMenu_f);
+5335:     Cmd_AddCommand("maplist", UI_MapList_f);
+5336:     Cmd_AddCommand("dmmapselect", UI_DMMapSelect_f);
+5337:     Cmd_AddCommand("ui_startdmmap", UI_StartDMMap_f);
+5338:     Cmd_AddCommand("viewspawnlist", UI_ViewSpawnList_f);
+5339:     Cmd_AddCommand("lod_spawnlist", UI_LODSpawnList_f);
+5340:     Cmd_AddCommand("soundpicker", UI_SoundPicker_f);
+5341:     Cmd_AddCommand("notepad", UI_Notepad_f);
+5342:     Cmd_AddCommand("editscript", UI_EditScript_f);
+5343:     Cmd_AddCommand("editshader", UI_EditShader_f);
+5344:     Cmd_AddCommand("editspecificshader", UI_EditSpecificShader_f);
+5345:     Cmd_AddCommand("inv_restart", UI_LoadInventory_f);
+5346:     Cmd_AddCommand("ui_showmouse", UI_ShowMouse_f);
+5347:     Cmd_AddCommand("ui_hidemouse", UI_HideMouse_f);
+5348:     Cmd_AddCommand("ui_saveconsolepos", SaveConsoleRectangle);
+5349:     Cmd_AddCommand("ui_loadconsolepos", LoadConsoleRectangle);
+5350:     Cmd_AddCommand("ui_testlist", UI_TestListCtrl_f);
+5351:     Cmd_AddCommand("clear", UI_ClearConsole_f);
+5352:     Cmd_AddCommand("ui_hud", UI_Hud_f);
+5353:     Cmd_AddCommand("ui_resetcvars", UI_ResetCvars);
+5354:     Cmd_AddCommand("ui_checkrestart", UI_CheckRestart);
+5355:     Cmd_AddCommand("centerprint", UI_CenterPrint_f);
+5356:     Cmd_AddCommand("locationprint", UI_LocationPrint_f);
+5357:     Cmd_AddCommand("ui_addhud", UI_AddHud_f);
+5358:     Cmd_AddCommand("ui_removehud", UI_RemoveHud_f);
+5359:     Cmd_AddCommand("startserver", UI_StartServer_f);
+5360:     Cmd_AddCommand("finishloadingscreen", UI_FinishLoadingScreen_f);
+5361:     Cmd_AddCommand("playermodel", UI_PlayerModel_f);
+5362:     Cmd_AddCommand("ui_applyplayermodel", UI_ApplyPlayerModel_f);
+5363:     Cmd_AddCommand("ui_getplayermodel", UI_GetPlayerModel_f);
+5364:     Cmd_AddCommand("+statistics", UI_ShowStatistics_f);
+5365:     Cmd_AddCommand("-statistics", UI_HideStatistics_f);
+5366:     Cmd_AddCommand("setreturnmenu", UI_SetReturnMenuToCurrent);
+5367:     Cmd_AddCommand("gotoreturnmenu", UI_PushReturnMenu_f);
+5368:     Cmd_AddCommand("salesscreen", UI_SalesScreen_f);
+5369:     Cmd_AddCommand("launchgamespy", UI_LaunchGameSpy_f);
+5370: 
+5371:     if (developer->integer) {
+5372:         UColor bgColor;
+5373: 
+5374:         Cmd_AddCommand("devcon", UI_ToggleDeveloperConsole_f);
+5375: 
+5376:         developer_console = new UIFloatingConsole;
+5377: 
+5378:         bgColor = UWindowColor;
+5379: 
+5380:         developer_console->Create(NULL, getDefaultConsoleRectangle(), "Developer Console", bgColor, UHudColor);
+5381:         developer_console->setConsoleHandler(ConsoleCommandHandler);
+5382:         developer_console->setConsoleBackground(UBlack, 0.800000011920929);
+5383:         developer_console->setShow(false);
+5384:         developer_console->Connect(&s_consolehider, UIFloatingWindow::W_ClosePressed, UIFloatingWindow::W_ClosePressed);
+5385:         developer_console->Connect(&s_consolehider, W_Destroyed, W_Destroyed);
+5386:     }
+5387: 
+5388:     // Create the 3D view
+5389:     view3d = new View3D;
+5390:     view3d->setAlwaysOnBottom(true);
+5391:     view3d->InitFrame(NULL, 0, 0, uid.vidWidth, uid.vidHeight, -1, "facfont-20");
+5392:     view3d->setName("view3d");
+5393:     view3d->InitSubtitle();
+5394: 
+5395:     memset(&intro_stage, 0, sizeof(intro_stage));
+5396: 
+5397:     // Register the loading material
+5398:     ui_static_materials.loading = uWinMan.RegisterShader("textures/menu/loading");
+5399: 
+5400:     if (ui_console->integer || developer->integer > 0) {
+5401:         UColor bgColor = UWindowColor;
+5402: 
+5403:         // Create the console
+5404:         fakk_console = getNewConsole();
+5405: 
+5406:         bgColor = UColor(0.0, 0.5, 1.0, 1.0);
+5407: 
+5408:         // Create the mini console
+5409:         mini_console = new FakkMiniconsole;
+5410:         mini_console->Create(UISize2D(500, 100), UWhite, bgColor, 0.2f);
+5411:         mini_console->setAlwaysOnBottom(true);
+5412:         mini_console->setBorderStyle(border_none);
+5413:     }
+5414: 
+5415:     // Create the dm console
+5416:     if (!dm_console) {
+5417:         dm_console = getNewDMConsole();
+5418:     }
+5419: 
+5420:     // Create the game message box
+5421:     if (ui_gmbox->integer && !gmbox) {
+5422:         gmbox = new UIGMBox;
+5423:         gmbox->Create(getDefaultGMBoxRectangle(), UHudColor, UHudColor, 0.0);
+5424:         gmbox->setAlwaysOnBottom(true);
+5425:         gmbox->setBorderStyle(border_none);
+5426:     }
+5427: 
+5428:     // Create the deathmatch message box
+5429:     if (!dmbox) {
+5430:         dmbox = new UIDMBox;
+5431:         dmbox->Create(getDefaultDMBoxRectangle(), UHudColor, UHudColor, 0.0);
+5432:         dmbox->setAlwaysOnBottom(true);
+5433:         dmbox->setBorderStyle(border_outline);
+5434:     }
+5435: 
+5436:     // Load all urc files
+5437:     filenames = FS_ListFiles("ui/", "urc", qfalse, &nfiles);
+5438: 
+5439:     for (i = 0; i < nfiles; i++) {
+5440:         char szFilename[MAX_QPATH];
+5441: 
+5442:         Com_sprintf(szFilename, sizeof(szFilename), "ui/%s", filenames[i]);
+5443:         new UILayout(szFilename);
+5444:     }
+5445: 
+5446:     FS_FreeFileList(filenames);
+5447: 
+5448:     uWinMan.CreateMenus();
+5449: 
+5450:     // find the crosshair
+5451:     // Removed in 2.0
+5452:     //  Crosshair is now handled by the cgame module
+5453:     //crosshairhud = menuManager.FindMenu("crosshair");
+5454:     // find weapons hud
+5455:     hud_weapons = menuManager.FindMenu("hud_weapons");
+5456:     // find items hud
+5457:     hud_items = menuManager.FindMenu("hud_items");
+5458:     // find the health hud
+5459:     hud_health = menuManager.FindMenu("hud_health");
+5460:     // find the compass hud
+5461:     hud_compass = menuManager.FindMenu("hud_compass");
+5462:     // find the boss health hud
+5463:     hud_boss = menuManager.FindMenu("hud_boss");
+5464:     // find the stats screen
+5465:     missionLog = menuManager.FindMenu("StatsScreen");
+5466:     // find the connection menu
+5467:     ui_pConnectingMenu = menuManager.FindMenu("connecting");
+5468: 
+5469:     if (crosshairhud) {
+5470:         crosshairhud->ShowMenu(NULL);
+5471:     }
+5472:     if (hud_health) {
+5473:         hud_health->ShowMenu(NULL);
+5474:     }
+5475:     if (hud_compass) {
+5476:         hud_compass->ShowMenu(NULL);
+5477:     }
+5478: 
+5479:     // find the main menu
+5480:     mainmenu = menuManager.FindMenu("main");
+5481: 
+5482:     IN_MouseOn();
+5483: 
+5484:     // realign menus
+5485:     menuManager.RealignMenus();
+5486: 
+5487:     // clear input
+5488:     CL_ClearButtons();
+5489: 
+5490:     cls.uiStarted = qtrue;
+5491: 
+5492:     if (!com_dedicated->integer) {
+5493:         CL_TryStartIntro();
+5494:     }
+5495: }
+## chamadores de CL_InitializeUI
+code\client\cl_main.cpp:1635: //CL_InitializeUI();
+code\client\cl_main.cpp:2946: CL_InitializeUI();
+code\client\cl_ui.cpp:5247: void CL_InitializeUI(void)
