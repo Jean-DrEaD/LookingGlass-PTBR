@@ -732,3 +732,9 @@
 - 18x: pak0 tem global/alice_legs.st (8028) + alice_torso.st (20364) (+ jay/joe/old); g_statefile default 'global/mike' (gamecvars.cpp:449) -> player.cpp:5069-5072
 - 18x: .st do Alice usam condicoes FAKK/Alice (CHESSPUZZLE, ENV_SLIDING, IS_WEAPON_ACTIVE, LOOKINGGLASS, TEA, RAGE...) -> risco de erro no GetStatemap
 - 18y: g_statefile = global/alice sob NXDK (+4 -0); erros do statemap.cpp no log (alvo 18z)
+
+## Lote 18z (2026-10-27 13:40)
+- 18y xemu: alice_Legs.st CARREGADO (mike sumiu); fatal 'global/alice_Legs.st: Unknown condition CHESSPUZZLE on line 13' -> Server crashed
+- 18y: coleta statemap.cpp vazia (arquivo fora de code\fgame)
+- 18z: origem Unknown condition + tabela m_conditions x condicoes dos .st Alice (faltam=55) em docs/probes/lote18z-condicoes.log, sem build
+- Plano 18z2: condicao desconhecida -> aviso 'LG: st? X' + condicao sempre falsa sob NXDK

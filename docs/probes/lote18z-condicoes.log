@@ -1,0 +1,93 @@
+# Lote 18z - coleta condicoes statemap
+## origem Unknown condition
+### code\fgame\characterstate.cpp:140
+125:             start          = 0;
+126:         }
+127: 
+128:         if (token.length() <= start) {
+129:             gi.Error(
+130:                 ERR_DROP, "%s: Illegal syntax '%s' on line %d.\n", script.Filename(), &token, script.GetLineNumber()
+131:             );
+132:             condition.condition_index = 0;
+133:             continue;
+134:         }
+135: 
+136:         condition.condition_index = state.addCondition(&token[start], script);
+137:         if (!condition.condition_index) {
+138:             gi.Error(
+139:                 ERR_DROP,
+140:                 "%s: Unknown condition '%s' on line %d.\n",
+141:                 script.Filename(),
+142:                 &token[start],
+143:                 script.GetLineNumber()
+144:             );
+145:         }
+146: 
+147:         conditions.AddObject(condition);
+148:     }
+149: }
+150: 
+151: bool Expression::getResult(State& state, Entity& ent, Container<Conditional *> *sent_conditionals)
+152: {
+153:     int          i;
+154:     condition_t *cond;
+155:     Conditional *conditional;
+## tabela m_conditions
+inicio tabela offset=-1
+registradas: 0
+## usadas: 55 / FALTAM: 55
+  ALTITUDE
+  ANIMDONE_LEGS
+  ANIMDONE_TORSO
+  ANY_WEAPON_ACTIVE
+  AT_DOOR
+  AT_USEOBJECT
+  ATTACK_ALTERNATE
+  ATTACKRIGHT
+  BACKWARD
+  CAN_FALL
+  CAN_GRAB_LEDGE
+  CAN_HANG
+  CAN_HANG_LEFT
+  CAN_HANG_RIGHT
+  CAN_PULLUP
+  CHANCE
+  CHESSPUZZLE
+  CROUCH
+  ENV_SLIDING
+  ENV_THERMAL
+  FAKEPLAYERACTIVE
+  FALLING
+  FORWARD
+  FROZEN
+  HAS_WEAPON
+  IN_WATER
+  IS_CURRENT_WEAPON_MANA_OK
+  IS_CURRENT_WEAPON_READY_TO_FIRE
+  IS_GRABBED
+  IS_WEAPON_ACTIVE
+  IS_WEAPON_READY_TO_FIRE
+  JUMP
+  KILLED
+  LEDGE_HEIGHT
+  LEGS
+  LOOKINGGLASS
+  NEW_WEAPON
+  ON_FIRE
+  ONGROUND
+  ONROPE
+  PAIN
+  PAIN_DIRECTION
+  PAIN_THRESHOLD
+  PAIN_TYPE
+  PUTAWAYRIGHT
+  RAGE
+  RUN
+  STATETIME_LEGS
+  STRAFE_LEFT
+  STRAFE_RIGHT
+  SWIMS_IN_WATER
+  TEA
+  TOUCHED_ROPE
+  USE
+  VANGLECHANGE
