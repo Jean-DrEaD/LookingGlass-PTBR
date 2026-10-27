@@ -1,0 +1,22 @@
+# Lote 18w - ded/cl one-shot
+## code/qcommon/common.c @ 2243 (antes)
+2231: 
+2232: 	return timeVal;
+2233: }
+2234: 
+2235: /*
+2236: =================
+2237: Com_Frame
+2238: =================
+2239: */
+2240: void Com_Frame( void ) {
+2241: #ifdef NXDK /* LG 15x heartbeat */
+2242: 	{ static int lg_fc = 0, lg_t = 0; int lg_n = Sys_Milliseconds(); lg_fc++; if (lg_fc == 40) { Com_Printf("LG: auto map centipede1\n"); Cbuf_AddText("map centipede1\n"); } if (lg_fc == 1 || lg_n - lg_t >= 2000) { lg_t = lg_n; Com_Printf("LG: frame %d t=%d\n", lg_fc, lg_n); } }
+2243: 	Com_Printf("LG: ded=%d cl=%d\n", com_dedicated ? com_dedicated->integer : -1, com_cl_running ? com_cl_running->integer : -1);
+2244: #endif
+2245: 
+2246: 	int		msec, minMsec;
+2247: 	int		timeVal, timeValSV;
+depois: 	{ static int lg_dn = 0; if (!lg_dn++) { Com_Printf("LG: ded=%d cl=%d\n", com_dedicated ? com_dedicated->integer : -1, com_cl_running ? com_cl_running->integer : -1); } } /* LG 18w */
+diff: 1	1	code/qcommon/common.c
+XBE 5431296 / ISO 667811840

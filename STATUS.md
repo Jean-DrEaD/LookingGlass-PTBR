@@ -716,3 +716,9 @@
 - 18u xemu: 'ui 2 view3d ok t=2862' -> InitSubtitle era a trava; ui 3 nunca -> nova trava apos View3D
 - 18u: getCharWidth/getHeight leem m_font->sgl[0] (NULL na fonte dummy) -> toda medicao de texto congela
 - 18v: lg_null_sgl[16]; cada fonte dummy com sgl[0] (indirection=c, largura 8px, height 16, aspect 1); contorno 18u mantido; trecho ui2..ui3 em lote18v-fonte.log
+
+## Lote 18w (2026-10-27 12:09)
+- 18v xemu: MARCO - UI do cliente INICIALIZA: ui 3 (13 urc) / ui 4 menus / ui 5 intro; Client Init Complete; Common Init Complete 4147 ms; frame 1; ded=0 cl=1; auto map centipede1
+- 18v: 'register sound ... soundsystem hasn't started' nao fatal (sem OpenAL); EAlogo ausente (intro)
+- 18v: 'ded=0 cl=1' impresso TODO frame -> esconde o pos-map e derruba fps
+- 18w: linha ded/cl one-shot em code/qcommon/common.c (+1 -1)
