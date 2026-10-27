@@ -695,3 +695,9 @@
 - 18q/18q2: UI_LoadInventory_f termina limpo; chamador = CL_InitializeUI (cl_ui.cpp:5315, chamado de cl_main.cpp:2946)
 - Suspeitos pos-5315: UI_CreateScoreboard, View3D/RegisterShader (renderer nulo), parse urc (FAKK), CreateMenus, CL_TryStartIntro
 - 18r: 5 breadcrumbs 'LG: ui 1..5' com t= (+5 -0)
+
+## Lote 18s (2026-10-27 10:53)
+- 18r xemu: nenhum 'LG: ui' visivel; ui 1 (3938) e ui 4 (3562) cairam FORA do CL_InitializeUI (regex pegou 1a ocorrencia do arquivo)
+- 18r: ui 2 (5396, pos-View3D) nao apareceu -> trava entre 5315 e 5396 (scoreboard/game_version/Cmd_AddCommand/devcon/View3D)
+- Regra: ancoras de patch buscadas a partir do inicio da funcao alvo (Regex.Match(txt, ini))
+- 18s: ui 1/4 reposicionados + ui 1b (game_version) + ui 1c (cmds, dev=) (+4 -2)

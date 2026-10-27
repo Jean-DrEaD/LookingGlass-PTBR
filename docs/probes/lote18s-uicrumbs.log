@@ -1,0 +1,10 @@
+# Lote 18s - breadcrumbs da UI no lugar certo
+agora 5317: Com_Printf("LG: ui 1 scoreboard ok t=%d\n", Sys_Milliseconds()); /* LG 18s */
+agora 5322: Com_Printf("LG: ui 1b version ok t=%d\n", Sys_Milliseconds()); /* LG 18s */
+agora 5372: Com_Printf("LG: ui 1c cmds ok dev=%d t=%d\n", developer->integer, Sys_Milliseconds()); /* LG 18s */
+agora 5397: Com_Printf("LG: ui 2 view3d ok t=%d\n", Sys_Milliseconds()); /* LG 18r */
+agora 5442: Com_Printf("LG: ui 3 urc n=%d t=%d\n", nfiles, Sys_Milliseconds()); /* LG 18r */
+agora 5454: Com_Printf("LG: ui 4 menus ok t=%d\n", Sys_Milliseconds()); /* LG 18s */
+agora 5497: Com_Printf("LG: ui 5 intro? t=%d\n", Sys_Milliseconds()); /* LG 18r */
+diff: 4	2	code/client/cl_ui.cpp
+XBE 5431296 / ISO 667811840
