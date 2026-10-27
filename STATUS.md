@@ -711,3 +711,8 @@
 - 18t xemu: v3 new/bottom/initframe/name OK (t=2721-2724), ui 2 nunca -> trava em View3D::InitSubtitle (cl_uiview3d.cpp:806, laco getCharWidth A..Z)
 - Hipotese: fontheader dummy (so name) -> getCharWidth le tabela/ponteiro NULL -> congelamento
 - 18u: sob NXDK totalWidth=260 (avWidth 10), laco pulado (+4 -0); coleta getCharWidth/fontheader_t em lote18u-subtitle.log p/ fonte dummy real
+
+## Lote 18v (2026-10-27 11:59)
+- 18u xemu: 'ui 2 view3d ok t=2862' -> InitSubtitle era a trava; ui 3 nunca -> nova trava apos View3D
+- 18u: getCharWidth/getHeight leem m_font->sgl[0] (NULL na fonte dummy) -> toda medicao de texto congela
+- 18v: lg_null_sgl[16]; cada fonte dummy com sgl[0] (indirection=c, largura 8px, height 16, aspect 1); contorno 18u mantido; trecho ui2..ui3 em lote18v-fonte.log

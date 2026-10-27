@@ -1,0 +1,87 @@
+# Lote 18v - fonte dummy com sgl[0] valido
+1: /* LG lote 18e: renderer nulo (tela preta) para validar o build cliente no nxdk. */
+2: #include "../qcommon/q_shared.h"
+3: #include "../renderercommon/tr_public.h"
+4: #include <string.h>
+5: 
+6: /* LG 18m: fonte dummy nao-NULL (UI faz ERR_DROP se LoadFont retorna NULL) */
+7: static fontheader_t lg_null_fonts[16];
+8: static int lg_null_nfonts = 0;
+9: static fontheader_sgl_t lg_null_sgl[16]; /* LG 18v */
+10: static fontheader_t *lg_null_LoadFont(const char *name) {
+11:     int i;
+12:     for (i = 0; i < lg_null_nfonts; i++) { if (!Q_stricmp(lg_null_fonts[i].name, name)) return &lg_null_fonts[i]; }
+13:     if (lg_null_nfonts >= 16) return &lg_null_fonts[0];
+14:     Q_strncpyz(lg_null_fonts[lg_null_nfonts].name, name, sizeof(lg_null_fonts[0].name));
+15:     { /* LG 18v */
+16:         fontheader_t *f = &lg_null_fonts[lg_null_nfonts];
+17:         fontheader_sgl_t *s = &lg_null_sgl[lg_null_nfonts];
+18:         int c;
+19:         memset(s, 0, sizeof(*s));
+20:         for (c = 0; c < 256; c++) { s->indirection[c] = c; s->locations[c].size[0] = 8.0f / 256.0f; }
+21:         s->height = 16.0f; s->aspectRatio = 1.0f;
+22:         Q_strncpyz(s->name, name, sizeof(s->name));
+23:         f->numPages = 0; f->sgl[0] = s;
+24:     }
+25:     return &lg_null_fonts[lg_null_nfonts++];
+26: }
+27: static refexport_t lgNullRe;
+28: static refimport_t lgNullRi;
+29: 
+30: #define LG_SET(field, fn) do { void *lgp_ = (void *)(fn); memcpy(&lgNullRe.field, &lgp_, sizeof(lgp_)); } while (0)
+31: 
+32: /* cdecl: o chamador limpa a pilha, entao um stub int serve p/ qualquer assinatura sem float/struct. */
+33: static int LG_NullStub(void) { return 0; }
+34: static int LG_NullOne(void) { return 1; }
+35: static float LG_NullFloat(void) { return 0.0f; }
+36: static const char *LG_NullName(void) { return ""; }
+diff: 11	0	code/renderernull/tr_null.c
+## cl_ui.cpp ui2=5401 ui3=5446
+5401:     Com_Printf("LG: ui 2 view3d ok t=%d\n", Sys_Milliseconds()); /* LG 18r */
+5402: 
+5403:     memset(&intro_stage, 0, sizeof(intro_stage));
+5404: 
+5405:     // Register the loading material
+5406:     ui_static_materials.loading = uWinMan.RegisterShader("textures/menu/loading");
+5407: 
+5408:     if (ui_console->integer || developer->integer > 0) {
+5409:         UColor bgColor = UWindowColor;
+5410: 
+5411:         // Create the console
+5412:         fakk_console = getNewConsole();
+5413: 
+5414:         bgColor = UColor(0.0, 0.5, 1.0, 1.0);
+5415: 
+5416:         // Create the mini console
+5417:         mini_console = new FakkMiniconsole;
+5418:         mini_console->Create(UISize2D(500, 100), UWhite, bgColor, 0.2f);
+5419:         mini_console->setAlwaysOnBottom(true);
+5420:         mini_console->setBorderStyle(border_none);
+5421:     }
+5422: 
+5423:     // Create the dm console
+5424:     if (!dm_console) {
+5425:         dm_console = getNewDMConsole();
+5426:     }
+5427: 
+5428:     // Create the game message box
+5429:     if (ui_gmbox->integer && !gmbox) {
+5430:         gmbox = new UIGMBox;
+5431:         gmbox->Create(getDefaultGMBoxRectangle(), UHudColor, UHudColor, 0.0);
+5432:         gmbox->setAlwaysOnBottom(true);
+5433:         gmbox->setBorderStyle(border_none);
+5434:     }
+5435: 
+5436:     // Create the deathmatch message box
+5437:     if (!dmbox) {
+5438:         dmbox = new UIDMBox;
+5439:         dmbox->Create(getDefaultDMBoxRectangle(), UHudColor, UHudColor, 0.0);
+5440:         dmbox->setAlwaysOnBottom(true);
+5441:         dmbox->setBorderStyle(border_outline);
+5442:     }
+5443: 
+5444:     // Load all urc files
+5445:     filenames = FS_ListFiles("ui/", "urc", qfalse, &nfiles);
+5446:     Com_Printf("LG: ui 3 urc n=%d t=%d\n", nfiles, Sys_Milliseconds()); /* LG 18r */
+5447: 
+XBE 5431296 / ISO 667811840
