@@ -689,3 +689,9 @@
 - 18p 1a: patch OK, mas trava esperava +4 -0; bloco #ifdef/if/else/#else/#endif = +5 -0 (linha original mantida no #else)
 - 18p: sob NXDK CL_LoadInventory so se FS_ReadFile > 0, senao 'LG: sem X (inventario vazio)' (+5 -0)
 - Pendente: inventario/HUD do Alice (formato proprio) em lote futuro
+
+## Lote 18r (2026-10-27 10:48)
+- 18p xemu: 'LG: sem global/inventory.txt (inventario vazio)' OK; depois TRAVA (minutos, sem heartbeat)
+- 18q/18q2: UI_LoadInventory_f termina limpo; chamador = CL_InitializeUI (cl_ui.cpp:5315, chamado de cl_main.cpp:2946)
+- Suspeitos pos-5315: UI_CreateScoreboard, View3D/RegisterShader (renderer nulo), parse urc (FAKK), CreateMenus, CL_TryStartIntro
+- 18r: 5 breadcrumbs 'LG: ui 1..5' com t= (+5 -0)

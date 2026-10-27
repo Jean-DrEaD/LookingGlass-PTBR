@@ -1,0 +1,8 @@
+# Lote 18r - breadcrumbs CL_InitializeUI
+agora 3562: Com_Printf("LG: ui 4 menus ok t=%d\n", Sys_Milliseconds()); /* LG 18r */
+agora 3938: Com_Printf("LG: ui 1 scoreboard ok t=%d\n", Sys_Milliseconds()); /* LG 18r */
+agora 5396: Com_Printf("LG: ui 2 view3d ok t=%d\n", Sys_Milliseconds()); /* LG 18r */
+agora 5441: Com_Printf("LG: ui 3 urc n=%d t=%d\n", nfiles, Sys_Milliseconds()); /* LG 18r */
+agora 5495: Com_Printf("LG: ui 5 intro? t=%d\n", Sys_Milliseconds()); /* LG 18r */
+diff: 5	0	code/client/cl_ui.cpp
+XBE 5431296 / ISO 667811840
