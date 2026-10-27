@@ -701,3 +701,8 @@
 - 18r: ui 2 (5396, pos-View3D) nao apareceu -> trava entre 5315 e 5396 (scoreboard/game_version/Cmd_AddCommand/devcon/View3D)
 - Regra: ancoras de patch buscadas a partir do inicio da funcao alvo (Regex.Match(txt, ini))
 - 18s: ui 1/4 reposicionados + ui 1b (game_version) + ui 1c (cmds, dev=) (+4 -2)
+
+## Lote 18t (2026-10-27 11:06)
+- 18s xemu: ui 1 / 1b / 1c (dev=0) t=2752-2753, ui 2 nunca -> trava no bloco View3D (new/bottom/InitFrame facfont-20/setName/InitSubtitle)
+- Hipotese: fontheader dummy do renderer nulo (so name, metricas 0) -> laco de layout infinito
+- 18t: breadcrumbs 'LG: v3 new/bottom/initframe/name' (+4 -0); coleta View3D/InitFrame/UIFont/lg_null_LoadFont em lote18t-view3d.log

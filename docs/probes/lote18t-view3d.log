@@ -1,0 +1,353 @@
+# Lote 18t - breadcrumbs View3D + coleta
+agora 5393: Com_Printf("LG: v3 new ok t=%d\n", Sys_Milliseconds()); /* LG 18t */
+agora 5395: Com_Printf("LG: v3 bottom ok t=%d\n", Sys_Milliseconds()); /* LG 18t */
+agora 5397: Com_Printf("LG: v3 initframe ok t=%d\n", Sys_Milliseconds()); /* LG 18t */
+agora 5399: Com_Printf("LG: v3 name ok t=%d\n", Sys_Milliseconds()); /* LG 18t */
+diff: 4	0	code/client/cl_ui.cpp
+## View3D::InitSubtitle\s*\( @ code\client\cl_uiview3d.cpp:793
+793: void View3D::InitSubtitle(void)
+794: {
+795:     float totalWidth;
+796: 
+797:     for (int i = 0; i < 4; i++) {
+798:         subs[i]  = Cvar_Get(va("subtitle%d", i), "", 0);
+799:         teams[i] = Cvar_Get(va("subteam%d", i), "0", 0);
+800:         Q_strncpyz(oldStrings[i], subs[i]->string, sizeof(oldStrings[i]));
+801:         fadeTime[i] = 4000.0;
+802:         subLife[i]  = 4000.0;
+803:     }
+804: 
+805:     totalWidth = 0.0;
+806:     for (char j = 'A'; j <= 'Z'; j++) {
+807:         totalWidth += m_font->getCharWidth(j);
+808:     }
+809: 
+810:     avWidth = totalWidth / 26.0;
+811: }
+812: 
+813: void View3D::DrawSubtitleOverlay(void)
+814: {
+815:     cvar_t *subAlpha;
+816:     int     i;
+817:     float   minX, maxX;
+818:     int     line;
+819: 
+820:     subAlpha = Cvar_Get("subAlpha", "0.5", 0);
+821: 
+822:     setFont("facfont-20");
+823:     m_font->setColor(URed);
+824: 
+825:     for (i = 0; i < MAX_SUBTITLES; i++) {
+826:         if (strcmp(oldStrings[i], subs[i]->string)) {
+827:             fadeTime[i] = 2500 * ((strlen(subs[i]->string) / 68) + 1.f) + 1500;
+828:             subLife[i]  = fadeTime[i];
+829:             Q_strncpyz(oldStrings[i], subs[i]->string, sizeof(oldStrings[i]));
+830:         }
+831: 
+832:         if (fadeTime[i] > subLife[i] - 750.f) {
+833:             alpha[i] = 1.f - (fadeTime[i] - (subLife[i] - 750.f)) / 750.f;
+## View3D::View3D\s*\( @ code\client\cl_uiview3d.cpp:42
+42: View3D::View3D()
+43: {
+44:     // set as transparent
+45:     setBackgroundColor(UClear, true);
+46:     // no border
+47:     setBorderStyle(border_none);
+48:     AllowActivate(true);
+49: 
+50:     m_printfadetime = 0.0;
+51:     m_print_mat     = NULL;
+52:     m_locationprint = qfalse;
+53: }
+54: 
+55: void View3D::UpdateCenterPrint(const char *s, float alpha)
+56: {
+57:     m_printstring = s;
+58: 
+59:     if (s[0] == '@') {
+60:         m_print_mat = uWinMan.RegisterShader(s + 1);
+61:     } else {
+62:         m_print_mat = NULL;
+63:     }
+64: 
+65:     m_printalpha    = alpha;
+66:     m_printfadetime = 4000.0;
+67:     m_locationprint = qfalse;
+68: }
+69: 
+70: void View3D::UpdateLocationPrint(int x, int y, const char *s, float alpha)
+71: {
+72:     m_printstring   = s;
+73:     m_printalpha    = alpha;
+74:     m_printfadetime = 4000.0;
+75:     m_x_coord       = x;
+76:     m_y_coord       = y;
+77:     m_locationprint = qtrue;
+78: }
+79: 
+80: void View3D::FrameInitialized(void)
+81: {
+82:     Connect(this, W_Activated, W_Activated);
+## UIWidget::InitFrame\s*\( @ code\uilib\uiwidget.cpp:1208
+1208: void UIWidget::InitFrame(
+1209:     UIWidget *parentview, float x, float y, float width, float height, int border, const char *fontname
+1210: )
+1211: {
+1212:     if (border != -1) {
+1213:         setBorderStyle((borderstyle_t)border);
+1214:     }
+1215: 
+1216:     setFrame(UIRect2D(x, y, width, height));
+1217: 
+1218:     if (parentview) {
+1219:         setParent(parentview);
+1220:     } else if (this != &uWinMan) {
+1221:         setParent(&uWinMan);
+1222:     }
+1223: 
+1224:     m_startingpos = m_frame.pos;
+1225: 
+1226:     setFont(fontname);
+1227: 
+1228:     FrameInitialized();
+1229: }
+1230: 
+1231: void UIWidget::InitFrame(UIWidget *parentview, const UIRect2D& r, int border, const char *fontname)
+1232: {
+1233:     InitFrame(parentview, r.pos.x, r.pos.y, r.size.width, r.size.height, border, fontname);
+1234: }
+1235: 
+1236: void UIWidget::LayoutSize(Event *ev)
+1237: {
+1238:     LayoutRect(ev);
+1239: }
+1240: 
+1241: void UIWidget::LayoutRect(Event *ev)
+1242: {
+1243:     UIPoint2D pos;
+1244:     UISize2D  size;
+1245: 
+1246:     if (ev->NumArgs() == 4) {
+1247:         pos.x       = ev->GetFloat(1);
+1248:         pos.y       = ev->GetFloat(2);
+## UIWidget::InitFrame\s*\( @ code\uilib\uiwidget.cpp:1231
+1231: void UIWidget::InitFrame(UIWidget *parentview, const UIRect2D& r, int border, const char *fontname)
+1232: {
+1233:     InitFrame(parentview, r.pos.x, r.pos.y, r.size.width, r.size.height, border, fontname);
+1234: }
+1235: 
+1236: void UIWidget::LayoutSize(Event *ev)
+1237: {
+1238:     LayoutRect(ev);
+1239: }
+1240: 
+1241: void UIWidget::LayoutRect(Event *ev)
+1242: {
+1243:     UIPoint2D pos;
+1244:     UISize2D  size;
+1245: 
+1246:     if (ev->NumArgs() == 4) {
+1247:         pos.x       = ev->GetFloat(1);
+1248:         pos.y       = ev->GetFloat(2);
+1249:         size.width  = ev->GetFloat(3);
+1250:         size.height = ev->GetFloat(4);
+1251: 
+1252:         setFrame(UIRect2D(pos, size));
+1253: 
+1254:         m_startingpos = pos;
+1255:     }
+1256: }
+1257: 
+1258: void UIWidget::LayoutName(Event *ev)
+1259: {
+1260:     setName(ev->GetString(1));
+1261: }
+1262: 
+1263: void UIWidget::LayoutTitle(Event *ev)
+1264: {
+1265:     setTitle(ev->GetString(1));
+1266: }
+1267: 
+1268: void UIWidget::LayoutFont(Event *ev)
+1269: {
+1270:     setFont(ev->GetString(1));
+1271: }
+## UIFont::UIFont\s*\( @ code\uilib\uifont.cpp:266
+266: UIFont::UIFont()
+267: {
+268:     m_font = uii.Rend_LoadFont("verdana-14");
+269:     if (!m_font) {
+270:         uii.Sys_Error(ERR_DROP, "Couldn't load font Verdana\n");
+271:     }
+272: 
+273:     color = UBlack;
+274:     setColor(color);
+275: 
+276:     refHandle = uii.GetRefSequence();
+277:     name      = "verdana-14";
+278: }
+279: 
+280: UIFont::UIFont(const char *fn)
+281: {
+282:     setFont(fn);
+283: }
+284: 
+285: void UIFont::setColor(UColor col)
+286: {
+287:     color = col;
+288: }
+289: 
+290: void UIFont::setAlpha(float alpha)
+291: {
+292:     color.a = alpha;
+293: }
+294: 
+295: void UIFont::setFont(const char *fontname)
+296: {
+297:     m_font = uii.Rend_LoadFont(fontname);
+298:     if (!m_font) {
+299:         uii.Sys_Error(ERR_DROP, "Couldn't load font %s\n", fontname);
+300:     }
+301: 
+302:     refHandle = uii.GetRefSequence();
+303:     name      = fontname;
+304: }
+305: 
+306: void UIFont::Print(float x, float y, const char *text, size_t maxlen, const float *virtualScreen)
+## UIFont::UIFont\s*\( @ code\uilib\uifont.cpp:280
+280: UIFont::UIFont(const char *fn)
+281: {
+282:     setFont(fn);
+283: }
+284: 
+285: void UIFont::setColor(UColor col)
+286: {
+287:     color = col;
+288: }
+289: 
+290: void UIFont::setAlpha(float alpha)
+291: {
+292:     color.a = alpha;
+293: }
+294: 
+295: void UIFont::setFont(const char *fontname)
+296: {
+297:     m_font = uii.Rend_LoadFont(fontname);
+298:     if (!m_font) {
+299:         uii.Sys_Error(ERR_DROP, "Couldn't load font %s\n", fontname);
+300:     }
+301: 
+302:     refHandle = uii.GetRefSequence();
+303:     name      = fontname;
+304: }
+305: 
+306: void UIFont::Print(float x, float y, const char *text, size_t maxlen, const float *virtualScreen)
+307: {
+308:     CheckRefreshFont();
+309: 
+310:     if (!m_font) {
+311:         return;
+312:     }
+313: 
+314:     uii.Rend_SetColor(color);
+315:     // Round to integer to avoid blurry text
+316:     uii.Rend_DrawString(m_font, text, (int)x, (int)y, maxlen, virtualScreen);
+317: }
+318: 
+319: void UIFont::PrintJustified(
+320:     const UIRect2D& rect, fonthorzjustify_t horz, fontvertjustify_t vert, const char *text, const float *vVirtualScale
+## UIFont::setFont\s*\( @ code\uilib\uifont.cpp:295
+295: void UIFont::setFont(const char *fontname)
+296: {
+297:     m_font = uii.Rend_LoadFont(fontname);
+298:     if (!m_font) {
+299:         uii.Sys_Error(ERR_DROP, "Couldn't load font %s\n", fontname);
+300:     }
+301: 
+302:     refHandle = uii.GetRefSequence();
+303:     name      = fontname;
+304: }
+305: 
+306: void UIFont::Print(float x, float y, const char *text, size_t maxlen, const float *virtualScreen)
+307: {
+308:     CheckRefreshFont();
+309: 
+310:     if (!m_font) {
+311:         return;
+312:     }
+313: 
+314:     uii.Rend_SetColor(color);
+315:     // Round to integer to avoid blurry text
+316:     uii.Rend_DrawString(m_font, text, (int)x, (int)y, maxlen, virtualScreen);
+317: }
+318: 
+319: void UIFont::PrintJustified(
+320:     const UIRect2D& rect, fonthorzjustify_t horz, fontvertjustify_t vert, const char *text, const float *vVirtualScale
+321: )
+322: {
+323:     float       newx, newy;
+324:     int         textwidth, textheight;
+325:     UIRect2D    sizedRect;
+326:     const char *source;
+327:     char       *dest;
+328:     char        string[2048];
+329: 
+330:     if (vVirtualScale) {
+331:         sizedRect.pos.x       = rect.pos.x / vVirtualScale[0];
+332:         sizedRect.pos.y       = rect.pos.y / vVirtualScale[1];
+333:         sizedRect.size.width  = rect.size.width / vVirtualScale[0];
+334:         sizedRect.size.height = rect.size.height / vVirtualScale[1];
+335:     } else {
+## lg_null_LoadFont @ code\renderernull\tr_null.c:9
+9: static fontheader_t *lg_null_LoadFont(const char *name) {
+10:     int i;
+11:     for (i = 0; i < lg_null_nfonts; i++) { if (!Q_stricmp(lg_null_fonts[i].name, name)) return &lg_null_fonts[i]; }
+12:     if (lg_null_nfonts >= 16) return &lg_null_fonts[0];
+13:     Q_strncpyz(lg_null_fonts[lg_null_nfonts].name, name, sizeof(lg_null_fonts[0].name));
+14:     return &lg_null_fonts[lg_null_nfonts++];
+15: }
+16: static refexport_t lgNullRe;
+17: static refimport_t lgNullRi;
+18: 
+19: #define LG_SET(field, fn) do { void *lgp_ = (void *)(fn); memcpy(&lgNullRe.field, &lgp_, sizeof(lgp_)); } while (0)
+20: 
+21: /* cdecl: o chamador limpa a pilha, entao um stub int serve p/ qualquer assinatura sem float/struct. */
+22: static int LG_NullStub(void) { return 0; }
+23: static int LG_NullOne(void) { return 1; }
+24: static float LG_NullFloat(void) { return 0.0f; }
+25: static const char *LG_NullName(void) { return ""; }
+26: static qboolean LG_NullTrue(void) { return qtrue; }
+27: 
+28: static void LG_NullBeginRegistration(glconfig_t *config)
+29: {
+30: memset(config, 0, sizeof(*config));
+31: config->vidWidth = 640;
+32: config->vidHeight = 480;
+33: }
+34: 
+35: static void LG_NullRegisterFont(const char *name, int size, fontInfo_t *font)
+36: {
+37: (void)name; (void)size;
+38: memset(font, 0, sizeof(*font));
+39: }
+40: 
+41: static orientation_t LG_NullOrientation(refEntity_t *model, int tagNum)
+42: {
+43: orientation_t o;
+44: (void)model; (void)tagNum;
+45: memset(&o, 0, sizeof(o));
+46: AxisClear(o.axis);
+47: return o;
+48: }
+49: 
+## lg_null_LoadFont @ code\renderernull\tr_null.c:76
+76: lgNullRe.LoadFont = lg_null_LoadFont; /* LG 18m */
+77: return &lgNullRe;
+78: }
+79: 
+80: qboolean R_ImageExists(const char *name)
+81: {
+82: (void)name;
+83: return qfalse;
+84: }
+XBE 5431296 / ISO 667811840
