@@ -1,0 +1,73 @@
+# Lote 18z3 - torso -> action
+## Unknown command (contexto)
+649:     name         = statename;
+650:     nextState    = statename;
+651:     movetype     = DEFAULT_MOVETYPE;
+652:     cameratype   = DEFAULT_CAMERA;
+653:     behaviorName = "idle";
+654: 
+655:     minTime = -1.0;
+656:     maxTime = -1.0;
+657: 
+658:     if (!script.TokenAvailable(true) || Q_stricmp(script.GetToken(true), "{")) {
+659:         gi.Error(ERR_DROP, "%s: Expecting '{' on line %d.\n", script.Filename(), script.GetLineNumber());
+660:     }
+661: 
+662:     while (script.TokenAvailable(true)) {
+663:         cmd = script.GetToken(true);
+664:         if (!cmd.icmp("nextstate")) {
+665:             readNextState(script);
+666:         } else if (!cmd.icmp("movetype")) {
+667:             readMoveType(script);
+668:         } else if (!cmd.icmp("camera")) {
+669:             readCamera(script);
+670:         } else if (!cmd.icmp("legs")) {
+671:             readLegs(script);
+672:         } else if (!cmd.icmp("action")) {
+673:             readAction(script);
+674:         } else if (!cmd.icmp("behavior")) {
+675:             readBehavior(script);
+676:         } else if (!cmd.icmp("time")) {
+677:             readTime(script);
+678:         } else if (!cmd.icmp("states")) {
+679:             readStates(script);
+680:         } else if (!cmd.icmp("entrycommands")) {
+681:             readCommands(script, entryCommands);
+682:         } else if (!cmd.icmp("exitcommands")) {
+683:             readCommands(script, exitCommands);
+684:         } else if (!cmd.icmp("}")) {
+685:             break;
+686:         } else {
+687:             gi.Error(
+688:                 ERR_DROP,
+689:                 "%s: Unknown command '%s' on line %d.\n",
+690:                 script.Filename(),
+691:                 cmd.c_str(),
+692:                 script.GetLineNumber()
+693:             );
+694:         }
+695:     }
+## comparacoes icmp
+266: if (token.icmp("aim")) {
+664: if (!cmd.icmp("nextstate")) {
+666: } else if (!cmd.icmp("movetype")) {
+668: } else if (!cmd.icmp("camera")) {
+670: } else if (!cmd.icmp("legs")) {
+672: } else if (!cmd.icmp("action")) {
+674: } else if (!cmd.icmp("behavior")) {
+676: } else if (!cmd.icmp("time")) {
+678: } else if (!cmd.icmp("states")) {
+680: } else if (!cmd.icmp("entrycommands")) {
+682: } else if (!cmd.icmp("exitcommands")) {
+684: } else if (!cmd.icmp("}")) {
+718: if (!cmd.icmp("state")) {
+linhas com icmp(action): 1
+## patch
+672: #ifdef NXDK
+673:         } else if ((!cmd.icmp("action") || !cmd.icmp("torso"))) { /* LG 18z3: torso FAKK = action */
+674: #else
+675:         } else if (!cmd.icmp("action")) {
+676: #endif
+diff: 4	0	code/fgame/characterstate.cpp
+## 18z3b diff: 4	0	code/fgame/characterstate.cpp
+XBE 5431296 / ISO 667811840

@@ -743,3 +743,9 @@
 - 18z: Unknown condition = characterstate.cpp:136-145 (addCondition==0 -> gi.Error ERR_DROP)
 - 18z: tabela m_conditions nao achada (offset -1) -> 'faltam 55' = todas as usadas, lista invalida
 - 18z2: sob NXDK aviso 'LG: st? X' (5 max) + condition_index 0 mantido; getResult retorna false se cond index 0 (+7 -0)
+
+## Lote 18z3 (2026-10-27 16:23)
+- 18z2 xemu: alice_Legs.st PARSEADO (st? CHESSPUZZLE/ENV_SLIDING/ENV_THERMAL/ALTITUDE/31 - '31' = parametro de ALTITUDE, inofensivo)
+- 18z2: fatal 'alice_Torso.st: Unknown command torso on line 6' -> FAKK usa torso{}, MOHAA usa action{}
+- 18z3: characterstate.cpp:672 icmp("action") || icmp("torso") sob NXDK (+4 -0); comandos do State: nextstate/movetype/camera/legs/action/behavior/time/states/entry/exitcommands
+- 18z3 1a: trava esperava 11 0, mas diff e contra HEAD (18z2 ja commitado) -> real 4 0; regra: numstat conta so o lote atual
