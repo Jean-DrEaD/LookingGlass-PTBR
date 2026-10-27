@@ -727,3 +727,8 @@
 - 18w xemu: ded/cl one-shot OK; cliente ocioso ~90 fps (renderer nulo); auto map -> Server Init -> InitGame -> FAKK repack -> cls Item_* -> script (cmd?e/nul/cev) OK
 - 18w: FATAL '::LoadFile : Couldn't load global/mike_Legs.st' -> Server crashed: Player MOHAA exige statefile mike_*; Alice tem statefiles proprios
 - 18x: coleta .st nos pk3 + g_statefile/GetStatemap (docs/probes/lote18x-statefile.log), sem build
+
+## Lote 18y (2026-10-27 12:33)
+- 18x: pak0 tem global/alice_legs.st (8028) + alice_torso.st (20364) (+ jay/joe/old); g_statefile default 'global/mike' (gamecvars.cpp:449) -> player.cpp:5069-5072
+- 18x: .st do Alice usam condicoes FAKK/Alice (CHESSPUZZLE, ENV_SLIDING, IS_WEAPON_ACTIVE, LOOKINGGLASS, TEA, RAGE...) -> risco de erro no GetStatemap
+- 18y: g_statefile = global/alice sob NXDK (+4 -0); erros do statemap.cpp no log (alvo 18z)

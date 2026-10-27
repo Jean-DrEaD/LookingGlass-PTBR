@@ -1,0 +1,9 @@
+# Lote 18y - g_statefile global/alice sob NXDK
+449: #ifdef NXDK
+450:     g_statefile   = gi.Cvar_Get("g_statefile", "global/alice", 0); /* LG 18y: alice_legs/torso.st */
+451: #else
+452:     g_statefile   = gi.Cvar_Get("g_statefile", "global/mike", 0);
+453: #endif
+diff: 4	0	code/fgame/gamecvars.cpp
+## statemap: mensagens de erro/condicao
+XBE 5431296 / ISO 667811840
