@@ -1,0 +1,502 @@
+# Lote 18u - InitSubtitle sem getCharWidth + coleta fonte
+793: void View3D::InitSubtitle(void)
+794: {
+795:     float totalWidth;
+796: 
+797:     for (int i = 0; i < 4; i++) {
+798:         subs[i]  = Cvar_Get(va("subtitle%d", i), "", 0);
+799:         teams[i] = Cvar_Get(va("subteam%d", i), "0", 0);
+800:         Q_strncpyz(oldStrings[i], subs[i]->string, sizeof(oldStrings[i]));
+801:         fadeTime[i] = 4000.0;
+802:         subLife[i]  = 4000.0;
+803:     }
+804: 
+805: #ifdef NXDK
+806:     totalWidth = 260.0; /* LG 18u */
+807: #else
+808:     totalWidth = 0.0;
+809:     for (char j = 'A'; j <= 'Z'; j++) {
+810:         totalWidth += m_font->getCharWidth(j);
+811:     }
+812: #endif
+813: 
+814:     avWidth = totalWidth / 26.0;
+815: }
+816: 
+817: void View3D::DrawSubtitleOverlay(void)
+diff: 4	0	code/client/cl_uiview3d.cpp
+## UIFont::getCharWidth\s*\( @ code\uilib\uifont.cpp:548
+548: int UIFont::getCharWidth(unsigned short ch)
+549: {
+550:     int   index;
+551:     int   indirected;
+552:     float widthMul = 1.0f; // Added in OPM for easier readability
+553: 
+554:     CheckRefreshFont();
+555: 
+556:     if (!m_font) {
+557:         return 4;
+558:     }
+559: 
+560:     if (ch == '\t') {
+561:         ch       = ' ';
+562:         widthMul = 3.0f;
+563:     }
+564: 
+565:     if (m_font->numPages) {
+566:         int code = CodeSearch(ch);
+567:         if (code < 0) {
+568:             return 0;
+569:         }
+570: 
+571:         index      = m_font->charTable[code].index;
+572:         indirected = m_font->charTable[code].loc;
+573:     } else {
+574:         indirected = m_font->sgl[0]->indirection[ch];
+575:         if (indirected < 0 || indirected > 255) {
+576:             return 0;
+577:         }
+578: 
+579:         index = 0;
+580:     }
+581: 
+582:     return m_font->sgl[index]->locations[indirected].size[0] * 256.0 * widthMul;
+583: }
+584: 
+585: int UIFont::getHeight(const char *text, int maxlen, const float *virtualScale)
+586: {
+587:     float height;
+588:     int   i;
+## UIFont::getWidth\s*\( @ code\uilib\uifont.cpp:537
+537: int UIFont::getWidth(const char *text, int maxlen)
+538: {
+539:     CheckRefreshFont();
+540: 
+541:     if (!m_font) {
+542:         return 0;
+543:     }
+544: 
+545:     return UI_FontStringWidth(m_font, text, maxlen);
+546: }
+547: 
+548: int UIFont::getCharWidth(unsigned short ch)
+549: {
+550:     int   index;
+551:     int   indirected;
+552:     float widthMul = 1.0f; // Added in OPM for easier readability
+553: 
+554:     CheckRefreshFont();
+555: 
+556:     if (!m_font) {
+557:         return 4;
+558:     }
+559: 
+560:     if (ch == '\t') {
+561:         ch       = ' ';
+562:         widthMul = 3.0f;
+563:     }
+564: 
+565:     if (m_font->numPages) {
+566:         int code = CodeSearch(ch);
+567:         if (code < 0) {
+568:             return 0;
+569:         }
+570: 
+571:         index      = m_font->charTable[code].index;
+572:         indirected = m_font->charTable[code].loc;
+573:     } else {
+574:         indirected = m_font->sgl[0]->indirection[ch];
+575:         if (indirected < 0 || indirected > 255) {
+576:             return 0;
+577:         }
+## UIFont::getHeight\s*\( @ code\uilib\uifont.cpp:585
+585: int UIFont::getHeight(const char *text, int maxlen, const float *virtualScale)
+586: {
+587:     float height;
+588:     int   i;
+589: 
+590:     CheckRefreshFont();
+591: 
+592:     if (!m_font) {
+593:         return 0;
+594:     }
+595: 
+596:     height = getHeight(virtualScale);
+597: 
+598:     for (i = 0; text[i]; i++) {
+599:         if (maxlen != -1 && i > maxlen) {
+600:             break;
+601:         }
+602: 
+603:         if (text[i] == '\n') {
+604:             height += getHeight(virtualScale);
+605:         }
+606:     }
+607: 
+608:     return height;
+609: }
+610: 
+611: int UIFont::getHeight(const float *virtualScale)
+612: {
+613:     CheckRefreshFont();
+614: 
+615:     if (virtualScale) {
+616:         if (m_font) {
+617:             return (m_font->sgl[0]->height * virtualScale[0]);
+618:         } else {
+619:             return (16.0 * virtualScale[1]);
+620:         }
+621:     } else {
+622:         if (m_font) {
+623:             return m_font->sgl[0]->height;
+624:         } else {
+625:             return 16;
+## UIFont::getHeight\s*\( @ code\uilib\uifont.cpp:611
+611: int UIFont::getHeight(const float *virtualScale)
+612: {
+613:     CheckRefreshFont();
+614: 
+615:     if (virtualScale) {
+616:         if (m_font) {
+617:             return (m_font->sgl[0]->height * virtualScale[0]);
+618:         } else {
+619:             return (16.0 * virtualScale[1]);
+620:         }
+621:     } else {
+622:         if (m_font) {
+623:             return m_font->sgl[0]->height;
+624:         } else {
+625:             return 16;
+626:         }
+627:     }
+628: }
+629: 
+630: qboolean UI_FontDBCSIsLeadByte(fontheader_t *font, unsigned short uch)
+631: {
+632:     // Byte ranges found in Wikipedia articles with relevant search strings in each case
+633:     switch (font->codePage) {
+634:     case 932:
+635:         // Shift_jis
+636:         return ((uch >= 0x81) && (uch <= 0x9F)) || ((uch >= 0xE0) && (uch <= 0xFC));
+637:         // Lead bytes F0 to FC may be a Microsoft addition.
+638:     case 936:
+639:         // GBK
+640:         return (uch >= 0x81) && (uch <= 0xFE);
+641:     case 949:
+642:         // Korean Wansung KS C-5601-1987
+643:         return (uch >= 0x81) && (uch <= 0xFE);
+644:     case 950:
+645:         // Big5
+646:         return (uch >= 0x81) && (uch <= 0xFE);
+647:     case 1361:
+648:         // Korean Johab KS C-5601-1992
+649:         return ((uch >= 0x84) && (uch <= 0xD3)) || ((uch >= 0xD8) && (uch <= 0xDE)) || ((uch >= 0xE0) && (uch <= 0xF9));
+650:     }
+651:     return false;
+## typedef struct fontheader @ code\renderercommon\new\tr_types_new.h:40
+40: typedef struct fontheader_sgl_s
+41: {
+42:     int               indirection[256];
+43:     letterloc_t       locations[256];
+44:     char              name[64];
+45:     float             height;
+46:     float             aspectRatio;
+47:     void              *shader;
+48:     int               trhandle; // the last renderer handle this font used
+49: } fontheader_sgl_t;
+50: 
+51: typedef struct {
+52:     unsigned short cp;
+53:     unsigned char index;
+54:     unsigned char loc;
+55: } fontchartable_t;
+56: 
+57: typedef struct fontheader_s {
+58:     int numPages;
+59:     int charTableLength;
+60:     fontchartable_t* charTable;
+61:     short codePage;
+62:     fontheader_sgl_t* sgl[32];
+63:     char name[64];
+64: } fontheader_t;
+65: 
+66: typedef enum {
+67:     lensflare = (1 << 0),
+68:     viewlensflare = (1 << 1),
+69:     additive = (1 << 2)
+70: } dlighttype_t;
+71: 
+72: #if !defined _WIN32
+73: 
+74: #define _3DFX_DRIVER_NAME	"libMesaVoodooGL.so.3.1"
+75: #define OPENGL_DRIVER_NAME	"libGL.so"
+76: 
+77: #else
+78: 
+79: #define _3DFX_DRIVER_NAME	"3dfxvgl"
+80: #define OPENGL_DRIVER_NAME	"opengl32"
+## typedef struct fontheader @ code\renderercommon\new\tr_types_new.h:57
+57: typedef struct fontheader_s {
+58:     int numPages;
+59:     int charTableLength;
+60:     fontchartable_t* charTable;
+61:     short codePage;
+62:     fontheader_sgl_t* sgl[32];
+63:     char name[64];
+64: } fontheader_t;
+65: 
+66: typedef enum {
+67:     lensflare = (1 << 0),
+68:     viewlensflare = (1 << 1),
+69:     additive = (1 << 2)
+70: } dlighttype_t;
+71: 
+72: #if !defined _WIN32
+73: 
+74: #define _3DFX_DRIVER_NAME	"libMesaVoodooGL.so.3.1"
+75: #define OPENGL_DRIVER_NAME	"libGL.so"
+76: 
+77: #else
+78: 
+79: #define _3DFX_DRIVER_NAME	"3dfxvgl"
+80: #define OPENGL_DRIVER_NAME	"opengl32"
+81: 
+82: #endif	// !defined _WIN32
+## struct fontheader_s @ code\renderercommon\new\tr_types_new.h:40
+40: typedef struct fontheader_sgl_s
+41: {
+42:     int               indirection[256];
+43:     letterloc_t       locations[256];
+44:     char              name[64];
+45:     float             height;
+46:     float             aspectRatio;
+47:     void              *shader;
+48:     int               trhandle; // the last renderer handle this font used
+49: } fontheader_sgl_t;
+50: 
+51: typedef struct {
+52:     unsigned short cp;
+53:     unsigned char index;
+54:     unsigned char loc;
+55: } fontchartable_t;
+56: 
+57: typedef struct fontheader_s {
+58:     int numPages;
+59:     int charTableLength;
+60:     fontchartable_t* charTable;
+61:     short codePage;
+62:     fontheader_sgl_t* sgl[32];
+63:     char name[64];
+64: } fontheader_t;
+65: 
+66: typedef enum {
+67:     lensflare = (1 << 0),
+68:     viewlensflare = (1 << 1),
+69:     additive = (1 << 2)
+70: } dlighttype_t;
+71: 
+72: #if !defined _WIN32
+73: 
+74: #define _3DFX_DRIVER_NAME	"libMesaVoodooGL.so.3.1"
+75: #define OPENGL_DRIVER_NAME	"libGL.so"
+76: 
+77: #else
+78: 
+79: #define _3DFX_DRIVER_NAME	"3dfxvgl"
+80: #define OPENGL_DRIVER_NAME	"opengl32"
+## struct fontheader_s @ code\renderercommon\new\tr_types_new.h:57
+57: typedef struct fontheader_s {
+58:     int numPages;
+59:     int charTableLength;
+60:     fontchartable_t* charTable;
+61:     short codePage;
+62:     fontheader_sgl_t* sgl[32];
+63:     char name[64];
+64: } fontheader_t;
+65: 
+66: typedef enum {
+67:     lensflare = (1 << 0),
+68:     viewlensflare = (1 << 1),
+69:     additive = (1 << 2)
+70: } dlighttype_t;
+71: 
+72: #if !defined _WIN32
+73: 
+74: #define _3DFX_DRIVER_NAME	"libMesaVoodooGL.so.3.1"
+75: #define OPENGL_DRIVER_NAME	"libGL.so"
+76: 
+77: #else
+78: 
+79: #define _3DFX_DRIVER_NAME	"3dfxvgl"
+80: #define OPENGL_DRIVER_NAME	"opengl32"
+81: 
+82: #endif	// !defined _WIN32
+## struct fontheader_sgl_s @ code\renderercommon\new\tr_types_new.h:40
+40: typedef struct fontheader_sgl_s
+41: {
+42:     int               indirection[256];
+43:     letterloc_t       locations[256];
+44:     char              name[64];
+45:     float             height;
+46:     float             aspectRatio;
+47:     void              *shader;
+48:     int               trhandle; // the last renderer handle this font used
+49: } fontheader_sgl_t;
+50: 
+51: typedef struct {
+52:     unsigned short cp;
+53:     unsigned char index;
+54:     unsigned char loc;
+55: } fontchartable_t;
+56: 
+57: typedef struct fontheader_s {
+58:     int numPages;
+59:     int charTableLength;
+60:     fontchartable_t* charTable;
+61:     short codePage;
+62:     fontheader_sgl_t* sgl[32];
+63:     char name[64];
+64: } fontheader_t;
+65: 
+66: typedef enum {
+67:     lensflare = (1 << 0),
+68:     viewlensflare = (1 << 1),
+69:     additive = (1 << 2)
+70: } dlighttype_t;
+71: 
+72: #if !defined _WIN32
+73: 
+74: #define _3DFX_DRIVER_NAME	"libMesaVoodooGL.so.3.1"
+75: #define OPENGL_DRIVER_NAME	"libGL.so"
+76: 
+77: #else
+78: 
+79: #define _3DFX_DRIVER_NAME	"3dfxvgl"
+80: #define OPENGL_DRIVER_NAME	"opengl32"
+## R_LoadFont\s*\( @ code\cgame\cg_main.c:582
+582:     cgs.media.objectiveFont            = cgi.R_LoadFont("facfont-20"); // was courier-16 before 2.0
+583:     cgs.media.objectivesBackShader     = cgi.R_RegisterShaderNoMip("textures/hud/objectives_backdrop");
+584:     cgs.media.checkedBoxShader         = cgi.R_RegisterShaderNoMip("textures/objectives/filledbox");
+585:     cgs.media.uncheckedBoxShader       = cgi.R_RegisterShaderNoMip("textures/objectives/emptybox");
+586: 
+587:     // go through all the configstrings and process them
+588:     for (i = CS_SYSTEMINFO + 1; i < MAX_CONFIGSTRINGS; i++) {
+589:         CG_ProcessConfigString(i, qfalse);
+590:     }
+591: }
+592: 
+593: //===========================================================================
+594: 
+595: /*
+596: =================
+597: CG_ConfigString
+598: =================
+599: */
+600: const char *CG_ConfigString(int index)
+601: {
+602:     if (index < 0 || index >= MAX_CONFIGSTRINGS) {
+603:         cgi.Error(ERR_DROP, "CG_ConfigString: bad index: %i", index);
+604:     }
+605:     return cgs.gameState.stringData + cgs.gameState.stringOffsets[index];
+606: }
+607: 
+608: //==================================================================
+609: 
+610: void CG_GetRendererConfig(void)
+611: {
+612:     // get the rendering configuration from the client system
+613:     cgi.GetGlconfig(&cgs.glconfig);
+614:     cgs.screenXScale = cgs.glconfig.vidWidth / 640.0;
+615:     cgs.screenYScale = cgs.glconfig.vidHeight / 480.0;
+616:     cgi.UI_GetHighResolutionScale(cgs.uiHiResScale);
+617: }
+618: 
+619: /*
+620: ======================
+621: CG_GameStateReceived
+622: 
+## R_LoadFont\s*\( @ code\renderergl1\tr_font.cpp:300
+300: fontheader_t* R_LoadFont(const char* name) {
+301:     int i;
+302:     char* theFile;
+303:     fontheader_t* header;
+304:     char* ref;
+305:     const char* token;
+306:     qboolean error;
+307:     char* pRitFontNames[32];
+308: 
+309:     error = qfalse;
+310: 
+311:     for (i = 0; i < s_numLoadedFonts; i++)
+312:     {
+313:         header = &s_loadedFonts[i];
+314:         if (!Q_stricmp(name, header->name)) {
+315:             return header;
+316:         }
+317:     }
+318: 
+319:     if (s_numLoadedFonts >= MAX_LOADED_FONTS)
+320:     {
+321:         ri.Printf(PRINT_WARNING, "LoadFont: Too many fonts loaded!  Couldn't load %s\n", name);
+322:         return NULL;
+323:     }
+324: 
+325:     if (ri.FS_ReadFile(va("fonts/%s.RitualFont", name), (void**)&theFile) == -1)
+326:     {
+327:         ri.Printf(PRINT_WARNING, "LoadFont: Couldn't load font %s\n", name);
+328:         return NULL;
+329:     }
+330: 
+331:     memset(pRitFontNames, 0, sizeof(pRitFontNames));
+332:     ref = theFile;
+333:     header = &s_loadedFonts[s_numLoadedFonts];
+334: 
+335:     token = COM_Parse(&ref);
+336:     if (Q_stricmp(token, "RitFontList"))
+337:     {
+338:         if (Q_stricmp(token, "RitFont"))
+339:         {
+340:             ri.Printf(PRINT_WARNING, "LoadFont: Not actual font %s\n", name);
+## R_LoadFont\s*\( @ code\renderergl2\tr_font.cpp:300
+300: fontheader_t* R_LoadFont(const char* name) {
+301:     int i;
+302:     char* theFile;
+303:     fontheader_t* header;
+304:     char* ref;
+305:     const char* token;
+306:     qboolean error;
+307:     char* pRitFontNames[32];
+308: 
+309:     error = qfalse;
+310: 
+311:     for (i = 0; i < s_numLoadedFonts; i++)
+312:     {
+313:         header = &s_loadedFonts[i];
+314:         if (!Q_stricmp(name, header->name)) {
+315:             return header;
+316:         }
+317:     }
+318: 
+319:     if (s_numLoadedFonts >= MAX_LOADED_FONTS)
+320:     {
+321:         ri.Printf(PRINT_WARNING, "LoadFont: Too many fonts loaded!  Couldn't load %s\n", name);
+322:         return NULL;
+323:     }
+324: 
+325:     if (ri.FS_ReadFile(va("fonts/%s.RitualFont", name), (void**)&theFile) == -1)
+326:     {
+327:         ri.Printf(PRINT_WARNING, "LoadFont: Couldn't load font %s\n", name);
+328:         return NULL;
+329:     }
+330: 
+331:     memset(pRitFontNames, 0, sizeof(pRitFontNames));
+332:     ref = theFile;
+333:     header = &s_loadedFonts[s_numLoadedFonts];
+334: 
+335:     token = COM_Parse(&ref);
+336:     if (Q_stricmp(token, "RitFontList"))
+337:     {
+338:         if (Q_stricmp(token, "RitFont"))
+339:         {
+340:             ri.Printf(PRINT_WARNING, "LoadFont: Not actual font %s\n", name);
+XBE 5431296 / ISO 667811840

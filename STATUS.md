@@ -706,3 +706,8 @@
 - 18s xemu: ui 1 / 1b / 1c (dev=0) t=2752-2753, ui 2 nunca -> trava no bloco View3D (new/bottom/InitFrame facfont-20/setName/InitSubtitle)
 - Hipotese: fontheader dummy do renderer nulo (so name, metricas 0) -> laco de layout infinito
 - 18t: breadcrumbs 'LG: v3 new/bottom/initframe/name' (+4 -0); coleta View3D/InitFrame/UIFont/lg_null_LoadFont em lote18t-view3d.log
+
+## Lote 18u (2026-10-27 11:12)
+- 18t xemu: v3 new/bottom/initframe/name OK (t=2721-2724), ui 2 nunca -> trava em View3D::InitSubtitle (cl_uiview3d.cpp:806, laco getCharWidth A..Z)
+- Hipotese: fontheader dummy (so name) -> getCharWidth le tabela/ponteiro NULL -> congelamento
+- 18u: sob NXDK totalWidth=260 (avWidth 10), laco pulado (+4 -0); coleta getCharWidth/fontheader_t em lote18u-subtitle.log p/ fonte dummy real
