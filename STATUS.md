@@ -738,3 +738,8 @@
 - 18y: coleta statemap.cpp vazia (arquivo fora de code\fgame)
 - 18z: origem Unknown condition + tabela m_conditions x condicoes dos .st Alice (faltam=55) em docs/probes/lote18z-condicoes.log, sem build
 - Plano 18z2: condicao desconhecida -> aviso 'LG: st? X' + condicao sempre falsa sob NXDK
+
+## Lote 18z2 (2026-10-27 13:44)
+- 18z: Unknown condition = characterstate.cpp:136-145 (addCondition==0 -> gi.Error ERR_DROP)
+- 18z: tabela m_conditions nao achada (offset -1) -> 'faltam 55' = todas as usadas, lista invalida
+- 18z2: sob NXDK aviso 'LG: st? X' (5 max) + condition_index 0 mantido; getResult retorna false se cond index 0 (+7 -0)

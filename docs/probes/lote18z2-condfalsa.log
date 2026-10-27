@@ -1,0 +1,43 @@
+# Lote 18z2 - condicao desconhecida = falsa
+## getResult (antes)
+151: bool Expression::getResult(State& state, Entity& ent, Container<Conditional *> *sent_conditionals)
+152: {
+153:     int          i;
+154:     condition_t *cond;
+155:     Conditional *conditional;
+156: 
+157:     for (i = 1; i <= conditions.NumObjects(); i++) {
+158:         cond        = &conditions.ObjectAt(i);
+159:         conditional = sent_conditionals->ObjectAt(cond->condition_index);
+160: 
+161:         if (!conditional || !conditional->getResult(cond->test, ent)) {
+162:             return false;
+163:         }
+164:     }
+165: 
+166:     return true;
+167: }
+168: 
+169: void State::readNextState(Script& script)
+170: {
+171:     nextState = script.GetToken(false);
+172: }
+173: 
+174: void State::readMoveType(Script& script)
+175: {
+176:     str          token;
+## parse (depois)
+137:         if (!condition.condition_index) {
+138: #ifdef NXDK
+139:             { static int lg_n = 0; if (lg_n++ < 5) { gi.Printf("LG: st? %s\n", &token[start]); } } /* LG 18z2 */
+140: #else
+141:             gi.Error(
+142:                 ERR_DROP,
+143:                 "%s: Unknown condition '%s' on line %d.\n",
+144:                 script.Filename(),
+145:                 &token[start],
+146:                 script.GetLineNumber()
+147:             );
+148: #endif
+diff: 7	0	code/fgame/characterstate.cpp
+XBE 5431296 / ISO 667811840
