@@ -1,0 +1,7 @@
+# Lote 18p - inventory.txt opcional sob NXDK
+patch ja aplicado
+agora 4163: #ifdef NXDK /* LG 18p */
+agora 4164: if (FS_ReadFile(ui_inventoryfile->string, NULL) > 0) CL_LoadInventory(ui_inventoryfile->string, &client_inv);
+agora 4167: CL_LoadInventory(ui_inventoryfile->string, &client_inv);
+diff: 5	0	code/client/cl_ui.cpp
+XBE 5431296 / ISO 667811840

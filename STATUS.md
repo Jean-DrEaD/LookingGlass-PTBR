@@ -682,3 +682,10 @@
 - 18m xemu: fonte Verdana OK (erro sumiu); novo: 'Called FadeSound with: 0.000000' -> 'ERRO: Error during initialization' (Com_Error dentro do setjmp do Com_Init, msg perdida)
 - 18m: rerun do 4a quebrou o ';' da linha 76 -> restaurado via git checkout (regra: scripts de patch idempotentes)
 - 18n: Sys_Error de init imprime com_errorMessage (+1 -1)
+
+## Lote 18p (2026-10-27 10:33)
+- 18n xemu: erro real = '::LoadFile : Couldn't load global/inventory.txt' (FadeSound 0.0 = so a linha anterior)
+- 18o: unico chamador cl_ui.cpp:4163 (ui_inventoryfile, default MOHAA); Alice so tem global/inventory.scr vazio
+- 18p 1a: patch OK, mas trava esperava +4 -0; bloco #ifdef/if/else/#else/#endif = +5 -0 (linha original mantida no #else)
+- 18p: sob NXDK CL_LoadInventory so se FS_ReadFile > 0, senao 'LG: sem X (inventario vazio)' (+5 -0)
+- Pendente: inventario/HUD do Alice (formato proprio) em lote futuro

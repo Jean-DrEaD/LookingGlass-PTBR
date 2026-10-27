@@ -1,0 +1,18 @@
+# Probe 18p 2026-10-27 10:31 @ 25bb789 inventory opcional
+## LGSYS ok
+BUILD_EXIT=0
+## Objetos ok / falhos:
+503
+0
+## Erros por arquivo:
+## Top mensagens:
+## Linker (simbolos):
+## Falhou:
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
