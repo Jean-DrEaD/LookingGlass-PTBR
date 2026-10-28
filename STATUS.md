@@ -827,3 +827,8 @@
 - 18z8g: lg2d_gpufill = push manual (n<<18|subch 0<<13|mtd): 0x1D98 rect (x2-1<<16|x1, y2-1<<16|y1) + 0x1D8C zs/cor/trigger 0xF0 (RGBA)
 - 18z8g: lg2d_fill e clear do BeginFrame sem CPU; overlay 'LG 18z8g'; exe=True (docs/probes/lote18z8g-gpufill.log)
 - Esperado xemu: ocioso ~60 fps (vbl), fade sem queda; cores iguais ao 18z8d
+
+## Lote 18z8h (2026-10-28 17:02)
+- 18z8g xemu: MARCO - fill/clear GPU OK: ocioso 60-61 fps (era 22), fade 60 fps (era 4); cores corretas
+- 18z8g: queda pontual fps 8 com game=86 ms (vbl 11, fin 0) = hitch do jogo (load/shaders 3->19), NAO do renderer
+- 18z8h: coleta p/ StretchPic texturizado (tr_null registro, loaders GL1, upload/quad/blend do renderernv2a, imagens ui nos pk3) em docs/probes/lote18z8h-textura.log, sem build

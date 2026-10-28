@@ -1,0 +1,138 @@
+# Lote 18z8h - coleta textura 2D 2026-10-28 17:02
+## tr_null.c registro/desenho
+code\renderernull\tr_null.c:42: static unsigned int lg2d_nfill = 0, lg2d_ndraw = 0, lg2d_nalpha = 0, lg2d_nsh0 = 0, lg2d_ncol = 0;
+code\renderernull\tr_null.c:44: static char lg2d_shn[512][64]; static int lg2d_nsh = 0;
+code\renderernull\tr_null.c:45: static qhandle_t LG2D_RegisterShader(const char *name) {
+code\renderernull\tr_null.c:48: for (i = 0; i < lg2d_nsh; i++) if (!Q_stricmp(lg2d_shn[i], name)) return (qhandle_t)(i + 1);
+code\renderernull\tr_null.c:49: if (lg2d_nsh >= 512) return 1;
+code\renderernull\tr_null.c:50: Q_strncpyz(lg2d_shn[lg2d_nsh], name, 64);
+code\renderernull\tr_null.c:51: return (qhandle_t)(++lg2d_nsh);
+code\renderernull\tr_null.c:62: static DWORD lg2d_mk(int shader) {
+code\renderernull\tr_null.c:64: if (shader <= 0) lg2d_nsh0++;
+code\renderernull\tr_null.c:115: pb_printat(1, 0, "fill %u draw %u alpha %u sh0 %u", lg2d_nfill, lg2d_ndraw, lg2d_nalpha, lg2d_nsh0);
+code\renderernull\tr_null.c:116: pb_printat(2, 0, "setcolor %u shaders %u", lg2d_ncol, (unsigned int)lg2d_nsh);
+code\renderernull\tr_null.c:118: lg2d_nfill = lg2d_ndraw = lg2d_nalpha = lg2d_nsh0 = lg2d_ncol = 0;
+code\renderernull\tr_null.c:125: static void LG2D_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t shader) {
+code\renderernull\tr_null.c:127: lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+code\renderernull\tr_null.c:129: static void LG2D_DrawStretchPic2(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float sx, float sy, qhandle_t shader) {
+code\renderernull\tr_null.c:131: lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+code\renderernull\tr_null.c:133: static void LG2D_DrawTilePic(float x, float y, float w, float h, qhandle_t shader) {
+code\renderernull\tr_null.c:134: lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+code\renderernull\tr_null.c:137: lg2d_fill(x, y, w, h, lg2d_mk(0));
+code\renderernull\tr_null.c:198: LG_SET(DrawStretchPic, LG2D_DrawStretchPic);
+code\renderernull\tr_null.c:199: LG_SET(DrawStretchPic2, LG2D_DrawStretchPic2);
+code\renderernull\tr_null.c:200: LG_SET(DrawTilePic, LG2D_DrawTilePic);
+code\renderernull\tr_null.c:202: LG_SET(RegisterShader, LG2D_RegisterShader);
+code\renderernull\tr_null.c:203: LG_SET(RegisterShaderNoMip, LG2D_RegisterShader);
+## GL1 loaders de imagem
+code\renderergl1\tr_image.c:2399: static void R_LoadImage(const char* name, byte** pic, int* width, int* height, qboolean* hasAlpha, int* glCompressMode, int* numMipmaps, int* piMipmapsAvailable) {
+code\renderergl1\tr_image.c:3276: qboolean R_LoadRawImage(const char *name, byte **pic, int *width, int *height)
+code\renderergl1\tr_local.h:1813: qboolean R_LoadRawImage(const char *name, byte **pic, int *width, int *height);
+## GL1 extensoes de imagem
+code\renderergl1\tr_image.c:2429: if (!Q_stricmp(name + len - 4, ".tga") || !Q_stricmp(name + len - 4, ".jpg")) {
+code\renderergl1\tr_image.c:2454: else if (!Q_stricmp(name + len - 4, ".jpg")) {
+code\renderergl1\tr_shader.c:3475: COM_DefaultExtension( fileName, sizeof( fileName ), ".tga" );
+## nv2a textura (upload/bind)
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:243: /* ioq3 rounds non-power-of-two images down (r_roundImagesDown); NV2A swizzle needs it. */
+ioq3\code\renderernv2a\xbox_nv2a.c:167: /* NV097_SET_TEXTURE_FILTER min/mag: TENT_LOD0 is GL_LINEAR, TENT_NEARESTLOD ioq3's default
+ioq3\code\renderernv2a\xbox_nv2a.c:329: static unsigned int XboxNV2ASwizzledOffset(unsigned int x, unsigned int y,
+ioq3\code\renderernv2a\xbox_nv2a.c:541: p = xgu_set_texture_offset(p, unit, (void *)((uint32_t)image->memory & 0x03ffffff));
+ioq3\code\renderernv2a\xbox_nv2a.c:542: p = xgu_set_texture_format(p, unit, 2, false, XGU_SOURCE_COLOR, 2, image->format,
+ioq3\code\renderernv2a\xbox_nv2a.c:545: p = xgu_set_texture_address(p, unit, address, false, address, false, address, false,
+ioq3\code\renderernv2a\xbox_nv2a.c:548: p = xgu_set_texture_control0(p, unit, true, 0, XBOX_NV2A_MAX_LOD_CLAMP);
+ioq3\code\renderernv2a\xbox_nv2a.c:549: p = xgu_set_texture_filter(p, unit, 0, XGU_TEXTURE_CONVOLUTION_QUINCUNX,
+ioq3\code\renderernv2a\xbox_nv2a.c:649: if (format == XGU_TEXTURE_FORMAT_R5G6B5_SWIZZLED)
+ioq3\code\renderernv2a\xbox_nv2a.c:697: static void XboxNV2AUploadLevel(byte *memory, const byte *rgba, int width, int height,
+ioq3\code\renderernv2a\xbox_nv2a.c:713: unsigned int swizzled = XboxNV2ASwizzledOffset((unsigned int)x, (unsigned int)y,
+ioq3\code\renderernv2a\xbox_nv2a.c:717: ((uint32_t *)memory)[swizzled] = ((uint32_t)texel[3] << 24) |
+ioq3\code\renderernv2a\xbox_nv2a.c:720: ((uint16_t *)memory)[swizzled] = XboxNV2APackTexel(texel, format);
+ioq3\code\renderernv2a\xbox_nv2a.c:756: format = XGU_TEXTURE_FORMAT_DXT1;
+ioq3\code\renderernv2a\xbox_nv2a.c:758: format = XGU_TEXTURE_FORMAT_DXT5;
+ioq3\code\renderernv2a\xbox_nv2a.c:760: format = alpha ? XGU_TEXTURE_FORMAT_A8R8G8B8_SWIZZLED :
+ioq3\code\renderernv2a\xbox_nv2a.c:761: XGU_TEXTURE_FORMAT_X8R8G8B8_SWIZZLED;
+ioq3\code\renderernv2a\xbox_nv2a.c:763: format = alpha ? XGU_TEXTURE_FORMAT_A4R4G4B4_SWIZZLED :
+ioq3\code\renderernv2a\xbox_nv2a.c:764: XGU_TEXTURE_FORMAT_R5G6B5_SWIZZLED;
+ioq3\code\renderernv2a\xbox_nv2a.c:788: XboxNV2AUploadLevel(image->memory, rgba, width, height, storage, format);
+ioq3\code\renderernv2a\xbox_nv2a.c:797: XboxNV2AUploadLevel(memory, rgba, w, h, storage, format);
+ioq3\code\renderernv2a\xbox_nv2a.c:805: /* The GPU must not fetch a WC texture before its upload has completed. */
+ioq3\code\renderernv2a\xbox_nv2a.c:2353: xboxNV2ATexturePool = MmAllocateContiguousMemoryEx(
+ioq3\code\renderernv2a\xbox_nv2a.c:2356: xboxNV2AVertexMemory = MmAllocateContiguousMemoryEx(
+ioq3\code\renderernv2a\xbox_nv2a.c:2678: /* ioq3 RE_UploadCinematic: a new size reallocates, otherwise only dirty frames are copied. */
+ioq3\code\renderernv2a\xbox_nv2a.c:2679: void XboxNV2A_UploadCinematic(int cols, int rows, const byte *data, int client,
+ioq3\code\renderernv2a\xbox_nv2a.c:2682: static unsigned int swizzleX[XBOX_NV2A_MAX_TEXTURE_SIZE];
+ioq3\code\renderernv2a\xbox_nv2a.c:2683: static unsigned int swizzleY[XBOX_NV2A_MAX_TEXTURE_SIZE];
+ioq3\code\renderernv2a\xbox_nv2a.c:2699: xboxNV2APerf.midWaitTicks += XboxNV2AWaitIdle("cinematic upload");
+ioq3\code\renderernv2a\xbox_nv2a.c:2704: image->memory = MmAllocateContiguousMemoryEx((size_t)cols * (size_t)rows * 4, 0,
+ioq3\code\renderernv2a\xbox_nv2a.c:2714: image->format = XGU_TEXTURE_FORMAT_X8R8G8B8_SWIZZLED;
+ioq3\code\renderernv2a\xbox_nv2a.c:2717: /* x and y bits never share a swizzled bit, so one table per axis is enough. */
+ioq3\code\renderernv2a\xbox_nv2a.c:2719: swizzleX[x] = XboxNV2ASwizzledOffset((unsigned int)x, 0, (unsigned int)cols,
+ioq3\code\renderernv2a\xbox_nv2a.c:2722: swizzleY[y] = XboxNV2ASwizzledOffset(0, (unsigned int)y, (unsigned int)cols,
+ioq3\code\renderernv2a\xbox_nv2a.c:2729: texels[swizzleY[y] | swizzleX[x]] = 0xff000000u | ((uint32_t)rgba[0] << 16) |
+ioq3\code\renderernv2a\xbox_nv2a.c:2754: XboxNV2A_UploadCinematic(cols, rows, data, client, dirty);
+ioq3\code\renderernv2a\xbox_nv2a.h:320: void XboxNV2A_UploadCinematic(int cols, int rows, const byte *data, int client,
+## nv2a quad 2D
+ioq3\code\renderernv2a\xbox_nv2a.c:1599: xgux_draw_elements16(XGU_TRIANGLES, elements, count);
+ioq3\code\renderernv2a\xbox_nv2a.c:1681: XboxNV2ADrawVertices(XGU_QUADS, xboxNV2AVertexUsed, count);
+ioq3\code\renderernv2a\xbox_nv2a.c:2301: xgux_set_attrib_pointer((XguVertexArray)i, XGU_FLOAT, 0, 0, NULL);
+ioq3\code\renderernv2a\xbox_nv2a.c:2302: xgux_set_attrib_pointer(XGU_VERTEX_ARRAY, XGU_FLOAT, 3, sizeof(*v),
+ioq3\code\renderernv2a\xbox_nv2a.c:2304: xgux_set_attrib_pointer(XGU_COLOR_ARRAY, XBOX_NV2A_VERTEX_UB_OGL, 4, sizeof(*v),
+ioq3\code\renderernv2a\xbox_nv2a.c:2306: xgux_set_attrib_pointer(XGU_TEXCOORD0_ARRAY, XGU_FLOAT, 2, sizeof(*v),
+ioq3\code\renderernv2a\xbox_nv2a.c:2308: xgux_set_attrib_pointer(XGU_TEXCOORD1_ARRAY, XGU_FLOAT, 2, sizeof(*v),
+ioq3\code\renderernv2a\xbox_nv2a.c:2565: XboxNV2ADrawVertices(XGU_TRIANGLES, xboxNV2AVertexUsed,
+ioq3\code\renderernv2a\xbox_nv2a.c:2635: /* ioq3 RB_StretchPic: quads batch in the tess until the shader changes. */
+ioq3\code\renderernv2a\xbox_nv2a.c:2636: void XboxNV2A_DrawStretchPic(float x, float y, float w, float h,
+ioq3\code\renderernv2a\xbox_nv2a.c:2784: XboxNV2ADrawVertices(XGU_QUADS, xboxNV2AVertexUsed, 4);
+ioq3\code\renderernv2a\xbox_nv2a.h:318: void XboxNV2A_DrawStretchPic(float x, float y, float w, float h,
+## nv2a combiner/blend
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:312: static unsigned int XboxShaderBlendFactor(const char *name)
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:493: stage->srcBlend = GL_ONE;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:494: stage->dstBlend = GL_ZERO;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:526: } else if (!Q_stricmp(token, "blendFunc")) {
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:529: stage->srcBlend = GL_ONE;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:530: stage->dstBlend = GL_ONE;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:532: stage->srcBlend = GL_DST_COLOR;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:533: stage->dstBlend = GL_ZERO;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:534: } else if (!Q_stricmp(token, "blend")) {
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:535: stage->srcBlend = GL_SRC_ALPHA;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:536: stage->dstBlend = GL_ONE_MINUS_SRC_ALPHA;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:538: stage->srcBlend = XboxShaderBlendFactor(token);
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:539: stage->dstBlend = XboxShaderBlendFactor(COM_ParseExt(text, qfalse));
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:541: /* ioq3 clears the depth mask for blended stages. */
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:581: /* ioq3: GL_ONE GL_ZERO disables blending and writes depth. */
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:582: if (stage->srcBlend == GL_ONE && stage->dstBlend == GL_ZERO)
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:691: return XBOX_NV2A_SORT_BLEND1;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:772: /* ioq3 FinishShader: polygonOffset sorts as a decal first, then a blended first stage. */
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:778: else if (def->numStages && (first->srcBlend != GL_ONE || first->dstBlend != GL_ZERO))
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:780: XBOX_NV2A_SORT_BLEND0;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:795: qboolean firstBlended = first->srcBlend != GL_ONE || first->dstBlend != GL_ZERO;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:800: unsigned int src = stage->srcBlend;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:801: unsigned int dst = stage->dstBlend;
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:803: if (!firstBlended || (src == GL_ONE && dst == GL_ZERO))
+ioq3\code\renderernv2a\xbox_nv2a_shader.c:805: /* Only blends whose contribution goes to 0 with the colour can fade. */
+## pk3: imagens ui/ e gfx/2d (amostra)
+fonts/backup/asrafel.tga: 262188 (7728)
+fonts/backup/courier-14.tga: 65554 (7728)
+gfx/2d/backtile.tga: 12332 (7728)
+gfx/2d/fonts/asrafel-30.tga: 262188 (7728)
+gfx/2d/fonts/asrafel.tga: 262188 (7728)
+gfx/2d/fonts/courier-10.tga: 65554 (7728)
+gfx/2d/fonts/courier-14.tga: 131090 (7728)
+gfx/2d/fonts/marlett.tga: 65554 (7728)
+gfx/2d/fonts/verdana-12.tga: 65554 (7728)
+gfx/2d/legalplate.tga: 196652 (7728)
+gfx/2d/mouse_arrow.tga: 2092 (7728)
+gfx/2d/proj_lobe.tga: 16444 (7728)
+gfx/2d/talkmenu.tga: 49196 (7728)
+ui/back_button.tga: 26540 (7728)
+ui/back_button_glow.tga: 26540 (7728)
+textures/menu/arrow_down.ftx: 2060 (3368)
+textures/menu/arrow_left.ftx: 2060 (3368)
+textures/menu/arrow_left_sel.ftx: 2060 (3368)
+textures/menu/arrow_right.ftx: 2060 (3368)
+textures/menu/arrow_right_sel.ftx: 2060 (3368)
+textures/menu/arrow_up.ftx: 2060 (3368)
+textures/menu/slider_thumb.ftx: 2060 (3368)
+textures/menu/slider_thumb_sel.ftx: 2060 (3368)
+ui/control/head_1_vf.tga: 262188 (25)
+ui/control/head_2_vf.tga: 49196 (25)
+ui/control/vf_options.tga: 8236 (25)
