@@ -781,3 +781,10 @@
 - 18z6c xemu: MARCO - CLIENTE NO JOGO: 'Client 0 (IP: localhost) is connecting' (loopback) -> FS restart (9 pk3/45604) -> CL_InitCGame 0.06 s -> autosave centipede10001 'Game Saved' -> heartbeat 1451..1547
 - cgame estatico OK (XBE 6139904); Allied/Axis model invalid = cvars MP do MOHAA, inofensivo
 - Proximos: (a) confirmar heartbeat estavel pos-save; (b) renderer NV2A (2D: fonte/shader/StretchPic) no lugar do nulo; (c) input xbox_input (pad); (d) audio xbox_snd; (e) limpeza dos avisos LG:
+
+## Lote 18z8a (2026-10-28 10:39)
+- 18z7a xemu: heartbeat ESTAVEL pos-save 1726..5366 (t=34-75 s, +182/2s ~91 fps, renderer nulo)
+- Decisao: input DEPOIS do grafico; ordem = NV2A 2D -> input -> audio -> limpeza LG:
+- 18z8a 1a: '-f' dentro de Add(a -f x, y) = virgula vira argumento do metodo -> regra: Add((fmt -f x, y))
+- 18z8a 2a: Get-ChildItem -Include sem -Recurse = vazio -> Path nulo; regra: -Include sempre com -Recurse + helper que tolera lista vazia
+- 18z8a: coleta refexport_t, uso re.* 2D, fonte GL1, renderernv2a/xbox_ref.c/init pbkit, build ioQ3, tr_null.c (docs/probes/lote18z8a-nv2a2d.log), sem build

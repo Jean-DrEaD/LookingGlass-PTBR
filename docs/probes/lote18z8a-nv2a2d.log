@@ -1,0 +1,555 @@
+# Lote 18z8a - coleta renderer NV2A 2D 2026-10-28 10:39
+
+## refexport_t OpenMoHAA
+arquivo: D:\openmohaa\code\renderercommon\tr_public.h
+typedef struct {
+	// called before the library is unloaded
+	// if the system is just reconfiguring, pass destroyWindow = qfalse,
+	// which will keep the screen from flashing to the desktop.
+	void	(*Shutdown)( qboolean destroyWindow );
+
+	// All data that will be used in a level should be
+	// registered before rendering any frames to prevent disk hits,
+	// but they can still be registered at a later time
+	// if necessary.
+	//
+	// BeginRegistration makes any existing media pointers invalid
+	// and returns the current gl configuration, including screen width
+	// and height, which can be used by the client to intelligently
+	// size display elements
+	void	(*BeginRegistration)( glconfig_t *config );
+	qhandle_t (*RegisterModel)( const char *name );
+	qhandle_t (*RegisterSkin)( const char *name );
+	qhandle_t (*RegisterShader)( const char *name );
+	qhandle_t (*RegisterShaderNoMip)( const char *name );
+	void	(*LoadWorld)( const char *name );
+
+	// the vis data is a large enough block of data that we go to the trouble
+	// of sharing it with the clipmodel subsystem
+	void	(*SetWorldVisData)( const byte *vis );
+
+	// EndRegistration will draw a tiny polygon with each texture, forcing
+	// them to be loaded into card memory
+	void	(*EndRegistration)( void );
+
+	// a scene is built up by calls to R_ClearScene and the various R_Add functions.
+	// Nothing is drawn until R_RenderScene is called.
+	void	(*ClearScene)( void );
+	void	(*AddRefEntityToScene)( const refEntity_t *re, int parentEntityNumber );
+	qboolean(*AddPolyToScene)( qhandle_t hShader , int numVerts, const polyVert_t *verts, int num );
+	int		(*LightForPoint)( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir );
+	void	(*AddLightToScene)( const vec3_t org, float intensity, float r, float g, float b, int type );
+	void	(*AddAdditiveLightToScene)( const vec3_t org, float intensity, float r, float g, float b );
+	void	(*RenderScene)( const refdef_t *fd );
+
+	void	(*SetColor)( const float *rgba );	// NULL = 1,1,1,1
+
+	// Draw images for cinematic rendering, pass as 32 bit rgba
+	void	(*DrawStretchRaw) (int x, int y, int w, int h, int cols, int rows, int components, const byte* data);
+	void	(*UploadCinematic) (int w, int h, int cols, int rows, const byte *data, int client, qboolean dirty);
+
+	void	(*BeginFrame)( stereoFrame_t stereoFrame );
+
+	// if the pointers are not NULL, timing info will be returned
+	void	(*EndFrame)( int *frontEndMsec, int *backEndMsec );
+
+
+	int		(*MarkFragments)( int numPoints, const vec3_t *points, const vec3_t projection,
+				   int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t *fragmentBuffer, float fRadiusSquared );
+
+	int		(*LerpTag)( orientation_t *tag,  qhandle_t model, int startFrame, int endFrame, 
+					 float frac, const char *tagName );
+	void	(*ModelBounds)( qhandle_t model, vec3_t mins, vec3_t maxs );
+
+#ifdef __USEA3D
+	void    (*A3D_RenderGeometry) (void *pVoidA3D, void *pVoidGeom, void *pVoidMat, void *pVoidGeomStatus);
+#endif
+	void	(*RegisterFont)(const char *fontName, int pointSize, fontInfo_t *font);
+	void	(*RemapShader)(const char *oldShader, const char *newShader, const char *offsetTime);
+	qboolean (*GetEntityToken)( char *buffer, int size );
+	qboolean (*inPVS)( const vec3_t p1, const vec3_t p2 );
+
+	void (*TakeVideoFrame)( int h, int w, byte* captureBuffer, byte *encodeBuffer, qboolean motionJpeg );
+
+	//
+	// non-ioq3
+	//
+    qhandle_t(*SpawnEffectModel)(const char* name, vec3_t pos, vec3_t axis[3]);
+    qhandle_t(*RegisterServerModel)(const char* name);
+    void (*UnregisterServerModel)(qhandle_t model);
+    qhandle_t(*RefreshShaderNoMip)(const char* name);
+    void (*FreeModels)();
+
+    void (*PrintBSPFileSizes)();
+    int (*MapVersion)();
+
+    void (*AddRefSpriteToScene)(const refEntity_t* ent);
+    void (*AddTerrainMarkToScene)(int terrainIndex, qhandle_t hShader, int numVerts, const polyVert_t* verts, int renderfx);
+
+    refEntity_t* (*GetRenderEntity)(int entityNumber);
+    void    (*SavePerformanceCounters)();
+
+    void    (*Set2DWindow)(int x, int y, int w, int h, float left, float right, float bottom, float top, float n, float f);
+	void	(*DrawStretchPic) ( float x, float y, float w, float h, 
+		float s1, float t1, float s2, float t2, qhandle_t hShader );	// 0 = white
+	void	(*DrawStretchPic2)(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float sx, float sy, qhandle_t hShader);
+    void    (*DrawTilePic)(float x, float y, float w, float h, qhandle_t hShader);
+    void    (*DrawTilePicOffset)(float x, float y, float w, float h, qhandle_t hShader, int offsetX, int offsetY);
+    void    (*DrawTrianglePic)(const vec2_t vPoints[3], const vec2_t vTexCoords[3], qhandle_t hShader);
+    void    (*DrawBackground)(int cols, int rows, int bgr, uint8_t* data);
+
+    void    (*DebugLine)(const vec3_t start, const vec3_t end, float r, float g, float b, float alpha);
+    void    (*DrawBox)(float x, float y, float w, float h);
+    void    (*AddBox)(float x, float y, float w, float h);
+
+    void    (*Scissor)(int x, int y, int width, int height);
+    void    (*DrawLineLoop)(const vec2_t* points, int count, int stippleFactor, int stippleMask);
+   
+    int     (*MarkFragmentsForInlineModel)(clipHandle_t bmodel, const vec3_t vAngles, const vec3_t vOrigin, int numPoints,
+                const vec3_t* points, const vec3_t projection, int maxPoints, vec3_t pointBuffer,
+                int maxFragments, markFragment_t* fragmentBuffer, float fRadiusSquared);
+
+    void    (*GetInlineModelBounds)(int index, vec3_t mins, vec3_t maxs);
+    void    (*GetLightingForDecal)(vec3_t light, const vec3_t facing, const vec3_t origin);
+    void    (*GetLightingForSmoke)(vec3_t light, const vec3_t origin);
+    int     (*R_GatherLightSources)(const vec3_t pos, vec3_t* lightPos, vec3_t* lightIntensity, int maxLights);
+
+    float   (*ModelRadius)(qhandle_t handle);
+
+    dtiki_t*        (*R_Model_GetHandle)(qhandle_t handle);
+    void            (*DrawString)(fontheader_t* font, const char* text, float x, float y, int maxLen, const float *pvVirtualScreen);
+    float           (*GetFontHeight)(const fontheader_t* font);
+    float           (*GetFontStringWidth)(const fontheader_t* font, const char* string);
+    fontheader_t*   (*LoadFont)(const char* name);
+    void            (*SwipeBegin)(float thisTime, float life, qhandle_t hShader);
+    void            (*SwipePoint)(vec3_t point1, vec3_t point2, float time);
+    void            (*SwipeEnd)();
+    void            (*SetRenderTime)(int t);
+    float           (*Noise)(float x, float y, float z, double t);
+    qboolean        (*SetMode)(int mode, const glconfig_t* glConfig);
+    void            (*SetFullscreen)(qboolean fullScreen);
+    int             (*GetShaderWidth)(qhandle_t hShader);
+    int             (*GetShaderHeight)(qhandle_t hShader);
+	const char*		(*GetShaderName)(qhandle_t hShader);
+	const char*		(*GetModelName)(qhandle_t hModel);
+    const char*     (*GetGraphicsInfo)();
+    void            (*ForceUpdatePose)(refEntity_t* model);
+    orientation_t   (*TIKI_Orientation)(refEntity_t* model, int tagNum);
+    qboolean        (*TIKI_IsOnGround)(refEntity_t* model, int tagNum, float threshold);
+    void            (*SetFrameNumber)(int frameNumber);
+
+	qboolean (*ImageExists)(const char* name);
+	int (*CountTextureMemory)();
+
+    qboolean (*LoadRawImage)(const char *name, byte **pic, int *width, int *height);
+    void (*FreeRawImage)(byte *pic);
+
+    void (*Set2DInitialShaderTime)(float startTime);
+} refexport_t;
+
+## uso re.* (client/uilib/cgame)
+arquivos: 202
+   43  re.SetColor
+   39  cgi.LV_ConvertString
+   36  cgi.R_RegisterShader
+   36  cgi.R_SetColor
+   30  cgi.R_DrawStretchPic
+   25  re.DrawStretchPic
+   22  re.DrawTrianglePic
+   19  cgi.R_DrawString
+   17  cgi.R_RegisterShaderNoMip
+   16  uii.Rend_DrawPicStretched
+   11  uii.Rend_GetShaderWidth
+    9  uii.Rend_GetShaderHeight
+    9  cgi.Key_KeynumToBindString
+    8  cgi.MSG_ReadString
+    8  cgi.R_AddPolyToScene
+    7  cgi.R_AddRefEntityToScene
+    7  cgi.UI_FontStringWidth
+    6  cgi.R_GetShaderHeight
+    6  cgi.R_GetShaderWidth
+    6  re.GetShaderHeight
+    6  re.DrawBox
+    6  re.GetShaderWidth
+    5  cgi.R_AddLightToScene
+    5  cgi.R_LoadFont
+    5  uii.Rend_SetColor
+    5  cgi.R_AddRefSpriteToScene
+    4  cgi.R_DrawBox
+    4  cgi.CM_BoxTrace
+    4  re.DrawTilePic
+    3  uii.Cvar_GetString
+    3  cgi.Anim_NumFrames
+    2  uii.Key_KeynumToString
+    2  uii.Rend_LoadFont
+    2  cgi.Anim_Frametime
+    2  re.DrawStretchRaw
+    2  uii.Rend_Scissor
+    2  re.EndFrame
+    2  cgi.Alias_Clear
+    1  re.SetFrameNumber
+    1  re.AddRefEntityToScene
+    1  uii.Rend_DrawPicStretched2
+    1  cgi.S_ClearLoopingSounds
+    1  uii.Rend_DrawString
+    1  cgi.R_ClearScene
+    1  re.RenderScene
+    1  re.ClearScene
+    1  cgi.GetShader
+    1  re.RegisterShader
+    1  re.BeginFrame
+    1  cgi.CM_TransformedBoxTrace
+    1  cgi.R_RenderScene
+    1  cgi.CL_ClearSavedCgameState
+    1  re.AddPolyToScene
+    1  cgi.Cmd_TokenizeString
+    1  re.Scissor
+    1  re.AddBox
+    1  uii.Rend_ImageExists
+    1  uii.Rend_DrawPicTiled
+    1  cgi.Frame_Commands
+    1  cgi.CM_TempBoxModel
+
+## fonte GL1 (DrawString/LoadFont)
+code\renderergl1\tr_backend.c:994: void	RB_SetGL2D (void) {
+code\renderergl1\tr_cmds.c:333: void RE_BeginFrame( stereoFrame_t stereoFrame ) {
+code\renderergl1\tr_cmds.c:508: void RE_EndFrame( int *frontEndMsec, int *backEndMsec ) {
+code\renderergl1\tr_font.cpp:300: fontheader_t* R_LoadFont(const char* name) {
+code\renderergl1\tr_font.cpp:551: void R_DrawString_sgl(fontheader_sgl_t* font, const char* text, float x, float y, int maxlen, const float *pvVirtualScreen) {
+code\renderergl1\tr_font.cpp:696: void R_DrawString(fontheader_t* font, const char* text, float x, float y, int maxlen, const float *pvVirtualScreen) {
+code\renderergl1\tr_font.cpp:888: void R_DrawFloatingString(fontheader_t* font, const char* text, const vec3_t org, const vec4_t color, float scale, int maxlen) {
+code\renderergl1\tr_local.h:1776: void		RE_BeginFrame( stereoFrame_t stereoFrame );
+code\renderergl1\tr_local.h:2110: fontheader_t* R_LoadFont(const char* name);
+code\renderergl1\tr_local.h:2112: void R_DrawString(fontheader_t* font, const char* text, float x, float y, int maxlen, const float *pvVirtualScreen);
+code\renderergl1\tr_local.h:2113: void R_DrawFloatingString(fontheader_t* font, const char* text, const vec3_t org, const vec4_t color, float scale, int maxlen);
+code\renderergl1\tr_local.h:2510: void RE_BeginFrame( stereoFrame_t stereoFrame );
+code\renderergl1\tr_local.h:2511: void RE_EndFrame( int *frontEndMsec, int *backEndMsec );
+
+## renderernv2a (ioQ3-Xbox)
+    8586  xbox_nv2a_dxt.c
+    3276  xbox_nv2a_dxt.c.d
+   45669  xbox_nv2a_dxt.obj
+    7023  xbox_nv2a_fp.inl
+     401  xbox_nv2a_fp.ps
+   16366  xbox_nv2a_model.c
+    4081  xbox_nv2a_model.c.d
+   32577  xbox_nv2a_model.obj
+   30986  xbox_nv2a_shader.c
+    3758  xbox_nv2a_shader.c.d
+   73105  xbox_nv2a_shader.obj
+    9765  xbox_nv2a_sky.c
+    3665  xbox_nv2a_sky.c.d
+   29259  xbox_nv2a_sky.obj
+    1264  xbox_nv2a_vp.inl
+     592  xbox_nv2a_vp.vs.cg
+   51770  xbox_nv2a_world.c
+    4081  xbox_nv2a_world.c.d
+  110450  xbox_nv2a_world.obj
+  140611  xbox_nv2a.c
+    6924  xbox_nv2a.c.d
+   12935  xbox_nv2a.h
+  366076  xbox_nv2a.obj
+
+## xbox_ref.c + init pbkit
+arquivo: D:\ioQuake3-Xbox\code\sys\xbox_ref.c
+/* Minimal in-process ref API for the native Xbox renderer shell. */
+#include "../qcommon/q_shared.h"
+#include "../renderercommon/tr_public.h"
+#include "../renderernv2a/xbox_nv2a.h"
+#include "sys_xbox.h"
+
+#include <stdlib.h>
+#include <string.h>
+
+/* The ioq3 image loaders (tr_image_*.c) read this global. */
+refimport_t ri;
+
+static refexport_t xboxRefExport;
+
+/* Decoded images are transient; keep them out of the 8 MiB zone. Only the image loaders call this. */
+static void *XboxRefMalloc(int bytes)
+{
+	void *memory = malloc((size_t)(bytes > 0 ? bytes : 1));
+
+	if (!memory) {
+		Sys_XboxMemoryReport("at image decode failure");
+		ri.Error(ERR_DROP, "Xbox ref: out of memory for %d bytes", bytes);
+	}
+	Sys_XboxNoteDecodeMemory();
+	return memory;
+}
+
+static void XboxRefFree(void *memory)
+{
+	free(memory);
+}
+
+static qhandle_t XboxRefRegisterShader(const char *name)
+{
+	return XboxNV2AShader_Register(name, qtrue);
+}
+
+static qhandle_t XboxRefRegisterShaderNoMip(const char *name)
+{
+	return XboxNV2AShader_Register(name, qfalse);
+}
+
+static void XboxRefShutdown(qboolean destroyWindow)
+{
+	XboxNV2A_Shutdown(destroyWindow);
+}
+
+static void XboxRefBeginRegistration(glconfig_t *config)
+{
+	XboxNV2A_BeginRegistration(config);
+}
+
+static qhandle_t XboxRefRegisterModel(const char *name)
+{
+	return XboxNV2AModel_Register(name);
+}
+
+static qhandle_t XboxRefRegisterSkin(const char *name)
+{
+	return XboxNV2ASkin_Register(name);
+}
+
+/* CL_InitCGame calls this once the map and cgame media are loaded. */
+static void XboxRefEndRegistration(void)
+{
+	Sys_XboxHeapTrim();
+	Sys_XboxMemoryReport("after registration");
+}
+static void XboxRefLoadWorld(const char *name)
+{
+	XboxNV2AWorld_Load(name);
+}
+/* The world reads PVS rows through ri.CM_ClusterPVS instead. */
+static void XboxRefSetWorldVisData(const byte *vis) { (void)vis; }
+static void XboxRefClearScene(void)
+{
+	XboxNV2A_ClearScene();
+}
+static void XboxRefAddRefEntity(const refEntity_t *entity)
+{
+	XboxNV2A_AddRefEntity(entity);
+}
+static void XboxRefAddPoly(qhandle_t shader, int numVerts,
+	const polyVert_t *verts, int num)
+{
+	XboxNV2A_AddPoly(shader, numVerts, verts, num);
+}
+static int XboxRefLightForPoint(vec3_t point, vec3_t ambient,
+	vec3_t directed, vec3_t direction)
+{
+	return XboxNV2AWorld_LightGrid(point, ambient, directed, direction);
+}
+static void XboxRefAddLight(const vec3_t org, float intensity,
+	float r, float g, float b)
+{
+	XboxNV2A_AddLight(org, intensity, r, g, b);
+}
+static void XboxRefRenderScene(const refdef_t *fd)
+{
+	XboxNV2A_RenderScene(fd);
+}
+static void XboxRefSetColor(const float *rgba)
+{
+	XboxNV2A_SetColor(rgba);
+}
+static void XboxRefDrawStretchPic(float x, float y, float w, float h,
+	float s1, float t1, float s2, float t2, qhandle_t shader)
+{
+	XboxNV2A_DrawStretchPic(x, y, w, h, s1, t1, s2, t2, shader);
+}
+static void XboxRefDrawStretchRaw(int x, int y, int w, int h, int cols,
+	int rows, const byte *data, int client, qboolean dirty)
+{
+	XboxNV2A_DrawStretchRaw(x, y, w, h, cols, rows, data, client, dirty);
+}
+static void XboxRefUploadCinematic(int w, int h, int cols, int rows,
+	const byte *data, int client, qboolean dirty)
+{
+	(void)w; (void)h;
+	XboxNV2A_UploadCinematic(cols, rows, data, client, dirty);
+}
+static void XboxRefBeginFrame(stereoFrame_t stereo)
+{
+	XboxNV2A_BeginFrame(stereo);
+}
+static void XboxRefEndFrame(int *front, int *back)
+{
+	XboxNV2A_EndFrame(front, back);
+}
+static int XboxRefMarkFragments(int numPoints, const vec3_t *points,
+	const vec3_t projection, int maxPoints, vec3_t pointBuffer,
+	int maxFragments, markFragment_t *fragmentBuffer)
+{
+	return XboxNV2AWorld_MarkFragments(numPoints, points, projection, maxPoints,
+		pointBuffer, maxFragments, fragmentBuffer);
+}
+static int XboxRefLerpTag(orientation_t *tag, qhandle_t model, int start,
+	int end, float frac, const char *tagName)
+{
+	return XboxNV2AModel_LerpTag(tag, model, start, end, frac, tagName);
+}
+static void XboxRefModelBounds(qhandle_t model, vec3_t mins, vec3_t maxs)
+{
+	XboxNV2AModel_Bounds(model, mins, maxs);
+}
+/* TA ui/cgame text: the prebuilt fonts/fontImage_<size>.dat that tr_font.c reads without FreeType.
+   The file is a raw little-endian fontInfo_t, the same layout on this 32-bit target. */
+static void XboxRefRegisterFont(const char *name, int size, fontInfo_t *font)
+{
+	char path[MAX_QPATH];
+	void *data;
+	long length;
+	int i;
+
+	memset(font, 0, sizeof(*font));
+	if (!name)
+		return;
+	if (size <= 0)
+		size = 12;
+	Com_sprintf(path, sizeof(path), "fonts/fontImage_%i.dat", size);
+	length = ri.FS_ReadFile(path, &data);
+	if (length != (long)sizeof(*font)) {
+		if (length > 0)
+			ri.FS_FreeFile(data);
+		ri.Printf(PRINT_WARNING, "Xbox ref: no prebuilt font %s\n", path);
+		return;
+	}
+	memcpy(font, data, sizeof(*font));
+	ri.FS_FreeFile(data);
+	Q_strncpyz(font->name, path, sizeof(font->name));
+	for (i = GLYPH_START; i <= GLYPH_END; i++) {
+		font->glyphs[i].shaderName[sizeof(font->glyphs[i].shaderName) - 1] = '\0';
+		font->glyphs[i].glyph = XboxRefRegisterShaderNoMip(font->glyphs[i].shaderName);
+	}
+}
+static void XboxRefRemapShader(const char *oldShader, const char *newShader,
+	const char *offsetTime)
+{
+	(void)oldShader; (void)newShader; (void)offsetTime;
+}
+static qboolean XboxRefGetEntityToken(char *buffer, int size)
+{
+	return XboxNV2AWorld_GetEntityToken(buffer, size);
+}
+static qboolean XboxRefInPVS(const vec3_t p1, const vec3_t p2)
+{
+	return XboxNV2AWorld_InPVS(p1, p2);
+}
+static void XboxRefTakeVideoFrame(int h, int w, byte *capture,
+	byte *encode, qboolean motionJpeg)
+{
+	(void)h; (void)w; (void)capture; (void)encode; (void)motionJpeg;
+}
+
+refexport_t *GetRefAPI(int apiVersion, refimport_t *rimp)
+{
+	if (apiVersion != REF_API_VERSION || !rimp)
+		return NULL;
+	ri = *rimp;
+	ri.Malloc = XboxRefMalloc;
+	ri.Free = XboxRefFree;
+	if (!XboxNV2A_Init())
+		return NULL;
+
+	memset(&xboxRefExport, 0, sizeof(xboxRefExport));
+	xboxRefExport.Shutdown = XboxRefShutdown;
+	xboxRefExport.BeginRegistration = XboxRefBeginRegistration;
+	xboxRefExport.RegisterModel = XboxRefRegisterModel;
+	xboxRefExport.RegisterSkin = XboxRefRegisterSkin;
+	xboxRefExport.RegisterShader = XboxRefRegisterShader;
+	xboxRefExport.RegisterShaderNoMip = XboxRefRegisterShaderNoMip;
+	xboxRefExport.LoadWorld = XboxRefLoadWorld;
+	xboxRefExport.SetWorldVisData = XboxRefSetWorldVisData;
+	xboxRefExport.EndRegistration = XboxRefEndRegistration;
+	xboxRefExport.ClearScene = XboxRefClearScene;
+	xboxRefExport.AddRefEntityToScene = XboxRefAddRefEntity;
+	xboxRefExport.AddPolyToScene = XboxRefAddPoly;
+	xboxRefExport.LightForPoint = XboxRefLightForPoint;
+	xboxRefExport.AddLightToScene = XboxRefAddLight;
+	xboxRefExport.AddAdditiveLightToScene = XboxRefAddLight;
+	xboxRefExport.RenderScene = XboxRefRenderScene;
+	xboxRefExport.SetColor = XboxRefSetColor;
+	xboxRefExport.DrawStretchPic = XboxRefDrawStretchPic;
+	xboxRefExport.DrawStretchRaw = XboxRefDrawStretchRaw;
+	xboxRefExport.UploadCinematic = XboxRefUploadCinematic;
+	xboxRefExport.BeginFrame = XboxRefBeginFrame;
+	xboxRefExport.EndFrame = XboxRefEndFrame;
+	xboxRefExport.MarkFragments = XboxRefMarkFragments;
+	xboxRefExport.LerpTag = XboxRefLerpTag;
+	xboxRefExport.ModelBounds = XboxRefModelBounds;
+	xboxRefExport.RegisterFont = XboxRefRegisterFont;
+	xboxRefExport.RemapShader = XboxRefRemapShader;
+	xboxRefExport.GetEntityToken = XboxRefGetEntityToken;
+	xboxRefExport.inPVS = XboxRefInPVS;
+	xboxRefExport.TakeVideoFrame = XboxRefTakeVideoFrame;
+	return &xboxRefExport;
+}
+
+code\renderernv2a\xbox_nv2a.c:447: pb_reset();
+code\renderernv2a\xbox_nv2a.c:571: p = pb_begin();
+code\renderernv2a\xbox_nv2a.c:619: pb_end(p);
+code\renderernv2a\xbox_nv2a.c:635: p = pb_begin();
+code\renderernv2a\xbox_nv2a.c:638: pb_end(p);
+code\renderernv2a\xbox_nv2a.c:1140: p = pb_begin();
+code\renderernv2a\xbox_nv2a.c:1142: pb_end(p);
+code\renderernv2a\xbox_nv2a.c:1596: p = pb_begin();
+code\renderernv2a\xbox_nv2a.c:1598: pb_end(p);
+code\renderernv2a\xbox_nv2a.c:2239: p = pb_begin();
+code\renderernv2a\xbox_nv2a.c:2248: pb_end(p);
+code\renderernv2a\xbox_nv2a.c:2250: p = pb_begin();
+code\renderernv2a\xbox_nv2a.c:2252: pb_end(p);
+code\renderernv2a\xbox_nv2a.c:2278: p = pb_begin();
+code\renderernv2a\xbox_nv2a.c:2296: pb_end(p);
+code\renderernv2a\xbox_nv2a.c:2334: status = pb_init();
+code\renderernv2a\xbox_nv2a.c:2339: pb_show_front_screen();
+code\renderernv2a\xbox_nv2a.c:2347: pb_kill();
+code\renderernv2a\xbox_nv2a.c:2363: pb_kill();
+code\renderernv2a\xbox_nv2a.c:2445: pb_kill();
+code\renderernv2a\xbox_nv2a.c:2519: pb_wait_for_vbl();
+code\renderernv2a\xbox_nv2a.c:2522: pb_wait_for_vbl();
+code\renderernv2a\xbox_nv2a.c:2527: DWORD backAddr = (DWORD)pb_back_buffer() & XBOX_NV2A_PHYSICAL_MASK;
+code\renderernv2a\xbox_nv2a.c:2534: pb_wait_for_vbl();
+code\renderernv2a\xbox_nv2a.c:2538: pb_reset();
+code\renderernv2a\xbox_nv2a.c:2539: pb_target_back_buffer();
+code\renderernv2a\xbox_nv2a.c:2601: pb_wait_for_vbl();
+code\renderernv2a\xbox_nv2a.c:3991: p = pb_begin();
+code\renderernv2a\xbox_nv2a.c:3996: pb_end(p);
+code\sys\xbox_boot.c:59: XVideoSetMode(640, 480, 32, REFRESH_DEFAULT);
+code\thirdparty\xgu\xgux.h:13: uint32_t *p = pb_begin();
+code\thirdparty\xgu\xgux.h:18: pb_end(p);
+code\thirdparty\xgu\xgux.h:19: p = pb_begin();
+code\thirdparty\xgu\xgux.h:29: pb_end(p);
+code\thirdparty\xgu\xgux.h:34: uint32_t *p = pb_begin();
+code\thirdparty\xgu\xgux.h:43: pb_end(p);
+code\thirdparty\xgu\xgux.h:44: p = pb_begin();
+code\thirdparty\xgu\xgux.h:59: pb_end(p);
+code\thirdparty\xgu\xgux.h:64: uint32_t *p = pb_begin();
+code\thirdparty\xgu\xgux.h:71: pb_end(p);
+
+## build ioQ3 (renderernv2a/pbkit/xgu)
+Makefile.xbox:60: $(CURDIR)/code/renderernv2a/xbox_nv2a.c	$(CURDIR)/code/renderernv2a/xbox_nv2a_shader.c 	$(CURDIR)/code/renderernv2a/xbox_nv2a_model.c 	$(CURDIR)/code/renderernv2a/xbox_nv2a_world.c 	$(CURDIR)/code/renderernv2a/xbox_nv2a_sky.c 	$(CURDIR)/code/renderernv2a/xbox_nv2a_dxt.c 	$(CURDIR)/code/renderercommon/tr_image_tga.c 	$(CURDIR)/code/renderercommon/tr_image_jpg.c \
+Makefile.xbox:146: NXDK_CFLAGS += -DXBOX -DIOQUAKE3_XBOX -DIOQUAKE3_XBOX_SHELL -DBOTLIB -DC_ONLY $(FLAVOR_DEFINES) -O2 -ffunction-sections -fno-exceptions 	-DUSE_INTERNAL_JPEG -I$(CURDIR)/code/thirdparty/jpeg-9f \
+Makefile.xbox:149: NXDK_NET = y
+Makefile.xbox:150: NXDK_USB_ENABLE_HID = y
+Makefile.xbox:153: NXDK_CFLAGS += -DXBOX_DEBUG_LOG
+Makefile.xbox:167: NXDK_CFLAGS += -DUSE_CODEC_VORBIS
+Makefile.xbox:168: $(patsubst %.c,%.obj,$(XBOX_VORBIS_SRCS)): NXDK_CFLAGS += -I$(XBOX_OGG_DIR)/include \
+Makefile.xbox:173: $(CURDIR)/code/renderernv2a/xbox_nv2a_vp.inl \
+Makefile.xbox:174: $(CURDIR)/code/renderernv2a/xbox_nv2a_fp.inl
+Makefile.xbox:271: NXDK_DIR ?= /usr/src/nxdk
+Makefile.xbox:273: include $(NXDK_DIR)/Makefile
+Makefile.xbox:301: $(CURDIR)/code/renderernv2a/xbox_nv2a.c $(CURDIR)/code/renderernv2a/xbox_nv2a_shader.c \
+Makefile.xbox:302: $(CURDIR)/code/renderernv2a/xbox_nv2a_model.c $(CURDIR)/code/renderernv2a/xbox_nv2a_world.c \
+Makefile.xbox:303: $(CURDIR)/code/renderernv2a/xbox_nv2a_sky.c $(CURDIR)/code/renderernv2a/xbox_nv2a_dxt.c \
+Makefile.xbox:305: $(XBOX_FAST_MATH_OBJS): NXDK_CFLAGS += -O3 -ffast-math
+Makefile.xbox:346: $(CURDIR)/code/renderernv2a/xbox_nv2a_fp.inl: \
+Makefile.xbox:347: $(CURDIR)/code/renderernv2a/xbox_nv2a_fp.ps | fp20compiler
+
+## tr_null.c atual
+linhas: 95
+code\renderernull\tr_null.c:87: lgNullRe.LoadFont = lg_null_LoadFont; /* LG 18m */
