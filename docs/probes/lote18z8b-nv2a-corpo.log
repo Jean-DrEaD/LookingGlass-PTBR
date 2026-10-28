@@ -1,0 +1,1068 @@
+# Lote 18z8b - corpos NV2A + link pbkit 2026-10-28 12:37
+
+## xbox_nv2a.h
+#ifndef IOQUAKE3_XBOX_NV2A_H
+#define IOQUAKE3_XBOX_NV2A_H
+
+#include "../qcommon/q_shared.h"
+#include "../qcommon/qfiles.h"
+#include "../renderercommon/tr_public.h"
+
+/* Index 0 of both tables is "unresolved" and is never drawn. */
+#define XBOX_NV2A_WHITE_IMAGE 1
+#define XBOX_NV2A_WHITE_SHADER 1
+#define XBOX_NV2A_MAX_TEXTURE_SIZE 1024
+/* ioq3 r_picmip default: mipmapped images drop one size level. */
+#define XBOX_NV2A_PICMIP 1
+#define XBOX_NV2A_MAX_STAGES 8
+#define XBOX_NV2A_MAX_TEXMODS 4
+#define XBOX_NV2A_MAX_ANIM_IMAGES 8
+/* ioq3 MAX_SHADER_DEFORMS. */
+#define XBOX_NV2A_MAX_DEFORMS 3
+/* ioq3 MAX_DLIGHTS; a surface's dlightBits has one bit per scene dlight. */
+#define XBOX_NV2A_MAX_DLIGHTS 32
+/* Same per-surface limits as ioq3's tess (SHADER_MAX_VERTEXES/INDEXES). */
+#define XBOX_NV2A_TESS_VERTS 1000
+#define XBOX_NV2A_TESS_INDEXES (6 * XBOX_NV2A_TESS_VERTS)
+/* ioq3 SKY_SUBDIVISIONS; the cloud grid needs 5 * 81 tess vertices at most. */
+#define XBOX_NV2A_SKY_SUBDIVISIONS 8
+#define XBOX_NV2A_SKY_SIDES 6
+
+/* Shader scripts name blend factors with these GL values; xbox_nv2a.c maps them to xgu. */
+#define GL_ZERO 0x0000
+#define GL_ONE 0x0001
+#define GL_SRC_COLOR 0x0300
+#define GL_ONE_MINUS_SRC_COLOR 0x0301
+#define GL_SRC_ALPHA 0x0302
+#define GL_ONE_MINUS_SRC_ALPHA 0x0303
+#define GL_DST_ALPHA 0x0304
+#define GL_ONE_MINUS_DST_ALPHA 0x0305
+#define GL_DST_COLOR 0x0306
+#define GL_ONE_MINUS_DST_COLOR 0x0307
+#define GL_SRC_ALPHA_SATURATE 0x0308
+
+/* ioq3 shaderSort_t values. */
+#define XBOX_NV2A_SORT_PORTAL 1.0f
+#define XBOX_NV2A_SORT_ENVIRONMENT 2.0f
+#define XBOX_NV2A_SORT_OPAQUE 3.0f
+#define XBOX_NV2A_SORT_DECAL 4.0f
+#define XBOX_NV2A_SORT_SEE_THROUGH 5.0f
+#define XBOX_NV2A_SORT_BANNER 6.0f
+#define XBOX_NV2A_SORT_FOG 7.0f
+#define XBOX_NV2A_SORT_UNDERWATER 8.0f
+#define XBOX_NV2A_SORT_BLEND0 9.0f
+#define XBOX_NV2A_SORT_BLEND1 10.0f
+#define XBOX_NV2A_SORT_NEAREST 16.0f
+
+typedef enum {
+	XBOX_NV2A_ALPHA_NONE,
+	XBOX_NV2A_ALPHA_GT0,
+	XBOX_NV2A_ALPHA_LT128,
+	XBOX_NV2A_ALPHA_GE128
+} xboxNV2AAlphaFunc_t;
+
+typedef enum {
+	XBOX_NV2A_WAVE_SIN,
+	XBOX_NV2A_WAVE_TRIANGLE,
+	XBOX_NV2A_WAVE_SQUARE,
+	XBOX_NV2A_WAVE_SAWTOOTH,
+	XBOX_NV2A_WAVE_INVERSE_SAWTOOTH,
+	XBOX_NV2A_WAVE_NOISE
+} xboxNV2AWaveFunc_t;
+
+typedef struct {
+	int func;
+	float base;
+	float amplitude;
+	float phase;
+	float frequency;
+} xboxNV2AWave_t;
+
+typedef enum {
+	XBOX_NV2A_TCMOD_SCALE,
+	XBOX_NV2A_TCMOD_SCROLL,
+	XBOX_NV2A_TCMOD_TURB,
+	XBOX_NV2A_TCMOD_ROTATE,
+	XBOX_NV2A_TCMOD_STRETCH,
+	XBOX_NV2A_TCMOD_TRANSFORM,
+	XBOX_NV2A_TCMOD_ENTITY_TRANSLATE
+} xboxNV2ATexModType_t;
+
+typedef struct {
+	int type;
+	xboxNV2AWave_t wave;
+	float matrix[2][2];
+	float translate[2];
+	float scale[2];
+	float scroll[2];
+	float rotateSpeed;
+} xboxNV2ATexMod_t;
+
+/* ioq3 deform_t; text and projectionShadow are not supported. */
+typedef enum {
+	XBOX_NV2A_DEFORM_WAVE,
+	XBOX_NV2A_DEFORM_NORMALS,
+	XBOX_NV2A_DEFORM_BULGE,
+	XBOX_NV2A_DEFORM_MOVE,
+	XBOX_NV2A_DEFORM_AUTOSPRITE,
+	XBOX_NV2A_DEFORM_AUTOSPRITE2
+} xboxNV2ADeformType_t;
+
+/* ioq3 deformStage_t. */
+typedef struct {
+	int type;
+	xboxNV2AWave_t wave;
+	float spread;
+	vec3_t moveVector;
+	float bulgeWidth;
+	float bulgeHeight;
+	float bulgeSpeed;
+} xboxNV2ADeform_t;
+
+typedef enum {
+	XBOX_NV2A_RGBGEN_IDENTITY_LIGHTING,
+	XBOX_NV2A_RGBGEN_IDENTITY,
+	XBOX_NV2A_RGBGEN_VERTEX,
+	XBOX_NV2A_RGBGEN_EXACT_VERTEX,
+	XBOX_NV2A_RGBGEN_ONE_MINUS_VERTEX,
+	XBOX_NV2A_RGBGEN_WAVE,
+	XBOX_NV2A_RGBGEN_CONST,
+	XBOX_NV2A_RGBGEN_ENTITY,
+	XBOX_NV2A_RGBGEN_ONE_MINUS_ENTITY,
+	XBOX_NV2A_RGBGEN_LIGHTING_DIFFUSE
+} xboxNV2ARgbGen_t;
+
+typedef enum {
+	XBOX_NV2A_ALPHAGEN_IDENTITY,
+	XBOX_NV2A_ALPHAGEN_VERTEX,
+	XBOX_NV2A_ALPHAGEN_ONE_MINUS_VERTEX,
+	XBOX_NV2A_ALPHAGEN_WAVE,
+	XBOX_NV2A_ALPHAGEN_CONST,
+	XBOX_NV2A_ALPHAGEN_ENTITY,
+	XBOX_NV2A_ALPHAGEN_ONE_MINUS_ENTITY,
+	XBOX_NV2A_ALPHAGEN_PORTAL
+} xboxNV2AAlphaGen_t;
+
+/* ioq3 acff_t: how a blended stage fades its colours inside fog. */
+typedef enum {
+	XBOX_NV2A_ACFF_NONE,
+	XBOX_NV2A_ACFF_MODULATE_RGB,
+	XBOX_NV2A_ACFF_MODULATE_RGBA,
+	XBOX_NV2A_ACFF_MODULATE_ALPHA
+} xboxNV2AAdjustForFog_t;
+
+/* ioq3 fogPass_t: opaque shaders fog with depth equal, fog volumes with depth less-equal. */
+typedef enum {
+	XBOX_NV2A_FOGPASS_NONE,
+	XBOX_NV2A_FOGPASS_EQUAL,
+	XBOX_NV2A_FOGPASS_LE
+} xboxNV2AFogPass_t;
+
+typedef enum {
+	XBOX_NV2A_TCGEN_TEXTURE,
+	XBOX_NV2A_TCGEN_LIGHTMAP,
+	XBOX_NV2A_TCGEN_ENVIRONMENT,
+	XBOX_NV2A_TCGEN_VECTOR
+} xboxNV2ATcGen_t;
+
+typedef enum {
+	XBOX_NV2A_CULL_FRONT,
+	XBOX_NV2A_CULL_BACK,
+	XBOX_NV2A_CULL_NONE
+} xboxNV2ACull_t;
+
+/* ioq3 lightmapIndex classes: each one gets a different implicit shader. */
+typedef enum {
+	XBOX_NV2A_SHADER_2D,
+	XBOX_NV2A_SHADER_MODEL,
+	XBOX_NV2A_SHADER_LIGHTMAP,
+	XBOX_NV2A_SHADER_VERTEX
+} xboxNV2AShaderFlavor_t;
+
+/* One ioq3 shader stage; blend factors hold GL values and GL_ONE/GL_ZERO is opaque. */
+typedef struct {
+	int images[XBOX_NV2A_MAX_ANIM_IMAGES];
+	int numImages;
+	float animFrequency;
+	/* $lightmap: the image comes from the drawn surface, not from images[]. */
+	qboolean isLightmap;
+	qboolean clamp;
+	unsigned int srcBlend;
+	unsigned int dstBlend;
+	int alphaFunc;
+	qboolean depthWrite;
+	qboolean depthEqual;
+	int rgbGen;
+	xboxNV2AWave_t rgbWave;
+	int alphaGen;
+	xboxNV2AWave_t alphaWave;
+	byte constant[4];
+	int tcGen;
+	vec3_t tcGenVectors[2];
+	int numTexMods;
+	xboxNV2ATexMod_t texMods[XBOX_NV2A_MAX_TEXMODS];
+	int adjustColorsForFog;
+} xboxNV2AStage_t;
+
+typedef struct {
+	int numStages;
+	float sort;
+	int cull;
+	qboolean polygonOffset;
+	qboolean isSky;
+	/* skyParms outer box in rt, bk, lf, ft, up, dn order; ioq3 draws none if side 0 is missing. */
+	int skyBox[XBOX_NV2A_SKY_SIDES];
+	float cloudHeight;
+	/* surfaceparm fog; fogParms colour and depthForOpaque. */
+	qboolean isFog;
+	vec3_t fogColor;
+	float fogDepth;
+	int fogPass;
+	/* alphaGen portal range; ioq3 skips portal views farther than this. */
+	float portalRange;
+	/* surfaceparm nodlight or sky: ioq3 draws no dlight pass on it. */
+	qboolean noDlight;
+	int numDeforms;
+	xboxNV2ADeform_t deforms[XBOX_NV2A_MAX_DEFORMS];
+	xboxNV2AStage_t stages[XBOX_NV2A_MAX_STAGES];
+} xboxNV2AShaderDef_t;
+
+/* World vertices keep ioq3 drawVert_t data with the lighting colour already shifted. */
+typedef struct {
+	float xyz[3];
+	float st[2];
+	float lightSt[2];
+	float normal[3];
+	byte color[4];
+} xboxNV2AWorldVert_t;
+
+typedef enum {
+	XBOX_NV2A_SURFACE_FACE,
+	XBOX_NV2A_SURFACE_GRID,
+	XBOX_NV2A_SURFACE_TRIANGLES
+} xboxNV2AWorldSurfaceType_t;
+
+typedef struct {
+	int type;
+	int shader;
+	int lightmap;
+	/* nomarks, noimpact, nodraw or fog: ioq3 R_BoxSurfaces_r never puts marks on it. */
+	qboolean noMarks;
+	int fogIndex;
+	int viewCount;
+	/* Scene dlights that reach it in the current view, as in ioq3's surface dlightBits. */
+	unsigned int dlightBits;
+	cplane_t plane;
+	vec3_t bounds[2];
+	int numVerts;
+	int numIndexes;
+	xboxNV2AWorldVert_t *verts;
+	unsigned short *indexes;
+} xboxNV2AWorldSurface_t;
+
+/* ioq3 fog_t; fog 0 means none, and surface is the visible side's plane facing into the fog. */
+typedef struct {
+	vec3_t bounds[2];
+	byte color[4];
+	float tcScale;
+	qboolean hasSurface;
+	float surface[4];
+} xboxNV2AFog_t;
+
+/* ioq3 dlight_t; radius is the intensity passed to AddLightToScene. */
+typedef struct {
+	vec3_t origin;
+	float radius;
+	vec3_t color;
+} xboxNV2ADlight_t;
+
+/* ioq3 sky_mins/sky_maxs: the (s, t) range of each box side that visible sky covers. */
+typedef struct {
+	float mins[2][XBOX_NV2A_SKY_SIDES];
+	float maxs[2][XBOX_NV2A_SKY_SIDES];
+} xboxNV2ASkyBounds_t;
+
+#define XBOX_NV2A_WORLD_ENTITY (-1)
+
+/* Texel storage for XboxNV2A_CreateImage; the fog and dlight images keep 32-bit alpha. */
+typedef enum {
+	XBOX_NV2A_IMAGE_16BIT,
+	XBOX_NV2A_IMAGE_32BIT,
+	/* Opaque images of 4x4 texels or more; others fall back to 16-bit. */
+	XBOX_NV2A_IMAGE_DXT1,
+	/* DXT1 when opaque, DXT5 with alpha; sides under 4 fall back to 16-bit. */
+	XBOX_NV2A_IMAGE_DXT,
+	/* What XBOX_NV2A_IMAGE_DXT becomes for an image with alpha. */
+	XBOX_NV2A_IMAGE_DXT5
+} xboxNV2AImageStorage_t;
+
+qboolean XboxNV2A_Init(void);
+void XboxNV2A_Shutdown(qboolean destroyWindow);
+void XboxNV2A_Kill(void);
+void XboxNV2A_ShowDebugScreen(void);
+qboolean XboxNV2A_OwnsScreen(void);
+void XboxNV2A_BeginRegistration(glconfig_t *config);
+void XboxNV2A_BeginFrame(stereoFrame_t stereoFrame);
+void XboxNV2A_EndFrame(int *frontEndMsec, int *backEndMsec);
+void XboxNV2A_SetColor(const float *rgba);
+int XboxNV2A_FindImage(const char *name);
+/* mipmap adds the box-filtered chain, halving rgba in place; a DXT chain stops at 4x4. */
+int XboxNV2A_CreateImage(const char *name, int width, int height,
+	byte *rgba, int storage, qboolean mipmap);
+/* ioq3 R_MipMap box filter, in place; a 1-texel side stays 1 texel. */
+void XboxNV2A_HalveImage(byte *pic, int *width, int *height);
+qboolean XboxNV2A_FindShader(const char *name, int flavor, qhandle_t *handle);
+qhandle_t XboxNV2A_CreateShader(const char *name, int flavor,
+	const xboxNV2AShaderDef_t *def);
+qboolean XboxNV2A_ShaderIsDrawable(qhandle_t shader);
+qboolean XboxNV2A_ShaderIsSky(qhandle_t shader);
+qboolean XboxNV2A_ShaderFogParms(qhandle_t shader, vec3_t color, float *depth);
+int XboxNV2A_ShaderCull(qhandle_t shader);
+void XboxNV2A_DrawStretchPic(float x, float y, float w, float h,
+	float s1, float t1, float s2, float t2, qhandle_t shader);
+void XboxNV2A_UploadCinematic(int cols, int rows, const byte *data, int client,
+	qboolean dirty);
+void XboxNV2A_DrawStretchRaw(int x, int y, int w, int h, int cols, int rows,
+	const byte *data, int client, qboolean dirty);
+void XboxNV2A_ClearScene(void);
+void XboxNV2A_AddRefEntity(const refEntity_t *entity);
+void XboxNV2A_AddLight(const vec3_t origin, float intensity, float r, float g,
+	float b);
+int XboxNV2A_SceneDlights(const xboxNV2ADlight_t **dlights);
+void XboxNV2A_AddWorldSurface(const xboxNV2AWorldSurface_t *surface, int entity);
+void XboxNV2A_AddSkySurface(const xboxNV2AWorldSurface_t *surface);
+void XboxNV2A_AddPoly(qhandle_t shader, int numVerts, const polyVert_t *verts,
+	int numPolys);
+void XboxNV2A_RenderScene(const refdef_t *fd);
+
+/* DXT1 blocks row by row, the NV2A layout; width and height are multiples of 4. */
+void XboxNV2ADxt_Compress(const byte *rgba, int width, int height, void *out);
+/* DXT5 blocks in the same layout: 8 alpha bytes, then a DXT1 colour block. */
+void XboxNV2ADxt_Compress5(const byte *rgba, int width, int height, void *out);
+
+/* Shader scripts and image files, in xbox_nv2a_shader.c. */
+qhandle_t XboxNV2AShader_Register(const char *name, qboolean mipRawImage);
+qhandle_t XboxNV2AShader_RegisterModel(const char *name);
+qhandle_t XboxNV2AShader_RegisterWorld(const char *name, int flavor);
+void XboxNV2AShader_FreeScripts(void);
+
+/* MD3 models, brush submodels and skins, in xbox_nv2a_model.c. */
+qhandle_t XboxNV2AModel_Register(const char *name);
+void XboxNV2AModel_RegisterBrush(const char *name, int submodel);
+void XboxNV2AModel_FreeAll(void);
+const md3Header_t *XboxNV2AModel_Get(qhandle_t handle);
+int XboxNV2AModel_BrushIndex(qhandle_t handle);
+void XboxNV2AModel_LerpSurface(const md3Surface_t *surface, int frame,
+	int oldFrame, float backlerp, float (*xyz)[3], float (*normal)[3]);
+void XboxNV2AModel_Bounds(qhandle_t handle, vec3_t mins, vec3_t maxs);
+int XboxNV2AModel_LerpTag(orientation_t *tag, qhandle_t handle, int startFrame,
+	int endFrame, float frac, const char *tagName);
+qhandle_t XboxNV2ASkin_Register(const char *name);
+int XboxNV2ASkin_Shader(qhandle_t skin, const char *surfaceName);
+void XboxNV2ASkin_FreeAll(void);
+
+/* BSP world, in xbox_nv2a_world.c. */
+void XboxNV2AWorld_Load(const char *name);
+void XboxNV2AWorld_Free(void);
+qboolean XboxNV2AWorld_Loaded(void);
+float XboxNV2AWorld_AddSurfaces(const refdef_t *fd, const vec3_t pvsOrigin);
+void XboxNV2AWorld_AddBrushModel(int submodel, int entity, const refEntity_t *ref);
+void XboxNV2AWorld_SubmodelBounds(int submodel, vec3_t mins, vec3_t maxs);
+void XboxNV2AWorld_SunDirection(vec3_t direction);
+qboolean XboxNV2AWorld_LightGrid(const vec3_t origin, vec3_t ambient,
+	vec3_t directed, vec3_t direction);
+qboolean XboxNV2AWorld_GetEntityToken(char *buffer, int size);
+qboolean XboxNV2AWorld_InPVS(const vec3_t p1, const vec3_t p2);
+int XboxNV2AWorld_NumFogs(void);
+const xboxNV2AFog_t *XboxNV2AWorld_Fog(int index);
+int XboxNV2AWorld_MarkFragments(int numPoints, const vec3_t *points,
+	const vec3_t projection, int maxPoints, vec3_t pointBuffer, int maxFragments,
+	markFragment_t *fragmentBuffer);
+
+/* Sky box and cloud grids, in xbox_nv2a_sky.c; positions are relative to the view origin. */
+void XboxNV2ASky_Clear(xboxNV2ASkyBounds_t *bounds);
+void XboxNV2ASky_AddSurface(xboxNV2ASkyBounds_t *bounds,
+	const xboxNV2AWorldSurface_t *surface, const vec3_t origin);
+int XboxNV2ASky_BoxSide(const xboxNV2ASkyBounds_t *bounds, int side, float boxSize,
+	float (*xyz)[3], float (*st)[2], unsigned short *indexes, int *numIndexes);
+int XboxNV2ASky_Clouds(const xboxNV2ASkyBounds_t *bounds, float cloudHeight,
+	float boxSize, float (*xyz)[3], float (*st)[2], unsigned short *indexes,
+	int *numIndexes);
+
+#endif
+
+
+## func XboxNV2A_Init
+qboolean XboxNV2A_Init(void)
+{
+	int status;
+	int i;
+
+	if (xboxNV2AInitialized)
+		return qtrue;
+
+	/* xbox_boot.c selects the mode before Com_Init reaches this boundary. */
+	status = pb_init();
+	if (status) {
+		Sys_XboxLog("Xbox NV2A: pb_init failed (%d)\n", status);
+		return qfalse;
+	}
+	pb_show_front_screen();
+
+	xboxNV2AWidth = (int)pb_back_buffer_width();
+	xboxNV2AHeight = (int)pb_back_buffer_height();
+	if (xboxNV2AWidth <= 0 || xboxNV2AHeight <= 0) {
+		Sys_XboxLog("Xbox NV2A: invalid back buffer %dx%d\n",
+			xboxNV2AWidth, xboxNV2AHeight);
+		pb_show_debug_screen();
+		pb_kill();
+		return qfalse;
+	}
+
+	XboxNV2AInitShader();
+
+	xboxNV2ATexturePool = MmAllocateContiguousMemoryEx(
+		XBOX_NV2A_TEXTURE_POOL_BYTES, 0, XBOX_NV2A_MAX_RAM, 0,
+		PAGE_WRITECOMBINE | PAGE_READWRITE);
+	xboxNV2AVertexMemory = MmAllocateContiguousMemoryEx(
+		XBOX_NV2A_MAX_VERTS * sizeof(XboxNV2AColoredVertex), 0,
+		XBOX_NV2A_MAX_RAM, 0, PAGE_WRITECOMBINE | PAGE_READWRITE);
+	if (!xboxNV2ATexturePool || !xboxNV2AVertexMemory) {
+		Sys_XboxLog("Xbox NV2A: texture/vertex allocation failed\n");
+		XboxNV2AReleaseMemory();
+		pb_show_debug_screen();
+		pb_kill();
+		return qfalse;
+	}
+	xboxNV2ATriangle[0].position[0] = xboxNV2AWidth * 0.18f;
+	xboxNV2ATriangle[0].position[1] = xboxNV2AHeight * 0.70f;
+	xboxNV2ATriangle[1].position[0] = xboxNV2AWidth * 0.50f;
+	xboxNV2ATriangle[1].position[1] = xboxNV2AHeight * 0.20f;
+	xboxNV2ATriangle[2].position[0] = xboxNV2AWidth * 0.82f;
+	xboxNV2ATriangle[2].position[1] = xboxNV2AHeight * 0.70f;
+	XboxNV2AInitTables();
+	R_NoiseInit();
+
+	/* 2D vertices are already screen pixels, which program mode outputs directly. */
+	memset(&xboxNV2AScreenMatrix, 0, sizeof(xboxNV2AScreenMatrix));
+	for (i = 0; i < 4; ++i)
+		xboxNV2AScreenMatrix.col[i].f[i] = 1.0f;
+	/* The xgu samples' z-buffer precision fixup. */
+	xgux_set_depth_range(0.0f, XBOX_NV2A_ZMAX);
+
+	xboxNV2AFastSky = Cvar_Get("r_fastsky", "0", CVAR_ARCHIVE);
+	xboxNV2ADynamicLight = Cvar_Get("r_dynamiclight", "1", CVAR_ARCHIVE);
+	/* ioq3's cvar, read when a shader is created, so a change applies from the next map. */
+	xboxNV2AMultitexture = Cvar_Get("r_ext_multitexture", "1", CVAR_ARCHIVE);
+	/* ioq3's cvar and default: 0 no vblank wait, 1 a wait per frame, N shows each frame N vblanks. */
+	xboxNV2ASwapInterval = Cvar_Get("r_swapInterval", "0", CVAR_ARCHIVE);
+	/* TV encoder filters, same names and defaults as the old Xbox Q3 port; read each frame. */
+	xboxNV2AFlickerFilter = Cvar_Get("xb_flickerfilter", "5", CVAR_ARCHIVE);
+	xboxNV2ASoftenFilter = Cvar_Get("xb_softenfilter", "1", CVAR_ARCHIVE);
+	/* Old port's overscan cvars: image at (offset) sized (screen + stretch) pixels; 20 px border. */
+	xboxNV2AXOffset = Cvar_Get("xb_xoffset", "20", CVAR_ARCHIVE);
+	xboxNV2AYOffset = Cvar_Get("xb_yoffset", "20", CVAR_ARCHIVE);
+	xboxNV2AXStretch = Cvar_Get("xb_xstretch", "-40", CVAR_ARCHIVE);
+	xboxNV2AYStretch = Cvar_Get("xb_ystretch", "-40", CVAR_ARCHIVE);
+	xboxNV2AInitialized = qtrue;
+	XboxNV2AResetTextures();
+	xboxNV2ADebugScreen = qfalse;
+	Sys_XboxLog("Xbox NV2A: pbkit initialized at %dx%d\n",
+		xboxNV2AWidth, xboxNV2AHeight);
+	return qtrue;
+}
+
+## func XboxNV2A_BeginFrame
+void XboxNV2A_BeginFrame(stereoFrame_t stereoFrame)
+{
+	LONGLONG now;
+
+	(void)stereoFrame;
+	if (!xboxNV2AInitialized)
+		return;
+
+	++xboxNV2AFrameCount;
+	if (xboxNV2AFrameCount <= XBOX_NV2A_TRACE_FRAMES ||
+		xboxNV2AFrameCount % XBOX_NV2A_HEARTBEAT_FRAMES == 0)
+		Sys_XboxLog("Xbox NV2A: frame %u begin\n", xboxNV2AFrameCount);
+	if (xboxNV2AFrameCount % XBOX_NV2A_HEARTBEAT_FRAMES == 0)
+		XboxNV2ALogPerf();
+	now = XboxNV2ATicks();
+	if (xboxNV2APerf.lastBegin) {
+		LONGLONG frameTicks = now - xboxNV2APerf.lastBegin;
+		LARGE_INTEGER frequency;
+
+		QueryPerformanceFrequency(&frequency);
+		xboxNV2APerf.frameTicks += frameTicks;
+		xboxNV2APerf.frames++;
+		if (frameTicks > xboxNV2APerf.maxFrameTicks)
+			xboxNV2APerf.maxFrameTicks = frameTicks;
+		if (frameTicks * 1000 > frequency.QuadPart * XBOX_NV2A_SLOW_FRAME_MS)
+			xboxNV2APerf.slowFrames++;
+	}
+	xboxNV2APerf.lastBegin = now;
+	/* pbkit rotates 3 buffers; this frame's one leaves the screen with the flip queued two frames ago. */
+	if (xboxNV2ASwapInterval->integer == 1) {
+		pb_wait_for_vbl();
+	} else if (xboxNV2AFlipsQueued >= 2) {
+		while ((int)(pb_get_vbl_counter() - xboxNV2AFlipShow[0]) < 0)
+			pb_wait_for_vbl();
+	}
+	/* pbkit's DPC drops a queued flip when a vblank lands while its ISR has interrupts off, */
+	/* so the count can pass while this buffer is still on screen; the next flip is queued. */
+	{
+		DWORD backAddr = (DWORD)pb_back_buffer() & XBOX_NV2A_PHYSICAL_MASK;
+		DWORD start = GetTickCount();
+
+		while ((VIDEOREG(XBOX_NV2A_PCRTC_START) & XBOX_NV2A_PHYSICAL_MASK) == backAddr) {
+			if (GetTickCount() - start > XBOX_NV2A_GPU_TIMEOUT_MS)
+				Sys_Error("Xbox NV2A: back buffer stays on screen, frame %u",
+					xboxNV2AFrameCount);
+			pb_wait_for_vbl();
+		}
+	}
+	xboxNV2APerf.vblankTicks += XboxNV2ATicks() - now;
+	pb_reset();
+	pb_target_back_buffer();
+	xboxNV2APerf.endWaitTicks += XboxNV2AWaitIdle("begin frame");
+	xboxNV2APerf.sceneStart = XboxNV2ATicks();
+	xboxNV2APushedDwords = 0;
+	xboxNV2AVertexUsed = 0;
+	xboxNV2ATess.shader = 0;
+	xboxNV2ATess.numVerts = 0;
+	xboxNV2ATess.numIndexes = 0;
+	xboxNV2ATess.numFast = 0;
+	xboxNV2ATess.fastVerts = 0;
+	xboxNV2ATess.fastIndexes = 0;
+	if (XBOX_NV2A_DIAGNOSTICS) {
+		pb_erase_text_screen();
+		pb_printat(0, 0, XBOX_TITLE " Xbox NV2A %dx%d", xboxNV2AWidth, xboxNV2AHeight);
+		pb_printat(1, 0, "xgu textured 2D UI path");
+	}
+
+	XboxNV2ASetFrameState();
+	xboxNV2AInFrame = qtrue;
+	if (XBOX_NV2A_DIAGNOSTICS) {
+		XboxNV2AColoredVertex *v = XboxNV2AStreamVertices(XBOX_NV2A_TRIANGLE_VERTS);
+
+		memcpy(v, xboxNV2ATriangle, sizeof(xboxNV2ATriangle));
+		XboxNV2AApplyStageState(&xboxNV2AShaders[XBOX_NV2A_WHITE_SHADER].stages[0],
+			XBOX_NV2A_WHITE_IMAGE, XBOX_NV2A_WHITE_IMAGE, qtrue, qfalse, qfalse,
+			XBOX_NV2A_CULL_NONE, qfalse);
+		XboxNV2ADrawVertices(XGU_TRIANGLES, xboxNV2AVertexUsed,
+			XBOX_NV2A_TRIANGLE_VERTS);
+		xboxNV2AVertexUsed += XBOX_NV2A_TRIANGLE_VERTS;
+	}
+}
+
+## func XboxNV2A_EndFrame
+void XboxNV2A_EndFrame(int *frontEndMsec, int *backEndMsec)
+{
+	DWORD start;
+	DWORD show;
+	LONGLONG waitStart;
+
+	if (frontEndMsec)
+		*frontEndMsec = 0;
+	if (backEndMsec)
+		*backEndMsec = 0;
+	if (!xboxNV2AInitialized || !xboxNV2AInFrame)
+		return;
+
+	XboxNV2AEndSurface();
+	xboxNV2APerf.sceneTicks += XboxNV2ATicks() - xboxNV2APerf.sceneStart;
+	/* ioq3 R_InitNextFrame: scene entities, dlights and polys last one frame. */
+	xboxNV2ASceneEntityCount = 0;
+	xboxNV2ASceneFirstEntity = 0;
+	xboxNV2ADlightCount = 0;
+	xboxNV2ASceneFirstDlight = 0;
+	xboxNV2APolyCount = 0;
+	xboxNV2APolyVertCount = 0;
+	xboxNV2ASceneFirstPoly = 0;
+	xboxNV2AInFrame = qfalse;
+	/* A flip queued after vblank show - 1 appears at show, so the last frame stays N vblanks. */
+	if (xboxNV2ASwapInterval->integer > 1 && xboxNV2AFlipsQueued) {
+		DWORD earliest = xboxNV2AFlipShow[1] + (DWORD)(xboxNV2ASwapInterval->integer - 1);
+
+		waitStart = XboxNV2ATicks();
+		while ((int)(pb_get_vbl_counter() - earliest) < 0)
+			pb_wait_for_vbl();
+		xboxNV2APerf.vblankTicks += XboxNV2ATicks() - waitStart;
+	}
+	waitStart = XboxNV2ATicks();
+	XboxNV2AWaitIdle("end frame");
+	if (XBOX_NV2A_DIAGNOSTICS)
+		pb_draw_text_screen();
+	start = GetTickCount();
+	while (pb_finished()) {
+		if (GetTickCount() - start > XBOX_NV2A_GPU_TIMEOUT_MS)
+			Sys_Error("Xbox NV2A: flip timeout, frame %u", xboxNV2AFrameCount);
+	}
+	/* Idle means the flip interrupt ran, so it shows at the next vblank or after the one before it. */
+	XboxNV2AWaitIdle("flip");
+	show = pb_get_vbl_counter() + 1;
+	if (xboxNV2AFlipsQueued && (int)(show - xboxNV2AFlipShow[1]) <= 0)
+		show = xboxNV2AFlipShow[1] + 1;
+	xboxNV2AFlipShow[0] = xboxNV2AFlipShow[1];
+	xboxNV2AFlipShow[1] = show;
+	if (xboxNV2AFlipsQueued < 2)
+		xboxNV2AFlipsQueued++;
+	xboxNV2APerf.endWaitTicks += XboxNV2ATicks() - waitStart;
+	if (xboxNV2AFrameCount <= XBOX_NV2A_TRACE_FRAMES)
+		Sys_XboxLog("Xbox NV2A: frame %u end\n", xboxNV2AFrameCount);
+}
+
+## func XboxNV2A_SetColor
+void XboxNV2A_SetColor(const float *rgba)
+{
+	int i;
+
+	for (i = 0; i < 4; ++i)
+		xboxNV2AColor[i] = rgba ? XboxNV2AClamp01(rgba[i]) : 1.0f;
+}
+
+## func XboxNV2A_DrawStretchPic
+void XboxNV2A_DrawStretchPic(float x, float y, float w, float h,
+	float s1, float t1, float s2, float t2, qhandle_t shader)
+{
+	XboxNV2ATess *tess = &xboxNV2ATess;
+	static const float corners[4][4] = {
+		{0.0f, 0.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f, 0.0f},
+		{1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}
+	};
+	byte color[4];
+	int i;
+
+	if (!xboxNV2AInFrame || w <= 0.0f || h <= 0.0f || shader <= 0 ||
+		(unsigned int)shader >= xboxNV2AShaderCount ||
+		!xboxNV2AShaders[shader].numStages)
+		return;
+	if (tess->shader != shader || tess->is3D ||
+		tess->numVerts + 4 > XBOX_NV2A_TESS_VERTS) {
+		XboxNV2AEndSurface();
+		if (!xboxNV2ATransformIdentity)
+			XboxNV2ASetTransform(xboxNV2AScreenMatrix.col, qtrue);
+		tess->shader = shader;
+		tess->is3D = qfalse;
+		tess->fogIndex = 0;
+		tess->entity = NULL;
+		tess->shaderTime = Sys_Milliseconds() * 0.001;
+	}
+	for (i = 0; i < 4; ++i)
+		color[i] = (byte)(xboxNV2AColor[i] * 255.0f);
+	for (i = 0; i < 4; ++i) {
+		int v = tess->numVerts + i;
+
+		tess->xyz[v][0] = x + w * corners[i][0];
+		tess->xyz[v][1] = y + h * corners[i][1];
+		tess->xyz[v][2] = 1.0f;
+		VectorClear(tess->normal[v]);
+		tess->st[v][0] = corners[i][2] ? s2 : s1;
+		tess->st[v][1] = corners[i][3] ? t2 : t1;
+		memcpy(tess->color[v], color, 4);
+	}
+	tess->numVerts += 4;
+}
+
+## func XboxNV2A_Shutdown
+void XboxNV2A_Shutdown(qboolean destroyWindow)
+{
+	/* A full ref restart can follow a game directory change, so rescan scripts. */
+	if (destroyWindow)
+		XboxNV2AShader_FreeScripts();
+	if (!xboxNV2AInitialized)
+		return;
+	XboxNV2AWaitIdle("shutdown");
+	Sys_XboxLog("Xbox NV2A: %u images (%u DXT1, %u DXT5), %u shaders (%u multitexture), "
+		"%u KiB texture pool used\n", xboxNV2AImageCount, xboxNV2ADxtImageCount,
+		xboxNV2ADxt5ImageCount, xboxNV2AShaderCount, xboxNV2ACollapsedCount,
+		(unsigned int)(xboxNV2ATexturePoolUsed / 1024));
+	/* The world, models and skins hold shader handles, so all tables reset together. */
+	XboxNV2AWorld_Free();
+	XboxNV2AResetTextures();
+	XboxNV2AModel_FreeAll();
+	XboxNV2ASkin_FreeAll();
+	xboxNV2ASceneEntityCount = 0;
+	xboxNV2ASceneFirstEntity = 0;
+	xboxNV2ADlightCount = 0;
+	xboxNV2ASceneFirstDlight = 0;
+	xboxNV2APolyCount = 0;
+	xboxNV2APolyVertCount = 0;
+	xboxNV2ASceneFirstPoly = 0;
+	/* Shader stages and malloc'd models are gone; give whole free heap segments back. */
+	Sys_XboxHeapTrim();
+	Sys_XboxMemoryReport("at renderer shutdown");
+}
+
+## func XboxNV2A_BeginRegistration
+void XboxNV2A_BeginRegistration(glconfig_t *config)
+{
+	if (!xboxNV2AInitialized)
+		XboxNV2A_Init();
+
+	memset(config, 0, sizeof(*config));
+	config->vidWidth = xboxNV2AWidth;
+	config->vidHeight = xboxNV2AHeight;
+	config->windowAspect = xboxNV2AHeight > 0 ?
+		(float)xboxNV2AWidth / (float)xboxNV2AHeight : 1.0f;
+	config->maxTextureSize = XBOX_NV2A_MAX_TEXTURE_SIZE;
+	config->numTextureUnits = 2;
+	config->colorBits = 32;
+	config->depthBits = 24;
+	config->stencilBits = 8;
+	config->driverType = GLDRV_STANDALONE;
+	config->hardwareType = GLHW_GENERIC;
+	config->isFullscreen = qtrue;
+	Q_strncpyz(config->renderer_string, "native Xbox NV2A (pbkit)",
+		sizeof(config->renderer_string));
+	Q_strncpyz(config->vendor_string, "NVIDIA NV2A", sizeof(config->vendor_string));
+	Q_strncpyz(config->version_string, "pbkit", sizeof(config->version_string));
+}
+
+## xbox_nv2a.c 2320-2370 (init) e 2505-2610 (swap)
+2320: 		MmFreeContiguousMemory(xboxNV2ATexturePool);
+2321: 		xboxNV2ATexturePool = NULL;
+2322: 	}
+2323: }
+2324: 
+2325: qboolean XboxNV2A_Init(void)
+2326: {
+2327: 	int status;
+2328: 	int i;
+2329: 
+2330: 	if (xboxNV2AInitialized)
+2331: 		return qtrue;
+2332: 
+2333: 	/* xbox_boot.c selects the mode before Com_Init reaches this boundary. */
+2334: 	status = pb_init();
+2335: 	if (status) {
+2336: 		Sys_XboxLog("Xbox NV2A: pb_init failed (%d)\n", status);
+2337: 		return qfalse;
+2338: 	}
+2339: 	pb_show_front_screen();
+2340: 
+2341: 	xboxNV2AWidth = (int)pb_back_buffer_width();
+2342: 	xboxNV2AHeight = (int)pb_back_buffer_height();
+2343: 	if (xboxNV2AWidth <= 0 || xboxNV2AHeight <= 0) {
+2344: 		Sys_XboxLog("Xbox NV2A: invalid back buffer %dx%d\n",
+2345: 			xboxNV2AWidth, xboxNV2AHeight);
+2346: 		pb_show_debug_screen();
+2347: 		pb_kill();
+2348: 		return qfalse;
+2349: 	}
+2350: 
+2351: 	XboxNV2AInitShader();
+2352: 
+2353: 	xboxNV2ATexturePool = MmAllocateContiguousMemoryEx(
+2354: 		XBOX_NV2A_TEXTURE_POOL_BYTES, 0, XBOX_NV2A_MAX_RAM, 0,
+2355: 		PAGE_WRITECOMBINE | PAGE_READWRITE);
+2356: 	xboxNV2AVertexMemory = MmAllocateContiguousMemoryEx(
+2357: 		XBOX_NV2A_MAX_VERTS * sizeof(XboxNV2AColoredVertex), 0,
+2358: 		XBOX_NV2A_MAX_RAM, 0, PAGE_WRITECOMBINE | PAGE_READWRITE);
+2359: 	if (!xboxNV2ATexturePool || !xboxNV2AVertexMemory) {
+2360: 		Sys_XboxLog("Xbox NV2A: texture/vertex allocation failed\n");
+2361: 		XboxNV2AReleaseMemory();
+2362: 		pb_show_debug_screen();
+2363: 		pb_kill();
+2364: 		return qfalse;
+2365: 	}
+2366: 	xboxNV2ATriangle[0].position[0] = xboxNV2AWidth * 0.18f;
+2367: 	xboxNV2ATriangle[0].position[1] = xboxNV2AHeight * 0.70f;
+2368: 	xboxNV2ATriangle[1].position[0] = xboxNV2AWidth * 0.50f;
+2369: 	xboxNV2ATriangle[1].position[1] = xboxNV2AHeight * 0.20f;
+2370: 	xboxNV2ATriangle[2].position[0] = xboxNV2AWidth * 0.82f;
+...
+2505: 		LONGLONG frameTicks = now - xboxNV2APerf.lastBegin;
+2506: 		LARGE_INTEGER frequency;
+2507: 
+2508: 		QueryPerformanceFrequency(&frequency);
+2509: 		xboxNV2APerf.frameTicks += frameTicks;
+2510: 		xboxNV2APerf.frames++;
+2511: 		if (frameTicks > xboxNV2APerf.maxFrameTicks)
+2512: 			xboxNV2APerf.maxFrameTicks = frameTicks;
+2513: 		if (frameTicks * 1000 > frequency.QuadPart * XBOX_NV2A_SLOW_FRAME_MS)
+2514: 			xboxNV2APerf.slowFrames++;
+2515: 	}
+2516: 	xboxNV2APerf.lastBegin = now;
+2517: 	/* pbkit rotates 3 buffers; this frame's one leaves the screen with the flip queued two frames ago. */
+2518: 	if (xboxNV2ASwapInterval->integer == 1) {
+2519: 		pb_wait_for_vbl();
+2520: 	} else if (xboxNV2AFlipsQueued >= 2) {
+2521: 		while ((int)(pb_get_vbl_counter() - xboxNV2AFlipShow[0]) < 0)
+2522: 			pb_wait_for_vbl();
+2523: 	}
+2524: 	/* pbkit's DPC drops a queued flip when a vblank lands while its ISR has interrupts off, */
+2525: 	/* so the count can pass while this buffer is still on screen; the next flip is queued. */
+2526: 	{
+2527: 		DWORD backAddr = (DWORD)pb_back_buffer() & XBOX_NV2A_PHYSICAL_MASK;
+2528: 		DWORD start = GetTickCount();
+2529: 
+2530: 		while ((VIDEOREG(XBOX_NV2A_PCRTC_START) & XBOX_NV2A_PHYSICAL_MASK) == backAddr) {
+2531: 			if (GetTickCount() - start > XBOX_NV2A_GPU_TIMEOUT_MS)
+2532: 				Sys_Error("Xbox NV2A: back buffer stays on screen, frame %u",
+2533: 					xboxNV2AFrameCount);
+2534: 			pb_wait_for_vbl();
+2535: 		}
+2536: 	}
+2537: 	xboxNV2APerf.vblankTicks += XboxNV2ATicks() - now;
+2538: 	pb_reset();
+2539: 	pb_target_back_buffer();
+2540: 	xboxNV2APerf.endWaitTicks += XboxNV2AWaitIdle("begin frame");
+2541: 	xboxNV2APerf.sceneStart = XboxNV2ATicks();
+2542: 	xboxNV2APushedDwords = 0;
+2543: 	xboxNV2AVertexUsed = 0;
+2544: 	xboxNV2ATess.shader = 0;
+2545: 	xboxNV2ATess.numVerts = 0;
+2546: 	xboxNV2ATess.numIndexes = 0;
+2547: 	xboxNV2ATess.numFast = 0;
+2548: 	xboxNV2ATess.fastVerts = 0;
+2549: 	xboxNV2ATess.fastIndexes = 0;
+2550: 	if (XBOX_NV2A_DIAGNOSTICS) {
+2551: 		pb_erase_text_screen();
+2552: 		pb_printat(0, 0, XBOX_TITLE " Xbox NV2A %dx%d", xboxNV2AWidth, xboxNV2AHeight);
+2553: 		pb_printat(1, 0, "xgu textured 2D UI path");
+2554: 	}
+2555: 
+2556: 	XboxNV2ASetFrameState();
+2557: 	xboxNV2AInFrame = qtrue;
+2558: 	if (XBOX_NV2A_DIAGNOSTICS) {
+2559: 		XboxNV2AColoredVertex *v = XboxNV2AStreamVertices(XBOX_NV2A_TRIANGLE_VERTS);
+2560: 
+2561: 		memcpy(v, xboxNV2ATriangle, sizeof(xboxNV2ATriangle));
+2562: 		XboxNV2AApplyStageState(&xboxNV2AShaders[XBOX_NV2A_WHITE_SHADER].stages[0],
+2563: 			XBOX_NV2A_WHITE_IMAGE, XBOX_NV2A_WHITE_IMAGE, qtrue, qfalse, qfalse,
+2564: 			XBOX_NV2A_CULL_NONE, qfalse);
+2565: 		XboxNV2ADrawVertices(XGU_TRIANGLES, xboxNV2AVertexUsed,
+2566: 			XBOX_NV2A_TRIANGLE_VERTS);
+2567: 		xboxNV2AVertexUsed += XBOX_NV2A_TRIANGLE_VERTS;
+2568: 	}
+2569: }
+2570: 
+2571: void XboxNV2A_EndFrame(int *frontEndMsec, int *backEndMsec)
+2572: {
+2573: 	DWORD start;
+2574: 	DWORD show;
+2575: 	LONGLONG waitStart;
+2576: 
+2577: 	if (frontEndMsec)
+2578: 		*frontEndMsec = 0;
+2579: 	if (backEndMsec)
+2580: 		*backEndMsec = 0;
+2581: 	if (!xboxNV2AInitialized || !xboxNV2AInFrame)
+2582: 		return;
+2583: 
+2584: 	XboxNV2AEndSurface();
+2585: 	xboxNV2APerf.sceneTicks += XboxNV2ATicks() - xboxNV2APerf.sceneStart;
+2586: 	/* ioq3 R_InitNextFrame: scene entities, dlights and polys last one frame. */
+2587: 	xboxNV2ASceneEntityCount = 0;
+2588: 	xboxNV2ASceneFirstEntity = 0;
+2589: 	xboxNV2ADlightCount = 0;
+2590: 	xboxNV2ASceneFirstDlight = 0;
+2591: 	xboxNV2APolyCount = 0;
+2592: 	xboxNV2APolyVertCount = 0;
+2593: 	xboxNV2ASceneFirstPoly = 0;
+2594: 	xboxNV2AInFrame = qfalse;
+2595: 	/* A flip queued after vblank show - 1 appears at show, so the last frame stays N vblanks. */
+2596: 	if (xboxNV2ASwapInterval->integer > 1 && xboxNV2AFlipsQueued) {
+2597: 		DWORD earliest = xboxNV2AFlipShow[1] + (DWORD)(xboxNV2ASwapInterval->integer - 1);
+2598: 
+2599: 		waitStart = XboxNV2ATicks();
+2600: 		while ((int)(pb_get_vbl_counter() - earliest) < 0)
+2601: 			pb_wait_for_vbl();
+2602: 		xboxNV2APerf.vblankTicks += XboxNV2ATicks() - waitStart;
+2603: 	}
+2604: 	waitStart = XboxNV2ATicks();
+2605: 	XboxNV2AWaitIdle("end frame");
+2606: 	if (XBOX_NV2A_DIAGNOSTICS)
+2607: 		pb_draw_text_screen();
+2608: 	start = GetTickCount();
+2609: 	while (pb_finished()) {
+2610: 		if (GetTickCount() - start > XBOX_NV2A_GPU_TIMEOUT_MS)
+...
+
+## includes xbox_nv2a.c
+1: #include "xbox_nv2a.h"
+3: #include "../qcommon/qcommon.h"
+4: #include "../sys/sys_xbox.h"
+6: #include <hal/video.h>
+7: #include <math.h>
+8: #include <stdint.h>
+9: #include <stdlib.h>
+10: #include <string.h>
+11: #include <windows.h>
+12: #include <xboxkrnl/xboxkrnl.h>
+16: #include "../thirdparty/xgu/xgu.h"
+17: #include "../thirdparty/xgu/xgux.h"
+2234: #include "xbox_nv2a_vp.inl"
+2251: #include "xbox_nv2a_fp.inl"
+
+## probe.ps1 (link/libs)
+5: [switch]$Cliente
+7: $flags = '-DCMAKE_TOOLCHAIN_FILE=$NXDK_DIR/share/toolchain-nxdk.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CLIENT=OFF -DBUILD_SERVER=ON -DBUILD_RENDERER_GL1=OFF -DBUILD_RENDERER_GL2=OFF -DBUILD_GAME_QVMS=OFF -DBUILD_GAME_LIBRARIES=ON -DUSE_RENDERER_DLOPEN=OFF -DUSE_OPENAL=OFF -DUSE_OPENAL_DLOPEN=OFF -DUSE_HTTP=OFF -DUSE_CODEC_VORBIS=OFF -DUSE_CODEC_OPUS=OFF -DUSE_CODEC_MAD=OFF -DUSE_INTERNAL_LIBS=ON -Wno-dev -DCMAKE_EXE_LINKER_FLAGS="/errorlimit:0 /STACK:4194304,4194304 /src/build-lgsys/lg_xboxsys.lib"'
+8: if ($Cliente) { $flags = $flags.Replace('-DBUILD_CLIENT=OFF','-DBUILD_CLIENT=ON').Replace('-DBUILD_RENDERER_GL1=OFF','-DBUILD_RENDERER_GL1=ON') }
+10: INC="-I/shims -include/shims/lg_compat.h -I`$NXDK_DIR/lib/xboxrt/libc_extensions -I`$NXDK_DIR/lib/net/lwip/src/include -I`$NXDK_DIR/lib/net/nforceif/include"
+12: cmake -S /shims/xboxsys -B build-lgsys -DCMAKE_TOOLCHAIN_FILE=`$NXDK_DIR/share/toolchain-nxdk.cmake -DCMAKE_BUILD_TYPE=Release > lgsys.txt 2>&1 && cmake --build build-lgsys >> lgsys.txt 2>&1 && echo '## LGSYS ok' || { echo '## LGSYS falhou'; grep -E 'error' lgsys.txt | head -n 20; }
+20: echo '## Alvos:'; find build-xbox \( -name '*.lib' -o -name '*.exe' -o -name '*.xbe' \) | head -n 25
+
+## pbkit no nxdk (docker)
+NXDK_DIR=/usr/src/nxdk
+Makefile
+Makefile-pdclib
+SDL2_test.lib
+hal
+libSDL2.lib
+libSDL2_image.lib
+libSDL_ttf.lib
+libc++.lib
+libcxx
+libfreetype.lib
+libjpeg
+libjpeg.lib
+libnxdk.lib
+libnxdk_automount_d.lib
+libnxdk_hal.lib
+libnxdk_net.lib
+libpbkit.lib
+libpdclib.lib
+libpng
+libpng.lib
+libwinapi.lib
+libxboxrt.lib
+libzlib.lib
+net
+nxdk
+nxdk_usb.lib
+pbkit
+pdclib
+pkgconfig
+sdl
+usb
+winapi
+winmm.lib
+xboxkrnl
+xboxrt
+zlib
+/usr/src/nxdk/lib/pbkit
+/usr/src/nxdk/lib/pbkit/pbkit_gamma.c
+/usr/src/nxdk/lib/pbkit/pbkit_gamma.c.d
+/usr/src/nxdk/lib/pbkit/pbkit_dma.c
+/usr/src/nxdk/lib/pbkit/pbkit_print.obj
+/usr/src/nxdk/lib/pbkit/pbkit_framebuffer.h
+/usr/src/nxdk/lib/pbkit/pbkit_gamma.obj
+/usr/src/nxdk/lib/pbkit/pbkit_draw.c.d
+/usr/src/nxdk/lib/pbkit/pbkit.c.d
+/usr/src/nxdk/lib/pbkit/pbkit.c
+/usr/src/nxdk/lib/pbkit/pbkit.obj
+/usr/src/nxdk/lib/pbkit/pbkit_dma.obj
+/usr/src/nxdk/lib/pbkit/pbkit_draw.c
+/usr/src/nxdk/lib/pbkit/pbkit_draw.h
+/usr/src/nxdk/lib/pbkit/pbkit.h
+/usr/src/nxdk/lib/pbkit/pbkit_print.c.d
+/usr/src/nxdk/lib/pbkit/pbkit_pushbuffer.c.d
+/usr/src/nxdk/lib/pbkit/pbkit_pushbuffer.h
+/usr/src/nxdk/lib/pbkit/pbkit_print.c
+/usr/src/nxdk/lib/pbkit/pbkit_dma.c.d
+49:void    pb_erase_depth_stencil_buffer(int x, int y, int w, int h);
+52:int pb_finished(void);  //prepare screen swapping at VBlank (do it at frame end)
+59:void    pb_extra_buffers(int n);//requests additional back buffers (default is 0) (call it before pb_init)
+60:void    pb_size(DWORD size);    //sets push buffer size (default is 512Kb) (call it before pb_init)
+61:int     pb_init(void);      //returns 0 if everything went well (starts Dma engine)
+69:DWORD   pb_back_buffer_width(void);
+
+## tr_null.c
+/* LG lote 18e: renderer nulo (tela preta) para validar o build cliente no nxdk. */
+#include "../qcommon/q_shared.h"
+#include "../renderercommon/tr_public.h"
+#include <string.h>
+
+/* LG 18m: fonte dummy nao-NULL (UI faz ERR_DROP se LoadFont retorna NULL) */
+static fontheader_t lg_null_fonts[16];
+static int lg_null_nfonts = 0;
+static fontheader_sgl_t lg_null_sgl[16]; /* LG 18v */
+static fontheader_t *lg_null_LoadFont(const char *name) {
+    int i;
+    for (i = 0; i < lg_null_nfonts; i++) { if (!Q_stricmp(lg_null_fonts[i].name, name)) return &lg_null_fonts[i]; }
+    if (lg_null_nfonts >= 16) return &lg_null_fonts[0];
+    Q_strncpyz(lg_null_fonts[lg_null_nfonts].name, name, sizeof(lg_null_fonts[0].name));
+    { /* LG 18v */
+        fontheader_t *f = &lg_null_fonts[lg_null_nfonts];
+        fontheader_sgl_t *s = &lg_null_sgl[lg_null_nfonts];
+        int c;
+        memset(s, 0, sizeof(*s));
+        for (c = 0; c < 256; c++) { s->indirection[c] = c; s->locations[c].size[0] = 8.0f / 256.0f; }
+        s->height = 16.0f; s->aspectRatio = 1.0f;
+        Q_strncpyz(s->name, name, sizeof(s->name));
+        f->numPages = 0; f->sgl[0] = s;
+    }
+    return &lg_null_fonts[lg_null_nfonts++];
+}
+static refexport_t lgNullRe;
+static refimport_t lgNullRi;
+
+#define LG_SET(field, fn) do { void *lgp_ = (void *)(fn); memcpy(&lgNullRe.field, &lgp_, sizeof(lgp_)); } while (0)
+
+/* cdecl: o chamador limpa a pilha, entao um stub int serve p/ qualquer assinatura sem float/struct. */
+static int LG_NullStub(void) { return 0; }
+static int LG_NullOne(void) { return 1; }
+static float LG_NullFloat(void) { return 0.0f; }
+static const char *LG_NullName(void) { return ""; }
+static qboolean LG_NullTrue(void) { return qtrue; }
+
+static void LG_NullBeginRegistration(glconfig_t *config)
+{
+memset(config, 0, sizeof(*config));
+config->vidWidth = 640;
+config->vidHeight = 480;
+}
+
+static void LG_NullRegisterFont(const char *name, int size, fontInfo_t *font)
+{
+(void)name; (void)size;
+memset(font, 0, sizeof(*font));
+}
+
+static orientation_t LG_NullOrientation(refEntity_t *model, int tagNum)
+{
+orientation_t o;
+(void)model; (void)tagNum;
+memset(&o, 0, sizeof(o));
+AxisClear(o.axis);
+return o;
+}
+
+refexport_t *GetRefAPI(int apiVersion, refimport_t *rimp)
+{
+void *stub = (void *)LG_NullStub;
+size_t i;
+
+if (apiVersion != REF_API_VERSION || !rimp)
+return NULL;
+lgNullRi = *rimp;
+for (i = 0; i < sizeof(lgNullRe) / sizeof(void *); ++i)
+memcpy((char *)&lgNullRe + i * sizeof(void *), &stub, sizeof(stub));
+
+LG_SET(BeginRegistration, LG_NullBeginRegistration);
+LG_SET(RegisterFont, LG_NullRegisterFont);
+LG_SET(TIKI_Orientation, LG_NullOrientation);
+LG_SET(ModelRadius, LG_NullFloat);
+LG_SET(GetFontHeight, LG_NullFloat);
+LG_SET(GetFontStringWidth, LG_NullFloat);
+LG_SET(Noise, LG_NullFloat);
+LG_SET(GetShaderName, LG_NullName);
+LG_SET(GetModelName, LG_NullName);
+LG_SET(GetGraphicsInfo, LG_NullName);
+LG_SET(SetMode, LG_NullTrue);
+LG_SET(GetShaderWidth, LG_NullOne);
+LG_SET(GetShaderHeight, LG_NullOne);
+
+lgNullRi.Printf(PRINT_ALL, "LG: renderer nulo (18e)\n");
+lgNullRe.LoadFont = lg_null_LoadFont; /* LG 18m */
+return &lgNullRe;
+}
+
+qboolean R_ImageExists(const char *name)
+{
+(void)name;
+return qfalse;
+}
+

@@ -788,3 +788,10 @@
 - 18z8a 1a: '-f' dentro de Add(a -f x, y) = virgula vira argumento do metodo -> regra: Add((fmt -f x, y))
 - 18z8a 2a: Get-ChildItem -Include sem -Recurse = vazio -> Path nulo; regra: -Include sempre com -Recurse + helper que tolera lista vazia
 - 18z8a: coleta refexport_t, uso re.* 2D, fonte GL1, renderernv2a/xbox_ref.c/init pbkit, build ioQ3, tr_null.c (docs/probes/lote18z8a-nv2a2d.log), sem build
+
+## Lote 18z8b (2026-10-28 12:37)
+- 18z8a: 2D usado = SetColor/DrawStretchPic/DrawTrianglePic/DrawString/RegisterShader(NoMip)/GetShaderWidth/Height/DrawBox/DrawTilePic/Scissor
+- 18z8a: xbox_ref.c = casca; init pb_init/pb_show_front_screen em xbox_nv2a.c:2334-2339; swap vbl/back_buffer/reset/target 2519-2539
+- 18z8a: secao 4 vazia = regex \bNV2A_ nao casa dentro de XboxNV2A_ (sem fronteira de palavra)
+- DECISAO: 2D minimo proprio no tr_null.c (pb_init, clear, DrawStretchPic = pb_fill solido com SetColor, swap); renderernv2a fica como referencia
+- 18z8b: coleta xbox_nv2a.h + corpos Init/BeginFrame/EndFrame/SetColor/DrawStretchPic + link probe.ps1 + pbkit no nxdk + tr_null.c (docs/probes/lote18z8b-nv2a-corpo.log), sem build
