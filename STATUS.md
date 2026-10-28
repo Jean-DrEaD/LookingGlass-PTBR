@@ -802,3 +802,9 @@
 - 18z8c: tr_null.c sob NXDK: SetColor/BeginFrame/EndFrame/DrawStretchPic(2)/DrawTilePic/DrawBox reais; fundo 0x101020; cor = hash do shader x SetColor; alpha<0.5 pulado
 - 18z8c: debugPrint some apos pb_init -> overlay pbkit 'LG 18z8c frame N' + barra verde no rodape = heartbeat visual
 - 18z8c: exe=True; ISO G:\xemu\alice-cliente.iso (docs/probes/lote18z8c-nv2a2d.log)
+
+## Lote 18z8d (2026-10-28 12:59)
+- 18z8c xemu: MARCO - pbkit OWNS SCREEN: fundo 0x101020 + overlay 'LG 18z8c frame 840' + barra verde varrendo a tela sem travar (init/flip/loop OK)
+- 18z8c: NENHUM retangulo de UI/HUD visivel -> suspeitos: RegisterShader stub=0, alpha<0.5, ou 2D por outra entrada
+- 18z8d: overlay com fps + fill/draw/alpha/sh0/setcolor/shaders por frame; RegisterShader(NoMip) = tabela de nomes (512, handle i+1)
+- 18z8d: exe=True (docs/probes/lote18z8d-contadores.log)
