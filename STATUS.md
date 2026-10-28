@@ -905,3 +905,8 @@
 - 18z8n-c: build falhou so no tr_null.c:187 (lg_dbg nao declarado: 'ultimo #include' = lg_nv2a.c, abaixo do overlay; 5 erros 'unsigned int *' = correcao para lg_img do clang)
 - Regra: declaracao global nova em tr_null.c vai no TOPO do arquivo (nao apos o ultimo #include)
 - 18z8n-c2: lg_dbg[8] movido p/ linha 1 do tr_null.c; demais 5 arquivos do 18z8n-c mantidos; exe=True iso=True
+
+## Lote 18z8n-d (2026-10-28 20:39)
+- 18z8n-c2 xemu: carregando s9 (CA_CINEMATIC) a0 d0; em jogo s8 (CA_ACTIVE) a1681 r0 d1680 c0 v1680 -> CG_Draw2D roda todo frame (so via View3D), snapshot sempre valido
+- Conclusao: 2D NAO e pulado por estado; draw 0 vem de dentro do CG_Draw2D (cvar, shader 0, ou DrawString/DrawTrianglePic stub)
+- 18z8n-d: coleta corpo CG_Draw2D + funcoes chamadas + chamadas R_Draw* do cgame + cvars 2D + contexto View3D (docs/probes/lote18z8n-d-draw2d.log), sem build
