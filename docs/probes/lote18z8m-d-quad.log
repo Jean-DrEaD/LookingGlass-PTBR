@@ -1,0 +1,32 @@
+# Lote 18z8m-d - lgx_* ligados (quad texturizado) 2026-10-28 19:44
+ancora x1: static unsigned int *lg_img[512]; static int lg_iw
+ancora x1: lg_sh_st[lg2d_nsh] = lg2d_probe(name, (int)lg2d_ns
+ancora x1: lg2d_ok = 1;
+ancora x1: lg2d_gpufill(0, 0, lg2d_w, lg2d_h, 0xFF101020);
+ancora x1:     (void)s1; (void)t1; (void)s2; (void)t2;
+    lg
+ancora x1: "LG 18z8k frame %u fps %u"
+ancora x1: "setcolor %u shaders %u", lg2d_ncol, (unsigned int
+numstat: 13	5	code/renderernull/tr_null.c
+probe: ## Objetos ok / falhos:
+probe: 504
+probe: 0
+probe: ## Erros por arquivo:
+probe: ## Top mensagens:
+probe: ## Linker (simbolos):
+probe: ## Falhou:
+probe: ## Alvos:
+probe: build-xbox/recacstnav_recast/libRecast.lib
+probe: build-xbox/recastnav_crowd/libDetourCrowd.lib
+probe: build-xbox/recastnav_detour/libDetour.lib
+probe: build-xbox/Release/libcgame.lib
+probe: build-xbox/Release/libgame.lib
+probe: build-xbox/Release/omohaaded.exe
+probe: build-xbox/Release/openmohaa.exe
+exe=True 6174720 10/28/2026 19:46:22
+cxbe: Xbe::Export: Writing Section 0x0002 (.data)...OK
+cxbe: Xbe::Export: Writing Section 0x0003 (.tls)...OK
+cxbe: Xbe::Export: Writing Zero Padding...OK
+xiso: 
+xiso: sucessfully created alice-cliente.iso (26 files totalling 667945131 bytes added)
+xbe 6184960 iso=True

@@ -874,3 +874,9 @@
 - 18z8m-c: build 504/0, exe=True (42dea8b); pb_begin/xgu/enums resolvem (grep vazio do pbkit.h = declarado em outro header)
 - 18z8m-d-a: coleta tr_null.c 1-240 (buffer do lg2d_decode, SetColor, Begin/EndFrame) + pb_begin nos headers pbkit (docs/probes/lote18z8m-d-a-trnull.log), sem build
 - Proximo 18z8m-d: ligar lgx_init/upload/frame/quad com nomes reais
+
+## Lote 18z8m-d (2026-10-28 19:46)
+- 18z8m-d-a: pb_begin/pb_end em pbkit_pushbuffer.h; buffer do decode = lg_img/lg_iw/lg_ih[handle-1]
+- 18z8m-d: prototipos lgx_* apos lg_img; lgx_init no lg2d_init (lgx_st 1/-1); lgx_upload no RegisterShader (pot. de 2 -> lg_tex[]); lgx_frame apos clear; DrawStretchPic = lgx_quad c/ fallback fill
+- 18z8m-d: overlay 'LG 18z8m' + linha 2 'q N up N xS'; exe=True iso=True (docs/probes/lote18z8m-d-quad.log)
+- Esperado xemu: x1 up 1; backtile texturizado onde o jogo o desenha (q>0); se x-1 -> lgx_init falhou
