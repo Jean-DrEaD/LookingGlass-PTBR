@@ -815,3 +815,9 @@
 - Suspeita fps: laco pb_finished sem comandos na GPU sai so por timeout, ou wait_vbl
 - 18z8e: overlay linha 4 'vbl/fin/game ms + to (timeouts)'; timeout pb_finished 2000 -> 50 ms
 - 18z8e: exe=True (docs/probes/lote18z8e-tempos.log)
+
+## Lote 18z8f (2026-10-28 16:23)
+- 18z8e xemu: fade fps 4 (draw 2) / ocioso fps 22 (draw 0); vbl 1-17, fin 0, game 1-4, to 0 -> pb_finished/vbl/jogo INOCENTES
+- Causa: preenchimento por CPU no framebuffer (~100 ms por tela cheia no xemu); clear do fundo ja limita a 22 fps
+- Plano 18z8g: clear de fundo + retangulos solidos via GPU (SET_COLOR_CLEAR_VALUE + CLEAR_RECT + CLEAR_SURFACE); alpha depois via triangulos
+- 18z8f: coleta lg2d_fill/Begin/EndFrame + macros nv_regs/pbkit (docs/probes/lote18z8f-gpuclear.log), sem build

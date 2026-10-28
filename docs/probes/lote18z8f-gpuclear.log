@@ -1,0 +1,93 @@
+# Lote 18z8f - coleta p/ clear por GPU 2026-10-28 16:23
+## tr_null.c: linhas com lg2d_/pb_ (contexto)
+   35: static int lg2d_ok = 0, lg2d_in = 0, lg2d_w = 640, lg2d_h = 480;
+   57:     lg2d_w = (int)pb_back_buffer_width(); lg2d_h = (int)pb_back_buffer_height();
+   58:     if (lg2d_w <= 0 || lg2d_h <= 0) { lg2d_w = 640; lg2d_h = 480; }
+   74: static void lg2d_fill(float x, float y, float w, float h, DWORD col) {
+   79:     if (x1 > lg2d_w) x1 = lg2d_w; if (y1 > lg2d_h) y1 = lg2d_h;
+   81:     fb = (DWORD *)pb_back_buffer();
+   82:     lg2d_ndraw++; for (j = y0; j < y1; j++) { DWORD *row = fb + j * lg2d_w; for (i = x0; i < x1; i++) row[i] = col; }
+   87: static void LG2D_BeginFrame(int stereo) {
+   92:     pb_reset();
+   93:     pb_target_back_buffer();
+   94:     fb = (DWORD *)pb_back_buffer(); n = lg2d_w * lg2d_h;
+   98: static void LG2D_EndFrame(int *fe, int *be) {
+  102:     lg2d_nfill--; lg2d_ndraw--; lg2d_fill((float)(lg2d_frame % (unsigned int)(lg2d_w - 40)), (float)(lg2d_h - 12), 40.0f, 10.0f, 0xFF00FF00);
+  118:     lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+  122:     lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+  125:     lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+  128:     lg2d_fill(x, y, w, h, lg2d_mk(0));
+  187: LG_SET(BeginFrame, LG2D_BeginFrame);
+  188: LG_SET(EndFrame, LG2D_EndFrame);
+## corpos lg2d_fill / BeginFrame / EndFrame
+-- static void lg2d_fill @ 74
+   74: static void lg2d_fill(float x, float y, float w, float h, DWORD col) {
+   75:     int x0, y0, x1, y1, i, j; DWORD *fb;
+   76:     lg2d_nfill++; if (!lg2d_in) return; if (((col >> 24) & 0xFF) < 128) { lg2d_nalpha++; return; }
+   77:     x0 = (int)x; y0 = (int)y; x1 = (int)(x + w); y1 = (int)(y + h);
+   78:     if (x0 < 0) x0 = 0; if (y0 < 0) y0 = 0;
+   79:     if (x1 > lg2d_w) x1 = lg2d_w; if (y1 > lg2d_h) y1 = lg2d_h;
+   80:     if (x0 >= x1 || y0 >= y1) return;
+   81:     fb = (DWORD *)pb_back_buffer();
+   82:     lg2d_ndraw++; for (j = y0; j < y1; j++) { DWORD *row = fb + j * lg2d_w; for (i = x0; i < x1; i++) row[i] = col; }
+   83: }
+-- LG2D_BeginFrame @ 87
+   87: static void LG2D_BeginFrame(int stereo) {
+   88:     DWORD *fb; int i, n;
+   89:     (void)stereo;
+   90:     if (!lg2d_ok || lg2d_in) return;
+   91:     { DWORD lgv = GetTickCount(); if (lg2d_tend) lg2d_msgame = lgv - lg2d_tend; pb_wait_for_vbl(); lg2d_msvbl = GetTickCount() - lgv; }
+   92:     pb_reset();
+   93:     pb_target_back_buffer();
+   94:     fb = (DWORD *)pb_back_buffer(); n = lg2d_w * lg2d_h;
+   95:     for (i = 0; i < n; i++) fb[i] = 0xFF101020;
+   96:     lg2d_in = 1; lg2d_frame++;
+   97: }
+-- LG2D_EndFrame @ 98
+   98: static void LG2D_EndFrame(int *fe, int *be) {
+   99:     DWORD t;
+  100:     if (fe) *fe = 0; if (be) *be = 0;
+  101:     if (!lg2d_in) return;
+  102:     lg2d_nfill--; lg2d_ndraw--; lg2d_fill((float)(lg2d_frame % (unsigned int)(lg2d_w - 40)), (float)(lg2d_h - 12), 40.0f, 10.0f, 0xFF00FF00);
+  103:     pb_erase_text_screen();
+  104:     lg2d_fpsf++; if (GetTickCount() - lg2d_fpst >= 1000) { lg2d_fps = lg2d_fpsf; lg2d_fpsf = 0; lg2d_fpst = GetTickCount(); }
+  105:     pb_printat(0, 0, "LG 18z8d frame %u fps %u", lg2d_frame, lg2d_fps);
+  106:     pb_printat(1, 0, "fill %u draw %u alpha %u sh0 %u", lg2d_nfill, lg2d_ndraw, lg2d_nalpha, lg2d_nsh0);
+  107:     pb_printat(2, 0, "setcolor %u shaders %u", lg2d_ncol, (unsigned int)lg2d_nsh);
+  108:     pb_printat(3, 0, "vbl %u fin %u game %u to %u", (unsigned int)lg2d_msvbl, (unsigned int)lg2d_msfin, (unsigned int)lg2d_msgame, lg2d_nto);
+  109:     lg2d_nfill = lg2d_ndraw = lg2d_nalpha = lg2d_nsh0 = lg2d_ncol = 0;
+  110:     pb_draw_text_screen();
+  111:     __asm__ __volatile__("sfence" ::: "memory");
+  112:     t = GetTickCount();
+  113:     while (pb_finished()) { if (GetTickCount() - t > 50) { lg2d_nto++; break; } } lg2d_msfin = GetTickCount() - t; lg2d_tend = GetTickCount();
+  114:     lg2d_in = 0;
+  115: }
+## nxdk: macros clear/rect + prototipos pbkit
+---
+void    pb_erase_depth_stencil_buffer(int x, int y, int w, int h);
+DWORD   *pb_back_buffer(void);      //returns normal rotating back buffer address
+DWORD   pb_back_buffer_width(void);
+DWORD   pb_back_buffer_height(void);
+DWORD   pb_back_buffer_pitch(void);
+## pb_erase_depth_stencil_buffer (modelo de clear)
+void pb_erase_depth_stencil_buffer(int x, int y, int w, int h)
+{
+    uint32_t    *p;
+
+    int     x1,y1,x2,y2;
+
+    x1=x;
+    y1=y;
+    x2=x+w;
+    y2=y+h;
+
+    p=pb_begin();
+    pb_push(p++,NV20_TCL_PRIMITIVE_3D_CLEAR_VALUE_HORIZ,2);     //sets rectangle coordinates
+    *(p++)=((x2-1)<<16)|x1;
+    *(p++)=((y2-1)<<16)|y1;
+    pb_push(p++,NV20_TCL_PRIMITIVE_3D_CLEAR_VALUE_DEPTH,3);     //sets data used to fill in rectangle
+    *(p++)=0xffffff00;      //(depth<<8)|stencil
+    *(p++)=0;           //color
+    *(p++)=0x03;            //triggers the HW rectangle fill (only on D&S)
+    pb_end(p);
+}
