@@ -894,3 +894,9 @@
 - 18z8n-a: atribuicoes refexport nao casaram (GetRefAPI usa outra forma); DrawTrianglePic (22) e DrawString (21) = stub; shaders cgame todos MOHAA
 - 18z8n-a: draw 0 = DrawStretchPic nunca chamado -> suspeita SCR/CG_Draw2D pulando 2D por estado
 - 18z8n-b: coleta GetRefAPI/LG_NullStub/LG2D_DrawStretchPic + SCR_DrawScreenField/UpdateScreen + CG_DrawActiveFrame/CG_Draw2D (docs/probes/lote18z8n-b-refapi.log), sem build
+
+## Lote 18z8n-c (2026-10-28 20:18)
+- 18z8n-b: GetRefAPI preenche 85 entradas com LG_NullStub (ret 0) e troca ~22 via LG_SET; GetShaderWidth/Height = 1 (pendente)
+- 18z8n-b: CG_Draw2D so via cl_cgame.cpp:1023 e cl_uiview3d.cpp:584; CG_DrawActiveFrame sai sem snap
+- 18z8n-c 1a: ancora 'LG 18z8m-e' casou o comentario do quad forcado -> nada gravado; ancora agora = literal '"LG 18z8m-e frame'
+- 18z8n-c: lg_dbg[8]; linha vbl do overlay -> 's a r d c v' (clc.state/DrawActiveFrame/sai sem snap/CG_Draw2D/via cl_cgame/via View3D, %10000); exe=False iso=False

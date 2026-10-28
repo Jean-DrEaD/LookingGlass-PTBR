@@ -1,0 +1,17 @@
+# Lote 18z8n-c - contadores caminho 2D 2026-10-28 20:16
+vbl antigo: "vbl %u fin %u game %u to %u", (unsigned int)lg2d_msvbl, (unsigned int)lg2d_msfin, (unsigned int)lg2d_msgame, lg2d_nto
+numstat: 5	0	code/cgame/cg_drawtools.cpp
+numstat: 6	0	code/cgame/cg_view.c
+numstat: 5	1	code/client/cl_cgame.cpp
+numstat: 5	0	code/client/cl_scrn.cpp
+numstat: 5	1	code/client/cl_uiview3d.cpp
+numstat: 6	2	code/renderernull/tr_null.c
+probe: gmake[2]: *** [CMakeFiles/openmohaa.dir/build.make:2292: CMakeFiles/openmohaa.dir/code/renderernull/tr_null.c.obj] Error 1
+probe: ## Alvos:
+probe: build-xbox/recacstnav_recast/libRecast.lib
+probe: build-xbox/recastnav_crowd/libDetourCrowd.lib
+probe: build-xbox/recastnav_detour/libDetour.lib
+probe: build-xbox/Release/libcgame.lib
+probe: build-xbox/Release/libgame.lib
+probe: build-xbox/Release/omohaaded.exe
+exe=False iso=False
