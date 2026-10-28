@@ -853,3 +853,8 @@
 - 18z8k xemu: MARCO - decode TGA OK: dec 1, backtile 64x64 no canto, orientacao/cores BGR/pitch 640 corretos; fps 62; padding do overlay OK
 - 18z8l: coleta upload swizzled/combiner/quad do renderernv2a + API xgu do nxdk + corpos atuais do tr_null.c (docs/probes/lote18z8l-xgu.log), sem build
 - Proximo 18z8m: textura NV2A + quad texturizado no DrawStretchPic
+
+## Lote 18z8m-a (2026-10-28 18:49)
+- 18z8l: upload ioQ3 = MmAllocateContiguousMemoryEx(WRITECOMBINE) + swizzle por tabela X|Y + A8R8G8B8_SWIZZLED (ARGB = mesmo do lg2d_decode); offset GPU = ptr & 0x03ffffff
+- 18z8l: bind = xgu_set_texture_offset/format/address/control0/filter; blend = xgu_set_blend_func_s/dfactor + blend_enable; draw = xgux_draw_arrays
+- 18z8l: xgu.h NAO esta em NXDK_DIR/lib/xgu -> 18z8m-a localiza xgu (container/ioQ3) + linhas 500-660/1100-1150/2220-2400 do xbox_nv2a.c (docs/probes/lote18z8m-a-xgu.log), sem build

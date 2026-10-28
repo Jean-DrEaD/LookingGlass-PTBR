@@ -1,0 +1,425 @@
+# Lote 18z8m-a - localizar xgu + setup ioQ3 2026-10-28 18:49
+## xgu no container
+NXDK_DIR=/usr/src/nxdk
+## xgu no ioQ3
+D:\ioQuake3-Xbox\code\thirdparty\xgu\nv2a_regs.h
+D:\ioQuake3-Xbox\code\thirdparty\xgu\xgu.h
+D:\ioQuake3-Xbox\code\thirdparty\xgu\xgux.h
+## includes/build ioQ3
+Makefile.xbox:60: $(CURDIR)/code/renderernv2a/xbox_nv2a.c	$(CURDIR)/code/renderernv2a/xbox_nv2a_shader.c 	$(CURDIR)/code/renderernv2a/xbox_nv2a_model.c 	$(CURDIR)/code/renderernv2a/xbox_nv2a_world.c 	$(CURDIR)/code/renderernv2a/xbox_nv2a_sky.c 	$(CURDIR)/code/renderernv2a/xbox_nv2a_dxt.c 	$(CURDIR)/code/renderercommon/tr_image_tga.c 	$(CURDIR)/code/renderercommon/tr_image_jpg.c \
+Makefile.xbox:173: $(CURDIR)/code/renderernv2a/xbox_nv2a_vp.inl \
+Makefile.xbox:174: $(CURDIR)/code/renderernv2a/xbox_nv2a_fp.inl
+Makefile.xbox:301: $(CURDIR)/code/renderernv2a/xbox_nv2a.c $(CURDIR)/code/renderernv2a/xbox_nv2a_shader.c \
+Makefile.xbox:302: $(CURDIR)/code/renderernv2a/xbox_nv2a_model.c $(CURDIR)/code/renderernv2a/xbox_nv2a_world.c \
+Makefile.xbox:303: $(CURDIR)/code/renderernv2a/xbox_nv2a_sky.c $(CURDIR)/code/renderernv2a/xbox_nv2a_dxt.c \
+Makefile.xbox:346: $(CURDIR)/code/renderernv2a/xbox_nv2a_fp.inl: \
+Makefile.xbox:347: $(CURDIR)/code/renderernv2a/xbox_nv2a_fp.ps | fp20compiler
+## includes xbox_nv2a.c
+1: #include "xbox_nv2a.h"
+3: #include "../qcommon/qcommon.h"
+4: #include "../sys/sys_xbox.h"
+6: #include <hal/video.h>
+7: #include <math.h>
+8: #include <stdint.h>
+9: #include <stdlib.h>
+10: #include <string.h>
+11: #include <windows.h>
+12: #include <xboxkrnl/xboxkrnl.h>
+16: #include "../thirdparty/xgu/xgu.h"
+17: #include "../thirdparty/xgu/xgux.h"
+## xbox_nv2a.c 500-660
+500: }
+501: 
+502: /* ioq3 EvalWaveForm; noise needs ioq3's noise table, so it holds its base value. */
+503: static float XboxNV2AEvalWave(const xboxNV2AWave_t *wave, double time)
+504: {
+505: 	int index;
+506: 
+507: 	if (wave->func == XBOX_NV2A_WAVE_NOISE)
+508: 		return wave->base;
+509: 	index = (int)((wave->phase + time * wave->frequency) * XBOX_NV2A_FUNCTABLE_SIZE);
+510: 	return wave->base + XboxNV2AWaveTable(wave->func)[index & XBOX_NV2A_FUNCTABLE_MASK] *
+511: 		wave->amplitude;
+512: }
+513: 
+514: static XguBlendFactor XboxNV2ABlendFactor(unsigned int factor)
+515: {
+516: 	switch (factor) {
+517: 	case GL_ZERO: return XGU_FACTOR_ZERO;
+518: 	case GL_ONE: return XGU_FACTOR_ONE;
+519: 	case GL_SRC_COLOR: return XGU_FACTOR_SRC_COLOR;
+520: 	case GL_ONE_MINUS_SRC_COLOR: return XGU_FACTOR_ONE_MINUS_SRC_COLOR;
+521: 	case GL_SRC_ALPHA: return XGU_FACTOR_SRC_ALPHA;
+522: 	case GL_ONE_MINUS_SRC_ALPHA: return XGU_FACTOR_ONE_MINUS_SRC_ALPHA;
+523: 	case GL_DST_ALPHA: return XGU_FACTOR_DST_ALPHA;
+524: 	case GL_ONE_MINUS_DST_ALPHA: return XGU_FACTOR_ONE_MINUS_DST_ALPHA;
+525: 	case GL_DST_COLOR: return XGU_FACTOR_DST_COLOR;
+526: 	case GL_ONE_MINUS_DST_COLOR: return XGU_FACTOR_ONE_MINUS_DST_COLOR;
+527: 	case GL_SRC_ALPHA_SATURATE: return XGU_FACTOR_SRC_ALPHA_SATURATE;
+528: 	default: return XGU_FACTOR_ONE;
+529: 	}
+530: }
+531: 
+532: static uint32_t *XboxNV2ABindTexture(uint32_t *p, unsigned int unit, int imageIndex,
+533: 	qboolean clamp)
+534: {
+535: 	const XboxNV2AImage *image = &xboxNV2AImages[imageIndex];
+536: 	XguTextureAddress address = clamp ? XGU_CLAMP_TO_EDGE : XGU_WRAP;
+537: 	int levels = image->levels > 1 ? image->levels : 1;
+538: 
+539: 	if (imageIndex == xboxNV2ABoundImage[unit] && clamp == xboxNV2ABoundClamp[unit])
+540: 		return p;
+541: 	p = xgu_set_texture_offset(p, unit, (void *)((uint32_t)image->memory & 0x03ffffff));
+542: 	p = xgu_set_texture_format(p, unit, 2, false, XGU_SOURCE_COLOR, 2, image->format,
+543: 		(uint8_t)levels, XboxNV2ALog2(image->width), XboxNV2ALog2(image->height), 0);
+544: 	/* U, V and P must all hold a valid mode; 0 raises a GPU invalid-data error. */
+545: 	p = xgu_set_texture_address(p, unit, address, false, address, false, address, false,
+546: 		false);
+547: 	/* The format's level count limits the LOD, so the clamp stays wide open, as in pbgl. */
+548: 	p = xgu_set_texture_control0(p, unit, true, 0, XBOX_NV2A_MAX_LOD_CLAMP);
+549: 	p = xgu_set_texture_filter(p, unit, 0, XGU_TEXTURE_CONVOLUTION_QUINCUNX,
+550: 		levels > 1 ? XBOX_NV2A_FILTER_MIPMAP : XBOX_NV2A_FILTER_LINEAR, XBOX_NV2A_FILTER_LINEAR,
+551: 		false, false, false, false);
+552: 	xboxNV2ABoundImage[unit] = imageIndex;
+553: 	xboxNV2ABoundClamp[unit] = clamp;
+554: 	return p;
+555: }
+556: 
+557: /* 2D stages never touch depth or culling; image1 is a collapsed second stage's, else white. */
+558: static void XboxNV2AApplyStageState(const xboxNV2AStage_t *stage, int imageIndex,
+559: 	int image1, qboolean clamp1, qboolean is3D, qboolean depthTest, int cull,
+560: 	qboolean polygonOffset)
+561: {
+562: 	int depthWrite = depthTest && stage->depthWrite;
+563: 	int depthEqual = depthTest && stage->depthEqual;
+564: 	int offset = depthTest && polygonOffset;
+565: 	uint32_t *p;
+566: 
+567: 	if (!is3D)
+568: 		cull = XBOX_NV2A_CULL_NONE;
+569: 
+570: 	XboxNV2AReserve(XBOX_NV2A_STATE_DWORDS);
+571: 	p = pb_begin();
+572: 	p = XboxNV2ABindTexture(p, 0, imageIndex, stage->clamp);
+573: 	p = XboxNV2ABindTexture(p, 1, image1, clamp1);
+574: 	if (stage->srcBlend != xboxNV2ABoundSrcBlend ||
+575: 		stage->dstBlend != xboxNV2ABoundDstBlend) {
+576: 		p = xgu_set_blend_func_sfactor(p, XboxNV2ABlendFactor(stage->srcBlend));
+577: 		p = xgu_set_blend_func_dfactor(p, XboxNV2ABlendFactor(stage->dstBlend));
+578: 		xboxNV2ABoundSrcBlend = stage->srcBlend;
+579: 		xboxNV2ABoundDstBlend = stage->dstBlend;
+580: 	}
+581: 	if (stage->alphaFunc != xboxNV2ABoundAlphaFunc) {
+582: 		p = xgu_set_alpha_test_enable(p, stage->alphaFunc != XBOX_NV2A_ALPHA_NONE);
+583: 		if (stage->alphaFunc == XBOX_NV2A_ALPHA_GT0) {
+584: 			p = xgu_set_alpha_func(p, XGU_FUNC_GREATER);
+585: 			p = xgu_set_alpha_ref(p, 0);
+586: 		} else if (stage->alphaFunc == XBOX_NV2A_ALPHA_LT128) {
+587: 			p = xgu_set_alpha_func(p, XGU_FUNC_LESS);
+588: 			p = xgu_set_alpha_ref(p, 128);
+589: 		} else if (stage->alphaFunc == XBOX_NV2A_ALPHA_GE128) {
+590: 			p = xgu_set_alpha_func(p, XGU_FUNC_GREATER_OR_EQUAL);
+591: 			p = xgu_set_alpha_ref(p, 128);
+592: 		}
+593: 		xboxNV2ABoundAlphaFunc = stage->alphaFunc;
+594: 	}
+595: 	if ((int)depthTest != xboxNV2ABoundDepthTest) {
+596: 		p = xgu_set_depth_test_enable(p, depthTest);
+597: 		xboxNV2ABoundDepthTest = depthTest;
+598: 	}
+599: 	if (depthWrite != xboxNV2ABoundDepthWrite) {
+600: 		p = xgu_set_depth_mask(p, depthWrite);
+601: 		xboxNV2ABoundDepthWrite = depthWrite;
+602: 	}
+603: 	if (depthEqual != xboxNV2ABoundDepthEqual) {
+604: 		p = xgu_set_depth_func(p, depthEqual ? XGU_FUNC_EQUAL : XGU_FUNC_LESS_OR_EQUAL);
+605: 		xboxNV2ABoundDepthEqual = depthEqual;
+606: 	}
+607: 	/* ioq3 GL_Cull: front-sided shaders cull GL_FRONT with the default CCW front face. */
+608: 	if (cull != xboxNV2ABoundCull) {
+609: 		p = xgu_set_cull_face_enable(p, cull != XBOX_NV2A_CULL_NONE);
+610: 		if (cull != XBOX_NV2A_CULL_NONE)
+611: 			p = xgu_set_cull_face(p, cull == XBOX_NV2A_CULL_FRONT ? XGU_CULL_FRONT :
+612: 				XGU_CULL_BACK);
+613: 		xboxNV2ABoundCull = cull;
+614: 	}
+615: 	if (offset != xboxNV2ABoundPolygonOffset) {
+616: 		p = push_command_boolean(p, NV097_SET_POLY_OFFSET_FILL_ENABLE, offset);
+617: 		xboxNV2ABoundPolygonOffset = offset;
+618: 	}
+619: 	pb_end(p);
+620: }
+621: 
+622: static void XboxNV2ASetTransform(const XguVec4 *rows, qboolean identity)
+623: {
+624: 	XguVec4 screen[4];
+625: 	uint32_t *p;
+626: 	int i;
+627: 
+628: 	/* Overscan scale and offset in screen space, times clip w so the divide keeps the offset. */
+629: 	for (i = 0; i < 4; ++i) {
+630: 		screen[i] = rows[i];
+631: 		screen[i].f[0] = rows[i].f[0] * xboxNV2AScreenScaleX + rows[i].f[3] * xboxNV2AScreenX;
+632: 		screen[i].f[1] = rows[i].f[1] * xboxNV2AScreenScaleY + rows[i].f[3] * xboxNV2AScreenY;
+633: 	}
+634: 	XboxNV2AReserve(24);
+635: 	p = pb_begin();
+636: 	p = xgu_set_transform_constant_load(p, 96);
+637: 	p = xgu_set_transform_constant(p, screen, 4);
+638: 	pb_end(p);
+639: 	xboxNV2ATransformIdentity = identity;
+640: 	/* Row vectors: clip w is the dot product of (x, y, z, 1) with column 3. */
+641: 	xboxNV2ANearPlane[0] = rows[0].f[3];
+642: 	xboxNV2ANearPlane[1] = rows[1].f[3];
+643: 	xboxNV2ANearPlane[2] = rows[2].f[3];
+644: 	xboxNV2ANearPlane[3] = rows[3].f[3] - XBOX_NV2A_ZNEAR;
+645: }
+646: 
+647: static uint16_t XboxNV2APackTexel(const byte *rgba, XguTexFormatColor format)
+648: {
+649: 	if (format == XGU_TEXTURE_FORMAT_R5G6B5_SWIZZLED)
+650: 		return (uint16_t)(((rgba[0] >> 3) << 11) | ((rgba[1] >> 2) << 5) |
+651: 			(rgba[2] >> 3));
+652: 	return (uint16_t)(((rgba[3] >> 4) << 12) | ((rgba[0] >> 4) << 8) |
+653: 		((rgba[1] >> 4) << 4) | (rgba[2] >> 4));
+654: }
+655: 
+656: /* ioq3 R_MipMap box filter; out may be in, as each texel is written after its inputs are read. */
+657: static void XboxNV2AHalve(const byte *in, int width, int height, byte *out)
+658: {
+659: 	int outWidth = width > 1 ? width / 2 : 1;
+660: 	int outHeight = height > 1 ? height / 2 : 1;
+## xbox_nv2a.c 1100-1150
+1100: 	xboxNV2AShaderCount = XBOX_NV2A_WHITE_SHADER;
+1101: 	xboxNV2ATexturePoolUsed = 0;
+1102: 	xboxNV2ADxtImageCount = 0;
+1103: 	xboxNV2ADxt5ImageCount = 0;
+1104: 	xboxNV2ACollapsedCount = 0;
+1105: 	XboxNV2AAddImage("*white", 1, 1, whitePixel, XBOX_NV2A_IMAGE_16BIT, qfalse);
+1106: 	xboxNV2AFogImage = XboxNV2ACreateFogImage();
+1107: 	xboxNV2ADlightImage = XboxNV2ACreateDlightImage();
+1108: 
+1109: 	memset(&white, 0, sizeof(white));
+1110: 	white.numStages = 1;
+1111: 	white.sort = XBOX_NV2A_SORT_OPAQUE;
+1112: 	white.cull = XBOX_NV2A_CULL_FRONT;
+1113: 	white.stages[0].images[0] = XBOX_NV2A_WHITE_IMAGE;
+1114: 	white.stages[0].numImages = 1;
+1115: 	white.stages[0].srcBlend = GL_SRC_ALPHA;
+1116: 	white.stages[0].dstBlend = GL_ONE_MINUS_SRC_ALPHA;
+1117: 	white.stages[0].clamp = qtrue;
+1118: 	white.stages[0].rgbGen = XBOX_NV2A_RGBGEN_VERTEX;
+1119: 	white.stages[0].alphaGen = XBOX_NV2A_ALPHAGEN_VERTEX;
+1120: 	XboxNV2A_CreateShader("white", XBOX_NV2A_SHADER_2D, &white);
+1121: 
+1122: 	XboxNV2AInvalidateState();
+1123: 	xboxNV2ATess.shader = 0;
+1124: 	xboxNV2ATess.lightmap = 0;
+1125: 	xboxNV2ATess.numVerts = 0;
+1126: 	xboxNV2ATess.numIndexes = 0;
+1127: 	xboxNV2ATess.numFast = 0;
+1128: 	xboxNV2ATess.fastVerts = 0;
+1129: 	xboxNV2ATess.fastIndexes = 0;
+1130: }
+1131: 
+1132: /* xgux_draw_arrays splits the draw into DRAW_ARRAYS packets of 120 vertices. */
+1133: static void XboxNV2ADrawVertices(XguPrimitiveType mode, unsigned int first,
+1134: 	unsigned int count)
+1135: {
+1136: 	uint32_t *p;
+1137: 
+1138: 	XboxNV2AReserve(8 + (count / 120 + 1) * 2);
+1139: 	/* The vertex cache survives frames; drop lines fetched before the CPU rewrote them. */
+1140: 	p = pb_begin();
+1141: 	p = push_command_parameter(p, NV097_BREAK_VERTEX_BUFFER_CACHE, 0);
+1142: 	pb_end(p);
+1143: 	xgux_draw_arrays(mode, first, count);
+1144: 	xboxNV2APerf.draws++;
+1145: 	xboxNV2APerf.verts += count;
+1146: }
+1147: 
+1148: /* Returns room for count vertices, rewinding the stream once the GPU is idle. */
+1149: static XboxNV2AColoredVertex *XboxNV2AStreamVertices(unsigned int count)
+1150: {
+## xbox_nv2a.c 2220-2400
+2220: 		if (tess->is3D && tess->fogIndex && shader->fogPass != XBOX_NV2A_FOGPASS_NONE)
+2221: 			XboxNV2AFogPass(shader);
+2222: 	}
+2223: 	tess->shader = 0;
+2224: 	tess->lightmap = 0;
+2225: 	tess->dlightBits = 0;
+2226: 	tess->numVerts = 0;
+2227: 	tess->numIndexes = 0;
+2228: }
+2229: 
+2230: /* Same sequence as the xgu samples' init_shader. */
+2231: static void XboxNV2AInitShader(void)
+2232: {
+2233: 	static const XguTransformProgramInstruction vertexProgram[] = {
+2234: #include "xbox_nv2a_vp.inl"
+2235: 	};
+2236: 	uint32_t *p;
+2237: 	unsigned int i;
+2238: 
+2239: 	p = pb_begin();
+2240: 	p = xgu_set_transform_program_start(p, 0);
+2241: 	p = xgu_set_transform_execution_mode(p, XGU_PROGRAM, XGU_RANGE_MODE_PRIVATE);
+2242: 	p = xgu_set_transform_program_cxt_write_enable(p, false);
+2243: 	p = xgu_set_transform_program_load(p, 0);
+2244: 	for (i = 0; i < ARRAY_LEN(vertexProgram); ++i) {
+2245: 		p = push_command(p, NV097_SET_TRANSFORM_PROGRAM, 4);
+2246: 		p = push_parameters(p, &vertexProgram[i].i[0], 4);
+2247: 	}
+2248: 	pb_end(p);
+2249: 
+2250: 	p = pb_begin();
+2251: #include "xbox_nv2a_fp.inl"
+2252: 	pb_end(p);
+2253: }
+2254: 
+2255: static void XboxNV2ASetFrameState(void)
+2256: {
+2257: 	const XboxNV2AColoredVertex *v = xboxNV2AVertexMemory;
+2258: 	uint32_t *p;
+2259: 	int i;
+2260: 
+2261: 	/* The HAL only calls the encoder when the value changes. */
+2262: 	Cvar_CheckRange(xboxNV2AFlickerFilter, 0, 5, qtrue);
+2263: 	Cvar_CheckRange(xboxNV2ASoftenFilter, 0, 1, qtrue);
+2264: 	XVideoSetFlickerFilter(xboxNV2AFlickerFilter->integer);
+2265: 	XVideoSetSoftenFilter(xboxNV2ASoftenFilter->integer != 0);
+2266: 	Cvar_CheckRange(xboxNV2AXOffset, -xboxNV2AWidth / 2, xboxNV2AWidth / 2, qtrue);
+2267: 	Cvar_CheckRange(xboxNV2AYOffset, -xboxNV2AHeight / 2, xboxNV2AHeight / 2, qtrue);
+2268: 	Cvar_CheckRange(xboxNV2AXStretch, -xboxNV2AWidth / 2, xboxNV2AWidth / 2, qtrue);
+2269: 	Cvar_CheckRange(xboxNV2AYStretch, -xboxNV2AHeight / 2, xboxNV2AHeight / 2, qtrue);
+2270: 	xboxNV2AScreenScaleX = (float)(xboxNV2AWidth + xboxNV2AXStretch->integer) / xboxNV2AWidth;
+2271: 	xboxNV2AScreenScaleY = (float)(xboxNV2AHeight + xboxNV2AYStretch->integer) / xboxNV2AHeight;
+2272: 	xboxNV2AScreenX = (float)xboxNV2AXOffset->integer;
+2273: 	xboxNV2AScreenY = (float)xboxNV2AYOffset->integer;
+2274: 
+2275: 	XboxNV2AReserve(64 + (XGU_ATTRIBUTE_COUNT + 3) * 4);
+2276: 	xgux_set_clear_rect(0, 0, (unsigned int)xboxNV2AWidth,
+2277: 		(unsigned int)xboxNV2AHeight);
+2278: 	p = pb_begin();
+2279: 	/* pbkit's target switch turns on W-buffering; use the z-buffer, as nxdk-gles11 does. */
+2280: 	p = push_command_parameter(p, NV097_SET_CONTROL0,
+2281: 		NV097_SET_CONTROL0_STENCIL_WRITE_ENABLE | NV097_SET_CONTROL0_TEXTUREPERSPECTIVE);
+2282: 	p = xgu_set_color_clear_value(p, XBOX_NV2A_CLEAR_COLOR);
+2283: 	p = xgu_set_zstencil_clear_value(p, 0xffffff00);
+2284: 	p = xgu_clear_surface(p, XGU_CLEAR_Z | XGU_CLEAR_STENCIL | XGU_CLEAR_COLOR);
+2285: 	/* GL default front face; the viewport flips Y like GL, so winding stays GL's. */
+2286: 	p = xgu_set_front_face(p, XGU_FRONT_CCW);
+2287: 	p = xgu_set_cull_face_enable(p, false);
+2288: 	p = xgu_set_depth_test_enable(p, false);
+2289: 	p = xgu_set_depth_mask(p, false);
+2290: 	p = xgu_set_stencil_test_enable(p, false);
+2291: 	p = xgu_set_alpha_test_enable(p, false);
+2292: 	p = xgu_set_blend_enable(p, true);
+2293: 	p = push_command_float(p, NV097_SET_POLYGON_OFFSET_SCALE_FACTOR,
+2294: 		XBOX_NV2A_POLYGON_OFFSET_FACTOR);
+2295: 	p = push_command_float(p, NV097_SET_POLYGON_OFFSET_BIAS, XBOX_NV2A_POLYGON_OFFSET_UNITS);
+2296: 	pb_end(p);
+2297: 	XboxNV2AInvalidateState();
+2298: 	XboxNV2ASetTransform(xboxNV2AScreenMatrix.col, qtrue);
+2299: 
+2300: 	for (i = 0; i < XGU_ATTRIBUTE_COUNT; ++i)
+2301: 		xgux_set_attrib_pointer((XguVertexArray)i, XGU_FLOAT, 0, 0, NULL);
+2302: 	xgux_set_attrib_pointer(XGU_VERTEX_ARRAY, XGU_FLOAT, 3, sizeof(*v),
+2303: 		&v[0].position[0]);
+2304: 	xgux_set_attrib_pointer(XGU_COLOR_ARRAY, XBOX_NV2A_VERTEX_UB_OGL, 4, sizeof(*v),
+2305: 		&v[0].color[0]);
+2306: 	xgux_set_attrib_pointer(XGU_TEXCOORD0_ARRAY, XGU_FLOAT, 2, sizeof(*v),
+2307: 		&v[0].texcoord[0]);
+2308: 	xgux_set_attrib_pointer(XGU_TEXCOORD1_ARRAY, XGU_FLOAT, 2, sizeof(*v),
+2309: 		&v[0].texcoord1[0]);
+2310: }
+2311: 
+2312: static void XboxNV2AReleaseMemory(void)
+2313: {
+2314: 	XboxNV2AFreeCinematics();
+2315: 	if (xboxNV2AVertexMemory) {
+2316: 		MmFreeContiguousMemory(xboxNV2AVertexMemory);
+2317: 		xboxNV2AVertexMemory = NULL;
+2318: 	}
+2319: 	if (xboxNV2ATexturePool) {
+2320: 		MmFreeContiguousMemory(xboxNV2ATexturePool);
+2321: 		xboxNV2ATexturePool = NULL;
+2322: 	}
+2323: }
+2324: 
+2325: qboolean XboxNV2A_Init(void)
+2326: {
+2327: 	int status;
+2328: 	int i;
+2329: 
+2330: 	if (xboxNV2AInitialized)
+2331: 		return qtrue;
+2332: 
+2333: 	/* xbox_boot.c selects the mode before Com_Init reaches this boundary. */
+2334: 	status = pb_init();
+2335: 	if (status) {
+2336: 		Sys_XboxLog("Xbox NV2A: pb_init failed (%d)\n", status);
+2337: 		return qfalse;
+2338: 	}
+2339: 	pb_show_front_screen();
+2340: 
+2341: 	xboxNV2AWidth = (int)pb_back_buffer_width();
+2342: 	xboxNV2AHeight = (int)pb_back_buffer_height();
+2343: 	if (xboxNV2AWidth <= 0 || xboxNV2AHeight <= 0) {
+2344: 		Sys_XboxLog("Xbox NV2A: invalid back buffer %dx%d\n",
+2345: 			xboxNV2AWidth, xboxNV2AHeight);
+2346: 		pb_show_debug_screen();
+2347: 		pb_kill();
+2348: 		return qfalse;
+2349: 	}
+2350: 
+2351: 	XboxNV2AInitShader();
+2352: 
+2353: 	xboxNV2ATexturePool = MmAllocateContiguousMemoryEx(
+2354: 		XBOX_NV2A_TEXTURE_POOL_BYTES, 0, XBOX_NV2A_MAX_RAM, 0,
+2355: 		PAGE_WRITECOMBINE | PAGE_READWRITE);
+2356: 	xboxNV2AVertexMemory = MmAllocateContiguousMemoryEx(
+2357: 		XBOX_NV2A_MAX_VERTS * sizeof(XboxNV2AColoredVertex), 0,
+2358: 		XBOX_NV2A_MAX_RAM, 0, PAGE_WRITECOMBINE | PAGE_READWRITE);
+2359: 	if (!xboxNV2ATexturePool || !xboxNV2AVertexMemory) {
+2360: 		Sys_XboxLog("Xbox NV2A: texture/vertex allocation failed\n");
+2361: 		XboxNV2AReleaseMemory();
+2362: 		pb_show_debug_screen();
+2363: 		pb_kill();
+2364: 		return qfalse;
+2365: 	}
+2366: 	xboxNV2ATriangle[0].position[0] = xboxNV2AWidth * 0.18f;
+2367: 	xboxNV2ATriangle[0].position[1] = xboxNV2AHeight * 0.70f;
+2368: 	xboxNV2ATriangle[1].position[0] = xboxNV2AWidth * 0.50f;
+2369: 	xboxNV2ATriangle[1].position[1] = xboxNV2AHeight * 0.20f;
+2370: 	xboxNV2ATriangle[2].position[0] = xboxNV2AWidth * 0.82f;
+2371: 	xboxNV2ATriangle[2].position[1] = xboxNV2AHeight * 0.70f;
+2372: 	XboxNV2AInitTables();
+2373: 	R_NoiseInit();
+2374: 
+2375: 	/* 2D vertices are already screen pixels, which program mode outputs directly. */
+2376: 	memset(&xboxNV2AScreenMatrix, 0, sizeof(xboxNV2AScreenMatrix));
+2377: 	for (i = 0; i < 4; ++i)
+2378: 		xboxNV2AScreenMatrix.col[i].f[i] = 1.0f;
+2379: 	/* The xgu samples' z-buffer precision fixup. */
+2380: 	xgux_set_depth_range(0.0f, XBOX_NV2A_ZMAX);
+2381: 
+2382: 	xboxNV2AFastSky = Cvar_Get("r_fastsky", "0", CVAR_ARCHIVE);
+2383: 	xboxNV2ADynamicLight = Cvar_Get("r_dynamiclight", "1", CVAR_ARCHIVE);
+2384: 	/* ioq3's cvar, read when a shader is created, so a change applies from the next map. */
+2385: 	xboxNV2AMultitexture = Cvar_Get("r_ext_multitexture", "1", CVAR_ARCHIVE);
+2386: 	/* ioq3's cvar and default: 0 no vblank wait, 1 a wait per frame, N shows each frame N vblanks. */
+2387: 	xboxNV2ASwapInterval = Cvar_Get("r_swapInterval", "0", CVAR_ARCHIVE);
+2388: 	/* TV encoder filters, same names and defaults as the old Xbox Q3 port; read each frame. */
+2389: 	xboxNV2AFlickerFilter = Cvar_Get("xb_flickerfilter", "5", CVAR_ARCHIVE);
+2390: 	xboxNV2ASoftenFilter = Cvar_Get("xb_softenfilter", "1", CVAR_ARCHIVE);
+2391: 	/* Old port's overscan cvars: image at (offset) sized (screen + stretch) pixels; 20 px border. */
+2392: 	xboxNV2AXOffset = Cvar_Get("xb_xoffset", "20", CVAR_ARCHIVE);
+2393: 	xboxNV2AYOffset = Cvar_Get("xb_yoffset", "20", CVAR_ARCHIVE);
+2394: 	xboxNV2AXStretch = Cvar_Get("xb_xstretch", "-40", CVAR_ARCHIVE);
+2395: 	xboxNV2AYStretch = Cvar_Get("xb_ystretch", "-40", CVAR_ARCHIVE);
+2396: 	xboxNV2AInitialized = qtrue;
+2397: 	XboxNV2AResetTextures();
+2398: 	xboxNV2ADebugScreen = qfalse;
+2399: 	Sys_XboxLog("Xbox NV2A: pbkit initialized at %dx%d\n",
+2400: 		xboxNV2AWidth, xboxNV2AHeight);
