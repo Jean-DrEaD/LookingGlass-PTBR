@@ -1,0 +1,26 @@
+# Lote 18z8m-e - quad forcado 2026-10-28 19:55
+ancora x1: lg2d_nfill--; lg2d_ndraw--; lg2d_fill((float)(lg2d
+ancora x1: "LG 18z8m frame %u fps %u"
+numstat: 2	1	code/renderernull/tr_null.c
+probe: ## Objetos ok / falhos:
+probe: 504
+probe: 0
+probe: ## Erros por arquivo:
+probe: ## Top mensagens:
+probe: ## Linker (simbolos):
+probe: ## Falhou:
+probe: ## Alvos:
+probe: build-xbox/recacstnav_recast/libRecast.lib
+probe: build-xbox/recastnav_crowd/libDetourCrowd.lib
+probe: build-xbox/recastnav_detour/libDetour.lib
+probe: build-xbox/Release/libcgame.lib
+probe: build-xbox/Release/libgame.lib
+probe: build-xbox/Release/omohaaded.exe
+probe: build-xbox/Release/openmohaa.exe
+exe=True 6174720 10/28/2026 19:57:37
+cxbe: Xbe::Export: Writing Section 0x0002 (.data)...OK
+cxbe: Xbe::Export: Writing Section 0x0003 (.tls)...OK
+cxbe: Xbe::Export: Writing Zero Padding...OK
+xiso: 
+xiso: sucessfully created alice-cliente.iso (26 files totalling 667945131 bytes added)
+xbe 6184960 iso=True

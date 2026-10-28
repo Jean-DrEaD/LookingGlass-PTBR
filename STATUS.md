@@ -880,3 +880,8 @@
 - 18z8m-d: prototipos lgx_* apos lg_img; lgx_init no lg2d_init (lgx_st 1/-1); lgx_upload no RegisterShader (pot. de 2 -> lg_tex[]); lgx_frame apos clear; DrawStretchPic = lgx_quad c/ fallback fill
 - 18z8m-d: overlay 'LG 18z8m' + linha 2 'q N up N xS'; exe=True iso=True (docs/probes/lote18z8m-d-quad.log)
 - Esperado xemu: x1 up 1; backtile texturizado onde o jogo o desenha (q>0); se x-1 -> lgx_init falhou
+
+## Lote 18z8m-e (2026-10-28 19:57)
+- 18z8m-d xemu: x1 up 1 q 0 draw 0 fps 62 -> lgx_init/upload OK; jogo nunca chama StretchPic c/ backtile (so fade sh0); canto = blit CPU
+- 18z8m-e: quad forcado do 1o lg_tex (128x128 em 200,150, branco) no EndFrame apos barra verde; overlay 'LG 18z8m-e'; exe=True iso=True
+- Esperado xemu: backtile 128x128 (escalado 2x) em 200,150 + q 1; senao vp/matriz slot 96/estado xgu
