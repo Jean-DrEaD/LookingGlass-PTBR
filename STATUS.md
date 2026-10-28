@@ -863,3 +863,9 @@
 - 18z8m-a: xgu = copia propria do ioQ3 (code/thirdparty/xgu: xgu.h, xgux.h, nv2a_regs.h), nao vem do nxdk -> copiar p/ code/renderernull/xgu
 - 18z8m-a: ioQ3 usa vertex program (xbox_nv2a_vp.inl) + fragment program (xbox_nv2a_fp.inl gerado de .ps via fp20compiler); setup de frame 2276-2309; bind/blend 532-620
 - 18z8m-b: coleta .inl/.ps, regras do Makefile, compiladores no container, assinaturas xgu e defs ioQ3 (docs/probes/lote18z8m-b-shaders.log), sem build
+
+## Lote 18z8m-c (2026-10-28 19:05)
+- 18z8m-b: vp.inl (vp20, 10 instr, m_viewport c[0]=slot 96) e fp.inl (tex0*col0*tex1) JA GERADOS no ioQ3 -> copiados, sem fp20compiler
+- 18z8m-c: code/renderernull/xgu (xgu.h/xgux.h/nv2a_regs.h) + .inl; lg_nv2a.c (lgx_init/lgx_upload swizzle/lgx_frame/lgx_quad, branco 1x1 na unidade 1) incluido no TU do tr_null.c (+3 -0)
+- 18z8m-c: SEM chamadas (comportamento igual); exe=True; sem XBE/ISO (docs/probes/lote18z8m-c-xgu.log)
+- Proximo 18z8m-d: lgx_init no Init, lgx_upload no RegisterShader (lg2d_decode), lgx_frame no BeginFrame, lgx_quad no DrawStretchPic

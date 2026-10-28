@@ -1,0 +1,41 @@
+# Lote 18z8m-c - xgu + lg_nv2a.c (compile only) 2026-10-28 19:03
+numstat tr_null.c: 3	0	code/renderernull/tr_null.c
+## pbkit pb_begin/pb_end/pb_push1
+## tr_null.c ganchos
+55: static void lg2d_decode(int idx, const unsigned char *b, long len) {
+86: lg2d_decode(idx, b, len);
+95: static void lg2d_dbgblit(int nsh) {
+108: static qhandle_t LG2D_RegisterShader(const char *name) {
+156: static void LG2D_SetColor(const float *rgba) {
+159: static void LG2D_BeginFrame(int stereo) {
+164: pb_reset();
+165: pb_target_back_buffer();
+170: static void LG2D_EndFrame(int *fe, int *be) {
+177: lg2d_dbgblit((int)lg2d_nsh); /* LG 18z8k */
+180: pb_printat(2, 0, "setcolor %u shaders %u", lg2d_ncol, (unsigned int)lg2d_nsh); pb_printat(4, 0, "tga ok %u fail %u dec %u t%d %dx%d b%d", lg_tga_ok, lg_tga_fail, lg_ndec, lg_tga_t, lg_tga_w, lg_tga_h, lg_tga_bpp); if (0) pb_printat(4, 0, "%u", lg_tga_ok, lg_tga_fail, lg_tga_t, lg_tga_w, lg_tga_h, lg_tga_bpp); { int i0 = lg2d_nsh > 18 ? lg2d_nsh - 18 : 0, r; for (r = 0; i0 + r < lg2d_nsh; r++) pb_printat(5 + r, 0, "%c %-34.34s", lg_sh_st[i0 + r], lg2d_shn[i0 + r]); }
+189: static void LG2D_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t shader) {
+193: static void LG2D_DrawStretchPic2(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float sx, float sy, qhandle_t shader) {
+233: refexport_t *GetRefAPI(int apiVersion, refimport_t *rimp)
+260: LG_SET(SetColor, LG2D_SetColor);
+261: LG_SET(BeginFrame, LG2D_BeginFrame);
+262: LG_SET(EndFrame, LG2D_EndFrame);
+263: LG_SET(DrawStretchPic, LG2D_DrawStretchPic);
+264: LG_SET(DrawStretchPic2, LG2D_DrawStretchPic2);
+267: LG_SET(RegisterShader, LG2D_RegisterShader);
+268: LG_SET(RegisterShaderNoMip, LG2D_RegisterShader);
+probe: ## Objetos ok / falhos:
+probe: 504
+probe: 0
+probe: ## Erros por arquivo:
+probe: ## Top mensagens:
+probe: ## Linker (simbolos):
+probe: ## Falhou:
+probe: ## Alvos:
+probe: build-xbox/recacstnav_recast/libRecast.lib
+probe: build-xbox/recastnav_crowd/libDetourCrowd.lib
+probe: build-xbox/recastnav_detour/libDetour.lib
+probe: build-xbox/Release/libcgame.lib
+probe: build-xbox/Release/libgame.lib
+probe: build-xbox/Release/omohaaded.exe
+probe: build-xbox/Release/openmohaa.exe
+exe=True D:\openmohaa\build-xbox\Release\openmohaa.exe 6174208 10/28/2026 19:05:09
