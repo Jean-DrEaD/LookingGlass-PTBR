@@ -1,0 +1,18 @@
+# Lote 18z8n-e - cg_hud/cg_lagometer 1 sob NXDK 2026-10-28 20:48
+orig:     cg_hud                        = cgi.Cvar_Get("cg_hud", "0", 0);
+novo:     cg_hud                        = cgi.Cvar_Get("cg_hud", "1", 0); /* LG 18z8n-e */
+orig:     cg_lagometer                  = cgi.Cvar_Get("cg_lagometer", "0", 0);
+novo:     cg_lagometer                  = cgi.Cvar_Get("cg_lagometer", "1", 0); /* LG 18z8n-e */
+numstat: 8	0	code/cgame/cg_main.c
+probe: ## Alvos:
+probe: build-xbox/recacstnav_recast/libRecast.lib
+probe: build-xbox/recastnav_crowd/libDetourCrowd.lib
+probe: build-xbox/recastnav_detour/libDetour.lib
+probe: build-xbox/Release/libcgame.lib
+probe: build-xbox/Release/libgame.lib
+probe: build-xbox/Release/omohaaded.exe
+probe: build-xbox/Release/openmohaa.exe
+cxbe: Xbe::Export: Writing Section 0x0003 (.tls)...OK
+cxbe: Xbe::Export: Writing Zero Padding...OK
+xiso: sucessfully created alice-cliente.iso (26 files totalling 667945131 bytes added)
+exe=True iso=True

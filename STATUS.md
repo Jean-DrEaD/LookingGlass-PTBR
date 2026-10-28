@@ -910,3 +910,9 @@
 - 18z8n-c2 xemu: carregando s9 (CA_CINEMATIC) a0 d0; em jogo s8 (CA_ACTIVE) a1681 r0 d1680 c0 v1680 -> CG_Draw2D roda todo frame (so via View3D), snapshot sempre valido
 - Conclusao: 2D NAO e pulado por estado; draw 0 vem de dentro do CG_Draw2D (cvar, shader 0, ou DrawString/DrawTrianglePic stub)
 - 18z8n-d: coleta corpo CG_Draw2D + funcoes chamadas + chamadas R_Draw* do cgame + cvars 2D + contexto View3D (docs/probes/lote18z8n-d-draw2d.log), sem build
+
+## Lote 18z8n-e (2026-10-28 20:51)
+- 18z8n-d: causa do draw 0 = cg_hud default '0' (cg_main.c:170): Icons/PlayerTeam/EntInfo/Attacker/Crosshair/Stopwatch/HudDrawElements saem cedo; lagometer off; Objectives/Vote/InstaMsg/Zoom dependem de estado
+- 18z8n-d: HUD real do MOHAA = UI (urc via 'ui_hud 1', cg_main.c:770), nao cgame
+- 18z8n-e: sob NXDK cg_hud=1 e cg_lagometer=1 (+8 -0); overlay 'LG 18z8n-e'; exe=True iso=True
+- Esperado xemu: draw>=1 (lagometer 272,432 96x48) + fill maior (DrawBox)
