@@ -1,0 +1,49 @@
+# Lote 18z4 - camera/movetype desconhecidos = aviso
+## State::readCamera( ini=222
+222: void State::readCamera(Script& script)
+223: {
+224:     str token;
+225: 
+226:     token = script.GetToken(false);
+227: 
+228:     if (!setCameraType(token)) {
+229:         gi.Error(
+230:             ERR_DROP,
+231:             "%s: Unknown camera type '%s' on line %d.\n",
+232:             script.Filename(),
+233:             token.c_str(),
+234:             script.GetLineNumber()
+235:         );
+236:     }
+237: }
+## State::readMoveType( ini=181
+181: void State::readMoveType(Script& script)
+182: {
+183:     str          token;
+184:     const char **name;
+185:     int          i;
+186: 
+187:     token = script.GetToken(false);
+188: 
+189:     for (i = 0, name = MoveControl_Names; *name != NULL; name++, i++) {
+190:         if (!token.icmp(*name)) {
+191:             break;
+192:         }
+193:     }
+194: 
+195:     if (*name == NULL) {
+196:         gi.Error(
+197:             ERR_DROP,
+198:             "%s: Unknown movetype '%s' on line %d.\n",
+199:             script.Filename(),
+200:             token.c_str(),
+201:             script.GetLineNumber()
+202:         );
+203:     } else {
+204:         movetype = (movecontrol_t)i;
+205:     }
+206: }
+alvos: 198,231
+sites: 2
+diff: 8	0	code/fgame/characterstate.cpp
+XBE 5431296 / ISO 667811840

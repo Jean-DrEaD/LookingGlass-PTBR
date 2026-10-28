@@ -749,3 +749,8 @@
 - 18z2: fatal 'alice_Torso.st: Unknown command torso on line 6' -> FAKK usa torso{}, MOHAA usa action{}
 - 18z3: characterstate.cpp:672 icmp("action") || icmp("torso") sob NXDK (+4 -0); comandos do State: nextstate/movetype/camera/legs/action/behavior/time/states/entry/exitcommands
 - 18z3 1a: trava esperava 11 0, mas diff e contra HEAD (18z2 ja commitado) -> real 4 0; regra: numstat conta so o lote atual
+
+## Lote 18z4 (2026-10-28 07:48)
+- 18z3 xemu: torso OK (alice_Torso.st ate linha 93); fatal 'Unknown camera type frontright on line 93'
+- 18z4: gi.Error de camera/movetype desconhecidos -> 'LG: cam?/mv? linha N' (5 max) sob NXDK, tipo fica DEFAULT (2 sites, +8 -0)
+- readCamera/readMoveType completos em docs/probes/lote18z4-camera.log (mapear tipos Alice depois)
