@@ -916,3 +916,9 @@
 - 18z8n-d: HUD real do MOHAA = UI (urc via 'ui_hud 1', cg_main.c:770), nao cgame
 - 18z8n-e: sob NXDK cg_hud=1 e cg_lagometer=1 (+8 -0); overlay 'LG 18z8n-e'; exe=True iso=True
 - Esperado xemu: draw>=1 (lagometer 272,432 96x48) + fill maior (DrawBox)
+
+## Lote 18z8o (2026-10-28 20:57)
+- 18z8n-e xemu: MARCO - CGAME 2D NO NV2A: draw 73 fill 113 sh0 112 fps 63; lagometer visivel no rodape (fundo fallback + DrawBox azul/verde)
+- 18z8n-e: shaders cgame MOHAA inexistentes -> sh0 dominante; so backtile = T
+- 18z8o: coleta fonts/ nos pk3 + verdana-14.ritualfont + R_LoadFont/R_DrawString GL1 + fontheader_t (docs/probes/lote18z8o-fonte.log), sem build
+- Plano 18z8p: LoadFont real (ritualfont + tga) + DrawString via lgx_quad por caractere
