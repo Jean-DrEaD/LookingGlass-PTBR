@@ -1,0 +1,99 @@
+# Lote 18z8n-a - entradas refexport 2026-10-28 20:09
+## Atribuicoes re./refexport no tr_null.c
+## Funcoes definidas no tr_null.c
+def: lg_null_LoadFont
+def: lg2d_px
+def: lg2d_decode
+def: while
+def: if
+def: if
+def: lg2d_try
+def: lg2d_probe
+def: if
+def: if
+def: lg2d_dbgblit
+def: LG2D_RegisterShader
+def: lg2d_init
+def: if
+def: if
+def: lg2d_c01
+def: lg2d_mk
+def: if
+def: lg2d_gpufill
+def: lg2d_fill
+def: LG2D_SetColor
+def: LG2D_BeginFrame
+def: LG2D_EndFrame
+def: if
+def: while
+def: LG2D_DrawStretchPic
+def: if
+def: if
+def: LG2D_DrawStretchPic2
+def: LG2D_DrawTilePic
+def: LG2D_DrawBox
+def: LG_NullStub
+def: LG_NullOne
+def: LG_NullFloat
+def: LG_NullName
+def: LG_NullTrue
+def: LG_NullBeginRegistration
+def: LG_NullRegisterFont
+def: LG_NullOrientation
+def: GetRefAPI
+def: R_ImageExists
+## Uso re.* no cliente/cgame/uilib (contagem)
+   45 re.SetColor
+   36 cgi.R_SetColor
+   30 cgi.R_DrawStretchPic
+   27 re.DrawStretchPic
+   22 re.DrawTrianglePic
+   19 cgi.R_DrawString
+    8 re.DrawBox
+    8 cgi.R_AddPolyToScene
+    7 cgi.R_AddRefEntityToScene
+    5 re.DrawTilePic
+    4 cgi.R_DrawBox
+    2 re.AddPolyToScene
+    2 re.Scissor
+    2 re.AddRefEntityToScene
+    2 re.DrawString
+    2 re.RenderScene
+    2 re.DrawStretchRaw
+    2 re.ClearScene
+    1 cgi.R_RenderScene
+    1 cgi.R_ClearScene
+    1 re.DrawStretchPic2
+## Shaders 2D do HUD/UI pedidos (cgame)
+cg_beam.cpp: <default>
+cg_beam.cpp: <default>
+cg_drawtools.cpp: gfx/2d/net.tga
+cg_drawtools.cpp: gfx/2d/slowserver
+cg_drawtools.cpp: textures/hud/allies
+cg_drawtools.cpp: textures/hud/axis
+cg_drawtools.cpp: textures/hud/allies
+cg_drawtools.cpp: textures/hud/axis
+cg_drawtools.cpp: textures/hud/allies
+cg_drawtools.cpp: textures/hud/axis
+cg_drawtools.cpp: textures/hud/instamsg_main
+cg_drawtools.cpp: textures/hud/allies
+cg_drawtools.cpp: textures/hud/axis
+cg_main.c: markShadow
+cg_main.c: footShadow
+cg_main.c: ripple.spr
+cg_main.c: gfx/2d/blank
+cg_main.c: textures/menu/exit
+cg_main.c: textures/menu/paused
+cg_main.c: gfx/2d/backtile
+cg_main.c: textures/hud/zoomoverlay
+cg_main.c: textures/hud/kartop.tga
+cg_main.c: textures/hud/karbottom.tga
+cg_main.c: textures/hud/binocularsoverlay
+cg_main.c: textures/hud/objectives_backdrop
+cg_main.c: textures/objectives/filledbox
+cg_main.c: textures/objectives/emptybox
+cg_marks.c: testtread
+cg_radar.cpp: textures/hud/radar_allies.tga
+cg_radar.cpp: textures/hud/radar_axis.tga
+cg_tempmodels.cpp: beamshader
+cg_testemitter.cpp: beamshader

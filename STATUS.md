@@ -885,3 +885,7 @@
 - 18z8m-d xemu: x1 up 1 q 0 draw 0 fps 62 -> lgx_init/upload OK; jogo nunca chama StretchPic c/ backtile (so fade sh0); canto = blit CPU
 - 18z8m-e: quad forcado do 1o lg_tex (128x128 em 200,150, branco) no EndFrame apos barra verde; overlay 'LG 18z8m-e'; exe=True iso=True
 - Esperado xemu: backtile 128x128 (escalado 2x) em 200,150 + q 1; senao vp/matriz slot 96/estado xgu
+
+## Lote 18z8n-a (2026-10-28 20:09)
+- 18z8m-e xemu: MARCO - QUAD TEXTURIZADO NV2A OK: backtile 128x128 em 200,150, cores certas, q 1, fps 63-64 (upload swizzle/vp slot 96/combiner/bind validados)
+- 18z8m-e: jogo segue draw 0 (so fade sh0) -> 18z8n-a coleta entradas refexport reais x stub + uso re.* cliente/cgame/uilib + shaders do cgame (docs/probes/lote18z8n-a-entradas.log), sem build
