@@ -869,3 +869,8 @@
 - 18z8m-c: code/renderernull/xgu (xgu.h/xgux.h/nv2a_regs.h) + .inl; lg_nv2a.c (lgx_init/lgx_upload swizzle/lgx_frame/lgx_quad, branco 1x1 na unidade 1) incluido no TU do tr_null.c (+3 -0)
 - 18z8m-c: SEM chamadas (comportamento igual); exe=True; sem XBE/ISO (docs/probes/lote18z8m-c-xgu.log)
 - Proximo 18z8m-d: lgx_init no Init, lgx_upload no RegisterShader (lg2d_decode), lgx_frame no BeginFrame, lgx_quad no DrawStretchPic
+
+## Lote 18z8m-d-a (2026-10-28 19:41)
+- 18z8m-c: build 504/0, exe=True (42dea8b); pb_begin/xgu/enums resolvem (grep vazio do pbkit.h = declarado em outro header)
+- 18z8m-d-a: coleta tr_null.c 1-240 (buffer do lg2d_decode, SetColor, Begin/EndFrame) + pb_begin nos headers pbkit (docs/probes/lote18z8m-d-a-trnull.log), sem build
+- Proximo 18z8m-d: ligar lgx_init/upload/frame/quad com nomes reais

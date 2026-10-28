@@ -1,0 +1,247 @@
+# Lote 18z8m-d-a - coleta tr_null.c + pb_begin 2026-10-28 19:41
+## tr_null.c (1-240)
+   1: /* LG lote 18e: renderer nulo (tela preta) para validar o build cliente no nxdk. */
+   2: #include "../qcommon/q_shared.h"
+   3: #include "../renderercommon/tr_public.h"
+   4: #include <string.h>
+   5: 
+   6: /* LG 18m: fonte dummy nao-NULL (UI faz ERR_DROP se LoadFont retorna NULL) */
+   7: static fontheader_t lg_null_fonts[16];
+   8: static int lg_null_nfonts = 0;
+   9: static fontheader_sgl_t lg_null_sgl[16]; /* LG 18v */
+  10: static fontheader_t *lg_null_LoadFont(const char *name) {
+  11:     int i;
+  12:     for (i = 0; i < lg_null_nfonts; i++) { if (!Q_stricmp(lg_null_fonts[i].name, name)) return &lg_null_fonts[i]; }
+  13:     if (lg_null_nfonts >= 16) return &lg_null_fonts[0];
+  14:     Q_strncpyz(lg_null_fonts[lg_null_nfonts].name, name, sizeof(lg_null_fonts[0].name));
+  15:     { /* LG 18v */
+  16:         fontheader_t *f = &lg_null_fonts[lg_null_nfonts];
+  17:         fontheader_sgl_t *s = &lg_null_sgl[lg_null_nfonts];
+  18:         int c;
+  19:         memset(s, 0, sizeof(*s));
+  20:         for (c = 0; c < 256; c++) { s->indirection[c] = c; s->locations[c].size[0] = 8.0f / 256.0f; }
+  21:         s->height = 16.0f; s->aspectRatio = 1.0f;
+  22:         Q_strncpyz(s->name, name, sizeof(s->name));
+  23:         f->numPages = 0; f->sgl[0] = s;
+  24:     }
+  25:     return &lg_null_fonts[lg_null_nfonts++];
+  26: }
+  27: static refexport_t lgNullRe;
+  28: static refimport_t lgNullRi;
+  29: 
+  30: #define LG_SET(field, fn) do { void *lgp_ = (void *)(fn); memcpy(&lgNullRe.field, &lgp_, sizeof(lgp_)); } while (0)
+  31: 
+  32: /* LG 18z8c: 2D minimo via pbkit (CPU fill no back buffer; cor por shader) */
+  33: #ifdef NXDK
+  34: #include <pbkit/pbkit.h>
+  35: static int lg2d_ok = 0, lg2d_in = 0, lg2d_w = 640, lg2d_h = 480;
+  36: static unsigned int lg2d_frame = 0;
+  37: static float lg2d_rgba[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  38: static refimport_t *lg2d_ri = 0;
+  39: /* LG 18z8d: contadores por frame + tabela de shaders */
+  40: /* LG 18z8e: tempos (ms) */
+  41: static DWORD lg2d_msvbl = 0, lg2d_msfin = 0, lg2d_msgame = 0, lg2d_tend = 0; static unsigned int lg2d_nto = 0;
+  42: static unsigned int lg2d_nfill = 0, lg2d_ndraw = 0, lg2d_nalpha = 0, lg2d_nsh0 = 0, lg2d_ncol = 0;
+  43: static unsigned int lg2d_fps = 0, lg2d_fpsf = 0; static DWORD lg2d_fpst = 0;
+  44: static char lg2d_shn[512][64]; static int lg2d_nsh = 0;
+  45: /* LG 18z8k: probe + decode TGA (CPU) no registro de shader */
+  46: static refimport_t lg_ri; static int lg_ri_ok = 0;
+  47: static unsigned int lg_tga_ok = 0, lg_tga_fail = 0;
+  48: static char lg_tga_last[48] = "-"; static int lg_tga_w = 0, lg_tga_h = 0, lg_tga_t = 0, lg_tga_bpp = 0;
+  49: static char lg_sh_st[512];
+  50: static unsigned int *lg_img[512]; static int lg_iw[512], lg_ih[512]; static unsigned int lg_ndec = 0;
+  51: static unsigned int lg2d_px(const unsigned char *p, int bp) {
+  52:     unsigned int a = (bp == 4) ? p[3] : 255;
+  53:     return (a << 24) | ((unsigned int)p[2] << 16) | ((unsigned int)p[1] << 8) | p[0];
+  54: }
+  55: static void lg2d_decode(int idx, const unsigned char *b, long len) {
+  56:     int t = b[2], w = b[12] | (b[13] << 8), h = b[14] | (b[15] << 8), bp = b[16] / 8;
+  57:     int top = (b[17] & 0x20) != 0, i = 0, n, y, x;
+  58:     const unsigned char *p = b + 18 + b[0], *end = b + len; unsigned int *o;
+  59:     if ((t != 2 && t != 10) || (bp != 3 && bp != 4) || w <= 0 || h <= 0 || w > 256 || h > 256 || idx < 0 || idx >= 512) return;
+  60:     n = w * h; o = (unsigned int *)malloc((size_t)n * 4); if (!o) return;
+  61:     while (i < n && p < end) {
+  62:         int cnt = 1, rle = 0;
+  63:         if (t == 10) { cnt = (*p & 0x7f) + 1; rle = *p & 0x80; p++; }
+  64:         if (rle) { unsigned int px; if (p + bp > end) break; px = lg2d_px(p, bp); p += bp; while (cnt-- && i < n) o[i++] = px; }
+  65:         else { while (cnt-- && i < n) { if (p + bp > end) { i = n; break; } o[i++] = lg2d_px(p, bp); p += bp; } }
+  66:     }
+  67:     if (!top) for (y = 0; y < h / 2; y++) for (x = 0; x < w; x++) {
+  68:         unsigned int tmp = o[y * w + x]; o[y * w + x] = o[(h - 1 - y) * w + x]; o[(h - 1 - y) * w + x] = tmp; }
+  69:     lg_img[idx] = o; lg_iw[idx] = w; lg_ih[idx] = h; lg_ndec++;
+  70: }
+  71: static long lg2d_try(const char *base, const char *ext, void **buf) {
+  72:     char fn[80];
+  73:     Q_strncpyz(fn, base, sizeof(fn)); Q_strcat(fn, sizeof(fn), ext);
+  74:     *buf = 0; return (long)lg_ri.FS_ReadFile(fn, buf);
+  75: }
+  76: static char lg2d_probe(const char *name, int idx) {
+  77:     char base[80]; void *buf = 0; long len; const unsigned char *b; size_t n;
+  78:     if (!lg_ri_ok || !lg_ri.FS_ReadFile || !name) return '?';
+  79:     Q_strncpyz(base, name, sizeof(base)); n = strlen(base);
+  80:     if (n >= 4 && base[n - 4] == '.') base[n - 4] = 0;
+  81:     Q_strncpyz(lg_tga_last, name, sizeof(lg_tga_last));
+  82:     len = lg2d_try(base, ".tga", &buf);
+  83:     if (len >= 18 && buf) {
+  84:         b = (const unsigned char *)buf; lg_tga_ok++;
+  85:         lg_tga_t = b[2]; lg_tga_w = b[12] | (b[13] << 8); lg_tga_h = b[14] | (b[15] << 8); lg_tga_bpp = b[16];
+  86:         lg2d_decode(idx, b, len);
+  87:         lg_ri.FS_FreeFile(buf); return 'T';
+  88:     }
+  89:     if (buf) lg_ri.FS_FreeFile(buf);
+  90:     len = lg2d_try(base, ".jpg", &buf);
+  91:     if (len > 0 && buf) { lg_tga_ok++; lg_ri.FS_FreeFile(buf); return 'J'; }
+  92:     if (buf) lg_ri.FS_FreeFile(buf);
+  93:     lg_tga_fail++; return '-';
+  94: }
+  95: static void lg2d_dbgblit(int nsh) {
+  96:     unsigned int *fb = (unsigned int *)pb_back_buffer(); int k, x, y, x0 = 632, y0 = 400;
+  97:     if (!fb) return;
+  98:     for (k = 0; k < nsh && k < 512; k++) {
+  99:         if (!lg_img[k]) continue;
+ 100:         x0 -= lg_iw[k]; if (x0 < 0) break;
+ 101:         for (y = 0; y < lg_ih[k] && y0 + y < 480; y++) for (x = 0; x < lg_iw[k]; x++) {
+ 102:             unsigned int px = lg_img[k][y * lg_iw[k] + x];
+ 103:             if ((px >> 24) >= 0x80) fb[(y0 + y) * 640 + x0 + x] = px | 0xFF000000u;
+ 104:         }
+ 105:         x0 -= 8;
+ 106:     }
+ 107: }
+ 108: static qhandle_t LG2D_RegisterShader(const char *name) {
+ 109:     int i;
+ 110:     if (!name || !name[0]) return 0;
+ 111:     for (i = 0; i < lg2d_nsh; i++) if (!Q_stricmp(lg2d_shn[i], name)) return (qhandle_t)(i + 1);
+ 112:     if (lg2d_nsh >= 512) return 1;
+ 113:     Q_strncpyz(lg2d_shn[lg2d_nsh], name, 64); lg_sh_st[lg2d_nsh] = lg2d_probe(name, (int)lg2d_nsh);
+ 114:     return (qhandle_t)(++lg2d_nsh);
+ 115: }
+ 116: static void lg2d_init(void) {
+ 117:     if (lg2d_ok) return;
+ 118:     if (pb_init() != 0) { if (lg2d_ri) lg2d_ri->Printf(PRINT_ALL, "LG: pb_init falhou\n"); return; }
+ 119:     pb_show_front_screen();
+ 120:     lg2d_w = (int)pb_back_buffer_width(); lg2d_h = (int)pb_back_buffer_height();
+ 121:     if (lg2d_w <= 0 || lg2d_h <= 0) { lg2d_w = 640; lg2d_h = 480; }
+ 122:     lg2d_ok = 1;
+ 123: }
+ 124: static float lg2d_c01(float v) { return v < 0.0f ? 0.0f : (v > 1.0f ? 1.0f : v); }
+ 125: static DWORD lg2d_mk(int shader) {
+ 126:     float r = 1.0f, g = 1.0f, b = 1.0f, a = lg2d_c01(lg2d_rgba[3]);
+ 127:     if (shader <= 0) lg2d_nsh0++;
+ 128:     if (shader > 0) {
+ 129:         unsigned int h = (unsigned int)shader * 2654435761u;
+ 130:         r = 0.3f + (float)((h >> 8) & 0xFF) / 365.0f;
+ 131:         g = 0.3f + (float)((h >> 16) & 0xFF) / 365.0f;
+ 132:         b = 0.3f + (float)((h >> 24) & 0xFF) / 365.0f;
+ 133:     }
+ 134:     r = lg2d_c01(r * lg2d_rgba[0]); g = lg2d_c01(g * lg2d_rgba[1]); b = lg2d_c01(b * lg2d_rgba[2]);
+ 135:     return ((DWORD)(a * 255.0f) << 24) | ((DWORD)(r * 255.0f) << 16) | ((DWORD)(g * 255.0f) << 8) | (DWORD)(b * 255.0f);
+ 136: }
+ 137: /* LG 18z8g: clear por GPU (cor, retangulo) */
+ 138: extern uint32_t *pb_begin(void);
+ 139: extern void pb_end(uint32_t *pEnd);
+ 140: static void lg2d_gpufill(int x0, int y0, int x1, int y1, DWORD col) {
+ 141:     uint32_t *p = pb_begin();
+ 142:     *(p++) = (2u << 18) | (0u << 13) | 0x1D98u; *(p++) = ((uint32_t)(x1 - 1) << 16) | (uint32_t)x0; *(p++) = ((uint32_t)(y1 - 1) << 16) | (uint32_t)y0;
+ 143:     *(p++) = (3u << 18) | (0u << 13) | 0x1D8Cu; *(p++) = 0xffffff00u; *(p++) = (uint32_t)col; *(p++) = 0xF0u;
+ 144:     pb_end(p);
+ 145: }
+ 146: static void lg2d_fill(float x, float y, float w, float h, DWORD col) {
+ 147:     int x0, y0, x1, y1, i, j; DWORD *fb;
+ 148:     lg2d_nfill++; if (!lg2d_in) return; if (((col >> 24) & 0xFF) < 128) { lg2d_nalpha++; return; }
+ 149:     x0 = (int)x; y0 = (int)y; x1 = (int)(x + w); y1 = (int)(y + h);
+ 150:     if (x0 < 0) x0 = 0; if (y0 < 0) y0 = 0;
+ 151:     if (x1 > lg2d_w) x1 = lg2d_w; if (y1 > lg2d_h) y1 = lg2d_h;
+ 152:     if (x0 >= x1 || y0 >= y1) return;
+ 153:     fb = (DWORD *)pb_back_buffer();
+ 154:     lg2d_ndraw++; (void)fb; (void)i; (void)j; lg2d_gpufill(x0, y0, x1, y1, col);
+ 155: }
+ 156: static void LG2D_SetColor(const float *rgba) {
+ 157:     int i; lg2d_ncol++; for (i = 0; i < 4; i++) lg2d_rgba[i] = rgba ? rgba[i] : 1.0f;
+ 158: }
+ 159: static void LG2D_BeginFrame(int stereo) {
+ 160:     DWORD *fb; int i, n;
+ 161:     (void)stereo;
+ 162:     if (!lg2d_ok || lg2d_in) return;
+ 163:     { DWORD lgv = GetTickCount(); if (lg2d_tend) lg2d_msgame = lgv - lg2d_tend; pb_wait_for_vbl(); lg2d_msvbl = GetTickCount() - lgv; }
+ 164:     pb_reset();
+ 165:     pb_target_back_buffer();
+ 166:     fb = 0; n = 0;
+ 167:     (void)fb; (void)i; (void)n; lg2d_gpufill(0, 0, lg2d_w, lg2d_h, 0xFF101020);
+ 168:     lg2d_in = 1; lg2d_frame++;
+ 169: }
+ 170: static void LG2D_EndFrame(int *fe, int *be) {
+ 171:     DWORD t;
+ 172:     if (fe) *fe = 0; if (be) *be = 0;
+ 173:     if (!lg2d_in) return;
+ 174:     lg2d_nfill--; lg2d_ndraw--; lg2d_fill((float)(lg2d_frame % (unsigned int)(lg2d_w - 40)), (float)(lg2d_h - 12), 40.0f, 10.0f, 0xFF00FF00);
+ 175:     pb_erase_text_screen();
+ 176:     lg2d_fpsf++; if (GetTickCount() - lg2d_fpst >= 1000) { lg2d_fps = lg2d_fpsf; lg2d_fpsf = 0; lg2d_fpst = GetTickCount(); }
+ 177:     lg2d_dbgblit((int)lg2d_nsh); /* LG 18z8k */
+ 178:     pb_printat(0, 0, "LG 18z8k frame %u fps %u", lg2d_frame, lg2d_fps);
+ 179:     pb_printat(1, 0, "fill %u draw %u alpha %u sh0 %u", lg2d_nfill, lg2d_ndraw, lg2d_nalpha, lg2d_nsh0);
+ 180:     pb_printat(2, 0, "setcolor %u shaders %u", lg2d_ncol, (unsigned int)lg2d_nsh); pb_printat(4, 0, "tga ok %u fail %u dec %u t%d %dx%d b%d", lg_tga_ok, lg_tga_fail, lg_ndec, lg_tga_t, lg_tga_w, lg_tga_h, lg_tga_bpp); if (0) pb_printat(4, 0, "%u", lg_tga_ok, lg_tga_fail, lg_tga_t, lg_tga_w, lg_tga_h, lg_tga_bpp); { int i0 = lg2d_nsh > 18 ? lg2d_nsh - 18 : 0, r; for (r = 0; i0 + r < lg2d_nsh; r++) pb_printat(5 + r, 0, "%c %-34.34s", lg_sh_st[i0 + r], lg2d_shn[i0 + r]); }
+ 181:     pb_printat(3, 0, "vbl %u fin %u game %u to %u", (unsigned int)lg2d_msvbl, (unsigned int)lg2d_msfin, (unsigned int)lg2d_msgame, lg2d_nto);
+ 182:     lg2d_nfill = lg2d_ndraw = lg2d_nalpha = lg2d_nsh0 = lg2d_ncol = 0;
+ 183:     pb_draw_text_screen();
+ 184:     __asm__ __volatile__("sfence" ::: "memory");
+ 185:     t = GetTickCount();
+ 186:     while (pb_finished()) { if (GetTickCount() - t > 50) { lg2d_nto++; break; } } lg2d_msfin = GetTickCount() - t; lg2d_tend = GetTickCount();
+ 187:     lg2d_in = 0;
+ 188: }
+ 189: static void LG2D_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t shader) {
+ 190:     (void)s1; (void)t1; (void)s2; (void)t2;
+ 191:     lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+ 192: }
+ 193: static void LG2D_DrawStretchPic2(float x, float y, float w, float h, float s1, float t1, float s2, float t2, float sx, float sy, qhandle_t shader) {
+ 194:     (void)s1; (void)t1; (void)s2; (void)t2; (void)sx; (void)sy;
+ 195:     lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+ 196: }
+ 197: static void LG2D_DrawTilePic(float x, float y, float w, float h, qhandle_t shader) {
+ 198:     lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+ 199: }
+ 200: static void LG2D_DrawBox(float x, float y, float w, float h) {
+ 201:     lg2d_fill(x, y, w, h, lg2d_mk(0));
+ 202: }
+ 203: #endif
+ 204: /* cdecl: o chamador limpa a pilha, entao um stub int serve p/ qualquer assinatura sem float/struct. */
+ 205: static int LG_NullStub(void) { return 0; }
+ 206: static int LG_NullOne(void) { return 1; }
+ 207: static float LG_NullFloat(void) { return 0.0f; }
+ 208: static const char *LG_NullName(void) { return ""; }
+ 209: static qboolean LG_NullTrue(void) { return qtrue; }
+ 210: 
+ 211: static void LG_NullBeginRegistration(glconfig_t *config)
+ 212: {
+ 213: memset(config, 0, sizeof(*config));
+ 214: config->vidWidth = 640;
+ 215: config->vidHeight = 480;
+ 216: }
+ 217: 
+ 218: static void LG_NullRegisterFont(const char *name, int size, fontInfo_t *font)
+ 219: {
+ 220: (void)name; (void)size;
+ 221: memset(font, 0, sizeof(*font));
+ 222: }
+ 223: 
+ 224: static orientation_t LG_NullOrientation(refEntity_t *model, int tagNum)
+ 225: {
+ 226: orientation_t o;
+ 227: (void)model; (void)tagNum;
+ 228: memset(&o, 0, sizeof(o));
+ 229: AxisClear(o.axis);
+ 230: return o;
+ 231: }
+ 232: 
+ 233: refexport_t *GetRefAPI(int apiVersion, refimport_t *rimp)
+ 234: {
+ 235:     lg_ri = *rimp; lg_ri_ok = 1; /* LG 18z8i */
+ 236: void *stub = (void *)LG_NullStub;
+ 237: size_t i;
+ 238: 
+ 239: if (apiVersion != REF_API_VERSION || !rimp)
+ 240: return NULL;
+## tr_null.c total linhas: 284
+## pb_begin/pb_end no pbkit
+/usr/src/nxdk/lib/pbkit/pbkit_pushbuffer.h:53:uint32_t *pb_begin (void);
+/usr/src/nxdk/lib/pbkit/pbkit_pushbuffer.h:137:// Ends a block of pushbuffer commands that was started via pb_begin, sending queued data to the GPU.
+/usr/src/nxdk/lib/pbkit/pbkit_pushbuffer.h:138:void pb_end (uint32_t *pEnd);
