@@ -772,3 +772,7 @@
 - 18z6b 1a-3a: rename usa prefixo G_ (nao lg_game_); bloco colado isolado = variaveis nulas (regra: rodar script inteiro)
 - 18z6b: Sys_GetCGameAPI -> GetCGameAPI() sob NXDK (+3 -0); lg_cgame_rename.h (397 G_->LGC_, guard CGAME_DLL); cgame no link do openmohaa (+5 -0)
 - 18z6b: link=False (se False: dups em docs/probes/lote18z6b-openmohaa-cliente.log)
+
+## Lote 18z6c (2026-10-28 10:20)
+- 18z6b: link falhou: dups BG_SOURCES (game+cgame: VoteOptions/VoteOptionListItem/SingleVoteOption/CacheResource/pmove_msec/pmove_fixed/paused) + _GetCGameAPI indefinido no omohaaded (sys_main_new.c compartilhado)
+- 18z6c: +7 nomes LGC_ no lg_cgame_rename.h; stub GetCGameAPI (NULL) so no omohaaded (lg_cgame_stub_ded.c); link=True

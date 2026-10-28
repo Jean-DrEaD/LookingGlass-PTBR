@@ -1,0 +1,5 @@
+# Lote 18z6c - dups bg_* + stub dedicado
+rename cgame: +7
+diff: 4	0	CMakeLists.txt | 7	0	tools/nxdk-shims/lg_cgame_rename.h
+link: True
+XBE 6139904
