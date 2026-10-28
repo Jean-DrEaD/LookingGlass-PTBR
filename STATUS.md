@@ -776,3 +776,8 @@
 ## Lote 18z6c (2026-10-28 10:20)
 - 18z6b: link falhou: dups BG_SOURCES (game+cgame: VoteOptions/VoteOptionListItem/SingleVoteOption/CacheResource/pmove_msec/pmove_fixed/paused) + _GetCGameAPI indefinido no omohaaded (sys_main_new.c compartilhado)
 - 18z6c: +7 nomes LGC_ no lg_cgame_rename.h; stub GetCGameAPI (NULL) so no omohaaded (lg_cgame_stub_ded.c); link=True
+
+## Lote 18z7a (2026-10-28 10:30)
+- 18z6c xemu: MARCO - CLIENTE NO JOGO: 'Client 0 (IP: localhost) is connecting' (loopback) -> FS restart (9 pk3/45604) -> CL_InitCGame 0.06 s -> autosave centipede10001 'Game Saved' -> heartbeat 1451..1547
+- cgame estatico OK (XBE 6139904); Allied/Axis model invalid = cvars MP do MOHAA, inofensivo
+- Proximos: (a) confirmar heartbeat estavel pos-save; (b) renderer NV2A (2D: fonte/shader/StretchPic) no lugar do nulo; (c) input xbox_input (pad); (d) audio xbox_snd; (e) limpeza dos avisos LG:
