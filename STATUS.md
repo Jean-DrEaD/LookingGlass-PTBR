@@ -795,3 +795,10 @@
 - 18z8a: secao 4 vazia = regex \bNV2A_ nao casa dentro de XboxNV2A_ (sem fronteira de palavra)
 - DECISAO: 2D minimo proprio no tr_null.c (pb_init, clear, DrawStretchPic = pb_fill solido com SetColor, swap); renderernv2a fica como referencia
 - 18z8b: coleta xbox_nv2a.h + corpos Init/BeginFrame/EndFrame/SetColor/DrawStretchPic + link probe.ps1 + pbkit no nxdk + tr_null.c (docs/probes/lote18z8b-nv2a-corpo.log), sem build
+
+## Lote 18z8c (2026-10-28 12:42)
+- 18z8b: pbkit.h SEM pb_fill -> retangulos por CPU no pb_back_buffer(); libpbkit.lib existe no nxdk (adicionada ao link do probe.ps1)
+- 18z8b: sequencia ioQ3 = pb_init/show_front_screen; Begin: wait_vbl/reset/target_back_buffer; End: laco pb_finished com timeout
+- 18z8c: tr_null.c sob NXDK: SetColor/BeginFrame/EndFrame/DrawStretchPic(2)/DrawTilePic/DrawBox reais; fundo 0x101020; cor = hash do shader x SetColor; alpha<0.5 pulado
+- 18z8c: debugPrint some apos pb_init -> overlay pbkit 'LG 18z8c frame N' + barra verde no rodape = heartbeat visual
+- 18z8c: exe=True; ISO G:\xemu\alice-cliente.iso (docs/probes/lote18z8c-nv2a2d.log)
