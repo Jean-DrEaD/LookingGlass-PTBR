@@ -889,3 +889,8 @@
 ## Lote 18z8n-a (2026-10-28 20:09)
 - 18z8m-e xemu: MARCO - QUAD TEXTURIZADO NV2A OK: backtile 128x128 em 200,150, cores certas, q 1, fps 63-64 (upload swizzle/vp slot 96/combiner/bind validados)
 - 18z8m-e: jogo segue draw 0 (so fade sh0) -> 18z8n-a coleta entradas refexport reais x stub + uso re.* cliente/cgame/uilib + shaders do cgame (docs/probes/lote18z8n-a-entradas.log), sem build
+
+## Lote 18z8n-b (2026-10-28 20:12)
+- 18z8n-a: atribuicoes refexport nao casaram (GetRefAPI usa outra forma); DrawTrianglePic (22) e DrawString (21) = stub; shaders cgame todos MOHAA
+- 18z8n-a: draw 0 = DrawStretchPic nunca chamado -> suspeita SCR/CG_Draw2D pulando 2D por estado
+- 18z8n-b: coleta GetRefAPI/LG_NullStub/LG2D_DrawStretchPic + SCR_DrawScreenField/UpdateScreen + CG_DrawActiveFrame/CG_Draw2D (docs/probes/lote18z8n-b-refapi.log), sem build

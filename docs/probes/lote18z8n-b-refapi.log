@@ -1,0 +1,354 @@
+# Lote 18z8n-b - GetRefAPI + caminho 2D 2026-10-28 20:12
+## tr_null.c:242 [\bGetRefAPI\s*\(]
+  242: refexport_t *GetRefAPI(int apiVersion, refimport_t *rimp)
+  243: {
+  244:     lg_ri = *rimp; lg_ri_ok = 1; /* LG 18z8i */
+  245: void *stub = (void *)LG_NullStub;
+  246: size_t i;
+  247: 
+  248: if (apiVersion != REF_API_VERSION || !rimp)
+  249: return NULL;
+  250: lgNullRi = *rimp;
+  251: for (i = 0; i < sizeof(lgNullRe) / sizeof(void *); ++i)
+  252: memcpy((char *)&lgNullRe + i * sizeof(void *), &stub, sizeof(stub));
+  253: 
+  254: LG_SET(BeginRegistration, LG_NullBeginRegistration);
+  255: LG_SET(RegisterFont, LG_NullRegisterFont);
+  256: LG_SET(TIKI_Orientation, LG_NullOrientation);
+  257: LG_SET(ModelRadius, LG_NullFloat);
+  258: LG_SET(GetFontHeight, LG_NullFloat);
+  259: LG_SET(GetFontStringWidth, LG_NullFloat);
+  260: LG_SET(Noise, LG_NullFloat);
+  261: LG_SET(GetShaderName, LG_NullName);
+  262: LG_SET(GetModelName, LG_NullName);
+  263: LG_SET(GetGraphicsInfo, LG_NullName);
+  264: LG_SET(SetMode, LG_NullTrue);
+  265: LG_SET(GetShaderWidth, LG_NullOne);
+  266: LG_SET(GetShaderHeight, LG_NullOne);
+  267: #ifdef NXDK /* LG 18z8c */
+  268: lg2d_ri = &lgNullRi;
+  269: LG_SET(SetColor, LG2D_SetColor);
+  270: LG_SET(BeginFrame, LG2D_BeginFrame);
+  271: LG_SET(EndFrame, LG2D_EndFrame);
+  272: LG_SET(DrawStretchPic, LG2D_DrawStretchPic);
+  273: LG_SET(DrawStretchPic2, LG2D_DrawStretchPic2);
+  274: LG_SET(DrawTilePic, LG2D_DrawTilePic);
+  275: LG_SET(DrawBox, LG2D_DrawBox);
+  276: LG_SET(RegisterShader, LG2D_RegisterShader);
+  277: LG_SET(RegisterShaderNoMip, LG2D_RegisterShader);
+  278: lg2d_init();
+  279: #endif
+  280: 
+  281: lgNullRi.Printf(PRINT_ALL, "LG: renderer nulo (18e)\n");
+  282: lgNullRe.LoadFont = lg_null_LoadFont; /* LG 18m */
+  283: return &lgNullRe;
+  284: }
+## tr_null.c:214 [\bLG_NullStub\s*\(]
+  214: static int LG_NullStub(void) { return 0; }
+## tr_null.c:195 [\bLG2D_DrawStretchPic\s*\(]
+  195: static void LG2D_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t shader) {
+  196:     if (lg2d_in && lgx_st > 0 && shader > 0 && shader <= 512 && lg_tex[shader - 1]) { /* LG 18z8m-d */
+  197:         uint8_t c[4]; int i; for (i = 0; i < 4; i++) c[i] = (uint8_t)(lg2d_c01(lg2d_rgba[i]) * 255.0f);
+  198:         if (lgx_quad(lg_tex[shader - 1] - 1, x, y, w, h, s1, t1, s2, t2, c)) { lg2d_nq++; return; }
+  199:     }
+  200:     lg2d_fill(x, y, w, h, lg2d_mk((int)shader));
+  201: }
+## cl_scrn.cpp:435 [\bSCR_DrawScreenField\s*\(]
+  435: void SCR_DrawScreenField( void ) {
+  436: 	// wide aspect ratio screens need to have the sides cleared
+  437: 	// unless they are displaying game renderings
+  438: 	if ( clc.state != CA_ACTIVE && clc.state != CA_CINEMATIC ) {
+  439: 		if ( cls.glconfig.vidWidth * 480 > cls.glconfig.vidHeight * 640 ) {
+  440: 			re.SetColor( g_color_table[0] );
+  441: 			//re.DrawStretchPic( 0, 0, cls.glconfig.vidWidth, cls.glconfig.vidHeight, 0, 0, 0, 0, cls.whiteShader );
+  442: 			re.DrawBox( 0, 0, cls.glconfig.vidHeight, cls.glconfig.vidWidth );
+  443: 			re.SetColor( NULL );
+  444: 		}
+  445: 	}
+  446: 
+  447: 	switch( clc.state ) {
+  448: 	case CA_UNINITIALIZED:
+  449: 		Com_Error( ERR_FATAL, "SCR_DrawScreenField: clc.state == CA_UNINITIALIZED" );
+  450: 		break;
+  451: 	case CA_LOADING:
+  452: 	case CA_PRIMED:
+  453: 		// draw the game information screen and loading progress
+  454: 		CL_CGameRendering(s_scr_stereoFrame);
+  455: 
+  456: 		// also draw the connection information, so it doesn't
+  457: 		// flash away too briefly on local or lan games
+  458: 		// refresh to update the time
+  459: 	case CA_CONNECTING:
+  460: 	case CA_CHALLENGING:
+  461: 	case CA_CONNECTED:
+  462: 		// connecting clients will only show the connection dialog
+  463: 		// refresh to update the time
+  464: 		UI_DrawConnect();
+  465: 		break;
+  466: 	case CA_CINEMATIC:
+  467: 		SCR_DrawCinematic();
+  468: 		break;
+  469: 	case CA_ACTIVE:
+  470: 		CL_CGameRendering(s_scr_stereoFrame);
+  471: 		break;
+  472: 	default:
+  473: 		break;
+  474: 	}
+  475: }
+## cl_scrn.cpp:522 [\bSCR_UpdateScreen\s*\(]
+  522: void SCR_UpdateScreen( void ) {
+  523: 	static qboolean screen_recursive;
+  524: 
+  525: 	if ( !scr_initialized ) {
+  526: 		return;				// not initialized yet
+  527: 	}
+  528: 
+  529: 	if (screen_recursive) {
+  530: 		// already called
+  531: 		return;
+  532: 	}
+  533: 
+  534: 	screen_recursive = qtrue;
+  535: 	
+  536: 	CL_StartHunkUsers(qfalse);
+  537: 	SCR_SimpleUpdateScreen();
+  538: 
+  539: 	// set the fps value
+  540: 	if( fps->integer && clc.state == CA_ACTIVE ) {
+  541: 		static int belowlastplaytime = 0;
+  542: 		static qboolean belowframerate = qfalse;
+  543: 
+  544: 		if( currentfps > 19.8 ) {
+  545: 			belowframerate = qfalse;
+  546: 		} else if( !belowframerate ) {
+  547: 			if( currentfps < 18.0 ) {
+  548: 				belowlastplaytime = 10000;
+  549: 				belowframerate = qtrue;
+  550: 			}
+  551: 		}
+  552: 
+  553: 		if( belowframerate && cls.realtime > belowlastplaytime ) {
+  554: 			belowlastplaytime = cls.realtime + 4000;
+  555: 		}
+  556: 	}
+  557: 
+  558: 	screen_recursive = qfalse;
+  559: }
+## cg_view.c:827 [\bCG_DrawActiveFrame\s*\(]
+  827: void CG_DrawActiveFrame(int serverTime, int frameTime, stereoFrame_t stereoView, qboolean demoPlayback)
+  828: {
+  829:     cg.time         = serverTime;
+  830:     cg.frametime    = frameTime;
+  831:     cg.demoPlayback = demoPlayback;
+  832: 
+  833:     // any looped sounds will be respecified as entities
+  834:     // are added to the render list
+  835:     cgi.S_ClearLoopingSounds();
+  836: 
+  837:     // clear all the render lists
+  838:     cgi.R_ClearScene();
+  839: 
+  840:     // set up cg.snap and possibly cg.nextSnap
+  841:     CG_ProcessSnapshots();
+  842: 
+  843:     // if we haven't received any snapshots yet, all
+  844:     // we can draw is the information screen
+  845:     if (!cg.snap || (cg.snap->snapFlags & SNAPFLAG_NOT_ACTIVE)) {
+  846:         return;
+  847:     }
+  848: 
+  849:     // this counter will be bumped for every valid scene we generate
+  850:     cg.clientFrame++;
+  851: 
+  852:     // set cg.frameInterpolation
+  853:     if (cg.nextSnap && r_lerpmodels->integer) {
+  854:         int delta;
+  855: 
+  856:         delta = (cg.nextSnap->serverTime - cg.snap->serverTime);
+  857:         if (delta == 0) {
+  858:             cg.frameInterpolation = 0;
+  859:         } else {
+  860:             cg.frameInterpolation = (float)(cg.time - cg.snap->serverTime) / delta;
+  861:         }
+  862:     } else {
+  863:         cg.frameInterpolation = 0; // actually, it should never be used, because
+  864:         // no entities should be marked as interpolating
+  865:     }
+  866: 
+  867:     //
+  868:     // Added in OPM
+  869:     //  Clamp the fov to avoid artifacts
+  870:     if (cg_fov->value < 65) {
+  871:         cgi.Cvar_Set("cg_fov", "65");
+  872:     } else if (cg_fov->value > 120) {
+  873:         cgi.Cvar_Set("cg_fov", "120");
+  874:     }
+  875: 
+  876:     // update cg.predicted_player_state
+  877:     CG_PredictPlayerState();
+  878: 
+  879:     // build cg.refdef
+  880:     CG_CalcViewValues();
+  881: 
+  882:     // display the intermission
+  883:     if (cg.snap->ps.pm_flags & PMF_INTERMISSION) {
+  884:         if (cgs.gametype != GT_SINGLE_PLAYER) {
+  885:             CG_ScoresDown_f();
+  886:         } else if (cg.bIntermissionDisplay) {
+  887:             if (cg.nextSnap) {
+  888:                 if (cg_protocol >= PROTOCOL_MOHTA_MIN) {
+  889:                     cvar_t* pMission = cgi.Cvar_Get("g_mission", "", CVAR_ARCHIVE);
+  890: 
+  891:                     if (cgi.Cvar_Get("g_success", "", 0)->integer) {
+  892:                         switch (pMission->integer)
+  893:                         {
+  894:                         default:
+  895:                         case 0:
+  896:                             cgi.UI_ShowMenu("mission_success_1", 0);
+  897:                             cgi.Cvar_Set("g_t2l1", "1");
+  898:                             break;
+  899:                         case 2:
+  900:                             cgi.UI_ShowMenu("mission_success_2", 0);
+  901:                             cgi.Cvar_Set("g_t3l1", "1");
+  902:                             break;
+  903:                         case 3:
+  904:                             cgi.UI_ShowMenu("mission_success_3", 0);
+  905:                             break;
+  906:                         }
+  907:                     } else {
+  908:                         switch (pMission->integer)
+  909:                         {
+  910:                         default:
+  911:                         case 0:
+  912:                             cgi.UI_ShowMenu("mission_failed_1", 0);
+  913:                             break;
+  914:                         case 2:
+  915:                             cgi.UI_ShowMenu("mission_failed_2", 0);
+  916:                             break;
+  917:                         case 3:
+  918:                             cgi.UI_ShowMenu("mission_failed_3", 0);
+  919:                             break;
+  920:                         }
+  921:                     }
+  922:                 } else {
+  923:                     if (cgi.Cvar_Get("g_success", "", 0)->integer) {
+  924:                         cgi.UI_ShowMenu("StatsScreen_Success", qfalse);
+  925:                     } else {
+  926:                         cgi.UI_ShowMenu("StatsScreen_Failed", qfalse);
+  927:                     }
+  928:                 }
+  929:             }
+  930:         } else {
+  931:             cgi.SendClientCommand("stats");
+  932:         }
+  933: 
+  934:         cg.bIntermissionDisplay = qtrue;
+  935:     } else if (cg.bIntermissionDisplay) {
+  936:         if (cgs.gametype != GT_SINGLE_PLAYER) {
+  937:             CG_ScoresUp_f();
+  938:         } else {
+  939:             if (cg_protocol >= PROTOCOL_MOHTA_MIN) {
+  940:                 cvar_t* pMission = cgi.Cvar_Get("g_mission", "", CVAR_ARCHIVE);
+  941: 
+  942:                 if (cgi.Cvar_Get("g_success", "", 0)->integer) {
+  943:                     switch (pMission->integer)
+  944:                     {
+  945:                     default:
+  946:                     case 0:
+  947:                         cgi.UI_HideMenu("mission_success_1", qtrue);
+  948:                         break;
+  949:                     case 2:
+  950:                         cgi.UI_HideMenu("mission_success_2", qtrue);
+  951:                         break;
+  952:                     case 3:
+  953:                         cgi.UI_HideMenu("mission_success_3", qtrue);
+  954:                         break;
+  955:                     }
+  956:                 } else {
+  957:                     switch (pMission->integer)
+  958:                     {
+  959:                     default:
+  960:                     case 0:
+  961:                         cgi.UI_HideMenu("mission_failed_1", qtrue);
+  962:                         break;
+  963:                     case 2:
+  964:                         cgi.UI_HideMenu("mission_failed_2", qtrue);
+  965:                         break;
+  966:                     case 3:
+  967:                         cgi.UI_HideMenu("mission_failed_3", qtrue);
+  968:                         break;
+  969:                     }
+  970:                 }
+  971:             } else {
+  972:                 if (cgi.Cvar_Get("g_success", "", 0)->integer) {
+  973:                     cgi.UI_HideMenu("StatsScreen_Success", qtrue);
+  974:                 } else {
+  975:                     cgi.UI_HideMenu("StatsScreen_Failed", qtrue);
+  976:                 }
+  977:             }
+  978:         }
+  979: 
+  980:         cg.bIntermissionDisplay = qfalse;
+  981:     } else {
+  982:         // Added in OPM
+  983:         //  In vanilla, scores are updated because when pressing a key,
+  984:         //  it is sent every frame.
+  985:         //  In OPM, an event for a key is sent only once, even when it's being held.
+  986:         if (cgs.gametype != GT_SINGLE_PLAYER && cg.showScores) {
+  987:             CG_ScoresDown_f();
+  988:         }
+  989:     }
+  990: 
+  991:     // Added in OPM
+  992:     CG_ProcessPlayerModel();
+  993: 
+  994:     // build the render lists
+  995:     if (!cg.hyperspace) {
+  996:         CG_AddPacketEntities(); // after calcViewValues, so predicted player state is correct
+  997:         CG_AddMarks();
+  998:     }
+  999: 
+ 1000:     // finish up the rest of the refdef
+ 1001:     CG_SetupPortalSky();
+ 1002: 
+ 1003:     cg.refdef.time = cg.time;
+ 1004:     memcpy(cg.refdef.areamask, cg.snap->areamask, sizeof(cg.refdef.areamask));
+ 1005: 
+ 1006:     // update audio positions
+ 1007:     cgi.S_Respatialize(cg.snap->ps.clientNum, cg.SoundOrg, cg.SoundAxis);
+ 1008: 
+ 1009:     // make sure the lagometerSample and frame timing isn't done twice when in stereo
+ 1010:     if (stereoView != STEREO_RIGHT) {
+ 1011:         CG_AddLagometerFrameInfo();
+ 1012:     }
+ 1013: 
+ 1014:     CG_UpdateTestEmitter();
+ 1015:     CG_AddPendingEffects();
+ 1016: 
+ 1017:     if (!cg_hidetempmodels->integer) {
+ 1018:         CG_AddTempModels();
+ 1019:     }
+ 1020: 
+ 1021:     if (vss_draw->integer) {
+ 1022:         CG_AddVSSSources();
+ 1023:     }
+ 1024: 
+ 1025:     CG_AddBulletTracers();
+ 1026:     CG_AddBulletImpacts();
+## cg_draw2D / Draw2D refs
+cg_drawtools.cpp:1524: CG_Draw2D
+cg_drawtools.cpp:1527: void CG_Draw2D(void)
+cg_main.c:821: cge.CG_Draw2D                   = CG_Draw2D;
+cl_cgame.cpp:1023: cge->CG_Draw2D();
+cl_main.cpp:1025: SCR_UpdateScreen( );
+cl_main.cpp:2696: SCR_UpdateScreen();
+cl_main.cpp:2840: SCR_UpdateScreen();
+cl_scrn.cpp:496: void SCR_SimpleUpdateScreen( void ) {
+cl_scrn.cpp:522: void SCR_UpdateScreen( void ) {
+cl_scrn.cpp:537: SCR_SimpleUpdateScreen();
+cl_ui.cpp:5680: void UI_TestUpdateScreen(unsigned int timeout)
+cl_ui.cpp:5691: SCR_UpdateScreen();
+cl_ui.cpp:5710: UI_TestUpdateScreen(0);
+cl_ui.cpp:5733: UI_TestUpdateScreen(33);
+cl_ui.cpp:5952: SCR_UpdateScreen();
+cl_uiview3d.cpp:584: cge->CG_Draw2D();
