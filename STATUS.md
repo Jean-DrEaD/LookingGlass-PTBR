@@ -821,3 +821,9 @@
 - Causa: preenchimento por CPU no framebuffer (~100 ms por tela cheia no xemu); clear do fundo ja limita a 22 fps
 - Plano 18z8g: clear de fundo + retangulos solidos via GPU (SET_COLOR_CLEAR_VALUE + CLEAR_RECT + CLEAR_SURFACE); alpha depois via triangulos
 - 18z8f: coleta lg2d_fill/Begin/EndFrame + macros nv_regs/pbkit (docs/probes/lote18z8f-gpuclear.log), sem build
+
+## Lote 18z8g (2026-10-28 16:28)
+- 18z8f: grep NV097_* vazio (padrao exigia 1 espaco); pb_begin/pb_push nao achados no pbkit.h; clear D/S = trigger 0x03
+- 18z8g: lg2d_gpufill = push manual (n<<18|subch 0<<13|mtd): 0x1D98 rect (x2-1<<16|x1, y2-1<<16|y1) + 0x1D8C zs/cor/trigger 0xF0 (RGBA)
+- 18z8g: lg2d_fill e clear do BeginFrame sem CPU; overlay 'LG 18z8g'; exe=True (docs/probes/lote18z8g-gpufill.log)
+- Esperado xemu: ocioso ~60 fps (vbl), fade sem queda; cores iguais ao 18z8d
