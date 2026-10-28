@@ -754,3 +754,8 @@
 - 18z3 xemu: torso OK (alice_Torso.st ate linha 93); fatal 'Unknown camera type frontright on line 93'
 - 18z4: gi.Error de camera/movetype desconhecidos -> 'LG: cam?/mv? linha N' (5 max) sob NXDK, tipo fica DEFAULT (2 sites, +8 -0)
 - readCamera/readMoveType completos em docs/probes/lote18z4-camera.log (mapear tipos Alice depois)
+
+## Lote 18z5 (2026-10-28 09:04)
+- 18z4 xemu: cam? OK (passou linha 93); fatal 'Unknown command -70 on line 506' -> argumento extra de comando FAKK (camera/movetype com parametros) lido como comando
+- 18z5: Unknown command do State -> 'LG: stc? X linha N' (5 max) + descarta resto da linha; readCamera/readMoveType desconhecidos tambem descartam a linha (4 insercoes, 10	0	code/fgame/characterstate.cpp)
+- Linhas 90-95 e 500-510 dos alice_*.st em docs/probes/lote18z5-stcmd.log

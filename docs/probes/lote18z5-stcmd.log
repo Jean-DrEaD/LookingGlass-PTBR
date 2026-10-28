@@ -1,0 +1,30 @@
+# Lote 18z5 - comando .st desconhecido = aviso + pula linha
+## pak0.pk3:global/alice_legs.st (480 linhas)
+90: 	{
+91: 		ready_2_base01 : default
+92: 	}
+93: 
+94: 	states
+95: 	{
+## pak0.pk3:global/alice_torso.st (1318 linhas)
+90: state IDLE_CAMERA
+91: {
+92: //camera bulletcam 80 -50 20 1 linear radial target 0 0 5
+93: camera frontright
+94: 
+95: 	states
+500: 		DEATH		: default
+501: 	}
+502: }
+503: 
+504: state DEATH_WATER
+505: {
+506: camera bulletcam -70 0 20 0.4 damped radial viewtarget 0 0 20
+507: movetype anim
+508: 
+509: 	legs
+510: 	{
+Unknown command em: 701,748
+insercoes: 4
+diff: 10	0	code/fgame/characterstate.cpp
+XBE 5431296 / ISO 667811840
