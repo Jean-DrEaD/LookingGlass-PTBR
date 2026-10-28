@@ -900,3 +900,8 @@
 - 18z8n-b: CG_Draw2D so via cl_cgame.cpp:1023 e cl_uiview3d.cpp:584; CG_DrawActiveFrame sai sem snap
 - 18z8n-c 1a: ancora 'LG 18z8m-e' casou o comentario do quad forcado -> nada gravado; ancora agora = literal '"LG 18z8m-e frame'
 - 18z8n-c: lg_dbg[8]; linha vbl do overlay -> 's a r d c v' (clc.state/DrawActiveFrame/sai sem snap/CG_Draw2D/via cl_cgame/via View3D, %10000); exe=False iso=False
+
+## Lote 18z8n-c2 (2026-10-28 20:27)
+- 18z8n-c: build falhou so no tr_null.c:187 (lg_dbg nao declarado: 'ultimo #include' = lg_nv2a.c, abaixo do overlay; 5 erros 'unsigned int *' = correcao para lg_img do clang)
+- Regra: declaracao global nova em tr_null.c vai no TOPO do arquivo (nao apos o ultimo #include)
+- 18z8n-c2: lg_dbg[8] movido p/ linha 1 do tr_null.c; demais 5 arquivos do 18z8n-c mantidos; exe=True iso=True

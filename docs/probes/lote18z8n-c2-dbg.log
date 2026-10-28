@@ -1,0 +1,19 @@
+# Lote 18z8n-c2 - lg_dbg no topo do tr_null.c 2026-10-28 20:25
+numstat: 5	0	code/cgame/cg_drawtools.cpp
+numstat: 6	0	code/cgame/cg_view.c
+numstat: 5	1	code/client/cl_cgame.cpp
+numstat: 5	0	code/client/cl_scrn.cpp
+numstat: 5	1	code/client/cl_uiview3d.cpp
+numstat: 3	2	code/renderernull/tr_null.c
+probe: ## Alvos:
+probe: build-xbox/recacstnav_recast/libRecast.lib
+probe: build-xbox/recastnav_crowd/libDetourCrowd.lib
+probe: build-xbox/recastnav_detour/libDetour.lib
+probe: build-xbox/Release/libcgame.lib
+probe: build-xbox/Release/libgame.lib
+probe: build-xbox/Release/omohaaded.exe
+probe: build-xbox/Release/openmohaa.exe
+cxbe: Xbe::Export: Writing Section 0x0003 (.tls)...OK
+cxbe: Xbe::Export: Writing Zero Padding...OK
+xiso: sucessfully created alice-cliente.iso (26 files totalling 667945131 bytes added)
+exe=True iso=True
