@@ -842,3 +842,9 @@
 - 18z8i xemu: fps 60 ocioso; tga ok 1 / fail 18 de 19; nomes = UI MOHAA (mohaa_title, legal, textures/menu/loading, textures/hud/radar_axis) -> urc/cgame do OpenMoHAA pedem assets inexistentes no Alice
 - 18z8i: overlay t2/b24 com -1x-1 = bug (fail so zerava w/h); o unico ok e TGA tipo 2 24 bpp
 - 18z8j: status por shader (T/J/-) nas linhas 5+ do overlay; fallback .jpg; refs dos nomes nos .shader/.urc dos pk3 em docs/probes/lote18z8j-shaders.log; exe=True
+
+## Lote 18z8k (2026-10-28 18:28)
+- 18z8j xemu: so gfx/2d/backtile = T (TGA 2, 64x64, 24 bpp); 0 REF nos .shader/.urc -> nomes MOHAA vem do codigo C cliente/cgame, nao de script (parser .shader adiado)
+- 18z8j: 'radar_axis.tgagarop' = sobra de texto do pbkit (linha nao limpa) -> padding %-34.34s
+- 18z8k: lg2d_decode (TGA 2/10, 24/32 bpp, ate 256x256, ARGB, flip por origem) no RegisterShader; lg2d_dbgblit CPU antes do overlay (canto inferior direito); overlay 'dec N'; exe=True
+- Proximo: upload swizzled NV2A + quad texturizado no DrawStretchPic
