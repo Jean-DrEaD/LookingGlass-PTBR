@@ -832,3 +832,8 @@
 - 18z8g xemu: MARCO - fill/clear GPU OK: ocioso 60-61 fps (era 22), fade 60 fps (era 4); cores corretas
 - 18z8g: queda pontual fps 8 com game=86 ms (vbl 11, fin 0) = hitch do jogo (load/shaders 3->19), NAO do renderer
 - 18z8h: coleta p/ StretchPic texturizado (tr_null registro, loaders GL1, upload/quad/blend do renderernv2a, imagens ui nos pk3) em docs/probes/lote18z8h-textura.log, sem build
+
+## Lote 18z8i (2026-10-28 17:49)
+- 18z8h: GL1 carrega so .tga/.jpg (tr_image.c:2399 R_LoadImage); .ftx so em textures/menu; ioQ3 upload = swizzle + MmAllocateContiguousMemoryEx + xgu_set_texture_*
+- 18z8i: lg_ri capturado no GetRefAPI; RegisterShader le <nome>[.tga] via FS_ReadFile e decodifica cabecalho TGA (tipo/w/h/bpp); overlay linhas 4-5; exe=True
+- Proximo 18z8j: upload RGBA swizzled + quad texturizado com blend

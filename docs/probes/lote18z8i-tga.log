@@ -1,0 +1,26 @@
+# Lote 18z8i - probe TGA no RegisterShader 2026-10-28 17:47
+numstat: 20	3	code/renderernull/tr_null.c
+# Probe 18z8i 2026-10-28 17:47 @ 8bccade 
+## LGSYS ok
+BUILD_EXIT=0
+## Objetos ok / falhos:
+504
+0
+## Erros por arquivo:
+## Top mensagens:
+## Linker (simbolos):
+## Falhou:
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+exe novo: True 6166016
+Xbe::Export: Writing Section 0x0003 (.tls)...OK
+Xbe::Export: Writing Zero Padding...OK
+
+sucessfully created alice-cliente.iso (26 files totalling 667936939 bytes added)
+xbe: 6176768; iso: 668532736
