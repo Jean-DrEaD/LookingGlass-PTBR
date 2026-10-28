@@ -766,3 +766,9 @@
 - 18z6a 1a: lg_game_rename.h nao esta em tools\ (Get-Content com Path nulo) -> busca nos 2 repos
 - 18z6a: coleta Sys_Get*API + GetCGameAPI + CMake cgame + local do rename (docs/probes/lote18z6a-cgame.log), sem build
 - Plano 18z6b: Sys_GetCGameAPI -> GetCGameAPI estatico sob NXDK + libcgame no link (risco: dups game x cgame)
+
+## Lote 18z6b (2026-10-28 10:13)
+- 18z6a: Sys_GetGameAPI ja estatico (sys_main_new.c:240); GetCGameAPI(void) SEM parms (cg_main.c:814); cgame fora do link
+- 18z6b 1a-3a: rename usa prefixo G_ (nao lg_game_); bloco colado isolado = variaveis nulas (regra: rodar script inteiro)
+- 18z6b: Sys_GetCGameAPI -> GetCGameAPI() sob NXDK (+3 -0); lg_cgame_rename.h (397 G_->LGC_, guard CGAME_DLL); cgame no link do openmohaa (+5 -0)
+- 18z6b: link=False (se False: dups em docs/probes/lote18z6b-openmohaa-cliente.log)

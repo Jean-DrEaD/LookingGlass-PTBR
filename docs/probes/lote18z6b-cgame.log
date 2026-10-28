@@ -1,0 +1,4 @@
+# Lote 18z6b - cgame estatico
+cgame rename: 397 trocas G_->LGC_, guard=1
+diff: 3	0	code/sys/new/sys_main_new.c | 5	0	CMakeLists.txt
+link: False

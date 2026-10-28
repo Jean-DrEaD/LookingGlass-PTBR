@@ -1,0 +1,35 @@
+# Probe 18z6b 2026-10-28 10:11 @ 4d4ba13 cgame estatico
+## LGSYS ok
+BUILD_EXIT=2
+## Objetos ok / falhos:
+503
+2
+## Erros por arquivo:
+## Top mensagens:
+      1 error: undefined symbol: _GetCGameAPI
+      1 error: duplicate symbol: void __cdecl CacheResource(char const *)
+      1 error: duplicate symbol: public: void __thiscall VoteOptions::SetupVoteOptions(char const *, int, char const *)
+      1 error: duplicate symbol: public: void __thiscall VoteOptions::SetupVoteOptions(char const *)
+      1 error: duplicate symbol: public: void __thiscall VoteOptions::ParseVoteOptions(void)
+      1 error: duplicate symbol: public: void __thiscall VoteOptions::ClearOptions(void)
+      1 error: duplicate symbol: public: virtual __thiscall VoteOptions::~VoteOptions(void)
+      1 error: duplicate symbol: public: static void * __cdecl VoteOptions::_newInstance(void)
+      1 error: duplicate symbol: public: char const * __thiscall VoteOptions::GetVoteOptionsFile(int *) const
+      1 error: duplicate symbol: public: __thiscall VoteOptions::VoteOptions(void)
+      1 error: duplicate symbol: public: __thiscall VoteOptionListItem::VoteOptionListItem(void)
+      1 error: duplicate symbol: public: __thiscall SingleVoteOption::~SingleVoteOption(void)
+      1 error: duplicate symbol: public: __thiscall SingleVoteOption::SingleVoteOption(void)
+      1 error: duplicate symbol: _pmove_msec
+      1 error: duplicate symbol: _pmove_fixed
+      1 error: duplicate symbol: _paused
+## Linker (simbolos):
+      1 undefined symbol: _GetCGameAPI
+## Falhou:
+gmake[2]: *** [CMakeFiles/omohaaded.dir/build.make:1481: Release/omohaaded.exe] Error 1
+gmake[2]: *** [CMakeFiles/openmohaa.dir/build.make:2650: Release/openmohaa.exe] Error 1
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
