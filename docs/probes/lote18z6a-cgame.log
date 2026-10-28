@@ -1,0 +1,163 @@
+# Lote 18z6a - cgame estatico (coleta)
+## Sys_Get*API
+### code\sys\new\sys_main_new.c:238
+236: =================
+237: */
+238: void* Sys_GetGameAPI(void* parms)
+239: {
+240: #ifdef NXDK /* NXDK_STATIC_GAME */
+241:     { extern void *GetGameAPI(void *); return GetGameAPI(parms); }
+242: #endif
+243:     void* (*GetGameAPI) (void*);
+244:     const char* gamename = "game" DLL_SUFFIX DLL_EXT;
+245: 
+246:     if (game_library)
+247:         Com_Error(ERR_FATAL, "Sys_GetGameAPI without calling Sys_UnloadGame");
+248: 
+249:     game_library = Sys_LoadDll(gamename, qfalse);
+250: 
+251:     //Still couldn't find it.
+252:     if (!game_library) {
+253:         Com_Printf("Sys_GetGameAPI(%s) failed: \"%s\"\n", gamename, Sys_LibraryError());
+254:         Com_Error(ERR_FATAL, "Couldn't load game");
+255:     }
+256: 
+257:     Com_Printf("Sys_GetGameAPI(%s): succeeded ...\n", gamename);
+258:     GetGameAPI = (void* (*)(void*))Sys_LoadFunction(game_library, "GetGameAPI");
+259: 
+260:     if (!GetGameAPI)
+261:     {
+262:         Sys_UnloadGame();
+263:         return NULL;
+264:     }
+265: 
+266:     return GetGameAPI(parms);
+267: }
+268: 
+269: /*
+270: =================
+271: Sys_UnloadCGame
+272: =================
+273: */
+274: void Sys_UnloadCGame(void)
+275: {
+276:     Com_Printf("------ Unloading ClientGame ------\n");
+277: 
+278:     if (cgame_library) {
+### code\sys\new\sys_main_new.c:290
+288: =================
+289: */
+290: void* Sys_GetCGameAPI(void* parms)
+291: {
+292:     void* (*GetCGameAPI) (void*);
+293:     const char* gamename = "cgame" DLL_SUFFIX DLL_EXT;
+294: 
+295:     if (cgame_library)
+296:         Com_Error(ERR_FATAL, "Sys_GetCGameAPI without calling Sys_UnloadCGame");
+297: 
+298:     cgame_library = Sys_LoadDll(gamename, qfalse);
+299: 
+300:     //Still couldn't find it.
+301:     if (!cgame_library) {
+302:         Com_Printf("Sys_GetCGameAPI(%s) failed: \"%s\"\n", gamename, Sys_LibraryError());
+303:         Com_Error(ERR_FATAL, "Couldn't load game");
+304:     }
+305: 
+306:     Com_Printf("Sys_GetCGameAPI(%s): succeeded ...\n", gamename);
+307:     GetCGameAPI = (void* (*)(void*))Sys_LoadFunction(cgame_library, "GetCGameAPI");
+308: 
+309:     if (!GetCGameAPI)
+310:     {
+311:         Sys_UnloadCGame();
+312:         return NULL;
+313:     }
+314: 
+315:     return GetCGameAPI(parms);
+316: }
+317: 
+318: void VM_Forced_Unload_Start(void) {
+319: }
+320: 
+321: void VM_Forced_Unload_Done(void) {
+322: }
+323: 
+324: void Sys_InitEx()
+325: {
+326:     Sys_InitLocalization();
+327:     Sys_InitCurl();
+328:     Sys_UpdateChecker_Init();
+329: }
+330: 
+## GetCGameAPI
+code\cgame\cg_main.c:809: GetCGameAPI
+code\cgame\cg_main.c:814: clientGameExport_t *GetCGameAPI(void)
+code\cgame\cg_public.h:534: clientGameExport_t *GetCGameAPI(void);
+code\client\cl_cgame.cpp:610: *cge = ( clientGameExport_t * )Sys_GetCGameAPI( cgi );
+code\qcommon\qcommon.h:1371: void	*Sys_GetCGameAPI( void *parms );
+code\sys\new\sys_main_new.c:287: Sys_GetCGameAPI
+code\sys\new\sys_main_new.c:290: void* Sys_GetCGameAPI(void* parms)
+code\sys\new\sys_main_new.c:292: void* (*GetCGameAPI) (void*);
+code\sys\new\sys_main_new.c:296: Com_Error(ERR_FATAL, "Sys_GetCGameAPI without calling Sys_UnloadCGame");
+code\sys\new\sys_main_new.c:302: Com_Printf("Sys_GetCGameAPI(%s) failed: \"%s\"\n", gamename, Sys_LibraryError());
+code\sys\new\sys_main_new.c:306: Com_Printf("Sys_GetCGameAPI(%s): succeeded ...\n", gamename);
+code\sys\new\sys_main_new.c:307: GetCGameAPI = (void* (*)(void*))Sys_LoadFunction(cgame_library, "GetCGameAPI");
+code\sys\new\sys_main_new.c:309: if (!GetCGameAPI)
+code\sys\new\sys_main_new.c:315: return GetCGameAPI(parms);
+## CMake
+build-lgsys\CMakeFiles\3.31.7\CMakeCCompiler.cmake:1: set(CMAKE_C_COMPILER "/usr/src/nxdk/bin/nxdk-cc")
+build-lgsys\CMakeFiles\3.31.7\CMakeSystem.cmake:6: include("/usr/src/nxdk/share/toolchain-nxdk.cmake")
+build-lgsys\CMakeFiles\Makefile.cmake:89: "/usr/src/nxdk/share/toolchain-nxdk.cmake"
+cmake\libraries\sdl.cmake:5: # LG18e: sem SDL no nxdk
+cmake\libraries\sdl.cmake:6: if(NXDK)
+cmake\basegame.cmake:15: file(GLOB_RECURSE CGAME_SOURCES
+cmake\basegame.cmake:16: ${SOURCE_DIR}/cgame/*.c ${SOURCE_DIR}/cgame/*.cpp
+cmake\basegame.cmake:19: set(CGAME_BINARY_SOURCES)
+cmake\basegame.cmake:20: set(CGAME_QVM_SOURCES)
+cmake\basegame.cmake:59: set(CGAME_SOURCES_BASEGAME ${CGAME_SOURCES} ${GAME_MODULE_SHARED_SOURCES})
+cmake\basegame.cmake:64: set(CGAME_MODULE_BINARY ${CGAME_MODULE})
+cmake\basegame.cmake:69: set(CGAME_MODULE_BINARY_BASEGAME ${CGAME_MODULE_BINARY}_${BASEGAME})
+cmake\basegame.cmake:73: set(CGAME_MODULE_BINARY_BASEGAME ${CGAME_MODULE_BINARY})
+cmake\basegame.cmake:78: add_library(                ${CGAME_MODULE_BINARY_BASEGAME} SHARED ${CGAME_SOURCES_BASEGAME} ${BG_SOURCES} ${CGAME_BINARY_SOURCES})
+cmake\basegame.cmake:79: target_compile_definitions( ${CGAME_MODULE_BINARY_BASEGAME} PRIVATE CGAME_DLL)
+cmake\basegame.cmake:80: target_link_libraries(      ${CGAME_MODULE_BINARY_BASEGAME} PRIVATE ${COMMON_LIBRARIES})
+cmake\basegame.cmake:81: set_target_properties(      ${CGAME_MODULE_BINARY_BASEGAME} PROPERTIES OUTPUT_NAME ${CGAME_MODULE_BINARY})
+cmake\basegame.cmake:82: set_output_dirs(            ${CGAME_MODULE_BINARY_BASEGAME} SUBDIRECTORY ${BASEGAME})
+cmake\basegame.cmake:84: INSTALL(TARGETS ${CGAME_MODULE_BINARY_BASEGAME} DESTINATION ${INSTALL_LIBDIR_FULL})
+cmake\basegame.cmake:87: INSTALL(FILES $<TARGET_PDB_FILE:${CGAME_MODULE_BINARY_BASEGAME}> DESTINATION ${INSTALL_LIBDIR_FULL} OPTIONAL)
+cmake\basegame.cmake:91: target_compile_definitions( ${GAME_MODULE_BINARY_BASEGAME} PRIVATE GAME_DLL WITH_SCRIPT_ENGINE ARCHIVE_SUPPORTED)
+cmake\client.cmake:14: ${SOURCE_DIR}/client/cl_cgame.cpp
+cmake\client.cmake:68: # LG18e: sem SDL e sem GameSpy no nxdk
+cmake\client.cmake:69: if(NXDK)
+cmake\client.cmake:164: if(NXDK)
+cmake\client.cmake:178: if(NXDK)
+cmake\identity.cmake:9: set(CGAME_MODULE cgame)
+cmake\launcher.cmake:1: # LG18f: sem launcher no nxdk
+cmake\launcher.cmake:2: if(NXDK)
+cmake\missionpack.cmake:8: set(MPCGAME_SOURCES
+cmake\missionpack.cmake:9: ${SOURCE_DIR}/cgame/cg_newdraw.c
+cmake\missionpack.cmake:25: set(CGAME_SOURCES_MISSIONPACK ${CGAME_SOURCES} ${MPCGAME_SOURCES} ${GAME_MODULE_SHARED_SOURCES})
+cmake\missionpack.cmake:30: set(CGAME_MODULE_BINARY_MISSIONPACK ${CGAME_MODULE_BINARY}_${MISSIONPACK})
+cmake\missionpack.cmake:34: add_library(                ${CGAME_MODULE_BINARY_MISSIONPACK} SHARED ${CGAME_SOURCES_MISSIONPACK} ${CGAME_BINARY_SOURCES})
+cmake\missionpack.cmake:35: target_compile_definitions( ${CGAME_MODULE_BINARY_MISSIONPACK} PRIVATE CGAME MISSIONPACK)
+cmake\missionpack.cmake:36: target_link_libraries(      ${CGAME_MODULE_BINARY_MISSIONPACK} PRIVATE ${COMMON_LIBRARIES})
+cmake\missionpack.cmake:37: set_target_properties(      ${CGAME_MODULE_BINARY_MISSIONPACK} PROPERTIES OUTPUT_NAME ${CGAME_MODULE_BINARY})
+cmake\missionpack.cmake:38: set_output_dirs(            ${CGAME_MODULE_BINARY_MISSIONPACK} SUBDIRECTORY ${MISSIONPACK})
+cmake\missionpack.cmake:54: set(CGAME_MODULE_QVM_MISSIONPACK ${CGAME_MODULE}qvm_${MISSIONPACK})
+cmake\missionpack.cmake:58: add_qvm(${CGAME_MODULE_QVM_MISSIONPACK}
+cmake\missionpack.cmake:59: DEFINITIONS CGAME MISSIONPACK
+cmake\missionpack.cmake:60: OUTPUT_NAME ${CGAME_MODULE}
+cmake\missionpack.cmake:62: SOURCES ${CGAME_SOURCES_MISSIONPACK} ${CGAME_QVM_SOURCES})
+cmake\renderer_gl1.cmake:8: # LG18e: renderer nulo no nxdk (sem qgl)
+cmake\renderer_gl1.cmake:9: if(NXDK)
+CMakeLists.txt:89: # NXDK_STATIC_GAME: game linkado estatico no XBE
+CMakeLists.txt:90: if(NXDK AND TARGET omohaaded)
+CMakeLists.txt:95: message(STATUS "NXDK_STATIC_GAME: omohaaded <- ${_g}")
+CMakeLists.txt:101: # NXDK_FORCE_MULTIPLE: corepp existe no engine e na libgame
+CMakeLists.txt:102: if(NXDK AND TARGET omohaaded)
+CMakeLists.txt:106: # LG lote 15i: isolamento ODR engine x game (nxdk)
+CMakeLists.txt:108: target_compile_options(game PRIVATE "-include${CMAKE_SOURCE_DIR}/tools/nxdk-shims/lg_game_rename.h")
+CMakeLists.txt:111: # LG18h: game linkado estatico no cliente nxdk
+CMakeLists.txt:112: if(NXDK AND TARGET openmohaa AND TARGET game)
+CMakeLists.txt:113: target_link_libraries(openmohaa PRIVATE game)
+## rename: D:\openmohaa\tools\nxdk-shims\lg_game_rename.h linhas=404
+CMakeLists.txt:108: target_compile_options(game PRIVATE "-include${CMAKE_SOURCE_DIR}/tools/nxdk-shims/lg_game_rename.h")

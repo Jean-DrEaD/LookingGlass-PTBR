@@ -759,3 +759,10 @@
 - 18z4 xemu: cam? OK (passou linha 93); fatal 'Unknown command -70 on line 506' -> argumento extra de comando FAKK (camera/movetype com parametros) lido como comando
 - 18z5: Unknown command do State -> 'LG: stc? X linha N' (5 max) + descarta resto da linha; readCamera/readMoveType desconhecidos tambem descartam a linha (4 insercoes, 10	0	code/fgame/characterstate.cpp)
 - Linhas 90-95 e 500-510 dos alice_*.st em docs/probes/lote18z5-stcmd.log
+
+## Lote 18z6a (2026-10-28 09:59)
+- 18z5 xemu: MARCO - alice_Legs.st + alice_Torso.st PARSEADOS (linha 506 = 'camera bulletcam -70 0 20 ...', descarte de linha OK)
+- 18z5: fatal 'Sys_GetCGameAPI(cgame.dll) failed: Extension not allowed' -> cgame ainda via DLL (18h so tornou o game estatico)
+- 18z6a 1a: lg_game_rename.h nao esta em tools\ (Get-Content com Path nulo) -> busca nos 2 repos
+- 18z6a: coleta Sys_Get*API + GetCGameAPI + CMake cgame + local do rename (docs/probes/lote18z6a-cgame.log), sem build
+- Plano 18z6b: Sys_GetCGameAPI -> GetCGameAPI estatico sob NXDK + libcgame no link (risco: dups game x cgame)
