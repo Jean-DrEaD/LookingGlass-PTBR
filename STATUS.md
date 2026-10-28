@@ -837,3 +837,8 @@
 - 18z8h: GL1 carrega so .tga/.jpg (tr_image.c:2399 R_LoadImage); .ftx so em textures/menu; ioQ3 upload = swizzle + MmAllocateContiguousMemoryEx + xgu_set_texture_*
 - 18z8i: lg_ri capturado no GetRefAPI; RegisterShader le <nome>[.tga] via FS_ReadFile e decodifica cabecalho TGA (tipo/w/h/bpp); overlay linhas 4-5; exe=True
 - Proximo 18z8j: upload RGBA swizzled + quad texturizado com blend
+
+## Lote 18z8j (2026-10-28 18:08)
+- 18z8i xemu: fps 60 ocioso; tga ok 1 / fail 18 de 19; nomes = UI MOHAA (mohaa_title, legal, textures/menu/loading, textures/hud/radar_axis) -> urc/cgame do OpenMoHAA pedem assets inexistentes no Alice
+- 18z8i: overlay t2/b24 com -1x-1 = bug (fail so zerava w/h); o unico ok e TGA tipo 2 24 bpp
+- 18z8j: status por shader (T/J/-) nas linhas 5+ do overlay; fallback .jpg; refs dos nomes nos .shader/.urc dos pk3 em docs/probes/lote18z8j-shaders.log; exe=True
