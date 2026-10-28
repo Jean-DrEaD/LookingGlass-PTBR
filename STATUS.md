@@ -808,3 +808,10 @@
 - 18z8c: NENHUM retangulo de UI/HUD visivel -> suspeitos: RegisterShader stub=0, alpha<0.5, ou 2D por outra entrada
 - 18z8d: overlay com fps + fill/draw/alpha/sh0/setcolor/shaders por frame; RegisterShader(NoMip) = tabela de nomes (512, handle i+1)
 - 18z8d: exe=True (docs/probes/lote18z8d-contadores.log)
+
+## Lote 18z8e (2026-10-28 15:21)
+- 18z8d xemu: fps 2 (era ~91 no nulo); fill 7 draw 1 alpha 6 sh0 7 setcolor 11 shaders 3
+- 18z8d: 1 retangulo tela cheia sh0 = fade do jogo (tela preta, esmaece rosa->laranja = SetColor); nenhum StretchPic com shader real; so 3 shaders (UI registra por outra via?)
+- Suspeita fps: laco pb_finished sem comandos na GPU sai so por timeout, ou wait_vbl
+- 18z8e: overlay linha 4 'vbl/fin/game ms + to (timeouts)'; timeout pb_finished 2000 -> 50 ms
+- 18z8e: exe=True (docs/probes/lote18z8e-tempos.log)
