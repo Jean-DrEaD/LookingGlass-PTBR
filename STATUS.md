@@ -848,3 +848,8 @@
 - 18z8j: 'radar_axis.tgagarop' = sobra de texto do pbkit (linha nao limpa) -> padding %-34.34s
 - 18z8k: lg2d_decode (TGA 2/10, 24/32 bpp, ate 256x256, ARGB, flip por origem) no RegisterShader; lg2d_dbgblit CPU antes do overlay (canto inferior direito); overlay 'dec N'; exe=True
 - Proximo: upload swizzled NV2A + quad texturizado no DrawStretchPic
+
+## Lote 18z8l (2026-10-28 18:47)
+- 18z8k xemu: MARCO - decode TGA OK: dec 1, backtile 64x64 no canto, orientacao/cores BGR/pitch 640 corretos; fps 62; padding do overlay OK
+- 18z8l: coleta upload swizzled/combiner/quad do renderernv2a + API xgu do nxdk + corpos atuais do tr_null.c (docs/probes/lote18z8l-xgu.log), sem build
+- Proximo 18z8m: textura NV2A + quad texturizado no DrawStretchPic
