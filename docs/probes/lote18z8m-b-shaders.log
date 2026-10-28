@@ -1,0 +1,275 @@
+# Lote 18z8m-b - shaders vp/fp + assinaturas xgu 2026-10-28 18:52
+## arquivos vp/fp no ioQ3
+D:\ioQuake3-Xbox\code\renderernv2a\xbox_nv2a_fp.inl 7023
+D:\ioQuake3-Xbox\code\renderernv2a\xbox_nv2a_fp.ps 401
+D:\ioQuake3-Xbox\code\renderernv2a\xbox_nv2a_vp.inl 1264
+D:\ioQuake3-Xbox\code\renderernv2a\xbox_nv2a_vp.vs.cg 592
+### xbox_nv2a_vp.inl
+// cgc version 3.1.0013, build date Apr 24 2012
+// command line args: -profile vp20
+// source file: /work/code/renderernv2a/xbox_nv2a_vp.vs.cg
+//vendor NVIDIA Corporation
+//version 3.1.0.13
+//profile vp20
+//program main
+//semantic main.m_viewport
+//var float4 I.color : $vin.DIFFUSE : ATTR3 : 0 : 1
+//var float4 I.position : $vin.POSITION : ATTR0 : 0 : 1
+//var float2 I.texcoord : $vin.TEXCOORD0 : TEXCOORD0 : 0 : 1
+//var float2 I.texcoord1 : $vin.TEXCOORD1 : TEXCOORD1 : 0 : 1
+//var float4x4 m_viewport :  : c[0], 4 : 1 : 1
+//var float4 main.col : $vout.COLOR : COL0 : -1 : 1
+//var float4 main.pos : $vout.POSITION : HPOS : -1 : 1
+//var float2 main.texcoord : $vout.TEXCOORD0 : TEX0 : -1 : 1
+//var float2 main.texcoord1 : $vout.TEXCOORD1 : TEX1 : -1 : 1
+// 10 instructions, 0 R-regs
+0x00000000, 0x004c2055, 0x0836186c, 0x2f0007f8,
+0x00000000, 0x008c0000, 0x0836186c, 0x1f0007f8,
+0x00000000, 0x008c40aa, 0x0836186c, 0x1f0007f8,
+0x00000000, 0x006c601b, 0x0436106c, 0x3f0007f8,
+0x00000000, 0x0400001b, 0x08361300, 0x101807f8,
+0x00000000, 0x0040001b, 0x0400286c, 0x2070e800,
+0x00000000, 0x0020061b, 0x0836106c, 0x2070f818,
+0x00000000, 0x0020001b, 0x0436106c, 0x20701800,
+0x00000000, 0x0020121b, 0x0836106c, 0x2070c848,
+0x00000000, 0x0020141b, 0x0836106c, 0x2070c851,
+### xbox_nv2a_fp.inl
+/* !!TS1.0 (line 1) */
+#pragma push_macro("MASK")
+#undef MASK
+#define MASK(mask, val) (((val) << (__builtin_ffs(mask)-1)) & (mask))
+
+pb_push1(p, NV097_SET_SHADER_OTHER_STAGE_INPUT,
+    MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE1, 0)
+    | MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE2, 0)
+    | MASK(NV097_SET_SHADER_OTHER_STAGE_INPUT_STAGE3, 0));
+p += 2;
+pb_push1(p, NV097_SET_SHADER_STAGE_PROGRAM,
+    MASK(NV097_SET_SHADER_STAGE_PROGRAM_STAGE0, NV097_SET_SHADER_STAGE_PROGRAM_STAGE0_2D_PROJECTIVE)
+    | MASK(NV097_SET_SHADER_STAGE_PROGRAM_STAGE1, NV097_SET_SHADER_STAGE_PROGRAM_STAGE1_2D_PROJECTIVE)
+    | MASK(NV097_SET_SHADER_STAGE_PROGRAM_STAGE2, NV097_SET_SHADER_STAGE_PROGRAM_STAGE2_PROGRAM_NONE)
+    | MASK(NV097_SET_SHADER_STAGE_PROGRAM_STAGE3, NV097_SET_SHADER_STAGE_PROGRAM_STAGE3_PROGRAM_NONE));
+p += 2;
+
+#pragma pop_macro("MASK")
+/* !!RC1.0 (line 5) */
+#pragma push_macro("MASK")
+#undef MASK
+#define MASK(mask, val) (((val) << (__builtin_ffs(mask)-1)) & (mask))
+
+pb_push1(p, NV097_SET_COMBINER_COLOR_ICW + 0 * 4,
+    MASK(NV097_SET_COMBINER_COLOR_ICW_A_SOURCE, 0x8) | MASK(NV097_SET_COMBINER_COLOR_ICW_A_ALPHA, 0) | MASK(NV097_SET_COMBINER_COLOR_ICW_A_MAP, 0x6)
+    | MASK(NV097_SET_COMBINER_COLOR_ICW_B_SOURCE, 0x4) | MASK(NV097_SET_COMBINER_COLOR_ICW_B_ALPHA, 0) | MASK(NV097_SET_COMBINER_COLOR_ICW_B_MAP, 0x6)
+    | MASK(NV097_SET_COMBINER_COLOR_ICW_C_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_COLOR_ICW_C_ALPHA, 0) | MASK(NV097_SET_COMBINER_COLOR_ICW_C_MAP, 0x0)
+    | MASK(NV097_SET_COMBINER_COLOR_ICW_D_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_COLOR_ICW_D_ALPHA, 0) | MASK(NV097_SET_COMBINER_COLOR_ICW_D_MAP, 0x0));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_COLOR_OCW + 0 * 4,
+    MASK(NV097_SET_COMBINER_COLOR_OCW_AB_DST, 0xc)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_CD_DST, 0x0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_SUM_DST, 0x0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_MUX_ENABLE, 0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_AB_DOT_ENABLE, 0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_CD_DOT_ENABLE, 0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_OP, NV097_SET_COMBINER_COLOR_OCW_OP_NOSHIFT));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_ALPHA_ICW + 0 * 4,
+    MASK(NV097_SET_COMBINER_ALPHA_ICW_A_SOURCE, 0x8) | MASK(NV097_SET_COMBINER_ALPHA_ICW_A_ALPHA, 1) | MASK(NV097_SET_COMBINER_ALPHA_ICW_A_MAP, 0x6)
+    | MASK(NV097_SET_COMBINER_ALPHA_ICW_B_SOURCE, 0x4) | MASK(NV097_SET_COMBINER_ALPHA_ICW_B_ALPHA, 1) | MASK(NV097_SET_COMBINER_ALPHA_ICW_B_MAP, 0x6)
+    | MASK(NV097_SET_COMBINER_ALPHA_ICW_C_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_ALPHA_ICW_C_ALPHA, 1) | MASK(NV097_SET_COMBINER_ALPHA_ICW_C_MAP, 0x0)
+    | MASK(NV097_SET_COMBINER_ALPHA_ICW_D_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_ALPHA_ICW_D_ALPHA, 1) | MASK(NV097_SET_COMBINER_ALPHA_ICW_D_MAP, 0x0));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_ALPHA_OCW + 0 * 4,
+    MASK(NV097_SET_COMBINER_ALPHA_OCW_AB_DST, 0xc)
+    | MASK(NV097_SET_COMBINER_ALPHA_OCW_CD_DST, 0x0)
+    | MASK(NV097_SET_COMBINER_ALPHA_OCW_SUM_DST, 0x0)
+    | MASK(NV097_SET_COMBINER_ALPHA_OCW_MUX_ENABLE, 0)
+    | MASK(NV097_SET_COMBINER_ALPHA_OCW_OP, NV097_SET_COMBINER_ALPHA_OCW_OP_NOSHIFT));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_COLOR_ICW + 1 * 4,
+    MASK(NV097_SET_COMBINER_COLOR_ICW_A_SOURCE, 0xc) | MASK(NV097_SET_COMBINER_COLOR_ICW_A_ALPHA, 0) | MASK(NV097_SET_COMBINER_COLOR_ICW_A_MAP, 0x6)
+    | MASK(NV097_SET_COMBINER_COLOR_ICW_B_SOURCE, 0x9) | MASK(NV097_SET_COMBINER_COLOR_ICW_B_ALPHA, 0) | MASK(NV097_SET_COMBINER_COLOR_ICW_B_MAP, 0x6)
+    | MASK(NV097_SET_COMBINER_COLOR_ICW_C_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_COLOR_ICW_C_ALPHA, 0) | MASK(NV097_SET_COMBINER_COLOR_ICW_C_MAP, 0x0)
+    | MASK(NV097_SET_COMBINER_COLOR_ICW_D_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_COLOR_ICW_D_ALPHA, 0) | MASK(NV097_SET_COMBINER_COLOR_ICW_D_MAP, 0x0));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_COLOR_OCW + 1 * 4,
+    MASK(NV097_SET_COMBINER_COLOR_OCW_AB_DST, 0xc)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_CD_DST, 0x0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_SUM_DST, 0x0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_MUX_ENABLE, 0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_AB_DOT_ENABLE, 0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_CD_DOT_ENABLE, 0)
+    | MASK(NV097_SET_COMBINER_COLOR_OCW_OP, NV097_SET_COMBINER_COLOR_OCW_OP_NOSHIFT));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_ALPHA_ICW + 1 * 4,
+    MASK(NV097_SET_COMBINER_ALPHA_ICW_A_SOURCE, 0xc) | MASK(NV097_SET_COMBINER_ALPHA_ICW_A_ALPHA, 1) | MASK(NV097_SET_COMBINER_ALPHA_ICW_A_MAP, 0x6)
+    | MASK(NV097_SET_COMBINER_ALPHA_ICW_B_SOURCE, 0x9) | MASK(NV097_SET_COMBINER_ALPHA_ICW_B_ALPHA, 1) | MASK(NV097_SET_COMBINER_ALPHA_ICW_B_MAP, 0x6)
+    | MASK(NV097_SET_COMBINER_ALPHA_ICW_C_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_ALPHA_ICW_C_ALPHA, 1) | MASK(NV097_SET_COMBINER_ALPHA_ICW_C_MAP, 0x0)
+    | MASK(NV097_SET_COMBINER_ALPHA_ICW_D_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_ALPHA_ICW_D_ALPHA, 1) | MASK(NV097_SET_COMBINER_ALPHA_ICW_D_MAP, 0x0));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_ALPHA_OCW + 1 * 4,
+    MASK(NV097_SET_COMBINER_ALPHA_OCW_AB_DST, 0xc)
+    | MASK(NV097_SET_COMBINER_ALPHA_OCW_CD_DST, 0x0)
+    | MASK(NV097_SET_COMBINER_ALPHA_OCW_SUM_DST, 0x0)
+    | MASK(NV097_SET_COMBINER_ALPHA_OCW_MUX_ENABLE, 0)
+    | MASK(NV097_SET_COMBINER_ALPHA_OCW_OP, NV097_SET_COMBINER_ALPHA_OCW_OP_NOSHIFT));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_CONTROL,
+    MASK(NV097_SET_COMBINER_CONTROL_FACTOR0, NV097_SET_COMBINER_CONTROL_FACTOR0_SAME_FACTOR_ALL)
+    | MASK(NV097_SET_COMBINER_CONTROL_FACTOR1, NV097_SET_COMBINER_CONTROL_FACTOR1_SAME_FACTOR_ALL)
+    | MASK(NV097_SET_COMBINER_CONTROL_ITERATION_COUNT, 2));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_SPECULAR_FOG_CW0,
+    MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_A_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_A_ALPHA, 0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_A_INVERSE, 0)
+    | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_B_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_B_ALPHA, 0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_B_INVERSE, 0)
+    | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_C_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_C_ALPHA, 0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_C_INVERSE, 0)
+    | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_D_SOURCE, 0xc) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_D_ALPHA, 0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW0_D_INVERSE, 0));
+p += 2;
+pb_push1(p, NV097_SET_COMBINER_SPECULAR_FOG_CW1,
+    MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_E_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_E_ALPHA, 0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_E_INVERSE, 0)
+    | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_F_SOURCE, 0x0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_F_ALPHA, 0) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_F_INVERSE, 0)
+    | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_G_SOURCE, 0xc) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_G_ALPHA, 1) | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_G_INVERSE, 0)
+    | MASK(NV097_SET_COMBINER_SPECULAR_FOG_CW1_SPECULAR_CLAMP, 0));
+p += 2;
+
+#pragma pop_macro("MASK")
+### xbox_nv2a_fp.ps
+!!TS1.0
+texture_2d();
+texture_2d();
+
+!!RC1.0
+{
+	// Stage texel times the stage colour.
+	rgb {
+		spare0 = tex0.rgb * col0.rgb;
+	}
+	alpha {
+		spare0 = tex0.a * col0.a;
+	}
+}
+{
+	// ioq3 GL_MODULATE multitexture: a collapsed second stage, or a white texel.
+	rgb {
+		spare0 = spare0.rgb * tex1.rgb;
+	}
+	alpha {
+		spare0 = spare0.a * tex1.a;
+	}
+}
+
+out.rgb = unsigned(spare0.rgb);
+out.a = unsigned(spare0.a);
+### xbox_nv2a_vp.vsh AUSENTE
+## Makefile.xbox regras vp/fp
+173: 	$(CURDIR)/code/renderernv2a/xbox_nv2a_vp.inl \
+174: 	$(CURDIR)/code/renderernv2a/xbox_nv2a_fp.inl
+346: $(CURDIR)/code/renderernv2a/xbox_nv2a_fp.inl: \
+347: 	$(CURDIR)/code/renderernv2a/xbox_nv2a_fp.ps | fp20compiler
+349: 	$(FP20COMPILER) $< > $@
+## compiladores no container
+cg
+cxbe
+extract-xiso
+fp20compiler
+vp20compiler
+/usr/src/nxdk/tools/vp20compiler
+/usr/src/nxdk/tools/vp20compiler/vp20compiler
+/usr/src/nxdk/tools/fp20compiler
+/usr/src/nxdk/tools/fp20compiler/fp20compiler
+## assinaturas xgu
+xgu.h:291: uint32_t* push_command(uint32_t* p, uint32_t command, unsigned int parameter_count) {
+xgu.h:305: uint32_t* push_parameters(uint32_t* p, const uint32_t* parameters, unsigned int count) {
+xgu.h:318: uint32_t* push_command_boolean(uint32_t* p, uint32_t command, bool enabled) {
+xgu.h:359: uint32_t* push_command_parameter(uint32_t* p, uint32_t command, uint32_t parameter) {
+xgu.h:366: uint32_t* push_command_float(uint32_t* p, uint32_t command, float parameter) {
+xgu.h:454: return push_command_parameter(p, NV097_SET_CLEAR_RECT_HORIZONTAL,
+xgu.h:460: return push_command_parameter(p, NV097_SET_CLEAR_RECT_VERTICAL,
+xgu.h:605: return push_command_parameter(p, NV097_SET_VERTEX_DATA_ARRAY_FORMAT + index*4,
+xgu.h:613: return push_command_parameter(p, NV097_SET_VERTEX_DATA_ARRAY_OFFSET + index*4,
+xgu.h:638: return push_command_parameter(p, 0x40000000|NV097_DRAW_ARRAYS,
+xgu.h:645: uint32_t* xgu_set_alpha_test_enable(uint32_t* p, bool enabled) {
+xgu.h:650: uint32_t* xgu_set_blend_enable(uint32_t* p, bool enabled) {
+xgu.h:655: uint32_t* xgu_set_cull_face_enable(uint32_t* p, bool enabled) {
+xgu.h:660: uint32_t* xgu_set_depth_test_enable(uint32_t* p, bool enabled) {
+xgu.h:680: uint32_t* xgu_set_stencil_test_enable(uint32_t* p, bool enabled) {
+xgu.h:695: uint32_t* xgu_set_blend_func_sfactor(uint32_t* p, XguBlendFactor sf) {
+xgu.h:700: uint32_t* xgu_set_blend_func_dfactor(uint32_t* p, XguBlendFactor df) {
+xgu.h:710: uint32_t* xgu_set_depth_mask(uint32_t* p, bool mask) {
+xgu.h:735: uint32_t* xgu_set_front_face(uint32_t* p, XguFrontFace ff) {
+xgu.h:763: uint32_t* xgu_set_transform_execution_mode(uint32_t* p, XguExecMode mode, XguExecRange range) {
+xgu.h:764: return push_command_parameter(p,
+xgu.h:771: uint32_t* xgu_set_transform_constant(uint32_t* p, const XguVec4 *v, unsigned int count) {
+xgu.h:781: uint32_t* xgu_set_transform_constant_load(uint32_t* p, uint32_t offset) {
+xgu.h:807: uint32_t* xgu_set_transform_program_start(uint32_t* p, uint32_t offset) {
+xgu.h:812: uint32_t* xgu_set_transform_program_load(uint32_t* p, uint32_t offset) {
+xgu.h:817: uint32_t* xgu_set_transform_program_cxt_write_enable(uint32_t* p, bool enabled) {
+xgu.h:904: return push_command_parameter(p, NV097_SET_LIGHT_ENABLE_MASK, 0
+xgu.h:1029: uint32_t* xgu_set_texture_offset(uint32_t* p, unsigned int texture_index, const void* offset) {
+xgu.h:1035: uint32_t* xgu_set_texture_format(uint32_t* p, unsigned int texture_index, uint8_t context_dma, bool cubemap_enable,
+xgu.h:1040: return push_command_parameter(p, NV097_SET_TEXTURE_FORMAT + texture_index*64,
+xgu.h:1053: uint32_t* xgu_set_texture_address(uint32_t* p, unsigned int texture_index, XguTextureAddress address_u, bool wrap_u, XguTextureAddress address_v, bool wrap_v, XguTextureAddress address_p, bool wrap_p, bool wrap_q) {
+xgu.h:1067: uint32_t* xgu_set_texture_control0(uint32_t* p, unsigned int texture_index, bool enable, uint16_t min_lod, uint16_t max_lod) {
+xgu.h:1069: return push_command_parameter(p, NV097_SET_TEXTURE_CONTROL0 + texture_index*64,
+xgu.h:1078: return push_command_parameter(p, NV097_SET_TEXTURE_CONTROL1 + texture_index*64,
+xgu.h:1083: uint32_t* xgu_set_texture_filter(uint32_t* p, unsigned int texture_index, uint16_t lod_bias, XguTexConvolution convolution_kernel, uint8_t filter_min, uint8_t filter_mag,
+xgu.h:1086: return push_command_parameter(p, NV097_SET_TEXTURE_FILTER + texture_index*64,
+xgu.h:1100: return push_command_parameter(p, NV097_SET_TEXTURE_IMAGE_RECT + texture_index*64,
+xgu.h:1109: return push_command_parameter(p, NV097_SET_TEXTURE_PALETTE + texture_index*64,
+xgu.h includes:
+  #include <assert.h>
+  #include <pbkit/pbkit.h>
+  #include "nv2a_regs.h"
+  #include <stdint.h>
+  #include <stdbool.h>
+  #include <string.h>
+xgux.h:12: void xgux_draw_arrays(XguPrimitiveType mode, unsigned int start, unsigned int count) {
+xgux.h:95: void xgux_set_depth_range(float znear, float zfar) {
+xgux.h:107: void xgux_set_attrib_pointer(XguVertexArray index, XguVertexArrayType format, unsigned int size, unsigned int stride, const void* data) {
+xgux.h includes:
+  #include "xgu.h"
+  #include <math.h>
+  #include <math.h>
+## defs ioQ3
+xbox_nv2a.c:33: } XboxNV2AColoredVertex;
+xbox_nv2a.c:154: #define XBOX_NV2A_MAX_RAM 0x03FFAFFF
+xbox_nv2a.c:158: #define XBOX_NV2A_VERTEX_UB_OGL ((XguVertexArrayType)NV097_SET_VERTEX_DATA_ARRAY_FORMAT_TYPE_UB_OGL)
+xbox_nv2a.c:163: #define XBOX_NV2A_STATE_DWORDS 64u
+xbox_nv2a.c:169: #define XBOX_NV2A_FILTER_LINEAR 2
+xbox_nv2a.c:170: #define XBOX_NV2A_FILTER_MIPMAP 4
+xbox_nv2a.c:171: #define XBOX_NV2A_MAX_LOD_CLAMP 4095
+xbox_nv2a.c:442: static void XboxNV2AReserve(unsigned int dwords)
+  {
+  	if (xboxNV2APushedDwords + dwords > XBOX_NV2A_PUSH_LIMIT_DWORDS) {
+  		xboxNV2APerf.midWaitTicks += XboxNV2AWaitIdle("reserve");
+  		xboxNV2APerf.pushResets++;
+  		pb_reset();
+  		xboxNV2APushedDwords = 0;
+  	}
+  	xboxNV2APushedDwords += dwords;
+  }
+  
+  static void XboxNV2AInvalidateState(void)
+  {
+  	xboxNV2ABoundImage[0] = xboxNV2ABoundImage[1] = -1;
+  	xboxNV2ABoundClamp[0] = xboxNV2ABoundClamp[1] = qfalse;
+xbox_nv2a.c:548: p = xgu_set_texture_control0(p, unit, true, 0, XBOX_NV2A_MAX_LOD_CLAMP);
+xbox_nv2a.c:550: levels > 1 ? XBOX_NV2A_FILTER_MIPMAP : XBOX_NV2A_FILTER_LINEAR, XBOX_NV2A_FILTER_LINEAR,
+xbox_nv2a.c:570: XboxNV2AReserve(XBOX_NV2A_STATE_DWORDS);
+  	p = pb_begin();
+  	p = XboxNV2ABindTexture(p, 0, imageIndex, stage->clamp);
+  	p = XboxNV2ABindTexture(p, 1, image1, clamp1);
+  	if (stage->srcBlend != xboxNV2ABoundSrcBlend ||
+  		stage->dstBlend != xboxNV2ABoundDstBlend) {
+  		p = xgu_set_blend_func_sfactor(p, XboxNV2ABlendFactor(stage->srcBlend));
+  		p = xgu_set_blend_func_dfactor(p, XboxNV2ABlendFactor(stage->dstBlend));
+  		xboxNV2ABoundSrcBlend = stage->srcBlend;
+  		xboxNV2ABoundDstBlend = stage->dstBlend;
+  	}
+  	if (stage->alphaFunc != xboxNV2ABoundAlphaFunc) {
+  		p = xgu_set_alpha_test_enable(p, stage->alphaFunc != XBOX_NV2A_ALPHA_NONE);
+  		if (stage->alphaFunc == XBOX_NV2A_ALPHA_GT0) {
+  			p = xgu_set_alpha_func(p, XGU_FUNC_GREATER);
+xbox_nv2a.c:2304: xgux_set_attrib_pointer(XGU_COLOR_ARRAY, XBOX_NV2A_VERTEX_UB_OGL, 4, sizeof(*v),
+xbox_nv2a.c:2354: XBOX_NV2A_TEXTURE_POOL_BYTES, 0, XBOX_NV2A_MAX_RAM, 0,
+xbox_nv2a.c:2358: XBOX_NV2A_MAX_RAM, 0, PAGE_WRITECOMBINE | PAGE_READWRITE);
+xbox_nv2a.c:2705: XBOX_NV2A_MAX_RAM, 0, PAGE_WRITECOMBINE | PAGE_READWRITE);

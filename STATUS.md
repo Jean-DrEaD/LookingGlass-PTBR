@@ -858,3 +858,8 @@
 - 18z8l: upload ioQ3 = MmAllocateContiguousMemoryEx(WRITECOMBINE) + swizzle por tabela X|Y + A8R8G8B8_SWIZZLED (ARGB = mesmo do lg2d_decode); offset GPU = ptr & 0x03ffffff
 - 18z8l: bind = xgu_set_texture_offset/format/address/control0/filter; blend = xgu_set_blend_func_s/dfactor + blend_enable; draw = xgux_draw_arrays
 - 18z8l: xgu.h NAO esta em NXDK_DIR/lib/xgu -> 18z8m-a localiza xgu (container/ioQ3) + linhas 500-660/1100-1150/2220-2400 do xbox_nv2a.c (docs/probes/lote18z8m-a-xgu.log), sem build
+
+## Lote 18z8m-b (2026-10-28 18:52)
+- 18z8m-a: xgu = copia propria do ioQ3 (code/thirdparty/xgu: xgu.h, xgux.h, nv2a_regs.h), nao vem do nxdk -> copiar p/ code/renderernull/xgu
+- 18z8m-a: ioQ3 usa vertex program (xbox_nv2a_vp.inl) + fragment program (xbox_nv2a_fp.inl gerado de .ps via fp20compiler); setup de frame 2276-2309; bind/blend 532-620
+- 18z8m-b: coleta .inl/.ps, regras do Makefile, compiladores no container, assinaturas xgu e defs ioQ3 (docs/probes/lote18z8m-b-shaders.log), sem build
