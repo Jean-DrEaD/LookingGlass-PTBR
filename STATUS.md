@@ -1005,3 +1005,9 @@
 - 18z9e-a: laco do Pmove seguro (pml.msec>=1); State::Evaluate faz sent_conditionals->ObjectAt(index) com index 0 (condicao Alice desconhecida, 18z2) -> Container 1-based fora do limite; STAND sem condicao desconhecida, RUN/WALK com -> congela no 1o movimento
 - 18z9e-a: EvaluateState count>20 -> assert(0)+gi.Error (invisivel com pbkit = congelamento)
 - 18z9e: sob NXDK 'if (index <= 0) continue;' nos lacos clearCheck + laco de estado so break; overlay 'LG 18z9e'; exe=True iso=True
+
+## Lote 18z9f (2026-10-28 23:30)
+- 18z9e xemu: overlay 'LG 18z9e'; D-pad cima AINDA congela -> index 0 / assert do laco de estado nao eram (so) a causa
+- 18z9f: thread watchdog em lg_input.c (IN_Frame pulsa lg_wd; parado 1,5 s -> pb_show_debug_screen + debugPrint 'LG WD' cm/ev/ps/pl)
+- Marcas: cm 1/2 = antes/depois Pmove (ClientMove); ev 1/2 = EvaluateState; ps = PmoveSingle; pl = laco Pmove; exe=True iso=True
+- Leitura: cm1 = trava no Pmove; cm2 ev1 = statemap; cm2 ev2 = depois (anim/TIKI/outro); sem texto WD = crash/excecao (CPU parada)
