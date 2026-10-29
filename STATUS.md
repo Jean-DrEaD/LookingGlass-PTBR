@@ -988,3 +988,10 @@
 - 18z9c2 xemu: overlay 'LG 18z9c' OK (link C resolvido); Start -> k27 -> MENU Alice (fundo em blocos 256 + ui/main/glowA..F = T); k183 navega newgame/loadgame/settings/quit
 - 18z9c2: origem fixa 1136 -1712 -439, y0 p0 (sem movimento); stick ESQ fora do menu CONGELA (suspeita: caminho mouse SE_MOUSE/CL_MouseEvent/stubs IN_Mouse*)
 - 18z9d-a: coleta lg_input.c + CL_MouseEvent/JoystickEvent + SE_* + stubs IN_ + estado do mouse (docs/probes/lote18z9d-a-stick.log), sem build
+
+## Lote 18z9d-b (2026-10-28 23:01)
+- 18z9d-a: SE_MOUSE so com KEYCATCH_UI -> fora do menu stick esq = SE_JOYSTICK_AXIS 0/1 -> CL_JoystickMove (forward/side); hipotese mouse descartada
+- 18z9c2 xemu: stick DIR OK (y-116 p-105, sem travar); D-pad cima k132 e A k185 chegam mas origem fixa (setas sem bind de movimento); stick ESQ congela fora do menu, sem efeito no menu
+- Suspeita: 1o movimento real -> Pmove/statemap Alice (condicoes falsas/nextstate em laco) OU caminho do eixo
+- 18z9d-b: setas -> +forward/+back/+moveleft/+moveright; overlay 'LG 18z9d'; exe=True iso=True
+- Teste: D-pad cima fora do menu congela = movimento/servidor; anda = problema so no eixo analogico
