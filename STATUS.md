@@ -1000,3 +1000,8 @@
 - 18z9d-b xemu: overlay 'LG 18z9d'; D-pad cima (+forward, sem eixo) CONGELA igual stick esq; origem nao muda -> trava no 1o movimento real no servidor, input inocente
 - Suspeitos: laco msec do Pmove (pmove_msec/fixed renomeados LGC_ 18z6c), nextstate em laco no statemap Alice, PM_SlideMove x BSP FAKK
 - 18z9e-a: coleta Pmove/PmoveSingle/SlideMove + pmove_* + Player::EvaluateState/ClientMove + State::Evaluate (docs/probes/lote18z9e-a-move.log), sem build
+
+## Lote 18z9e (2026-10-28 23:22)
+- 18z9e-a: laco do Pmove seguro (pml.msec>=1); State::Evaluate faz sent_conditionals->ObjectAt(index) com index 0 (condicao Alice desconhecida, 18z2) -> Container 1-based fora do limite; STAND sem condicao desconhecida, RUN/WALK com -> congela no 1o movimento
+- 18z9e-a: EvaluateState count>20 -> assert(0)+gi.Error (invisivel com pbkit = congelamento)
+- 18z9e: sob NXDK 'if (index <= 0) continue;' nos lacos clearCheck + laco de estado so break; overlay 'LG 18z9e'; exe=True iso=True

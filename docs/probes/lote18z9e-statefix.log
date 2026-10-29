@@ -1,0 +1,17 @@
+# Lote 18z9e 2026-10-28 23:22
+characterstate: 3 lacos protegidos
+player: 2 blocos protegidos
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Section 0x0003 (.tls)...OK
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-cliente.iso (26 files totalling 667969707 bytes added)
+xbe=6209536
+numstat: 9	0	code/fgame/characterstate.cpp | 4	0	code/fgame/player.cpp | 1	1	code/renderernull/tr_null.c
+exe=True iso=True
