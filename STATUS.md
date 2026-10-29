@@ -977,3 +977,9 @@
 - 18z9c: overlay 'LG 18z9c'; linha 4 = s r k(ultima tecla, CL_KeyEvent em cl_keys.cpp) c(Key_GetCatcher) o(cl.snap.ps.origin) y/p(cl.viewangles)
 - 18z9c: lg_dbg2[8] no topo do tr_null.c; preenchido em cl_scrn.cpp; exe=False iso=False (docs/probes/lote18z9c-overlay.log)
 - Teste xemu: Start -> k27 + c muda (menu); stick esq -> o muda; stick dir -> y/p mudam
+
+## Lote 18z9c2 (2026-10-28 22:38)
+- 18z9c: link falhou ('undefined symbol: int *lg_dbg' = nome mangled C++ x definicao C); xemu rodou XBE 18z9b (overlay 'LG 18z8q')
+- 18z9b xemu: Start abriu o MENU do Alice (input chega a UI); CONGELOU ao girar os analogicos (suspeita: eixos/cursor no menu)
+- 18z9c2: extern "C" nos 4 .cpp + bloco extern "C" (#ifdef __cplusplus) no tr_null.c; exe=True iso=True
+- Regra: global compartilhado C/C++ = extern "C" nos .cpp
