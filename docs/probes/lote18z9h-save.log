@@ -1,0 +1,15 @@
+# Lote 18z9h 2026-10-29 07:57
+ok: D:\openmohaa\code\server\sv_ccmds.c
+ok: D:\openmohaa\code\fgame\g_main.cpp
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-cliente.iso (26 files totalling 667973803 bytes added)
+numstat: 3	2	code/fgame/g_main.cpp | 1	1	code/renderernull/tr_null.c | 4	3	code/server/sv_ccmds.c
+exe=True ded=True iso=True

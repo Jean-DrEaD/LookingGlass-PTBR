@@ -1023,3 +1023,8 @@
 - Conclusao: Pmove NUNCA rodou (cm0/ps0) -> trava no AUTOSAVE, nao no movimento; 1 linha WD so = CPU parada ou deadlock debugPrint (watchdog x main)
 - Saves acumulam (10028) no E:; 18z7a salvava OK ('Game Saved')
 - 18z9h-a: coleta caminho do save (Saving to/autosave/ArchiveLevel/SaveShot/FS write) em docs/probes/lote18z9h-a-autosave.log, sem build
+
+## Lote 18z9h (2026-10-29 07:57)
+- 18z9g xemu (2o boot): botao durante load (s9, k13 ENTER, fps 6) -> trava SEM tela WD -> CPU inteira morta (crash/excecao), nao laco; trava separada do autosave
+- 18z9h-a: contexto saiu do gamespy (1o hit); caminho = SV_SaveGame (sv_ccmds 2573) -> SV_ArchiveLevelFile -> ge->WriteLevel -> G_ArchiveLevel (g_main 1367)
+- 18z9h: s5 (1 print,2 pos-print,3 ArchiveLevelFile,4 WriteLevel,5 pos-WriteLevel) e s6 (1/2 gi.ArchiveLevel, 3 Game Saved); exe=True ded=True iso=True
