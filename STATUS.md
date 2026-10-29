@@ -1028,3 +1028,7 @@
 - 18z9g xemu (2o boot): botao durante load (s9, k13 ENTER, fps 6) -> trava SEM tela WD -> CPU inteira morta (crash/excecao), nao laco; trava separada do autosave
 - 18z9h-a: contexto saiu do gamespy (1o hit); caminho = SV_SaveGame (sv_ccmds 2573) -> SV_ArchiveLevelFile -> ge->WriteLevel -> G_ArchiveLevel (g_main 1367)
 - 18z9h: s5 (1 print,2 pos-print,3 ArchiveLevelFile,4 WriteLevel,5 pos-WriteLevel) e s6 (1/2 gi.ArchiveLevel, 3 Game Saved); exe=True ded=True iso=True
+
+## Lote 18z9i (2026-10-29 08:07)
+- 18z9h xemu: WD 943 (s5 0 s6 0) = hitch do load, frame 944 rodou; apos 'Saving to centipede10028' NENHUM WD -> CPU inteira morta no save (crash), s5/s6 invisiveis
+- 18z9i: marcadores s5/s6 imprimem direto (debugPrint 'LG sX N'); SV_SaveGame/SV_ArchiveLevelFile no log; exe=True ded=True iso=True

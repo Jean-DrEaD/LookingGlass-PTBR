@@ -1,0 +1,139 @@
+# Lote 18z9i 2026-10-29 08:07
+
+## qboolean SV_ArchiveLevelFile( linha 2225
+ 2225: qboolean SV_ArchiveLevelFile(qboolean loading, qboolean autosave)
+ 2226: {
+ 2227: #ifndef DEDICATED
+ 2228: 	const char           *name;
+ 2229: 	fileHandle_t          f;
+ 2230: 	savegamestruct_t      save;
+ 2231: 	soundsystemsavegame_t SSsave;
+ 2232: 
+ 2233: 	Com_DPrintf("SV_ArchiveLevelFile()\n");
+ 2234: 	name = Com_GetArchiveFileName(svs.gameName, "sav");
+ 2235: 	if (loading) {
+ 2236: 		if (!ge->ReadLevel(name, (byte **)&cls.savedCgameState, &cls.savedCgameStateSize)) {
+ 2237: 			return qfalse;
+ 2238: 		}
+ 2239: 
+ 2240: 		name = Com_GetArchiveFileName(svs.gameName, "ssv");
+ 2241: 		FS_FOpenFileRead(name, &f, qfalse, qtrue);
+ 2242: 		if (f) {
+ 2243: 			FS_Read(&save, sizeof(savegamestruct_t), f);
+ 2244: 			Com_SwapSaveStruct(&save);
+ 2245: 			if (save.version != SAVEGAME_STRUCT_VERSION) {
+ 2246: 				FS_FCloseFile(f);
+ 2247: 				return qfalse;
+ 2248: 			}
+ 2249: 
+ 2250: 			FS_Read(&SSsave, sizeof(soundsystemsavegame_t), f);
+ 2251: 			CM_ReadPortalState(f);
+ 2252: 			FS_FCloseFile(f);
+ 2253: 		}
+ 2254: 	} else {
+ 2255: 		cls.savedCgameStateSize = cge->CG_SaveStateToBuffer(&cls.savedCgameState, svs.time);
+ 2256: 		lg_st[5] = 4; ge->WriteLevel(name, autosave, (byte **)&cls.savedCgameState, &cls.savedCgameStateSize); lg_st[5] = 5;
+ 2257: 		Z_Free(cls.savedCgameState);
+ 2258: 		cls.savedCgameState = NULL;
+ 2259: 	}
+ 2260: 
+ 2261: 	return qtrue;
+ 2262: #else
+ 2263: 	return qfalse;
+ 2264: #endif
+ 2265: }
+ 2266: 
+ 2267: /*
+ 2268: ==================
+ 2269: S_Save
+ 2270: ==================
+ 2271: */
+ 2272: void S_Save(fileHandle_t f)
+ 2273: {
+ 2274: #ifndef DEDICATED
+ 2275: 	soundsystemsavegame_t save;
+ 2276: 	S_SaveData(&save);
+ 2277: 	FS_Write(&save, sizeof(soundsystemsavegame_t), f);
+ 2278: #endif
+ 2279: }
+ 2280: 
+ 2281: /*
+ 2282: ==================
+ 2283: S_Load
+ 2284: ==================
+
+## void SV_SaveGame( linha 2574
+ 2574: void SV_SaveGame(const char *gamename, qboolean autosave)
+ 2575: {
+ 2576: #ifndef DEDICATED
+ 2577: 	char *ptr;
+ 2578: 	char  name[64];
+ 2579: 	char  mname[64];
+ 2580: 
+ 2581: 	if (!SV_AllowSaveGame()) {
+ 2582: 		return;
+ 2583: 	}
+ 2584: 
+ 2585: 	if (gamename) {
+ 2586: 		Q_strncpyz(name, gamename, sizeof(name));
+ 2587: 	} else {
+ 2588: 		Q_strncpyz(mname, svs.mapName, sizeof(mname));
+ 2589: 		for (ptr = strchr(mname, '/'); ptr != NULL; ptr = strchr(mname, '/')) {
+ 2590: 			*ptr = '_';
+ 2591: 		}
+ 2592: 		SV_SavegameFilename(mname, name, sizeof(name));
+ 2593: 	}
+ 2594: 
+ 2595: 	if (strstr(name, "..") || strchr(name, '/') || strchr(name, '\\')) {
+ 2596: 		Com_DPrintf("Bad savedir.\n");
+ 2597: 		return;
+ 2598: 	}
+ 2599: 
+ 2600: 	lg_st[5] = 1; Com_Printf("Saving to %s", name); lg_st[5] = 2;
+ 2601: 	if (autosave) {
+ 2602: 		Com_Printf(" (autosave)...\n");
+ 2603: 	} else {
+ 2604: 		Com_Printf("...\n");
+ 2605: 	}
+ 2606: 
+ 2607: 	Q_strncpyz(svs.gameName, name, sizeof(svs.gameName));
+ 2608: 
+ 2609: 	lg_st[5] = 3; if (!SV_ArchiveLevelFile(qfalse, autosave)) {
+ 2610: 		if (cls.savedCgameState) {
+ 2611: 			Z_Free(cls.savedCgameState);
+ 2612: 			cls.savedCgameState = 0;
+ 2613: 		}
+ 2614: 	}
+ 2615: 
+ 2616: 	SV_ArchiveServerFile(qfalse, autosave);
+ 2617: 
+ 2618: 	Com_Printf("Done.\n");
+ 2619: 
+ 2620: 	Q_strncpyz(svs.gameName, "current", sizeof(svs.gameName));
+ 2621: #endif
+ 2622: }
+ 2623: 
+ 2624: /*
+ 2625: ==================
+ 2626: SV_Savegame_f
+ 2627: ==================
+ 2628: */
+ 2629: static char savegame_name[64];
+ 2630: 
+ 2631: void SV_Savegame_f(void)
+ 2632: {
+ 2633: #ifndef DEDICATED
+ok: D:\openmohaa\code\server\sv_ccmds.c (5 marcadores)
+ok: D:\openmohaa\code\fgame\g_main.cpp (3 marcadores)
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-cliente.iso (26 files totalling 667973803 bytes added)
+numstat: 3	2	code/fgame/g_main.cpp | 1	1	code/renderernull/tr_null.c | 4	3	code/server/sv_ccmds.c
+exe=True ded=True iso=True
