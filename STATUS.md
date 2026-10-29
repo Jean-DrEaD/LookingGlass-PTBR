@@ -972,3 +972,8 @@
 - 18z9b: r0 logo apos 'Connected XInput Controller #1' -> hot-plug via usbh_pooling_hubs OK (pad conectado apos o IN_Init lazy)
 - Pendente: provar efeito no jogo (Start->menu, stick->movimento) -> 18z9c overlay com ultima tecla + origem/angulos do player
 - Overlay ainda rotulado 'LG 18z8q' (cosmetico)
+
+## Lote 18z9c (2026-10-28 22:29)
+- 18z9c: overlay 'LG 18z9c'; linha 4 = s r k(ultima tecla, CL_KeyEvent em cl_keys.cpp) c(Key_GetCatcher) o(cl.snap.ps.origin) y/p(cl.viewangles)
+- 18z9c: lg_dbg2[8] no topo do tr_null.c; preenchido em cl_scrn.cpp; exe=False iso=False (docs/probes/lote18z9c-overlay.log)
+- Teste xemu: Start -> k27 + c muda (menu); stick esq -> o muda; stick dir -> y/p mudam
