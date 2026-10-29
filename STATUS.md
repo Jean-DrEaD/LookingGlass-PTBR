@@ -932,3 +932,8 @@
 - 18z8p 1a: trava '-<=2' rejeitou diff legitimo (83 3 = hook LoadFont + overlay + ultima linha/return) -> trava por conteudo das linhas removidas
 - 18z8p-a: locations ja normalizadas (x,w/256; y,h*aspect/256); textura gfx/fonts/<nome>.tga; sem tga (verdana/-10/-14/-20, hapsburg) -> fallback verdana-12
 - 18z8p: lgf_load no lg_null_LoadFont; lgf_DrawString = DrawStretchPic por caractere; LG_SET(DrawString); overlay 'LG 18z8p'; numstat 83	3	code/renderernull/tr_null.c; exe=False iso=False
+
+## Lote 18z8p2 (2026-10-28 21:22)
+- 18z8p: build falhou (tr_null.c:1 fontheader_t/fontheader_sgl_t desconhecidos): prototipos na linha 1, antes dos includes; script commitou mesmo assim (950db65)
+- Regra: global sem tipo do engine -> topo; prototipo com tipo do engine -> logo antes da funcao que usa (apos includes)
+- 18z8p2: prototipos movidos p/ antes de lg_null_LoadFont; numstat 2	2	code/renderernull/tr_null.c; exe=True iso=False
