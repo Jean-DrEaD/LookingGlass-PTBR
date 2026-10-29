@@ -1,0 +1,306 @@
+# Lote 18z9e-a 2026-10-28 23:07
+## 1) Pmove (D:\openmohaa\code\fgame\bg_pmove.cpp)
+---- bg_pmove.cpp:1514 [^\s*void\s+Pmove\s*\(]
+ 1514: void Pmove(pmove_t *pmove)
+ 1515: {
+ 1516:     int finalTime;
+ 1517: 
+ 1518:     finalTime = pmove->cmd.serverTime;
+ 1519: 
+ 1520:     if (finalTime < pmove->ps->commandTime) {
+ 1521:         return; // should not happen
+ 1522:     }
+ 1523: 
+ 1524:     if (finalTime > pmove->ps->commandTime + 1000) {
+ 1525:         pmove->ps->commandTime = finalTime - 1000;
+ 1526:     }
+ 1527: 
+ 1528:     // chop the move up if it is too long, to prevent framerate
+ 1529:     // dependent behavior
+ 1530:     while (pmove->ps->commandTime != finalTime) {
+ 1531:         int msec;
+ 1532: 
+ 1533:         msec = finalTime - pmove->ps->commandTime;
+ 1534: 
+ 1535:         if (pmove->pmove_fixed) {
+ 1536:             if (msec > pmove->pmove_msec) {
+ 1537:                 msec = pmove->pmove_msec;
+ 1538:             }
+ 1539:         } else if (msec > 66) {
+ 1540:             msec = 66;
+ 1541:         }
+ 1542: 
+ 1543:         pmove->cmd.serverTime = pmove->ps->commandTime + msec;
+ 1544:         PmoveSingle(pmove);
+ 1545:     }
+ 1546: }
+ 1547: 
+ 1548: static void PmoveAdjustViewAngleSettings_OnLadder(
+ 1549:     vec_t *vViewAngles, vec_t *vAngles, playerState_t *pPlayerState, entityState_t *pEntState
+ 1550: )
+ 1551: {
+ 1552:     float fDelta;
+ 1553:     float deltayaw;
+ 1554:     float yawAngle;
+ 1555:     float temp;
+ 1556: 
+ 1557:     vAngles[0] = 0.0f;
+ 1558:     vAngles[2] = 0.0f;
+ 1559: 
+---- bg_pmove.cpp:1295 [^\s*(static\s+)?void\s+PmoveSingle\s*\(]
+ 1295: void PmoveSingle(pmove_t *pmove)
+ 1296: {
+ 1297:     vec3_t   tempVec;
+ 1298:     qboolean walking;
+ 1299: 
+ 1300:     pm = pmove;
+ 1301: 
+ 1302:     // this counter lets us debug movement problems with a journal
+ 1303:     // by setting a conditional breakpoint fot the previous frame
+ 1304:     c_pmove++;
+ 1305: 
+ 1306:     // clear results
+ 1307:     pm->numtouch   = 0;
+ 1308:     pm->watertype  = 0;
+ 1309:     pm->waterlevel = 0;
+ 1310: 
+ 1311:     if (pm->ps->stats[STAT_HEALTH] <= 0) {
+ 1312:         pm->tracemask &= ~(CONTENTS_BODY | CONTENTS_NOBOTCLIP); // corpses can fly through bodies
+ 1313:     }
+ 1314: 
+ 1315:     if (pmove->cmd.buttons & BUTTON_TALK) {
+ 1316:         pmove->cmd.forwardmove = 0;
+ 1317:         pmove->cmd.rightmove   = 0;
+ 1318:         pmove->cmd.upmove      = 0;
+ 1319:         pmove->cmd.buttons     = BUTTON_TALK;
+ 1320:         pm->ps->fLeanAngle     = 0.0f;
+ 1321:     }
+ 1322: 
+ 1323:     if (pm->ps->pm_type == PM_CLIMBWALL) {
+ 1324:         pm->ps->fLeanAngle = 0.0f;
+ 1325:         pm->cmd.buttons &= ~(BUTTON_LEAN_LEFT | BUTTON_LEAN_RIGHT);
+!! sem match bg_pmove.cpp [^\s*(static\s+)?qboolean\s+PM_SlideMove\s*\(]
+pm:573: pm->ps->pm_time += pml.msec;
+pm:1125: pm->ps->bobCycle = (int)(old + bobmove * pml.msec) & 255;
+pm:1332: pml.msec = pmove->cmd.serverTime - pm->ps->commandTime;
+pm:1333: if (pml.msec < 1) {
+pm:1334: pml.msec = 1;
+pm:1335: } else if (pml.msec > 200) {
+pm:1336: pml.msec = 200;
+pm:1347: pml.frametime = pml.msec * 0.001;
+pm:1500: pml.msec      = 1;
+pm:1531: int msec;
+pm:1533: msec = finalTime - pmove->ps->commandTime;
+pm:1535: if (pmove->pmove_fixed) {
+pm:1536: if (msec > pmove->pmove_msec) {
+pm:1537: msec = pmove->pmove_msec;
+pm:1539: } else if (msec > 66) {
+pm:1540: msec = 66;
+pm:1543: pmove->cmd.serverTime = pmove->ps->commandTime + msec;
+## 2) chamadores / cvars
+cg_local.h:468: extern cvar_t *pmove_fixed;
+cg_local.h:469: extern cvar_t *pmove_msec;
+cg_local.h:470: extern cvar_t *cg_pmove_msec;
+cg_main.c:72: cvar_t *pmove_fixed;
+cg_main.c:73: cvar_t *pmove_msec;
+cg_main.c:74: cvar_t *cg_pmove_msec;
+cg_main.c:161: pmove_fixed                   = cgi.Cvar_Get("pmove_fixed", "0", 0);
+cg_main.c:162: pmove_msec                    = cgi.Cvar_Get("pmove_msec", "8", 0);
+cg_main.c:163: cg_pmove_msec                 = cgi.Cvar_Get("cg_pmove_msec", "8", 0);
+cg_predict.c:557: if (pmove_msec->integer >= 8) {
+cg_predict.c:558: if (pmove_msec->integer > 33) {
+cg_predict.c:559: cgi.Cvar_Set("pmove_msec", "33");
+cg_predict.c:562: cgi.Cvar_Set("pmove_msec", "8");
+cg_predict.c:565: cg_pmove.pmove_fixed = pmove_fixed->integer;
+cg_predict.c:566: cg_pmove.pmove_msec  = pmove_msec->integer;
+cg_predict.c:574: if (cg_pmove.pmove_fixed) {
+cg_predict.c:610: if (cg_pmove.pmove_fixed) {
+bg_pmove.cpp:1514: void Pmove(pmove_t *pmove)
+bg_pmove.cpp:1535: if (pmove->pmove_fixed) {
+bg_pmove.cpp:1536: if (msec > pmove->pmove_msec) {
+bg_pmove.cpp:1537: msec = pmove->pmove_msec;
+bg_public.h:316: int pmove_fixed;
+bg_public.h:317: int pmove_msec;
+bg_public.h:348: void Pmove(pmove_t *pmove);
+g_active.cpp:244: if ( pmove_msec.integer < 8 ) {
+g_active.cpp:245: gi.cvar_set("pmove_msec", "8");
+g_active.cpp:247: else if (pmove_msec.integer > 33) {
+g_active.cpp:248: gi.cvar_set("pmove_msec", "33");
+g_active.cpp:251: if ( pmove_fixed.integer || client->pers.pmoveFixed ) {
+g_active.cpp:252: ucmd->serverTime = ((ucmd->serverTime + pmove_msec.integer-1) / pmove_msec.integer) * pmove_msec.integer;
+g_active.cpp:349: pm.pmove_fixed = pmove_fixed.integer | client->pers.pmoveFixed;
+g_active.cpp:350: pm.pmove_msec = pmove_msec.integer;
+gamecvars.cpp:170: cvar_t *pmove_fixed;
+gamecvars.cpp:171: cvar_t *pmove_msec;
+gamecvars.cpp:516: pmove_fixed     = gi.Cvar_Get("pmove_fixed", "0", CVAR_SYSTEMINFO);
+gamecvars.cpp:517: pmove_msec      = gi.Cvar_Get("pmove_msec", "0", CVAR_SYSTEMINFO);
+gamecvars.h:175: extern cvar_t *pmove_fixed;
+gamecvars.h:176: extern cvar_t *pmove_msec;
+player.cpp:3704: pm->pmove_fixed = pmove_fixed->integer;
+player.cpp:3705: pm->pmove_msec  = pmove_msec->integer;
+player.cpp:3707: if (pmove_msec->integer < 8) {
+player.cpp:3708: pm->pmove_msec = 8;
+player.cpp:3709: } else if (pmove_msec->integer > 33) {
+player.cpp:3710: pm->pmove_msec = 33;
+player.cpp:4119: Pmove(&pm);
+rename lg_cgame_rename.h:408: #define pmove_msec LGC_pmove_msec
+rename lg_cgame_rename.h:409: #define pmove_fixed LGC_pmove_fixed
+rename lg_cgame_rename.h:410: #define paused LGC_paused
+## 3) player.cpp (D:\openmohaa\code\fgame\player.cpp)
+---- player.cpp:5359 [^\s*void\s+Player::EvaluateState\s*\(]
+ 5359: void Player::EvaluateState(State *forceTorso, State *forceLegs)
+ 5360: {
+ 5361:     int           count;
+ 5362:     State        *laststate_Legs;
+ 5363:     State        *laststate_Torso;
+ 5364:     State        *startstate_Legs;
+ 5365:     State        *startstate_Torso;
+ 5366:     movecontrol_t move;
+ 5367: 
+ 5368:     if (getMoveType() == MOVETYPE_NOCLIP) {
+ 5369:         return;
+ 5370:     }
+ 5371: 
+ 5372:     if (flags & FL_IMMOBILE) {
+ 5373:         // Don't evaluate state when immobile
+ 5374:         return;
+ 5375:     }
+ 5376: 
+ 5377:     if (getMoveType() == MOVETYPE_PORTABLE_TURRET) {
+ 5378:         // Added in 2.0
+ 5379:         //  Animations are handled hardcodedly
+ 5380:         currentState_Torso = NULL;
+ 5381:         currentState_Legs  = NULL;
+ 5382:         return;
+ 5383:     }
+ 5384: 
+ 5385:     // Evaluate the current state.
+ 5386:     // When the state changes, we reevaluate the state so that if the
+ 5387:     // conditions aren't met in the new state, we don't play one frame of
+ 5388:     // the animation for that state before going to the next state.
+ 5389:     startstate_Torso = laststate_Torso = currentState_Torso;
+ 5390:     count                              = 0;
+ 5391:     do {
+ 5392:         // since we could get into an infinite loop here, do a check
+ 5393:         // to make sure we don't.
+ 5394:         count++;
+ 5395:         if (count > 10) {
+ 5396:             gi.DPrintf("Possible infinite loop in state '%s'\n", currentState_Torso->getName());
+ 5397:             if (count > 20) {
+ 5398:                 assert(0);
+ 5399:                 gi.Error(ERR_DROP, "Stopping due to possible infinite state loop\n");
+ 5400:                 break;
+ 5401:             }
+ 5402:         }
+ 5403: 
+ 5404:         laststate_Torso = currentState_Torso;
+ 5405: 
+ 5406:         if (currentState_Torso) {
+ 5407:             laststate_Torso = currentState_Torso;
+ 5408: 
+ 5409:             if (forceTorso) {
+ 5410:                 currentState_Torso = forceTorso;
+ 5411:             } else {
+ 5412:                 currentState_Torso = currentState_Torso->Evaluate(*this, &torso_conditionals);
+ 5413:             }
+ 5414:         } else {
+ 5415:             // Added in 2.0
+ 5416:             //  Switch to the default torso state if it's NULL
+ 5417:             if (forceTorso) {
+ 5418:                 currentState_Torso = forceTorso;
+ 5419:             } else {
+ 5420:                 currentState_Torso = statemap_Torso->FindState("STAND");
+ 5421:             }
+ 5422: 
+ 5423:             laststate_Torso = NULL;
+ 5424:         }
+ 5425: 
+ 5426:         if (currentState_Torso) {
+ 5427:             if (laststate_Torso) {
+ 5428:                 // Process exit commands of the last state
+ 5429:                 laststate_Torso->ProcessExitCommands(this);
+---- player.cpp:3970 [^\s*void\s+Player::ClientMove\s*\(]
+ 3970: void Player::ClientMove(usercmd_t *ucmd)
+ 3971: {
+ 3972:     pmove_t pm;
+ 3973:     Vector  move;
+ 3974: 
+ 3975: #ifdef OPM_FEATURES
+ 3976:     int  touch[MAX_GENTITIES];
+ 3977:     int  num        = getUseableEntities(touch, MAX_GENTITIES, true);
+ 3978:     bool bHintShown = false;
+ 3979: 
+ 3980:     for (int i = 0; i < num; i++) {
+ 3981:         Entity *entity = g_entities[touch[i]].entity;
+ 3982:         if (entity && entity->m_HintString.length()) {
+ 3983:             entity->ProcessHint(edict, true);
+ 3984:             bHintShown     = true;
+ 3985:             m_bShowingHint = true;
+ 3986:             break;
+ 3987:         }
+ 3988:     }
+ 3989: 
+ 3990:     if (!bHintShown && m_bShowingHint) {
+ 3991:         m_bShowingHint = false;
+ 3992: 
+ 3993:         // FIXME: delete
+ 3994:         if (sv_specialgame->integer) {
+ 3995:             gi.MSG_SetClient(edict - g_entities);
+ 3996: 
+ 3997:             // Send the hint string once
+ 3998:             gi.MSG_StartCGM(CGM_HINTSTRING);
+ 3999:             gi.MSG_WriteString("");
+ 4000:             gi.MSG_EndCGM();
+ 4001:         }
+ 4002:     }
+ 4003: #endif
+ 4004: 
+ 4005:     oldorigin = origin;
+ 4006: 
+ 4007:     client->ps.pm_type = GetMovePlayerMoveType();
+ 4008:     // set move flags
+ 4009:     client->ps.pm_flags &=
+ 4010:         ~(PMF_FROZEN | PMF_NO_PREDICTION | PMF_NO_MOVE | PMF_DUCKED | PMF_TURRET | PMF_VIEW_PRONE | PMF_VIEW_DUCK_RUN
+pl:4119: Pmove(&pm);
+pl:4715: EvaluateState();
+pl:5189: EvaluateState(newState);
+pl:5265: EvaluateState(newState);
+pl:5359: void Player::EvaluateState(State *forceTorso, State *forceLegs)
+pl:8024: EvaluateState(ts);
+pl:8030: EvaluateState(NULL, ls);
+pl:9333: //EvaluateState(statemap_Torso->FindState("STAND"), statemap_Legs->FindState("STAND"));
+pl:10347: EvaluateState(statemap_Torso->FindState("STAND"), statemap_Legs->FindState("STAND"));
+## 4) characterstate.cpp (D:\openmohaa\code\fgame\characterstate.cpp)
+---- characterstate.cpp:466 [^\s*State\s*\*\s*State::Evaluate\s*\(]
+  466: State *State::Evaluate(Entity& ent, Container<Conditional *> *sent_conditionals)
+  467: {
+  468:     int         i;
+  469:     Expression *exp;
+  470:     State      *state;
+  471:     int         index;
+  472: 
+  473:     for (i = 1; i <= condition_indexes.NumObjects(); i++) {
+  474:         index = condition_indexes.ObjectAt(i);
+  475:         sent_conditionals->ObjectAt(index)->clearCheck();
+  476:         //conditions.ObjectAt( i )->clearCheck();
+  477:     }
+  478: 
+  479:     for (i = 1; i <= states.NumObjects(); i++) {
+  480:         exp = &states.ObjectAt(i);
+  481:         if (exp->getResult(*this, ent, sent_conditionals)) {
+  482:             state = statemap.FindState(exp->getValue());
+  483:             return state;
+  484:         }
+  485:     }
+  486: 
+  487:     return NULL;
+  488: }
+  489: 
+  490: const char *State::getLegAnim(Entity& ent, Container<Conditional *> *sent_conditionals)
+  491: {
+  492:     int         i;
+  493:     Expression *exp;
+  494:     int         index;
+  495: 
+  496:     for (i = 1; i <= condition_indexes.NumObjects(); i++) {
+!! sem match characterstate.cpp [^\s*(const\s+char\s*\*|State\s*\*)\s*State::NextState\s*\(]

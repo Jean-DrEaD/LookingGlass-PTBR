@@ -995,3 +995,8 @@
 - Suspeita: 1o movimento real -> Pmove/statemap Alice (condicoes falsas/nextstate em laco) OU caminho do eixo
 - 18z9d-b: setas -> +forward/+back/+moveleft/+moveright; overlay 'LG 18z9d'; exe=True iso=True
 - Teste: D-pad cima fora do menu congela = movimento/servidor; anda = problema so no eixo analogico
+
+## Lote 18z9e-a (2026-10-28 23:07)
+- 18z9d-b xemu: overlay 'LG 18z9d'; D-pad cima (+forward, sem eixo) CONGELA igual stick esq; origem nao muda -> trava no 1o movimento real no servidor, input inocente
+- Suspeitos: laco msec do Pmove (pmove_msec/fixed renomeados LGC_ 18z6c), nextstate em laco no statemap Alice, PM_SlideMove x BSP FAKK
+- 18z9e-a: coleta Pmove/PmoveSingle/SlideMove + pmove_* + Player::EvaluateState/ClientMove + State::Evaluate (docs/probes/lote18z9e-a-move.log), sem build
