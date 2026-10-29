@@ -1017,3 +1017,9 @@
 - 18z9f: 'omohaaded Error 1' = lg_st so definido em lg_input.c (cliente); game no dedicado ficou sem simbolo; cliente linkou (exe/iso validos)
 - 18z9g: lg_st definido em bg_pmove.cpp (selectany, game+cgame); watchdog 3 s; ao voltar pulso -> pb_show_front_screen; exe=True ded=True iso=True
 - Nota: ps conta Pmove do game E da predicao do cgame; cm/ev so do game
+
+## Lote 18z9h-a (2026-10-29 07:50)
+- 18z9g xemu: overlay OK (s9, 60 fps); WD 939 = hitch do load (zeros, voltou); WD 941 'cm 0 ev 2 ps 0' + 'Saving to centipede10028 (autosave)...' e para
+- Conclusao: Pmove NUNCA rodou (cm0/ps0) -> trava no AUTOSAVE, nao no movimento; 1 linha WD so = CPU parada ou deadlock debugPrint (watchdog x main)
+- Saves acumulam (10028) no E:; 18z7a salvava OK ('Game Saved')
+- 18z9h-a: coleta caminho do save (Saving to/autosave/ArchiveLevel/SaveShot/FS write) em docs/probes/lote18z9h-a-autosave.log, sem build

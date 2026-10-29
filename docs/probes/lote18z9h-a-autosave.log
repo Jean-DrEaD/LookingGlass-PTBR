@@ -1,0 +1,308 @@
+# Lote 18z9h-a 2026-10-29 07:50
+
+## Saving to / Game Saved
+code\fgame\g_main.cpp:1580: gi.Printf(HUD_MESSAGE_YELLOW "%s\n", gi.LV_ConvertString("Game Saved"));
+code\gamespy\ghttp\ghttpConnection.h:103: FILE * saveFile;              // If saving to disk, the file being saved to.
+code\gamespy\ghttp\ghttpMain.c:156: // If we're saving to file, close it before the callback.
+code\gamespy\ghttp\ghttpMain.c:520: // Open the file we're saving to.
+code\qcommon\q_shared.h:1323: #define	CVAR_SAVEGAME		0x4000		// cvar will be saved when saving to file
+code\script\scriptcompiler.cpp:1691: glbs.DPrintf("Error saving to file '%s'\n", filename);
+code\server\sv_ccmds.c:2599: Com_Printf("Saving to %s", name);
+
+## autosave (comando/chamadas)
+code\fgame\trigger.cpp:1226: SetTargetName("autosave");
+
+## SV_SaveGame / ArchiveLevel / WriteLevel
+code\fgame\g_main.cpp:1363: G_ArchiveLevel
+code\fgame\g_main.cpp:1367: qboolean G_ArchiveLevel(
+code\fgame\g_main.cpp:1556: gi.ArchiveLevel(arc.Loading());
+code\fgame\g_main.cpp:1594: G_WriteLevel
+code\fgame\g_main.cpp:1598: void G_WriteLevel(const char *filename, qboolean autosave, byte **savedCgameState, size_t *savedCgameStateSize)
+code\fgame\g_main.cpp:1601: G_ArchiveLevel(filename, savedCgameState, savedCgameStateSize, autosave, qfalse);
+code\fgame\g_main.cpp:1624: status = G_ArchiveLevel(filename, savedCgameState, savedCgameStateSize, qfalse, qtrue);
+code\fgame\g_main.cpp:1688: globals.WriteLevel     = G_WriteLevel;
+code\fgame\g_public.h:474: void (*ArchiveLevel)(qboolean loading);
+code\server\server.h:456: void SV_ArchiveLevel( qboolean loading );
+code\server\server.h:457: qboolean SV_ArchiveLevelFile( qboolean loading, qboolean autosave );
+code\server\server.h:462: void SV_SavegameFilename( const char *name, char *fileName, int length );
+code\server\server.h:465: void SV_SaveGame( const char *gamename, qboolean autosave );
+code\server\server.h:466: void SV_Savegame_f( void );
+code\server\sv_ccmds.c:1940: Cmd_AddCommand("savegame", SV_Savegame_f);
+code\server\sv_ccmds.c:2207: SV_ArchiveLevel
+code\server\sv_ccmds.c:2210: void SV_ArchiveLevel(qboolean loading)
+code\server\sv_ccmds.c:2221: SV_ArchiveLevelFile
+code\server\sv_ccmds.c:2224: qboolean SV_ArchiveLevelFile(qboolean loading, qboolean autosave)
+code\server\sv_ccmds.c:2232: Com_DPrintf("SV_ArchiveLevelFile()\n");
+code\server\sv_ccmds.c:2255: ge->WriteLevel(name, autosave, (byte **)&cls.savedCgameState, &cls.savedCgameStateSize);
+code\server\sv_ccmds.c:2479: SV_SavegameFilename
+code\server\sv_ccmds.c:2482: void SV_SavegameFilename(const char *name, char *fileName, int length)
+code\server\sv_ccmds.c:2570: SV_SaveGame
+code\server\sv_ccmds.c:2573: void SV_SaveGame(const char *gamename, qboolean autosave)
+code\server\sv_ccmds.c:2591: SV_SavegameFilename(mname, name, sizeof(name));
+code\server\sv_ccmds.c:2608: if (!SV_ArchiveLevelFile(qfalse, autosave)) {
+code\server\sv_ccmds.c:2625: SV_Savegame_f
+code\server\sv_ccmds.c:2630: void SV_Savegame_f(void)
+code\server\sv_ccmds.c:2668: SV_SaveGame(savegame_name[0] ? savegame_name : NULL, qfalse);
+code\server\sv_ccmds.c:2677: SV_SaveGame(NULL, qtrue);
+code\server\sv_game.c:1933: import.ArchiveLevel					= SV_ArchiveLevel;
+code\server\sv_init.c:778: if( SV_ArchiveLevelFile( qtrue, qfalse ) )
+
+## Save do cliente (screenshot/thumbnail do save)
+code\client\cl_main.cpp:3735: Cmd_AddCommand ("saveshot", CL_SaveShot_f );
+code\client\cl_main.cpp:4607: CL_SaveShot_f
+code\client\cl_main.cpp:4610: void CL_SaveShot_f( void ) {
+code\client\cl_uiloadsave.cpp:196: wid = findSibling("LoadSaveShot");
+code\client\client.h:654: void	CL_SaveShot_f( void );
+code\renderercommon\tr_image_jpg.c:381: SaveJPGToBuffer
+code\renderercommon\tr_image_jpg.c:387: size_t RE_SaveJPGToBuffer(byte *buffer, size_t bufSize, int quality,
+code\renderercommon\tr_image_jpg.c:464: void RE_SaveJPG(char * filename, int quality, int image_width, int image_height, byte *image_buffer, int padding)
+code\renderercommon\tr_image_jpg.c:472: bufSize = RE_SaveJPGToBuffer(out, bufSize, quality, image_width, image_height, image_buffer, padding);
+code\renderergl1\tr_backend.c:1477: data = RB_TakeScreenshotCmd( data );
+code\renderergl1\tr_image.c:2283: void SaveJPG(char * filename, int quality, int image_width, int image_height, unsigned char *image_buffer) {
+code\renderergl1\tr_init.c:508: RB_TakeScreenshot
+code\renderergl1\tr_init.c:511: void RB_TakeScreenshot( int x, int y, int width, int height, char *fileName ) {
+code\renderergl1\tr_init.c:568: RB_TakeScreenshotJPEG
+code\renderergl1\tr_init.c:571: void RB_TakeScreenshotJPEG( int x, int y, int width, int height, char *fileName ) {
+code\renderergl1\tr_init.c:583: RE_SaveJPG(fileName, r_screenshotJpegQuality->integer, width, height, buffer + offset, padlen);
+code\renderergl1\tr_init.c:589: RB_TakeScreenshotCmd
+code\renderergl1\tr_init.c:592: const void *RB_TakeScreenshotCmd( const void *data ) {
+code\renderergl1\tr_init.c:598: RB_TakeScreenshotJPEG( cmd->x, cmd->y, cmd->width, cmd->height, cmd->fileName);
+code\renderergl1\tr_init.c:600: RB_TakeScreenshot( cmd->x, cmd->y, cmd->width, cmd->height, cmd->fileName);
+code\renderergl1\tr_init.c:607: R_TakeScreenshot
+code\renderergl1\tr_init.c:610: void R_TakeScreenshot( int x, int y, int width, int height, char *name, qboolean jpeg ) {
+code\renderergl1\tr_init.c:881: R_TakeScreenshot(0, 0, glConfig.vidWidth, glConfig.vidHeight, checkname, qfalse);
+code\renderergl1\tr_init.c:896: RB_TakeScreenshot
+code\renderergl1\tr_init.c:945: R_TakeScreenshot( 0, 0, glConfig.vidWidth, glConfig.vidHeight, checkname, qtrue );
+code\renderergl1\tr_init.c:993: memcount = RE_SaveJPGToBuffer(cmd->encodeBuffer, linelen * cmd->height,
+code\renderergl1\tr_local.h:1824: const void *RB_TakeScreenshotCmd( const void *data );
+code\renderergl1\tr_local.h:2512: void RE_SaveJPG(char* filename, int quality, int image_width, int image_height,
+code\renderergl1\tr_local.h:2514: size_t RE_SaveJPGToBuffer(byte* buffer, size_t bufSize, int quality,
+code\renderergl1\tr_local.h:2519: void SaveJPG(char * filename, int quality, int image_width, int image_height, unsigned char *image_buffer);
+code\renderergl2\tr_backend.c:1902: data = RB_TakeScreenshotCmd( data );
+code\renderergl2\tr_init.c:610: RB_TakeScreenshot
+code\renderergl2\tr_init.c:613: void RB_TakeScreenshot(int x, int y, int width, int height, char *fileName)
+code\renderergl2\tr_init.c:671: RB_TakeScreenshotJPEG
+code\renderergl2\tr_init.c:675: void RB_TakeScreenshotJPEG(int x, int y, int width, int height, char *fileName)
+code\renderergl2\tr_init.c:688: RE_SaveJPG(fileName, r_screenshotJpegQuality->integer, width, height, buffer + offset, padlen);
+code\renderergl2\tr_init.c:694: RB_TakeScreenshotCmd
+code\renderergl2\tr_init.c:697: const void *RB_TakeScreenshotCmd( const void *data ) {
+code\renderergl2\tr_init.c:707: RB_TakeScreenshotJPEG( cmd->x, cmd->y, cmd->width, cmd->height, cmd->fileName);
+code\renderergl2\tr_init.c:709: RB_TakeScreenshot( cmd->x, cmd->y, cmd->width, cmd->height, cmd->fileName);
+
+## FS escrita (FS_FOpenFileWrite/FS_Write)
+code\cgame\cg_testemitter.cpp:1435: cgi.FS_WriteFile(szTmp.c_str(), buffer, iLen);
+code\client\cl_main.cpp:3101: void CL_RefFS_WriteFile(const char* qpath, const void* buffer, int size) {
+code\client\cl_main.cpp:3102: FS_WriteFile(qpath, buffer, size);
+code\corepp\class.cpp:605: class_file = gi.FS_FOpenFileWrite(class_filename);
+code\corepp\class.cpp:607: class_file = cgi.FS_FOpenFileWrite(class_filename);
+code\corepp\class.cpp:694: class_file     = gi.FS_FOpenFileWrite(class_filename);
+code\corepp\class.cpp:698: class_file     = cgi.FS_FOpenFileWrite(class_filename);
+code\corepp\listener.cpp:1765: event_file = gi.FS_FOpenFileWrite(event_filename);
+code\corepp\listener.cpp:1767: event_file = cgi.FS_FOpenFileWrite(event_filename);
+code\fgame\archive.cpp:91: gi.FS_WriteFile(filename.c_str(), buffer, length);
+code\fgame\camera.cpp:2663: gi.FS_WriteFile(filename.c_str(), (void *)buf.c_str(), buf.length() + 1);
+code\fgame\camera.cpp:2794: gi.FS_WriteFile(filename.c_str(), (void *)buf.c_str(), buf.length() + 1);
+code\fgame\player_util.cpp:581: logfile = gi.FS_FOpenFileWrite(filename.c_str());
+code\fgame\scriptthread.cpp:7456: gi.FS_WriteFile(path, content, content.length());
+code\fgame\scriptthread.cpp:7478: if ((f = gi.FS_FOpenFileWrite(path)) == -1) {
+code\fgame\soundman.cpp:1474: gi.FS_WriteFile(filename.c_str(), (void *)buf.c_str(), buf.length() + 1);
+code\qcommon\common.c:1834: //FS_WriteFile(va("configs/%s", configname), "", 0);
+code\qcommon\files.cpp:2081: int FS_WriteFile( const char *qpath, const void *buffer, int size ) {
+code\qcommon\qcommon.h:833: int     FS_WriteFile( const char *qpath, const void *buffer, int size );
+code\renderercommon\tr_font.c:182: ri.FS_WriteFile(filename, buffer, c);
+code\renderercommon\tr_font.c:531: ri.FS_WriteFile(va("fonts/fontImage_%i.dat", pointSize), font, sizeof(fontInfo_t));
+code\renderercommon\tr_image_jpg.c:473: ri.FS_WriteFile(filename, out, bufSize);
+code\renderergl1\tr_image.c:2376: ri.ri.FS_WriteFile( filename, out, hackSize );
+code\renderergl1\tr_init.c:561: ri.FS_WriteFile(fileName, buffer, memcount + 18);
+code\renderergl1\tr_init.c:735: ri.FS_WriteFile( filename, buffer, destheight * destwidth * 3 + 18 );
+code\renderergl1\tr_init.c:800: ri.FS_WriteFile( checkname, buffer, 128 * 128*3 + 18 );
+code\renderergl2\tr_bsp.c:3601: ri.FS_WriteFile(fileName, buf, w->lightGridBounds[0] * w->lightGridBounds[1] * 3 + 18);
+code\renderergl2\tr_image_dds.c:495: ri.FS_WriteFile(filename, data, size);
+code\renderergl2\tr_init.c:664: ri.FS_WriteFile(fileName, buffer, memcount + 18);
+code\renderergl2\tr_init.c:847: ri.FS_WriteFile( checkname, buffer, 128 * 128*3 + 18 );
+code\sys\sys_unix.c:1009: // calling FS_FOpenFileWrite()...use the Unix system APIs instead.
+
+## debugPrint fora do main (thread)
+code\cgame\cg_commands.cpp:5353: cgi.DebugPrintf(msg);
+code\cgame\cg_modelanim.c:690: cgi.DebugPrintf(msg);
+code\cgame\cg_predict.c:205: cgi.DebugPrintf(text);
+code\cgame\cg_public.h:105: void (*DebugPrintf)(const char *fmt, ...);
+code\client\cl_cgame.cpp:623: cgi->DebugPrintf					= Com_DebugPrintf;
+code\client\snd_openal_new.cpp:3636: Com_DebugPrintf("Playing %s.\n", mood);
+code\corepp\listener.cpp:26: extern "C" void debugPrint(const char *format, ...); /* LG16u */
+code\corepp\listener.cpp:4727: scriptClass = Director.CurrentScriptClass(); if (!scriptClass) { debugPrint("LG: CTI sem thread label=%s\n", label.stringValue().c_str()); return NULL; } /* LG16u */
+code\corepp\listener.h:682: #    define EVENT_DebugPrintf gi.DebugPrintf
+code\corepp\listener.h:696: #    define EVENT_DebugPrintf cgi.DebugPrintf
+code\corepp\listener.h:708: #    define EVENT_DebugPrintf Com_DebugPrintf
+code\corepp\listener.h:722: #    define EVENT_DebugPrintf Com_DebugPrintf
+code\fgame\g_main.cpp:436: gi.DebugPrintf(
+code\fgame\g_main.cpp:618: gi.DebugPrintf(
+code\fgame\g_main.cpp:645: gi.DebugPrintf("%0.2f : Total traces %3d\n", level.time, sv_numtraces);
+code\fgame\g_main.cpp:647: gi.DebugPrintf(
+code\fgame\g_main.cpp:653: gi.DebugPrintf("%0.2f : Total traces %3d\n", level.time, sv_numtraces);
+code\fgame\g_main.cpp:655: gi.DebugPrintf(
+code\fgame\g_public.h:237: void (*DebugPrintf)(const char *format, ...);
+code\fgame\g_spawn.cpp:205: extern "C" void debugPrint(const char *format, ...);
+code\fgame\g_spawn.cpp:281: { static int lg_cl = 0; if (lg_cl++ < 3) debugPrint("LG: cls %s -> %s %s\n", classname, lg_m, cls ? "ok" : "FALHOU"); }
+code\fgame\g_utils.cpp:201: gi.DebugPrintf(text.c_str());
+code\fgame\g_utils.cpp:230: gi.DebugPrintf(text.c_str());
+code\fgame\scriptmaster.cpp:814: gi.DebugPrintf("%s\n", string.c_str());
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:45: void spuDebugPrintf(const char *fmt, ...)
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:65: //spuDebugPrintf("[Speex][SPU] sample rate: %d, quality: %d\n", sampleRate, quality);
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:74: //spuDebugPrintf("[Speex][SPU] Initializing Speex failed\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:81: //spuDebugPrintf("[Speex][SPU] Initializing Speex failed\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:86: //spuDebugPrintf("[Speex][SPU] Done getting speex mode\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:87: //spuDebugPrintf("[Speex][SPU] encoder state addr: 0x%8x\n", gviSpeexEncoderState);
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:101: //spuDebugPrintf("[Speex][SPU] speex bits addr: 0x%8x\n", gviSpeexBits);
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:106: //spuDebugPrintf("[Speex][SPU] Done with customizing options for speex\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:119: //spuDebugPrintf("[Speex][SPU] Done with initing speex\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:136: //spuDebugPrintf("[Speex][SPU] Error: invalid sample rate!\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:142: //spuDebugPrintf("[Speex][SPU] Error: initializing decoder failed!\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:189: //spuDebugPrintf("[Speex][SPU] transferring data back, output size should be: %d\n", gviSpursSpeexTaskDesc.mOutputBufferSize>16?gviSpursSpeexTaskDesc.mOutputBufferSize:16);
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:192: //spuDebugPrintf("[Speex][SPU] done transferring data back\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:207: //spuDebugPrintf("[Speex][SPU] allocating buffers for decoding\n");
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:217: //spuDebugPrintf("[Speex][SPU] done allocating, getting input data, inbuffer size: %d\n", gSpuSampleTaskDesc.mInputBufferSize);
+code\gamespy\common\ps3\SpeexSpursTaskManager\SpeexSpursTask\SpuSpeexTaskMain.cpp:220: // spuDebugPrintf("[Speex][SPU] done getting input data, preparing for speex to decode\n");
+
+## Contexto code\gamespy\ghttp\ghttpConnection.h 44-184
+   44: /////////////////////////////////////////////////////////////////
+   45: #define DECODE_BUFFER_INITIAL_SIZE          (2 * 1024)
+   46: #define DECODE_BUFFER_INCREMENT_SIZE        (1 * 1024)
+   47: 
+   48: // The size of the buffer for chunk headers (NOT including the NUL).
+   49: ////////////////////////////////////////////////////////////////////
+   50: #define CHUNK_HEADER_SIZE                   10
+   51: 
+   52: // The type of request made.
+   53: ////////////////////////////
+   54: typedef enum
+   55: {
+   56: 	GHIGET,     // Buffer the file.
+   57: 	GHISAVE,    // Save the file to disk.
+   58: 	GHISTREAM,  // Stream the file.
+   59: 	GHIHEAD,    // Get just the headers for a request.
+   60: 	GHIPOST     // Only posting data (all types can post).
+   61: } GHIRequestType;
+   62: 
+   63: // Chunk-reading states.
+   64: ////////////////////////
+   65: typedef enum
+   66: {
+   67: 	CRHeader,       // Reading a chunk header.
+   68: 	CRChunk,        // Reading chunk (actual content).
+   69: 	CRCRLF,         // Reading the CRLF at the end of a chunk.
+   70: 	CRFooter        // Reading the footer at the end of the file (chunk with size of 0).
+   71: } CRState;
+   72: 
+   73: // Protocol.
+   74: ////////////
+   75: typedef enum
+   76: {
+   77: 	GHIHttp,
+   78: 	GHIHttps
+   79: } GHIProtocol;
+   80: 
+   81: // This is the data for a single http connection.
+   82: /////////////////////////////////////////////////
+   83: typedef struct GHIConnection
+   84: {
+   85: 	GHTTPBool inUse;              // If true, this connection object is being used.
+   86: 	GHTTPRequest request;         // This object's request index.
+   87: 	int uniqueID;                 // Every connection object has a unqiue ID.
+   88: 
+   89: 	GHIRequestType type;          // The type of request this connection is for.
+   90: 
+   91: 	GHTTPState state;             // The state of the request.
+   92: 
+   93: 	char * URL;                   // The URL for the file.
+   94: 	char * serverAddress;         // The address of the server as contained in the URL.
+   95: 	unsigned int serverIP;        // The server's IP.
+   96: 	unsigned short serverPort;    // The server's port.
+   97: 	char * requestPath;           // The path as contained in the URL.
+   98: 
+   99: 	GHIProtocol protocol;         // Protocol used for this connection.
+  100: 
+  101: 	char * sendHeaders;           // Optional headers to pass with the request.
+  102: 
+  103: 	FILE * saveFile;              // If saving to disk, the file being saved to.
+  104: 
+  105: 	GHTTPBool blocking;           // Blocking flag.
+  106: 	
+  107: 	GHTTPBool persistConnection;  // If TRUE, Connection: close will not be sent in the headers and the connection will be left open
+  108: 
+  109: 	GHTTPResult result;           // The result of the request.
+  110: 	ghttpProgressCallback progressCallback;    // Called periodically with progress updates.
+  111: 	ghttpCompletedCallback completedCallback;  // Called when the file has been received.
+  112: 	void * callbackParam;         // User-data to be passed to the callbacks.
+  113: 
+  114: 	SOCKET socket;                // The socket for this connection.
+  115: 	int socketError;              // If there was a socket error, the last error code is stored here.
+  116: 
+  117: 	GHIBuffer sendBuffer;         // The buffer for outgoing data. 
+  118: 	GHIBuffer encodeBuffer;       // The buffer for outgoing data. (will be encrypted; only used with https)
+  119: 	GHIBuffer recvBuffer;         // The buffer for incoming data. (plain text)
+  120: 	GHIBuffer decodeBuffer;       // The buffer for incoming data. (encrypted)(only used with https)
+  121: 	
+  122: 	GHIBuffer getFileBuffer;      // ghttpGetFile[Ex] uses this buffer (which may be user-supplied).
+  123: 	GHTTPBool userBufferSupplied; // True if a user buffer was supplied.
+  124: 
+  125: 	int statusMajorVersion;       // The major-version number from the server's response.
+  126: 	int statusMinorVersion;       // The minor-version number from the server's response.
+  127: 	int statusCode;               // The status-code from the server's response.
+  128: 	int statusStringIndex;        // Index in the recvBuffer where the status string starts.
+  129: 	
+  130: 	int headerStringIndex;        // Index in the recvBuffer where the headers begin
+  131: 
+  132: 	GHTTPBool completed;          // This connection is completed - call the callback and kill it.
+  133: 
+  134: 	GHTTPByteCount fileBytesReceived; // Number of file bytes received.
+  135: 	GHTTPByteCount totalSize;         // Total size of the file, -1 if unknown.
+  136: 
+  137: 	char * redirectURL;           // If this is not NULL, we need to redirect the download to this URL.
+  138: 	int redirectCount;            // Number of redirections done for this request.
+  139: 
+  140: 	GHTTPBool chunkedTransfer;    // The body of the response is chunky ("Transfer-Encoding: chunked").
+  141: 	char chunkHeader[CHUNK_HEADER_SIZE + 1];  // Partial chunk headers are stored in here.
+  142: 	int chunkHeaderLen;           // The number of bytes in chunkHeader.
+  143: 	int chunkBytesLeft;           // Number of bytes left in the chunk (only valid for CRChunk).
+  144: 	CRState chunkReadingState;    // Determines if a chunk header or chunk data is being read.
+  145: 
+  146: 	GHTTPBool processing;         // If true, being processed.  Used to prevent recursive processing.
+  147: 	GHTTPBool connectionClosed;   // If true, the connection has been closed (orderly or abortive)
+  148: 
+  149: 	GHTTPBool throttle;           // If true, throttle this connection.
+  150: 	gsi_time lastThrottleRecv;  // The last time we received on a throttled connection.
+  151: 
+  152: 	GHTTPPost post;               // If not NULL, a reference to a post object to upload with the request.
+  153: 	GHIPostingState postingState; // If posting, the state of the upload.
+  154: 	
+  155: 	gsi_time maxRecvTime;         // Max time spent receiving per call to "Think" - Prevents blocking on ultrafast connections
+  156: 	char * proxyOverrideServer;	  // Allows use of a different proxy than the global proxy
+  157: 	unsigned short proxyOverridePort;
+  158: 
+  159: 	struct GHIEncryptor encryptor;
+  160: 
+  161: #if !defined(GSI_NO_THREADS)
+  162: 	GSIResolveHostnameHandle handle; //handle used for asychronous DNS lookups
+  163: #endif
+  164: 	
+  165: } GHIConnection;
+  166: 
+  167: // Create a new connection object.
+  168: // Returns NULL on failure.
+  169: //////////////////////////////////
+  170: GHIConnection * ghiNewConnection
+  171: (
+  172: 	void
+  173: );
+  174: 
+  175: // Frees the connection object.
+  176: ///////////////////////////////
+  177: GHTTPBool ghiFreeConnection
+  178: (
+  179: 	GHIConnection * connection
+  180: );
+  181: 
+  182: // Returns the connection object for a request index.
+  183: // Returns NULL if the index is bad.
+  184: /////////////////////////////////////////////////////
