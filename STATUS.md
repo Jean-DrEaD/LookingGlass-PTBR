@@ -966,3 +966,9 @@
 - 18z9b: code/renderernull/lg_input.c (XID 4 portas; IN_Init lazy, enum 500 ms; botoes->K_JOY1..11/setas/ESC, menu A=ENTER B=ESC, stick esq = cursor; binds MOHAA; j_* do ioQ3)
 - 18z9b: IN_* fora dos stubs; include USB + USBH_USE_EXTERNAL_CONFIG em client.cmake; nxdk_usb.lib no probe.ps1
 - 18z9b: overlay campo 'r' = pads*1000 + botoes; exe=True iso=True (docs/probes/lote18z9b-input.log)
+
+## Lote 18z9b-resultado (2026-10-28 22:23)
+- 18z9b xemu: MARCO - INPUT XID OK: overlay r1062 (1 pad, 62 botoes) no frame 2626; fps 60 estavel
+- 18z9b: r0 logo apos 'Connected XInput Controller #1' -> hot-plug via usbh_pooling_hubs OK (pad conectado apos o IN_Init lazy)
+- Pendente: provar efeito no jogo (Start->menu, stick->movimento) -> 18z9c overlay com ultima tecla + origem/angulos do player
+- Overlay ainda rotulado 'LG 18z8q' (cosmetico)
