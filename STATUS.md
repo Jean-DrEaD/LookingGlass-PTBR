@@ -937,3 +937,8 @@
 - 18z8p: build falhou (tr_null.c:1 fontheader_t/fontheader_sgl_t desconhecidos): prototipos na linha 1, antes dos includes; script commitou mesmo assim (950db65)
 - Regra: global sem tipo do engine -> topo; prototipo com tipo do engine -> logo antes da funcao que usa (apos includes)
 - 18z8p2: prototipos movidos p/ antes de lg_null_LoadFont; numstat 2	2	code/renderernull/tr_null.c; exe=True iso=False
+
+## Lote 18z8p2-b (2026-10-28 21:30)
+- 18z8p2: build 504/0 OK, mas cxbe falhou ('bash: not found' no lg-nxdk) -> xemu ainda rodava XBE 18z8n-e
+- Regra: cxbe via 'sh -c' (sem bash no container); NXDK_DIR default /usr/src/nxdk
+- 18z8p2-b: cxbe sem rebuild; xbe=6189056 iso=True
