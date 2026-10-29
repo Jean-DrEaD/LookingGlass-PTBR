@@ -942,3 +942,8 @@
 - 18z8p2: build 504/0 OK, mas cxbe falhou ('bash: not found' no lg-nxdk) -> xemu ainda rodava XBE 18z8n-e
 - Regra: cxbe via 'sh -c' (sem bash no container); NXDK_DIR default /usr/src/nxdk
 - 18z8p2-b: cxbe sem rebuild; xbe=6189056 iso=True
+
+## Lote 18z8q (2026-10-28 21:50)
+- 18z8p xemu: MARCO - DrawString REAL: 'Game Saved' em RitualFont; tga ok 4 / dec 4 / up 4; q 10; fps 63 -> 36-38 (suspeita dbgblit CPU 256 px)
+- 18z8q 1a/2a: quad forcado = 'if (lgx_quad(...)) lg2d_nq++;' com comentario NO FIM da linha 183 -> regex 'lgx_quad(...);' e busca apos o comentario falharam; nada gravado
+- 18z8q: linha inteira do quad + dbgblit -> (void)0; numstat 3	3	code/renderernull/tr_null.c; exe=True iso=True
