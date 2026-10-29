@@ -1,0 +1,655 @@
+# Lote 18z9a2 2026-10-28 22:02
+
+===== xbox_input.c 700-fim =====
+  700: 	cvar_t *cvar = Cvar_Get(name, value, CVAR_ARCHIVE);
+  701: 
+  702: 	/* Keep any value the user or q3config.cfg already changed. */
+  703: 	if (!strcmp(cvar->string, cvar->resetString))
+  704: 		Cvar_Set(name, value);
+  705: }
+  706: 
+  707: static void Sys_XboxInputApplyDefaults(void)
+  708: {
+  709: 	Sys_XboxInputDefaultBind(K_JOY1, "+moveup");
+  710: 	Sys_XboxInputDefaultBind(K_JOY2, "+movedown");
+  711: 	Sys_XboxInputDefaultBind(K_JOY3, "weapprev");
+  712: 	Sys_XboxInputDefaultBind(K_JOY4, "weapnext");
+  713: 	Sys_XboxInputDefaultBind(K_JOY5, "+button2");
+  714: 	Sys_XboxInputDefaultBind(K_JOY6, "+speed");
+  715: 	Sys_XboxInputDefaultBind(K_JOY7, "+zoom");
+  716: 	Sys_XboxInputDefaultBind(K_JOY8, "+attack");
+  717: 	Sys_XboxInputDefaultBind(K_JOY11, "+scores");
+  718: 
+  719: 	/* Stock joystick scaling assumes a +-32767 axis and is far too fast. */
+  720: 	Sys_XboxInputDefaultCvar("j_yaw", "-0.006");
+  721: 	Sys_XboxInputDefaultCvar("j_pitch", "0.005");
+  722: 	Sys_XboxInputDefaultCvar("j_forward", "-0.0039");
+  723: 	Sys_XboxInputDefaultCvar("j_side", "0.0039");
+  724: }
+  725: 
+  726: static xboxControllerState_t *Sys_XboxInputSlot(xid_dev_t *device)
+  727: {
+  728: 	int i;
+  729: 
+  730: 	if (device->user_data)
+  731: 		return (xboxControllerState_t *)device->user_data;
+  732: 
+  733: 	for (i = 0; i < XBOX_CONTROLLER_PORTS; ++i)
+  734: 	{
+  735: 		if (!xboxControllers[i].connected)
+  736: 		{
+  737: 			device->user_data = &xboxControllers[i];
+  738: 			xboxControllers[i].connected = qtrue;
+  739: 			return &xboxControllers[i];
+  740: 		}
+  741: 	}
+  742: 
+  743: 	return NULL;
+  744: }
+  745: 
+  746: static void Sys_XboxInputReadComplete(UTR_T *transfer)
+  747: {
+  748: 	xid_dev_t *device = transfer ? (xid_dev_t *)transfer->context : NULL;
+  749: 	xboxControllerState_t *state;
+  750: 	xid_gamepad_in report;
+  751: 
+  752: 	if (!device || !transfer || transfer->status != USBH_OK ||
+  753: 		transfer->xfer_len < sizeof(report))
+  754: 		return;
+  755: 	if (device->xid_desc.bType != XID_TYPE_GAMECONTROLLER)
+  756: 		return;
+  757: 
+  758: 	state = (xboxControllerState_t *)device->user_data;
+  759: 	if (!state)
+  760: 		return;
+  761: 
+  762: 	memcpy(&report, transfer->buff, sizeof(report));
+  763: 	state->buttons = report.dButtons;
+  764: 	state->a = report.a;
+  765: 	state->b = report.b;
+  766: 	state->x = report.x;
+  767: 	state->y = report.y;
+  768: 	state->black = report.black;
+  769: 	state->white = report.white;
+  770: 	state->leftTrigger = report.l;
+  771: 	state->rightTrigger = report.r;
+  772: 	state->leftStickX = report.leftStickX;
+  773: 	state->leftStickY = report.leftStickY;
+  774: 	state->rightStickX = report.rightStickX;
+  775: 	state->rightStickY = report.rightStickY;
+  776: 
+  777: 	if (!xboxInputStopping)
+  778: 	{
+  779: 		/* nxdk's XID path reuses the completed interrupt transfer. */
+  780: 		transfer->xfer_len = 0;
+  781: 		transfer->bIsTransferDone = 0;
+  782: 		(void)usbh_int_xfer(transfer);
+  783: 	}
+  784: }
+  785: 
+  786: static void Sys_XboxInputConnected(xid_dev_t *device, int param)
+  787: {
+  788: 	xboxControllerState_t *state;
+  789: 	(void)param;
+  790: 
+  791: 	if (!device || usbh_xid_get_type(device) == XID_UNKNOWN)
+  792: 		return;
+  793: 	state = Sys_XboxInputSlot(device);
+  794: 	if (state)
+  795: 		(void)usbh_xid_read(device, 0, (void *)Sys_XboxInputReadComplete);
+  796: }
+  797: 
+  798: static void Sys_XboxInputDisconnected(xid_dev_t *device, int param)
+  799: {
+  800: 	xboxControllerState_t *state;
+  801: 	(void)param;
+  802: 
+  803: 	if (!device)
+  804: 		return;
+  805: 	state = (xboxControllerState_t *)device->user_data;
+  806: 	if (state)
+  807: 	{
+  808: 		memset(state, 0, sizeof(*state));
+  809: 		state->connected = qfalse;
+  810: 	}
+  811: 	device->user_data = NULL;
+  812: }
+  813: 
+  814: qboolean Sys_XboxInputInit(void)
+  815: {
+  816: 	if (xboxInputStarted)
+  817: 		return qtrue;
+  818: 
+  819: 	memset(xboxControllers, 0, sizeof(xboxControllers));
+  820: 	memset(xboxHid, 0, sizeof(xboxHid));
+  821: 	memset(xboxSentKey, 0, sizeof(xboxSentKey));
+  822: 	memset(xboxSentAxis, 0, sizeof(xboxSentAxis));
+  823: 	xboxCursorX = 0.0f;
+  824: 	xboxCursorY = 0.0f;
+  825: 	xboxLastFrameTime = Sys_Milliseconds();
+  826: 	xboxInputStopping = qfalse;
+  827: 	/* USB core initialization clears the driver table, so initialize it first. */
+  828: 	usbh_core_init();
+  829: 	usbh_xid_init();
+  830: 	usbh_hid_init();
+  831: 	usbh_install_xid_conn_callback(Sys_XboxInputConnected,
+  832: 		Sys_XboxInputDisconnected);
+  833: 	usbh_install_hid_conn_callback(Sys_XboxHidConnected,
+  834: 		Sys_XboxHidDisconnected);
+  835: 
+  836: 	/* Enumerate controllers that were already connected at startup. */
+  837: 	for (int i = 0; i < 500; ++i)
+  838: 	{
+  839: 		usbh_pooling_hubs();
+  840: 		Sys_Sleep(1);
+  841: 	}
+  842: 
+  843: 	Sys_XboxInputApplyDefaults();
+  844: 	xboxInputStarted = qtrue;
+  845: 	return qtrue;
+  846: }
+  847: 
+  848: void Sys_XboxInputPoll(void)
+  849: {
+  850: 	if (!xboxInputStarted)
+  851: 		return;
+  852: 	/* Required by nxdk for enumeration and hot-plug detection. */
+  853: 	usbh_pooling_hubs();
+  854: }
+  855: 
+  856: void Sys_XboxInputFrame(void)
+  857: {
+  858: 	int port;
+  859: 	int i;
+  860: 	int time;
+  861: 	int frameMs;
+  862: 	qboolean inMenu;
+  863: 
+  864: 	if (!xboxInputStarted)
+  865: 		return;
+  866: 
+  867: 	Sys_XboxInputPoll();
+  868: 	time = Sys_Milliseconds();
+  869: 	frameMs = time - xboxLastFrameTime;
+  870: 	xboxLastFrameTime = time;
+  871: 	if (frameMs < 0)
+  872: 		frameMs = 0;
+  873: 	if (frameMs > XBOX_FRAME_MAX_MS)
+  874: 		frameMs = XBOX_FRAME_MAX_MS;
+  875: 	inMenu = (Key_GetCatcher() & (KEYCATCH_UI | KEYCATCH_CGAME)) != 0;
+  876: 	if (!inMenu)
+  877: 	{
+  878: 		xboxCursorX = 0.0f;
+  879: 		xboxCursorY = 0.0f;
+  880: 	}
+  881: 
+  882: 	for (port = 0; port < XBOX_CONTROLLER_PORTS; ++port)
+  883: 	{
+  884: 		const xboxControllerState_t *state = &xboxControllers[port];
+  885: 		int stick[4];
+  886: 
+  887: 		for (i = 0; i < XBOX_BTN_COUNT; ++i)
+  888: 		{
+  889: 			qboolean down = Sys_XboxInputButtonDown(state, i);
+  890: 			int *sent = &xboxSentKey[port][i];
+  891: 
+  892: 			if (down && !*sent)
+  893: 			{
+  894: 				*sent = Sys_XboxInputKeyFor(i, inMenu);
+  895: 				Sys_XboxInputKey(time, *sent, qtrue);
+  896: 			}
+  897: 			else if (!down && *sent)
+  898: 			{
+  899: 				Sys_XboxInputKey(time, *sent, qfalse);
+  900: 				*sent = 0;
+  901: 			}
+  902: 		}
+  903: 
+  904: 		/* XID reports Y up as positive; Quake expects down as positive. */
+  905: 		stick[0] = Sys_XboxInputStick(state->leftStickX);
+  906: 		stick[1] = -Sys_XboxInputStick(state->leftStickY);
+  907: 		stick[2] = Sys_XboxInputStick(state->rightStickX);
+  908: 		stick[3] = -Sys_XboxInputStick(state->rightStickY);
+  909: 
+  910: 		if (inMenu)
+  911: 		{
+  912: 			int dx;
+  913: 			int dy;
+  914: 
+  915: 			/* The left stick moves the menu cursor; zero the game axes. */
+  916: 			xboxCursorX += Sys_XboxInputCursorStep(stick[0], frameMs);
+  917: 			xboxCursorY += Sys_XboxInputCursorStep(stick[1], frameMs);
+  918: 			dx = (int)xboxCursorX;
+  919: 			dy = (int)xboxCursorY;
+  920: 			xboxCursorX -= (float)dx;
+  921: 			xboxCursorY -= (float)dy;
+  922: 			if (dx || dy)
+  923: 				Com_QueueEvent(time, SE_MOUSE, dx, dy, 0, NULL);
+  924: 			memset(stick, 0, sizeof(stick));
+  925: 		}
+  926: 
+  927: 		for (i = 0; i < 4; ++i)
+  928: 		{
+  929: 			if (stick[i] != xboxSentAxis[port][i])
+  930: 			{
+  931: 				xboxSentAxis[port][i] = stick[i];
+  932: 				Sys_XboxInputAxisEvent(time, i, stick[i]);
+  933: 			}
+  934: 		}
+  935: 	}
+  936: 	Sys_XboxHidFrame(time);
+  937: }
+  938: 
+  939: void Sys_XboxInputShutdown(void)
+  940: {
+  941: 	if (!xboxInputStarted)
+  942: 		return;
+  943: 	xboxInputStopping = qtrue;
+  944: 	{
+  945: 		int i, j, time = Sys_Milliseconds();
+  946: 		for (i = 0; i < XBOX_HID_MAX_DEVICES; ++i)
+  947: 		{
+  948: 			for (j = 0; j < 32; ++j)
+  949: 			{
+  950: 				int bit;
+  951: 				for (bit = 0; bit < 8; ++bit)
+  952: 					if (xboxHid[i].oldUsages[j] & (1 << bit))
+  953: 						Sys_XboxHidKeyEvent(time, (j * 8 + bit) == 53 ? K_CONSOLE : Sys_XboxHidKey((uint8_t)(j * 8 + bit)), qfalse, qfalse);
+  954: 			}
+  955: 			for (j = 0; j < 4; ++j)
+  956: 				Sys_XboxHidKeyEvent(time, xboxHid[i].modifierKeys[j], qfalse, qfalse);
+  957: 			for (j = 0; j < 5; ++j)
+  958: 				if (xboxHid[i].oldButtons & (1 << j))
+  959: 					Sys_XboxInputKey(time, K_MOUSE1 + j, qfalse);
+  960: 		}
+  961: 	}
+  962: 	usbh_install_xid_conn_callback(NULL, NULL);
+  963: 	usbh_install_hid_conn_callback(NULL, NULL);
+  964: 	usbh_core_deinit();
+  965: 	memset(xboxControllers, 0, sizeof(xboxControllers));
+  966: 	memset(xboxSentKey, 0, sizeof(xboxSentKey));
+  967: 	memset(xboxSentAxis, 0, sizeof(xboxSentAxis));
+  968: 	memset(xboxHid, 0, sizeof(xboxHid));
+  969: 	xboxInputStarted = qfalse;
+  970: }
+  971: 
+  972: const xboxControllerState_t *Sys_XboxInputState(int port)
+  973: {
+  974: 	if (port < 0 || port >= XBOX_CONTROLLER_PORTS)
+  975: 		return NULL;
+  976: 	return &xboxControllers[port];
+  977: }
+
+===== Makefile.xbox 130-200 =====
+  130: 	$(CURDIR)/code/botlib/be_ai_weap.c \
+  131: 	$(CURDIR)/code/botlib/be_ai_weight.c \
+  132: 	$(CURDIR)/code/botlib/be_ea.c \
+  133: 	$(CURDIR)/code/botlib/be_interface.c \
+  134: 	$(CURDIR)/code/botlib/l_crc.c \
+  135: 	$(CURDIR)/code/botlib/l_libvar.c \
+  136: 	$(CURDIR)/code/botlib/l_log.c \
+  137: 	$(CURDIR)/code/botlib/l_memory.c \
+  138: 	$(CURDIR)/code/botlib/l_precomp.c \
+  139: 	$(CURDIR)/code/botlib/l_script.c \
+  140: 	$(CURDIR)/code/botlib/l_struct.c \
+  141: 	$(CURDIR)/code/asm/ftola.c \
+  142: 	$(CURDIR)/code/asm/snapvector.c 	$(wildcard $(CURDIR)/code/thirdparty/jpeg-9f/j*.c)
+  143: 
+  144: # nxdk supplies the Pentium III-safe ABI; XBOX is explicit so conditionals
+  145: # never depend on an incidental compiler macro.
+  146: NXDK_CFLAGS += -DXBOX -DIOQUAKE3_XBOX -DIOQUAKE3_XBOX_SHELL -DBOTLIB -DC_ONLY $(FLAVOR_DEFINES) -O2 -ffunction-sections -fno-exceptions 	-DUSE_INTERNAL_JPEG -I$(CURDIR)/code/thirdparty/jpeg-9f \
+  147: 	-I/usr/src/nxdk/lib/net/lwip/src/include \
+  148: 	-I/usr/src/nxdk/lib/net/lwip/src/include/compat/posix
+  149: NXDK_NET = y
+  150: NXDK_USB_ENABLE_HID = y
+  151: # nxdk's DEBUG=y build also writes D:\ioquake3.log; delete sys_xbox.obj when switching.
+  152: ifeq ($(DEBUG),y)
+  153: NXDK_CFLAGS += -DXBOX_DEBUG_LOG
+  154: endif
+  155: 
+  156: ifeq ($(FLAVOR),oa)
+  157: # OA music is Ogg Vorbis (32 kHz stereo); Q3 and TA ship WAV only. Decoder list as in the PS3 port.
+  158: XBOX_OGG_DIR = $(CURDIR)/code/thirdparty/libogg-1.3.6
+  159: XBOX_VORBIS_DIR = $(CURDIR)/code/thirdparty/libvorbis-1.3.7
+  160: XBOX_VORBIS_SRCS = \
+  161: 	$(CURDIR)/code/client/snd_codec_ogg.c \
+  162: 	$(XBOX_OGG_DIR)/src/bitwise.c $(XBOX_OGG_DIR)/src/framing.c \
+  163: 	$(addprefix $(XBOX_VORBIS_DIR)/lib/, mdct.c block.c window.c synthesis.c info.c \
+  164: 		floor0.c floor1.c res0.c mapping0.c registry.c codebook.c sharedbook.c \
+  165: 		smallft.c vorbisfile.c analysis.c bitrate.c envelope.c lpc.c lsp.c psy.c)
+  166: SRCS += $(XBOX_VORBIS_SRCS)
+  167: NXDK_CFLAGS += -DUSE_CODEC_VORBIS
+  168: $(patsubst %.c,%.obj,$(XBOX_VORBIS_SRCS)): NXDK_CFLAGS += -I$(XBOX_OGG_DIR)/include \
+  169: 	-I$(XBOX_VORBIS_DIR)/include -I$(XBOX_VORBIS_DIR)/lib
+  170: endif
+  171: 
+  172: SHADER_OBJS = \
+  173: 	$(CURDIR)/code/renderernv2a/xbox_nv2a_vp.inl \
+  174: 	$(CURDIR)/code/renderernv2a/xbox_nv2a_fp.inl
+  175: 
+  176: # nxdk's base USB library includes the XID driver.
+  177: 
+  178: # Native modules, paths relative to XBOX_MODULE_ROOT.
+  179: XBOX_MODULE_DIR = $(CURDIR)/$(OUTPUT_DIR)/modules
+  180: XBOX_MODULE_SHARED = qcommon/q_math.c qcommon/q_shared.c
+  181: XBOX_MODULE_LIBC = $(CURDIR)/code/sys/xbox_module_libc.c
+  182: XBOX_MODULE_CFLAGS = -DXBOX -DC_ONLY $(FLAVOR_DEFINES) -O2 -fno-exceptions \
+  183: 	-include $(CURDIR)/code/sys/xbox_module.h
+  184: 
+  185: ifeq ($(FLAVOR),oa)
+  186: # OA 0.8.8 gamecode (OA gamecode repo, oa-0.8.8 branch) vendored in oa/.
+  187: # Lists from its Makefile, minus bg_lib.c, which is Q3_VM-only.
+  188: XBOX_MODULE_ROOT = $(CURDIR)/oa/code
+  189: 
+  190: qagame_SRCS = \
+  191: 	game/g_main.c game/ai_chat.c game/ai_cmd.c game/ai_dmnet.c game/ai_dmq3.c \
+  192: 	game/ai_main.c game/ai_team.c game/ai_vcmd.c game/bg_misc.c game/bg_pmove.c \
+  193: 	game/bg_slidemove.c game/g_active.c game/g_arenas.c game/g_admin.c game/g_bot.c \
+  194: 	game/g_client.c game/g_cmds.c game/g_cmds_ext.c game/g_combat.c game/g_items.c \
+  195: 	game/bg_alloc.c game/g_fileops.c game/g_killspree.c game/g_misc.c game/g_missile.c \
+  196: 	game/g_mover.c game/g_playerstore.c game/g_session.c game/g_spawn.c game/g_svcmds.c \
+  197: 	game/g_svcmds_ext.c game/g_target.c game/g_team.c game/g_trigger.c game/g_unlagged.c \
+  198: 	game/g_utils.c game/g_vote.c game/g_weapon.c game/g_syscalls.c $(XBOX_MODULE_SHARED)
+  199: 
+  200: cgame_SRCS = \
+
+===== probe.ps1 libs/link =====
+LookingGlass-PTBR\tools\probe.ps1:7: $flags = '-DCMAKE_TOOLCHAIN_FILE=$NXDK_DIR/share/toolchain-nxdk.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_CLIENT=OFF -DBUILD_SERVER=ON -DBUILD_RENDERER_GL1=OFF -DBUILD_RENDERER_GL2=OFF -DBUILD_GAME_QVMS=OFF -DBUILD_GAME_LIBRARIES=ON -DUSE_RENDERER_DLOPEN=OFF -DUSE_OPENAL=OFF -DUSE_OPENAL_DLOPEN=OFF -DUSE_HTTP=OFF -DUSE_CODEC_VORBIS=OFF -DUSE_CODEC_OPUS=OFF -DUSE_CODEC_MAD=OFF -DUSE_INTERNAL_LIBS=ON -Wno-dev -DCMAKE_EXE_LINKER_FLAGS="/errorlimit:0 /STACK:4194304,4194304 /src/build-lgsys/lg_xboxsys.lib $NXDK_DIR/lib/libpbkit.lib"'
+LookingGlass-PTBR\tools\probe.ps1:18: echo '## Linker (simbolos):'; grep -oE 'undefined symbol: .*' build.txt | sort | uniq -c | sort -rn | head -n 300
+LookingGlass-PTBR\tools\probe.ps1:20: echo '## Alvos:'; find build-xbox \( -name '*.lib' -o -name '*.exe' -o -name '*.xbe' \) | head -n 25
+
+===== OpenMoHAA Key_GetCatcher/SetBinding/GetBinding/Com_QueueEvent (defs) =====
+openmohaa\code\client\cl_input.cpp:467: void CL_JoystickEvent( int axis, int value, int time ) {
+openmohaa\code\client\cl_keys.cpp:533: void Key_SetBinding(int keynum, const char *binding)
+openmohaa\code\client\cl_keys.cpp:605: const char *Key_GetBinding(int keynum)
+openmohaa\code\client\cl_keys.cpp:701:     Key_SetBinding(b, "");
+openmohaa\code\client\cl_keys.cpp:761:             Key_SetBinding(i, "");
+openmohaa\code\client\cl_keys.cpp:806:     Key_SetBinding(b, cmd);
+openmohaa\code\client\cl_keys.cpp:1343: int Key_GetCatcher(void)
+openmohaa\code\client\client.h:613: int Key_GetCatcher( void );
+openmohaa\code\client\client.h:742: int Key_GetCatcher( void );
+openmohaa\code\client\keys.h:45: void Key_SetBinding( int keynum, const char *binding );
+openmohaa\code\client\keys.h:46: const char *Key_GetBinding( int keynum );
+openmohaa\code\qcommon\common.c:1050: void Com_QueueEvent( int time, sysEventType_t type, int value, int value2, size_t ptrLength, void *ptr )
+openmohaa\code\qcommon\common.c:1123: 		Com_QueueEvent( 0, SE_CONSOLE, 0, 0, len, b );
+openmohaa\code\qcommon\common.c:1317: 				CL_JoystickEvent( ev.evValue, ev.evValue2, ev.evTime );
+openmohaa\code\qcommon\qcommon.h:1231: void CL_JoystickEvent( int axis, int value, int time );
+openmohaa\code\qcommon\qcommon.h:1356: void		Com_QueueEvent( int time, sysEventType_t type, int value, int value2, size_t ptrLength, void *ptr );
+openmohaa\code\client\cl_input.cpp:484:     if (!(Key_GetCatcher() & KEYCATCH_UI)) {
+openmohaa\code\client\cl_keys.cpp:346:         Key_SetCatcher(Key_GetCatcher() & ~KEYCATCH_MESSAGE);
+openmohaa\code\client\cl_keys.cpp:351:         Key_SetCatcher(Key_GetCatcher() & ~KEYCATCH_MESSAGE);
+openmohaa\code\client\cl_keys.cpp:1192:         if ((Key_GetCatcher() & KEYCATCH_UI && !menubound[key]) || UI_BindActive()) {
+openmohaa\code\client\cl_keys.cpp:1194:         } else if (cls.loading & KEYCATCH_MESSAGE) {
+openmohaa\code\client\cl_keys.cpp:1307:     if (Key_GetCatcher() & KEYCATCH_CONSOLE) {
+openmohaa\code\client\cl_keys.cpp:1311:     if (Key_GetCatcher() & KEYCATCH_UI) {
+openmohaa\code\client\cl_main.cpp:3563: 	Key_SetCatcher(KEYCATCH_UI);
+openmohaa\code\client\cl_ui.cpp:3631:     Key_SetCatcher(Key_GetCatcher() | KEYCATCH_UI);
+openmohaa\code\client\cl_uiview3d.cpp:102:     Key_SetCatcher(Key_GetCatcher() & ~KEYCATCH_UI);
+openmohaa\code\client\cl_uiview3d.cpp:119:     Key_SetCatcher(Key_GetCatcher() | KEYCATCH_UI);
+openmohaa\code\qcommon\q_shared.h:1535: #define KEYCATCH_CONSOLE		0x0001
+openmohaa\code\qcommon\q_shared.h:1536: #define	KEYCATCH_UI				0x0002
+openmohaa\code\qcommon\q_shared.h:1537: #define	KEYCATCH_MESSAGE		0x0004
+
+===== OpenMoHAA: in_joystick / j_* cvars + uso SE_JOYSTICK_AXIS =====
+openmohaa\code\client\cl_input.cpp:509: 	float yaw     = j_yaw->value     * cl.joystickAxis[j_yaw_axis->integer];
+openmohaa\code\client\cl_input.cpp:510: 	float right   = j_side->value    * cl.joystickAxis[j_side_axis->integer];
+openmohaa\code\client\cl_input.cpp:511: 	float forward = j_forward->value * cl.joystickAxis[j_forward_axis->integer];
+openmohaa\code\client\cl_input.cpp:512: 	float pitch   = j_pitch->value   * cl.joystickAxis[j_pitch_axis->integer];
+openmohaa\code\client\cl_main.cpp:93: cvar_t	*j_pitch;
+openmohaa\code\client\cl_main.cpp:94: cvar_t	*j_yaw;
+openmohaa\code\client\cl_main.cpp:95: cvar_t	*j_forward;
+openmohaa\code\client\cl_main.cpp:96: cvar_t	*j_side;
+openmohaa\code\client\cl_main.cpp:98: cvar_t	*j_pitch_axis;
+openmohaa\code\client\cl_main.cpp:99: cvar_t	*j_yaw_axis;
+openmohaa\code\client\cl_main.cpp:100: cvar_t	*j_forward_axis;
+openmohaa\code\client\cl_main.cpp:101: cvar_t	*j_side_axis;
+openmohaa\code\client\cl_main.cpp:3655: 	j_pitch =        Cvar_Get ("j_pitch",        "0.022", CVAR_ARCHIVE);
+openmohaa\code\client\cl_main.cpp:3656: 	j_yaw =          Cvar_Get ("j_yaw",          "-0.022", CVAR_ARCHIVE);
+openmohaa\code\client\cl_main.cpp:3657: 	j_forward =      Cvar_Get ("j_forward",      "-0.25", CVAR_ARCHIVE);
+openmohaa\code\client\cl_main.cpp:3658: 	j_side =         Cvar_Get ("j_side",         "0.25", CVAR_ARCHIVE);
+openmohaa\code\client\cl_main.cpp:3661: 	j_pitch_axis =   Cvar_Get ("j_pitch_axis",   "3", CVAR_ARCHIVE);
+openmohaa\code\client\cl_main.cpp:3662: 	j_yaw_axis =     Cvar_Get ("j_yaw_axis",     "2", CVAR_ARCHIVE);
+openmohaa\code\client\cl_main.cpp:3663: 	j_forward_axis = Cvar_Get ("j_forward_axis", "1", CVAR_ARCHIVE);
+openmohaa\code\client\cl_main.cpp:3664: 	j_side_axis =    Cvar_Get ("j_side_axis",    "0", CVAR_ARCHIVE);
+openmohaa\code\client\cl_main.cpp:3667: 	Cvar_CheckRange(j_pitch_axis, 0, MAX_JOYSTICK_AXIS-1, qtrue);
+openmohaa\code\client\cl_main.cpp:3668: 	Cvar_CheckRange(j_yaw_axis, 0, MAX_JOYSTICK_AXIS-1, qtrue);
+openmohaa\code\client\cl_main.cpp:3669: 	Cvar_CheckRange(j_forward_axis, 0, MAX_JOYSTICK_AXIS-1, qtrue);
+openmohaa\code\client\cl_main.cpp:3670: 	Cvar_CheckRange(j_side_axis, 0, MAX_JOYSTICK_AXIS-1, qtrue);
+openmohaa\code\client\client.h:460: extern	cvar_t	*j_pitch;
+openmohaa\code\client\client.h:461: extern	cvar_t	*j_yaw;
+openmohaa\code\client\client.h:462: extern	cvar_t	*j_forward;
+openmohaa\code\client\client.h:463: extern	cvar_t	*j_side;
+openmohaa\code\client\client.h:465: extern	cvar_t	*j_pitch_axis;
+openmohaa\code\client\client.h:466: extern	cvar_t	*j_yaw_axis;
+openmohaa\code\client\client.h:467: extern	cvar_t	*j_forward_axis;
+openmohaa\code\client\client.h:468: extern	cvar_t	*j_side_axis;
+openmohaa\code\client\client.h:521: extern	cvar_t* j_pitch;
+openmohaa\code\client\client.h:522: extern	cvar_t* j_yaw;
+openmohaa\code\client\client.h:523: extern	cvar_t* j_forward;
+openmohaa\code\client\client.h:524: extern	cvar_t* j_side;
+openmohaa\code\client\client.h:526: extern	cvar_t* j_pitch_axis;
+openmohaa\code\client\client.h:527: extern	cvar_t* j_yaw_axis;
+openmohaa\code\client\client.h:528: extern	cvar_t* j_forward_axis;
+openmohaa\code\client\client.h:529: extern	cvar_t* j_side_axis;
+openmohaa\code\qcommon\common.c:1316: 			case SE_JOYSTICK_AXIS:
+openmohaa\code\qcommon\qcommon.h:1341: 	SE_JOYSTICK_AXIS,	// evValue is an axis number and evValue2 is the current state (-127 to 127)
+
+===== nxdk: xid_driver.h + usbh_hid.h (prototipos) + Makefile usb + simbolos lib =====
+--- xid_driver.h
+
+//Copyright 2020, Ryan Wendland
+//SPDX-License-Identifier: MIT
+#ifndef _USBH_XID_H_
+#define _USBH_XID_H_
+
+#include "usb.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#ifndef CONFIG_XID_MAX_DEV
+#define CONFIG_XID_MAX_DEV 4
+#endif
+#ifndef XID_MAX_TRANSFER_QUEUE
+#define XID_MAX_TRANSFER_QUEUE 4
+#endif
+//Ref https://xboxdevwiki.net/index.php?title=Xbox_Input_Devices
+#define XID_INTERFACE_CLASS 0x58
+#define XID_INTERFACE_SUBCLASS 0x42
+
+struct xid_dev;
+typedef void(XID_CONN_FUNC)(struct xid_dev *hdev, int param);
+
+typedef struct __attribute__((packed)) 
+{
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint16_t bcdXid;
+    uint8_t bType;
+    uint8_t bSubType;
+    uint8_t bMaxInputReportSize;
+    uint8_t bMaxOutputReportSize;
+    uint16_t wAlternateProductIds[4];
+} xid_descriptor;
+
+typedef struct __attribute__((packed)) 
+{
+    uint8_t startByte;
+    uint8_t bLength;
+    uint16_t dButtons;
+    uint8_t a;
+    uint8_t b;
+    uint8_t x;
+    uint8_t y;
+    uint8_t black;
+    uint8_t white;
+    uint8_t l;
+    uint8_t r;
+    int16_t leftStickX;
+    int16_t leftStickY;
+    int16_t rightStickX;
+    int16_t rightStickY;
+} xid_gamepad_in;
+
+typedef struct __attribute__((packed))
+{
+    uint8_t startByte;
+    uint8_t bLength;
+    uint16_t lValue;
+    uint16_t hValue;
+} xid_gamepad_out;
+
+//Ref https://xboxdevwiki.net/Xbox_DVD_Movie_Playback_Kit
+typedef struct __attribute__((packed))
+{
+    uint8_t startByte;
+    uint8_t bLength;
+    uint16_t buttonCode;
+    uint16_t timeElapsed; //ms since last button press
+} xid_xremote_in;
+
+typedef struct xid_dev
+{
+    uint16_t idVendor;
+    uint16_t idProduct;
+    xid_descriptor xid_desc;                 //See https://xboxdevwiki.net/index.php?title=Xbox_Input_Devices
+    UTR_T *utr_list[XID_MAX_TRANSFER_QUEUE]; //UTR list of queued transfers
+    IFACE_T *iface;                          //This xid interface
+    uint32_t uid;                            //A unique ID to identify this device
+    struct xid_dev *next;                    //Pointer to the next xid in the linked list.
+    void *user_data;                         //Pointer to an optional user struct
+} xid_dev_t;
+
+//Ref https://xboxdevwiki.net/index.php?title=Xbox_Input_Devices
+#define XID_TYPE_GAMECONTROLLER 0x01
+#define XID_TYPE_XREMOTE 0x03
+#define XID_TYPE_STEELBATTALION 0x80
+typedef enum _xid_type
+{
+    XID_UNKNOWN                = 0x0000,
+    GAMECONTROLLER_S           = XID_TYPE_GAMECONTROLLER << 8 | 0x01,
+    GAMECONTROLLER_DUKE        = XID_TYPE_GAMECONTROLLER << 8 | 0x02,
+    GAMECONTROLLER_WHEEL       = XID_TYPE_GAMECONTROLLER << 8 | 0x10,
+    GAMECONTROLLER_ARCADESTICK = XID_TYPE_GAMECONTROLLER << 8 | 0x20,
+    XREMOTE                    = XID_TYPE_XREMOTE << 8 | 0x00,
+    STEEL_BATTALION            = XID_TYPE_STEELBATTALION << 8 | 0x01,
+} xid_type;
+
+void usbh_xid_init(void);
+void usbh_install_xid_conn_callback(XID_CONN_FUNC *conn_func, XID_CONN_FUNC *disconn_func);
+xid_dev_t *usbh_xid_get_device_list(void);
+int32_t usbh_xid_read(xid_dev_t *xid_dev, uint8_t ep_addr, void *rx_complete_callback);
+int32_t usbh_xid_write(xid_dev_t *xid_dev, uint8_t ep_addr, uint8_t *txbuff, uint32_t len, void *tx_complete_callback);
+xid_type usbh_xid_get_type(xid_dev_t *xid_dev);
+int32_t usbh_xid_rumble(xid_dev_t *xid_dev, uint16_t l_value, uint16_t h_value);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+--- usbh_hid.h protos
+78:    uint8_t       bProtocolCode;        /*!< Interface protocol code                           */
+86:    void *user_data;                    /*!< Pointer to an optional user struct                */
+87:} HID_DEV_T;                            /*! HID device structure                               */
+--- usbh_lib.h protos
+178:void usbh_free_memory_pool(void *memory_pool);
+195:extern void usbh_core_init(void);
+197:extern int  usbh_pooling_hubs(void);
+198:extern void usbh_install_conn_callback(CONN_FUNC *conn_func, CONN_FUNC *disconn_func);
+220:extern void     usbh_install_cdc_conn_callback(CDC_CONN_FUNC *conn_func, CDC_CONN_FUNC *disconn_func);
+242:extern void     usbh_install_hid_conn_callback(HID_CONN_FUNC *conn_func, HID_CONN_FUNC *disconn_func);
+255:extern void usbh_install_msc_conn_callback(MSC_CONN_FUNC *conn_func, MSC_CONN_FUNC *disconn_func);
+277:extern void usbh_install_uac_conn_callback(UAC_CONN_FUNC *conn_func, UAC_CONN_FUNC *disconn_func);
+292:extern void usbh_install_uvc_conn_callback(UVC_CONN_FUNC *conn_func, UVC_CONN_FUNC *disconn_func);
+--- lib/usb/Makefile
+USBH_DIR=$(NXDK_DIR)/lib/usb
+
+# USB Host core
+USB_CORE_SRCS := \
+	$(USBH_DIR)/libusbohci/src_core/hub.c \
+	$(USBH_DIR)/libusbohci/src_core/mem_alloc.c \
+	$(USBH_DIR)/libusbohci/src_core/ohci.c \
+	$(USBH_DIR)/libusbohci/src_core/support.c \
+	$(USBH_DIR)/libusbohci/src_core/usb_core.c
+
+USBH_OBJS = $(addsuffix .obj, $(basename $(USB_CORE_SRCS)))
+
+# Xbox specific files
+USB_XBOX_SRCS := \
+	$(USBH_DIR)/libusbohci_xbox/usbh_xbox.c \
+	$(USBH_DIR)/libusbohci_xbox/xid_driver.c
+
+USBH_OBJS += $(addsuffix .obj, $(basename $(USB_XBOX_SRCS)))
+
+# USB Human Input Device class driver
+ifneq ($(NXDK_USB_ENABLE_HID),)
+USB_HID_SRCS := \
+	$(USBH_DIR)/libusbohci/src_hid/hid_core.c \
+	$(USBH_DIR)/libusbohci/src_hid/hid_driver.c
+
+USBH_OBJS += $(addsuffix .obj, $(basename $(USB_HID_SRCS)))
+endif
+
+# USB Communication Device class driver
+ifneq ($(NXDK_USB_ENABLE_CDC),)
+USB_CDC_SRCS := \
+	$(USBH_DIR)/libusbohci/src_cdc/cdc_core.c \
+	$(USBH_DIR)/libusbohci/src_cdc/cdc_driver.c \
+	$(USBH_DIR)/libusbohci/src_cdc/cdc_parser.c
+
+USBH_OBJS += $(addsuffix .obj, $(basename $(USB_CDC_SRCS)))
+endif
+
+# USB Audio class driver
+ifneq ($(NXDK_USB_ENABLE_UAC),)
+USB_UAC_SRCS := \
+	$(USBH_DIR)/libusbohci/src_uac/uac_core.c \
+	$(USBH_DIR)/libusbohci/src_uac/uac_driver.c \
+	$(USBH_DIR)/libusbohci/src_uac/uac_parser.c
+
+USBH_OBJS += $(addsuffix .obj, $(basename $(USB_UAC_SRCS)))
+endif
+
+# USB Video class driver
+ifneq ($(NXDK_USB_ENABLE_UVC),)
+USB_UVC_SRCS := \
+	$(USBH_DIR)/libusbohci/src_uvc/uvc_core.c \
+	$(USBH_DIR)/libusbohci/src_uvc/uvc_driver.c \
+	$(USBH_DIR)/libusbohci/src_uvc/uvc_parser.c
+
+USBH_OBJS += $(addsuffix .obj, $(basename $(USB_UVC_SRCS)))
+endif
+
+# Mass Storage Class driver
+ifneq ($(NXDK_USB_ENABLE_MSC),)
+USB_MSC_SRCS := \
+	$(USBH_DIR)/libusbohci/src_msc/msc_driver.c \
+	$(USBH_DIR)/libusbohci/src_msc/msc_xfer.c
+USBH_OBJS += $(addsuffix .obj, $(basename $(USB_MSC_SRCS)))
+endif
+
+$(NXDK_DIR)/lib/nxdk_usb.lib: $(USBH_OBJS)
+
+NXDK_CFLAGS   += -I$(USBH_DIR)/libusbohci/inc -I$(USBH_DIR)/libusbohci_xbox/ -DUSBH_USE_EXTERNAL_CONFIG=\"usbh_config_xbox.h\"
+NXDK_CXXFLAGS += -I$(USBH_DIR)/libusbohci/inc -I$(USBH_DIR)/libusbohci_xbox/ -DUSBH_USE_EXTERNAL_CONFIG=\"usbh_config_xbox.h\"
+
+main.exe: $(NXDK_DIR)/lib/nxdk_usb.lib
+
+CLEANRULES += clean-usb
+
+.PHONY: clean-usb
+clean-usb:
+	$(VE)rm -f $(USBH_OBJS) $(NXDK_DIR)/lib/nxdk_usb.lib
+--- simbolos nxdk_usb.lib
+00000000 T _usbh_core_init
+000002e0 T _usbh_install_xid_conn_callback
+00000300 T _usbh_xid_init
+00000310 T _usbh_xid_get_device_list
+00000320 T _usbh_xid_read
+000005f0 T _usbh_xid_write
+00000620 T _usbh_xid_rumble
+00000670 T _usbh_xid_get_type
+00000750 T _usbh_pooling_hubs

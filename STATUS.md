@@ -953,3 +953,9 @@
 - Confirmado: queda do 18z8p = dbgblit CPU; caminho GPU (fill/quad/DrawString) sem custo de fps
 - Pendentes 2D: alpha<0.5 pulado (6/frame), shaders MOHAA inexistentes (sh0), GetShaderWidth/Height=1
 - 18z9a: inicio INPUT - coleta xbox_input* do ioQ3 + stubs IN_* + K_JOY/SE_* + usbh/xid do nxdk (docs/probes/lote18z9a-input.log), sem build
+
+## Lote 18z9a2 (2026-10-28 22:02)
+- 18z9a: ioQ3 input = xbox_input_engine.c (IN_* -> Sys_XboxInput*) + xbox_input.c (XID 4 portas + HID teclado/mouse, Com_QueueEvent SE_KEY/SE_CHAR/SE_MOUSE/SE_JOYSTICK_AXIS); mapa D-pad->setas, Start->ESC, A/B/X/Y/black/white/LT/RT->K_JOY1..8, menu A=ENTER B=ESC
+- 18z9a: OpenMoHAA tem IN_*, Com_QueueEvent, K_JOY1..32, SE_* compativeis; IN_* hoje = LG_Z em lg_client_stubs.c:65-71; nxdk tem nxdk_usb.lib + xid_driver (libusbohci_xbox)
+- 18z9a2: coleta xbox_input.c 700-fim + Makefile.xbox USB + probe.ps1 libs + Key_* OpenMoHAA + xid_driver.h/usbh_hid.h + simbolos nxdk_usb.lib (docs/probes/lote18z9a2-input.log), sem build
+- Plano 18z9b: copiar xbox_input*.c/h -> code/renderernull (adaptar Key_*), remover IN_Init/Frame/Shutdown/Restart dos stubs, nxdk_usb.lib no link
