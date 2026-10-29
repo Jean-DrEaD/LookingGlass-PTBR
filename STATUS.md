@@ -927,3 +927,8 @@
 - 18z8o: 16 .ritualfont em pak0 fonts/; formato RitFont = height/aspect/indirections[256]/locations {x y w h} em PIXELS (GL1 usa size*256 -> loader divide por 256, atlas 256 px provavel)
 - 18z8o: .ritualfont nao nomeia textura; so fonts/backup/asrafel.tga e courier-14.tga no fonts/ -> textura resolvida em R_LoadFontShader
 - 18z8p-a: coleta R_LoadFontShader + parser sgl + struct letterloc/sgl + arquivos de fonte qualquer extensao + topo tr_null.c (docs/probes/lote18z8p-a-fontshader.log), sem build
+
+## Lote 18z8p (2026-10-28 21:13)
+- 18z8p 1a: trava '-<=2' rejeitou diff legitimo (83 3 = hook LoadFont + overlay + ultima linha/return) -> trava por conteudo das linhas removidas
+- 18z8p-a: locations ja normalizadas (x,w/256; y,h*aspect/256); textura gfx/fonts/<nome>.tga; sem tga (verdana/-10/-14/-20, hapsburg) -> fallback verdana-12
+- 18z8p: lgf_load no lg_null_LoadFont; lgf_DrawString = DrawStretchPic por caractere; LG_SET(DrawString); overlay 'LG 18z8p'; numstat 83	3	code/renderernull/tr_null.c; exe=False iso=False

@@ -1,0 +1,7 @@
+# Lote 18z8p 2026-10-28 21:13
+numstat: 83	3	code/renderernull/tr_null.c
+removidas:
+f->numPages = 0; f->sgl[0] = s;
+pb_printat(0, 0, "LG 18z8n-e frame %u fps %u", lg2d_frame, lg2d_fps);
+return &lgNullRe;
+exe=False iso=False
