@@ -1,0 +1,911 @@
+# Lote 18z9a 2026-10-28 22:00
+
+===== ioQ3 arquivos xbox_input* =====
+D:\ioQuake3-Xbox\code\sys\xbox_input_engine.c (339 B)
+D:\ioQuake3-Xbox\code\sys\xbox_input.c (27950 B)
+D:\ioQuake3-Xbox\code\sys\xbox_input.h (657 B)
+
+===== INTEIRO xbox_input_engine.c =====
+    1: /* ioQuake3 input-system boundary for the native Xbox controller service. */
+    2: #include "xbox_input.h"
+    3: 
+    4: void IN_Init(void *windowData)
+    5: {
+    6: 	(void)windowData;
+    7: 	Sys_XboxInputInit();
+    8: }
+    9: 
+   10: void IN_Frame(void)
+   11: {
+   12: 	Sys_XboxInputFrame();
+   13: }
+   14: 
+   15: void IN_Shutdown(void)
+   16: {
+   17: 	Sys_XboxInputShutdown();
+   18: }
+   19: 
+   20: void IN_Restart(void)
+   21: {
+   22: 	IN_Shutdown();
+   23: 	IN_Init(NULL);
+   24: }
+
+===== INTEIRO xbox_input.c =====
+    1: /* Native Original Xbox XID controller service. */
+    2: #include "xbox_input.h"
+    3: 
+    4: #include <string.h>
+    5: 
+    6: #include <usb.h>
+    7: #include <usbh_lib.h>
+    8: #include <xid_driver.h>
+    9: #include <usbh_hid.h>
+   10: #include <xboxkrnl/xboxkrnl.h>
+   11: 
+   12: #include "../qcommon/qcommon.h"
+   13: #include "../client/keycodes.h"
+   14: 
+   15: #define XBOX_CONTROLLER_PORTS 4
+   16: /* Analog face buttons report noise near 0; sticks drift near center. */
+   17: #define XBOX_BUTTON_THRESHOLD 30
+   18: #define XBOX_STICK_DEADZONE 7849
+   19: #define XBOX_STICK_MAX 32767
+   20: #define XBOX_MENU_CURSOR_SPEED 400.0f
+   21: #define XBOX_FRAME_MAX_MS 50
+   22: #define XBOX_HID_MAX_DEVICES 8
+   23: #define HID_BOOT_KEYBOARD 1
+   24: #define HID_BOOT_MOUSE 2
+   25: #define HID_PROTOCOL_BOOT 0
+   26: #define HID_PROTOCOL_REPORT 1
+   27: #define HID_REPORT_MAX 16
+   28: #define HID_DESCRIPTOR_MAX 1024
+   29: #define HID_MOUSE_BUTTONS 5
+   30: #define HID_PARSE_USAGES 32
+   31: #define HID_PARSE_STACK 4
+   32: /* Usages are (page << 16) | id. */
+   33: #define HID_USAGE_BUTTON_1 0x00090001u
+   34: #define HID_USAGE_X 0x00010030u
+   35: #define HID_USAGE_Y 0x00010031u
+   36: #define HID_USAGE_WHEEL 0x00010038u
+   37: 
+   38: extern int Key_GetCatcher(void);
+   39: extern void Key_SetBinding(int keynum, const char *binding);
+   40: extern char *Key_GetBinding(int keynum);
+   41: 
+   42: /* The first eight indices match bits 0-7 of the XID digital button mask. */
+   43: enum
+   44: {
+   45: 	XBOX_BTN_DPAD_UP,
+   46: 	XBOX_BTN_DPAD_DOWN,
+   47: 	XBOX_BTN_DPAD_LEFT,
+   48: 	XBOX_BTN_DPAD_RIGHT,
+   49: 	XBOX_BTN_START,
+   50: 	XBOX_BTN_BACK,
+   51: 	XBOX_BTN_LEFT_THUMB,
+   52: 	XBOX_BTN_RIGHT_THUMB,
+   53: 	XBOX_BTN_A,
+   54: 	XBOX_BTN_B,
+   55: 	XBOX_BTN_X,
+   56: 	XBOX_BTN_Y,
+   57: 	XBOX_BTN_BLACK,
+   58: 	XBOX_BTN_WHITE,
+   59: 	XBOX_BTN_LEFT_TRIGGER,
+   60: 	XBOX_BTN_RIGHT_TRIGGER,
+   61: 	XBOX_BTN_COUNT
+   62: };
+   63: 
+   64: static const int xboxButtonKeys[XBOX_BTN_COUNT] =
+   65: {
+   66: 	K_UPARROW, K_DOWNARROW, K_LEFTARROW, K_RIGHTARROW,
+   67: 	K_ESCAPE, K_JOY11, K_JOY9, K_JOY10,
+   68: 	K_JOY1, K_JOY2, K_JOY3, K_JOY4, K_JOY5, K_JOY6, K_JOY7, K_JOY8
+   69: };
+   70: 
+   71: static xboxControllerState_t xboxControllers[XBOX_CONTROLLER_PORTS];
+   72: /* Key sent on press, so the release matches even if the menu state changed. */
+   73: static int xboxSentKey[XBOX_CONTROLLER_PORTS][XBOX_BTN_COUNT];
+   74: static int xboxSentAxis[XBOX_CONTROLLER_PORTS][4];
+   75: static float xboxCursorX;
+   76: static float xboxCursorY;
+   77: static int xboxLastFrameTime;
+   78: static qboolean xboxInputStarted;
+   79: static qboolean xboxInputStopping;
+   80: 
+   81: typedef struct
+   82: {
+   83: 	qboolean present;
+   84: 	qboolean isSigned;
+   85: 	uint8_t reportId;
+   86: 	uint8_t bitSize;
+   87: 	uint32_t bitOffset;
+   88: } xboxHidField_t;
+   89: 
+   90: typedef struct
+   91: {
+   92: 	qboolean reportIds;
+   93: 	xboxHidField_t buttons[HID_MOUSE_BUTTONS];
+   94: 	xboxHidField_t x, y, wheel;
+   95: } xboxHidMouseLayout_t;
+   96: 
+   97: typedef struct
+   98: {
+   99: 	int dx, dy, wheel;
+  100: 	int buttons, buttonMask;
+  101: } xboxHidMouseSample_t;
+  102: 
+  103: typedef struct
+  104: {
+  105: 	uint32_t usagePage;
+  106: 	int32_t logicalMin;
+  107: 	uint32_t reportSize;
+  108: 	uint32_t reportCount;
+  109: 	uint32_t reportId;
+  110: } xboxHidGlobals_t;
+  111: 
+  112: typedef struct
+  113: {
+  114: 	HID_DEV_T *device;
+  115: 	uint8_t protocol;
+  116: 	qboolean connected;
+  117: 	uint8_t reports[8][HID_REPORT_MAX];
+  118: 	uint8_t reportLengths[8];
+  119: 	uint8_t reportHead, reportCount;
+  120: 	int mouseX, mouseY;
+  121: 	xboxHidMouseLayout_t mouse;
+  122: 	uint8_t oldButtons;
+  123: 	qboolean capsLock;
+  124: 	uint8_t oldUsages[32];
+  125: 	int modifierKeys[4];
+  126: } xboxHidState_t;
+  127: 
+  128: static xboxHidState_t xboxHid[XBOX_HID_MAX_DEVICES];
+  129: static void Sys_XboxInputKey(int time, int key, qboolean down);
+  130: 
+  131: static void Sys_XboxHidSetField(xboxHidField_t *field, uint32_t reportId,
+  132: 	uint32_t bitOffset, uint32_t bitSize, qboolean isSigned)
+  133: {
+  134: 	field->present = qtrue;
+  135: 	field->isSigned = isSigned;
+  136: 	field->reportId = (uint8_t)reportId;
+  137: 	field->bitSize = (uint8_t)bitSize;
+  138: 	field->bitOffset = bitOffset;
+  139: }
+  140: 
+  141: static void Sys_XboxHidBootMouseLayout(xboxHidMouseLayout_t *layout)
+  142: {
+  143: 	int i;
+  144: 	memset(layout, 0, sizeof(*layout));
+  145: 	for (i = 0; i < HID_MOUSE_BUTTONS; ++i)
+  146: 		Sys_XboxHidSetField(&layout->buttons[i], 0, i, 1, qfalse);
+  147: 	Sys_XboxHidSetField(&layout->x, 0, 8, 8, qtrue);
+  148: 	Sys_XboxHidSetField(&layout->y, 0, 16, 8, qtrue);
+  149: 	Sys_XboxHidSetField(&layout->wheel, 0, 24, 8, qtrue);
+  150: }
+  151: 
+  152: static void Sys_XboxHidMatchMouseField(xboxHidMouseLayout_t *layout, uint32_t usage,
+  153: 	const xboxHidGlobals_t *globals, uint32_t bitOffset, qboolean relative)
+  154: {
+  155: 	xboxHidField_t *field = NULL;
+  156: 	if (usage >= HID_USAGE_BUTTON_1 && usage < HID_USAGE_BUTTON_1 + HID_MOUSE_BUTTONS)
+  157: 		field = &layout->buttons[usage - HID_USAGE_BUTTON_1];
+  158: 	else if (relative && usage == HID_USAGE_X)
+  159: 		field = &layout->x;
+  160: 	else if (relative && usage == HID_USAGE_Y)
+  161: 		field = &layout->y;
+  162: 	else if (relative && usage == HID_USAGE_WHEEL)
+  163: 		field = &layout->wheel;
+  164: 	if (field && !field->present)
+  165: 		Sys_XboxHidSetField(field, globals->reportId, bitOffset,
+  166: 			globals->reportSize, globals->logicalMin < 0);
+  167: }
+  168: 
+  169: /* Finds the button, X, Y and wheel fields in a HID 1.11 report descriptor. */
+  170: static qboolean Sys_XboxHidParseMouse(const uint8_t *desc, int length,
+  171: 	xboxHidMouseLayout_t *layout)
+  172: {
+  173: 	xboxHidGlobals_t globals, stack[HID_PARSE_STACK];
+  174: 	uint32_t usages[HID_PARSE_USAGES];
+  175: 	uint32_t inputBits[256];
+  176: 	uint32_t usageMin = 0;
+  177: 	int usageCount = 0, stackDepth = 0, pos = 0;
+  178: 
+  179: 	memset(layout, 0, sizeof(*layout));
+  180: 	memset(&globals, 0, sizeof(globals));
+  181: 	memset(inputBits, 0, sizeof(inputBits));
+  182: 	while (pos < length)
+  183: 	{
+  184: 		uint8_t prefix = desc[pos++];
+  185: 		int size = (prefix & 3) == 3 ? 4 : prefix & 3;
+  186: 		int type = (prefix >> 2) & 3;
+  187: 		int tag = prefix >> 4;
+  188: 		uint32_t value = 0;
+  189: 		int32_t signedValue;
+  190: 		int i;
+  191: 
+  192: 		if (prefix == 0xFE)
+  193: 		{
+  194: 			/* Long item: a data size byte and a tag byte come before the data. */
+  195: 			if (pos >= length)
+  196: 				return qfalse;
+  197: 			pos += 2 + desc[pos];
+  198: 			continue;
+  199: 		}
+  200: 		if (pos + size > length)
+  201: 			return qfalse;
+  202: 		for (i = 0; i < size; ++i)
+  203: 			value |= (uint32_t)desc[pos + i] << (8 * i);
+  204: 		pos += size;
+  205: 		signedValue = size == 1 ? (int8_t)value : size == 2 ? (int16_t)value : (int32_t)value;
+  206: 
+  207: 		if (type == 1)
+  208: 		{
+  209: 			switch (tag)
+  210: 			{
+  211: 			case 0x0: globals.usagePage = value; break;
+  212: 			case 0x1: globals.logicalMin = signedValue; break;
+  213: 			case 0x7: globals.reportSize = value; break;
+  214: 			case 0x8: globals.reportId = value & 0xFF; layout->reportIds = qtrue; break;
+  215: 			case 0x9: globals.reportCount = value; break;
+  216: 			case 0xA: if (stackDepth < HID_PARSE_STACK) stack[stackDepth++] = globals; break;
+  217: 			case 0xB: if (stackDepth > 0) globals = stack[--stackDepth]; break;
+  218: 			default: break;
+  219: 			}
+  220: 		}
+  221: 		else if (type == 2)
+  222: 		{
+  223: 			if (tag == 0x0 && usageCount < HID_PARSE_USAGES)
+  224: 				usages[usageCount++] = value;
+  225: 			else if (tag == 0x1)
+  226: 				usageMin = value;
+  227: 			else if (tag == 0x2)
+  228: 			{
+  229: 				uint32_t usage;
+  230: 				for (usage = usageMin; usage <= value && usageCount < HID_PARSE_USAGES; ++usage)
+  231: 					usages[usageCount++] = usage;
+  232: 			}
+  233: 		}
+  234: 		else if (type == 0)
+  235: 		{
+  236: 			/* Input flags: bit 0 constant, bit 1 variable, bit 2 relative. */
+  237: 			if (tag == 0x8)
+  238: 			{
+  239: 				if (!(value & 1) && (value & 2) && usageCount &&
+  240: 					globals.reportSize >= 1 && globals.reportSize <= 32)
+  241: 				{
+  242: 					for (i = 0; i < (int)globals.reportCount && i < HID_PARSE_USAGES; ++i)
+  243: 					{
+  244: 						uint32_t usage = usages[i < usageCount ? i : usageCount - 1];
+  245: 						/* A usage shorter than 4 bytes takes the page in effect here. */
+  246: 						if (!(usage >> 16))
+  247: 							usage |= globals.usagePage << 16;
+  248: 						Sys_XboxHidMatchMouseField(layout, usage, &globals,
+  249: 							inputBits[globals.reportId] + (uint32_t)i * globals.reportSize,
+  250: 							(value & 4) != 0);
+  251: 					}
+  252: 				}
+  253: 				inputBits[globals.reportId] += globals.reportSize * globals.reportCount;
+  254: 			}
+  255: 			usageCount = 0;
+  256: 			usageMin = 0;
+  257: 		}
+  258: 	}
+  259: 	return layout->x.present && layout->y.present;
+  260: }
+  261: 
+  262: static qboolean Sys_XboxHidReadMouseLayout(HID_DEV_T *device, xboxHidMouseLayout_t *layout)
+  263: {
+  264: 	/* Control transfers need DMA-safe memory from the USB pool. */
+  265: 	uint8_t *desc = (uint8_t *)usbh_alloc_mem(HID_DESCRIPTOR_MAX);
+  266: 	qboolean parsed = qfalse;
+  267: 
+  268: 	if (desc)
+  269: 	{
+  270: 		int length = usbh_hid_get_report_descriptor(device, desc, HID_DESCRIPTOR_MAX);
+  271: 		parsed = length > 0 && Sys_XboxHidParseMouse(desc, length, layout);
+  272: 		usbh_free_mem(desc, HID_DESCRIPTOR_MAX);
+  273: 	}
+  274: 	if (!parsed)
+  275: 		Sys_XboxHidBootMouseLayout(layout);
+  276: 	return parsed;
+  277: }
+  278: 
+  279: static qboolean Sys_XboxHidFieldValue(const xboxHidField_t *field, qboolean reportIds,
+  280: 	const uint8_t *report, uint32_t length, int *value)
+  281: {
+  282: 	uint32_t raw = 0;
+  283: 	uint32_t i;
+  284: 
+  285: 	if (!field->present)
+  286: 		return qfalse;
+  287: 	if (reportIds)
+  288: 	{
+  289: 		if (!length || report[0] != field->reportId)
+  290: 			return qfalse;
+  291: 		++report;
+  292: 		--length;
+  293: 	}
+  294: 	if (field->bitOffset >= length * 8 || field->bitSize > length * 8 - field->bitOffset)
+  295: 		return qfalse;
+  296: 	for (i = 0; i < field->bitSize; ++i)
+  297: 	{
+  298: 		uint32_t bit = field->bitOffset + i;
+  299: 		if (report[bit >> 3] & (1 << (bit & 7)))
+  300: 			raw |= 1u << i;
+  301: 	}
+  302: 	if (field->isSigned && field->bitSize < 32 && (raw & (1u << (field->bitSize - 1))))
+  303: 		raw |= ~0u << field->bitSize;
+  304: 	*value = (int)raw;
+  305: 	return qtrue;
+  306: }
+  307: 
+  308: /* Also runs in the USB DPC, so it only reads the report and the fixed layout. */
+  309: static void Sys_XboxHidMouseDecode(const xboxHidMouseLayout_t *layout,
+  310: 	const uint8_t *report, uint32_t length, xboxHidMouseSample_t *sample)
+  311: {
+  312: 	int value;
+  313: 	int i;
+  314: 
+  315: 	memset(sample, 0, sizeof(*sample));
+  316: 	if (Sys_XboxHidFieldValue(&layout->x, layout->reportIds, report, length, &value))
+  317: 		sample->dx = value;
+  318: 	if (Sys_XboxHidFieldValue(&layout->y, layout->reportIds, report, length, &value))
+  319: 		sample->dy = value;
+  320: 	if (Sys_XboxHidFieldValue(&layout->wheel, layout->reportIds, report, length, &value))
+  321: 		sample->wheel = value;
+  322: 	for (i = 0; i < HID_MOUSE_BUTTONS; ++i)
+  323: 	{
+  324: 		if (Sys_XboxHidFieldValue(&layout->buttons[i], layout->reportIds, report, length, &value))
+  325: 		{
+  326: 			sample->buttonMask |= 1 << i;
+  327: 			if (value)
+  328: 				sample->buttons |= 1 << i;
+  329: 		}
+  330: 	}
+  331: }
+  332: 
+  333: static int Sys_XboxHidSlot(HID_DEV_T *device, qboolean allocate)
+  334: {
+  335: 	int i;
+  336: 	for (i = 0; i < XBOX_HID_MAX_DEVICES; ++i)
+  337: 		if (xboxHid[i].device == device && (!allocate || xboxHid[i].connected))
+  338: 			return i;
+  339: 	if (allocate)
+  340: 		for (i = 0; i < XBOX_HID_MAX_DEVICES; ++i)
+  341: 			if (!xboxHid[i].device)
+  342: 			{
+  343: 				memset(&xboxHid[i], 0, sizeof(xboxHid[i]));
+  344: 				xboxHid[i].device = device;
+  345: 				xboxHid[i].protocol = device->bProtocolCode;
+  346: 				xboxHid[i].connected = qtrue;
+  347: 				device->user_data = &xboxHid[i];
+  348: 				return i;
+  349: 			}
+  350: 	return -1;
+  351: }
+  352: 
+  353: static void Sys_XboxHidRead(HID_DEV_T *device, uint16_t endpoint, int status,
+  354: 	uint8_t *report, uint32_t length)
+  355: {
+  356: 	xboxHidState_t *state = device ? (xboxHidState_t *)device->user_data : NULL;
+  357: 	(void)endpoint;
+  358: 	if (!state || status || !report || !length)
+  359: 		return;
+  360: 	if (length > HID_REPORT_MAX)
+  361: 		length = HID_REPORT_MAX;
+  362: 	if (state->reportCount == 8)
+  363: 	{
+  364: 		state->reportHead = (state->reportHead + 1) & 7;
+  365: 		--state->reportCount;
+  366: 	}
+  367: 	{
+  368: 		int tail = (state->reportHead + state->reportCount) & 7;
+  369: 		memcpy(state->reports[tail], report, length);
+  370: 		state->reportLengths[tail] = (uint8_t)length;
+  371: 		++state->reportCount;
+  372: 	}
+  373: 	if (state->protocol == HID_BOOT_MOUSE)
+  374: 	{
+  375: 		xboxHidMouseSample_t sample;
+  376: 		Sys_XboxHidMouseDecode(&state->mouse, report, length, &sample);
+  377: 		state->mouseX += sample.dx;
+  378: 		state->mouseY += sample.dy;
+  379: 	}
+  380: }
+  381: 
+  382: static void Sys_XboxHidConnected(HID_DEV_T *device, int param)
+  383: {
+  384: 	int slot;
+  385: 	uint8_t protocol = HID_PROTOCOL_BOOT;
+  386: 	(void)param;
+  387: 	if (!device || (device->bProtocolCode != HID_BOOT_KEYBOARD &&
+  388: 		device->bProtocolCode != HID_BOOT_MOUSE))
+  389: 		return;
+  390: 	slot = Sys_XboxHidSlot(device, qtrue);
+  391: 	if (slot < 0)
+  392: 		return;
+  393: 	/* Some mice ignore boot protocol, so decode their own layout in report protocol. */
+  394: 	if (device->bProtocolCode == HID_BOOT_MOUSE &&
+  395: 		Sys_XboxHidReadMouseLayout(device, &xboxHid[slot].mouse))
+  396: 		protocol = HID_PROTOCOL_REPORT;
+  397: 	/* Boot protocol gives the standard 8-byte keyboard and 3-byte mouse reports. */
+  398: 	(void)usbh_hid_set_protocol(device, protocol);
+  399: 	(void)usbh_hid_start_int_read(device, 0, Sys_XboxHidRead);
+  400: }
+  401: 
+  402: static void Sys_XboxHidDisconnected(HID_DEV_T *device, int param)
+  403: {
+  404: 	int slot = Sys_XboxHidSlot(device, qfalse);
+  405: 	(void)param;
+  406: 	if (slot >= 0)
+  407: 	{
+  408: 		xboxHid[slot].connected = qfalse;
+  409: 		xboxHid[slot].reportHead = 0;
+  410: 		xboxHid[slot].reportCount = 0;
+  411: 		xboxHid[slot].mouseX = xboxHid[slot].mouseY = 0;
+  412: 	}
+  413: 	if (device)
+  414: 		device->user_data = NULL;
+  415: }
+  416: 
+  417: static int Sys_XboxHidKey(uint8_t usage)
+  418: {
+  419: 	if (usage >= 4 && usage <= 29)
+  420: 		return 'a' + usage - 4;
+  421: 	if (usage >= 30 && usage <= 38)
+  422: 		return '1' + usage - 30;
+  423: 	if (usage == 39) return '0';
+  424: 	if (usage >= 40 && usage <= 52)
+  425: 	{
+  426: 		static const int keys[] = { K_ENTER, K_ESCAPE, K_BACKSPACE, K_TAB, K_SPACE,
+  427: 			'-', '=', '[', ']', '\\', '#', ';', '\'' };
+  428: 		return keys[usage - 40];
+  429: 	}
+  430: 	if (usage >= 58 && usage <= 69) return K_F1 + usage - 58;
+  431: 	switch (usage)
+  432: 	{
+  433: 	case 70: return K_PRINT; case 71: return K_SCROLLOCK; case 72: return K_PAUSE;
+  434: 	case 73: return K_INS; case 74: return K_HOME; case 75: return K_PGUP;
+  435: 	case 76: return K_DEL; case 77: return K_END; case 78: return K_PGDN;
+  436: 	case 79: return K_RIGHTARROW; case 80: return K_LEFTARROW;
+  437: 	case 81: return K_DOWNARROW; case 82: return K_UPARROW;
+  438: 	case 83: return K_KP_NUMLOCK; case 84: return K_KP_SLASH;
+  439: 	case 85: return K_KP_STAR; case 86: return K_KP_MINUS;
+  440: 	case 87: return K_KP_PLUS; case 88: return K_KP_ENTER;
+  441: 	case 89: return K_KP_END; case 90: return K_KP_DOWNARROW;
+  442: 	case 91: return K_KP_PGDN; case 92: return K_KP_LEFTARROW;
+  443: 	case 93: return K_KP_5; case 94: return K_KP_RIGHTARROW;
+  444: 	case 95: return K_KP_HOME; case 96: return K_KP_UPARROW;
+  445: 	case 97: return K_KP_PGUP; case 98: return K_KP_INS;
+  446: 	case 99: return K_KP_DEL; case 103: return K_KP_EQUALS;
+  447: 	case 53: return K_CONSOLE;
+  448: 	case 57: return K_CAPSLOCK;
+  449: 	case 54: return ','; case 55: return '.'; case 56: return '/';
+  450: 	default: return 0;
+  451: 	}
+  452: }
+  453: 
+  454: static void Sys_XboxHidKeyEvent(int time, int key, qboolean down, qboolean character)
+  455: {
+  456: 	if (!key) return;
+  457: 	Com_QueueEvent(time, SE_KEY, key, down, 0, NULL);
+  458: 	if (down && character && key >= 32 && key < 127)
+  459: 		Com_QueueEvent(time, SE_CHAR, key, 0, 0, NULL);
+  460: }
+  461: 
+  462: static int Sys_XboxHidChar(uint8_t usage, qboolean shifted, qboolean caps)
+  463: {
+  464: 	int key = Sys_XboxHidKey(usage);
+  465: 	/* ioq3 text fields erase on ctrl-h, which sdl_input.c sends for Backspace. */
+  466: 	if (usage == 42)
+  467: 		return 'h' - 'a' + 1;
+  468: 	if (usage >= 4 && usage <= 29)
+  469: 		return (shifted ^ caps) ? key - 'a' + 'A' : key;
+  470: 	if (usage >= 30 && usage <= 39)
+  471: 	{
+  472: 		static const char shiftedDigits[] = "!@#$%^&*()";
+  473: 		return shifted ? shiftedDigits[usage - 30] : (usage == 39 ? '0' : '1' + usage - 30);
+  474: 	}
+  475: 	if (usage >= 45 && usage <= 56)
+  476: 	{
+  477: 		static const char plain[] = "-=[]\\#;'`,./";
+  478: 		static const char shiftedChars[] = "_+{}|~:\"~<>?";
+  479: 		return shifted ? shiftedChars[usage - 45] : plain[usage - 45];
+  480: 	}
+  481: 	return key >= 32 && key < 127 ? key : 0;
+  482: }
+  483: 
+  484: static void Sys_XboxHidFrame(int time)
+  485: {
+  486: 	int device;
+  487: 	for (device = 0; device < XBOX_HID_MAX_DEVICES; ++device)
+  488: 	{
+  489: 		xboxHidState_t *state = &xboxHid[device];
+  490: 		uint8_t reports[8][HID_REPORT_MAX];
+  491: 		uint8_t reportLengths[8];
+  492: 		uint8_t protocol;
+  493: 		int reportCount, reportHead, mouseX, mouseY;
+  494: 		int reportNumber;
+  495: 		qboolean connected, devicePresent;
+  496: 		KIRQL oldIrql;
+  497: 		int i;
+  498: 		oldIrql = KeRaiseIrqlToDpcLevel();
+  499: 		devicePresent = state->device != NULL;
+  500: 		connected = devicePresent && state->connected;
+  501: 		protocol = state->protocol;
+  502: 		reportHead = state->reportHead;
+  503: 		reportCount = state->reportCount;
+  504: 		mouseX = state->mouseX;
+  505: 		mouseY = state->mouseY;
+  506: 		state->reportHead = 0;
+  507: 		state->reportCount = 0;
+  508: 		state->mouseX = state->mouseY = 0;
+  509: 		for (i = 0; i < reportCount; ++i)
+  510: 		{
+  511: 			int index = (reportHead + i) & 7;
+  512: 			memcpy(reports[i], state->reports[index], HID_REPORT_MAX);
+  513: 			reportLengths[i] = state->reportLengths[index];
+  514: 		}
+  515: 		KfLowerIrql(oldIrql);
+  516: 		if (!devicePresent) continue;
+  517: 		if (!connected)
+  518: 		{
+  519: 			for (i = 0; i < 32; ++i)
+  520: 			{
+  521: 				int bit;
+  522: 				for (bit = 0; bit < 8; ++bit)
+  523: 					if (state->oldUsages[i] & (1 << bit))
+  524: 						Sys_XboxHidKeyEvent(time, (i * 8 + bit) == 53 ? K_CONSOLE : Sys_XboxHidKey((uint8_t)(i * 8 + bit)), qfalse, qfalse);
+  525: 			}
+  526: 			for (i = 0; i < 4; ++i)
+  527: 				Sys_XboxHidKeyEvent(time, state->modifierKeys[i], qfalse, qfalse);
+  528: 			for (i = 0; i < 5; ++i)
+  529: 			{
+  530: 				if (state->oldButtons & (1 << i))
+  531: 					Sys_XboxInputKey(time, K_MOUSE1 + i, qfalse);
+  532: 			}
+  533: 			oldIrql = KeRaiseIrqlToDpcLevel();
+  534: 			memset(state, 0, sizeof(*state));
+  535: 			KfLowerIrql(oldIrql);
+  536: 			continue;
+  537: 		}
+  538: 		for (reportNumber = 0; reportNumber < reportCount; ++reportNumber)
+  539: 		{
+  540: 			uint8_t *report = reports[reportNumber];
+  541: 			uint32_t reportLength = reportLengths[reportNumber];
+  542: 			if (protocol == HID_BOOT_KEYBOARD && reportLength >= 8)
+  543: 			{
+  544: 				uint8_t usages[32];
+  545: 				qboolean shift = (report[0] & 0x22) != 0;
+  546: 				memset(usages, 0, sizeof(usages));
+  547: 				for (i = 0; i < 6; ++i)
+  548: 				{
+  549: 					int usage = report[2 + i];
+  550: 					if (usage >= 1 && usage <= 3)
+  551: 						break;
+  552: 					usages[usage >> 3] |= (uint8_t)(1 << (usage & 7));
+  553: 				}
+  554: 				if (i != 6) continue;
+  555: 				for (i = 0; i < 4; ++i)
+  556: 				{
+  557: 					static const int keys[] = { K_CTRL, K_SHIFT, K_ALT, K_COMMAND };
+  558: 					int modifierMask = (1 << i) | (1 << (i + 4));
+  559: 					int key = (report[0] & modifierMask) ? keys[i] : 0;
+  560: 					if (key != state->modifierKeys[i])
+  561: 					{
+  562: 						Sys_XboxHidKeyEvent(time, state->modifierKeys[i], qfalse, qfalse);
+  563: 						Sys_XboxHidKeyEvent(time, key, qtrue, qfalse);
+  564: 						state->modifierKeys[i] = key;
+  565: 					}
+  566: 				}
+  567: 				if ((usages[57 >> 3] & (1 << (57 & 7))) && !(state->oldUsages[57 >> 3] & (1 << (57 & 7))))
+  568: 					state->capsLock = !state->capsLock;
+  569: 				for (i = 0; i < 256; ++i)
+  570: 				{
+  571: 					uint8_t mask = (uint8_t)(1 << (i & 7));
+  572: 					qboolean wasDown = (state->oldUsages[i >> 3] & mask) != 0;
+  573: 					qboolean isDown = (usages[i >> 3] & mask) != 0;
+  574: 					int key = i == 53 ? K_CONSOLE : Sys_XboxHidKey((uint8_t)i);
+  575: 					if (wasDown != isDown)
+  576: 					{
+  577: 						Sys_XboxHidKeyEvent(time, key, isDown, qfalse);
+  578: 						if (isDown && i != 53)
+  579: 						{
+  580: 							int character = Sys_XboxHidChar((uint8_t)i, shift, state->capsLock);
+  581: 							if (character) Com_QueueEvent(time, SE_CHAR, character, 0, 0, NULL);
+  582: 						}
+  583: 					}
+  584: 				}
+  585: 				memcpy(state->oldUsages, usages, sizeof(usages));
+  586: 			}
+  587: 			else if (protocol == HID_BOOT_MOUSE)
+  588: 			{
+  589: 				xboxHidMouseSample_t sample;
+  590: 				uint8_t buttons;
+  591: 				int wheel;
+  592: 				Sys_XboxHidMouseDecode(&state->mouse, report, reportLength, &sample);
+  593: 				/* Keep buttons this report does not carry, e.g. another report ID. */
+  594: 				buttons = (uint8_t)((state->oldButtons & ~sample.buttonMask) | sample.buttons);
+  595: 				for (i = 0; i < 5; ++i)
+  596: 					if ((buttons ^ state->oldButtons) & (1 << i))
+  597: 						Sys_XboxInputKey(time, K_MOUSE1 + i, (buttons & (1 << i)) != 0);
+  598: 				state->oldButtons = buttons;
+  599: 				wheel = sample.wheel;
+  600: 				while (wheel > 0)
+  601: 				{
+  602: 					Sys_XboxInputKey(time, K_MWHEELUP, qtrue);
+  603: 					Sys_XboxInputKey(time, K_MWHEELUP, qfalse);
+  604: 					--wheel;
+  605: 				}
+  606: 				while (wheel < 0)
+  607: 				{
+  608: 					Sys_XboxInputKey(time, K_MWHEELDOWN, qtrue);
+  609: 					Sys_XboxInputKey(time, K_MWHEELDOWN, qfalse);
+  610: 					++wheel;
+  611: 				}
+  612: 			}
+  613: 		}
+  614: 		if (protocol == HID_BOOT_MOUSE && (mouseX || mouseY))
+  615: 		{
+  616: 			Com_QueueEvent(time, SE_MOUSE, mouseX, mouseY, 0, NULL);
+  617: 		}
+  618: 	}
+  619: }
+  620: 
+  621: static int Sys_XboxInputStick(int value)
+  622: {
+  623: 	int magnitude = value < 0 ? -value : value;
+  624: 
+  625: 	if (magnitude <= XBOX_STICK_DEADZONE)
+  626: 		return 0;
+  627: 	if (magnitude > XBOX_STICK_MAX)
+  628: 		magnitude = XBOX_STICK_MAX;
+  629: 	/* Rescale so output starts at 0 right after the deadzone. */
+  630: 	magnitude = (magnitude - XBOX_STICK_DEADZONE) * XBOX_STICK_MAX /
+  631: 		(XBOX_STICK_MAX - XBOX_STICK_DEADZONE);
+  632: 	return value < 0 ? -magnitude : magnitude;
+  633: }
+  634: 
+  635: static float Sys_XboxInputCursorStep(int stick, int frameMs)
+  636: {
+  637: 	float f = (float)stick / (float)XBOX_STICK_MAX;
+  638: 
+  639: 	/* Squared response gives finer control near center. */
+  640: 	return f * (f < 0.0f ? -f : f) * XBOX_MENU_CURSOR_SPEED *
+  641: 		(float)frameMs * 0.001f;
+  642: }
+  643: 
+  644: static void Sys_XboxInputKey(int time, int key, qboolean down)
+  645: {
+  646: 	Com_QueueEvent(time, SE_KEY, key, down, 0, NULL);
+  647: }
+  648: 
+  649: static void Sys_XboxInputAxisEvent(int time, int axis, int value)
+  650: {
+  651: 	Com_QueueEvent(time, SE_JOYSTICK_AXIS, axis, value, 0, NULL);
+  652: }
+  653: 
+  654: static qboolean Sys_XboxInputButtonDown(const xboxControllerState_t *state,
+  655: 	int button)
+  656: {
+  657: 	switch (button)
+  658: 	{
+  659: 	case XBOX_BTN_A:
+  660: 		return state->a >= XBOX_BUTTON_THRESHOLD;
+  661: 	case XBOX_BTN_B:
+  662: 		return state->b >= XBOX_BUTTON_THRESHOLD;
+  663: 	case XBOX_BTN_X:
+  664: 		return state->x >= XBOX_BUTTON_THRESHOLD;
+  665: 	case XBOX_BTN_Y:
+  666: 		return state->y >= XBOX_BUTTON_THRESHOLD;
+  667: 	case XBOX_BTN_BLACK:
+  668: 		return state->black >= XBOX_BUTTON_THRESHOLD;
+  669: 	case XBOX_BTN_WHITE:
+  670: 		return state->white >= XBOX_BUTTON_THRESHOLD;
+  671: 	case XBOX_BTN_LEFT_TRIGGER:
+  672: 		return state->leftTrigger >= XBOX_BUTTON_THRESHOLD;
+  673: 	case XBOX_BTN_RIGHT_TRIGGER:
+  674: 		return state->rightTrigger >= XBOX_BUTTON_THRESHOLD;
+  675: 	default:
+  676: 		return (state->buttons & (1 << button)) != 0;
+  677: 	}
+  678: }
+  679: 
+  680: static int Sys_XboxInputKeyFor(int button, qboolean inMenu)
+  681: {
+  682: 	/* The menu UI only understands Enter and Escape for accept and back. */
+  683: 	if (inMenu && button == XBOX_BTN_A)
+  684: 		return K_ENTER;
+  685: 	if (inMenu && button == XBOX_BTN_B)
+  686: 		return K_ESCAPE;
+  687: 	return xboxButtonKeys[button];
+  688: }
+  689: 
+  690: static void Sys_XboxInputDefaultBind(int key, const char *binding)
+  691: {
+  692: 	char *existing = Key_GetBinding(key);
+  693: 
+  694: 	if (!existing || !existing[0])
+  695: 		Key_SetBinding(key, binding);
+  696: }
+  697: 
+  698: static void Sys_XboxInputDefaultCvar(const char *name, const char *value)
+  699: {
+  700: 	cvar_t *cvar = Cvar_Get(name, value, CVAR_ARCHIVE);
+
+===== INTEIRO xbox_input.h =====
+    1: /* Native Original Xbox XID controller service. */
+    2: #ifndef IOQUAKE3_XBOX_INPUT_H
+    3: #define IOQUAKE3_XBOX_INPUT_H
+    4: 
+    5: #include <stdint.h>
+    6: 
+    7: #include "../qcommon/q_shared.h"
+    8: 
+    9: typedef struct
+   10: {
+   11: 	qboolean connected;
+   12: 	uint16_t buttons;
+   13: 	uint8_t a;
+   14: 	uint8_t b;
+   15: 	uint8_t x;
+   16: 	uint8_t y;
+   17: 	uint8_t black;
+   18: 	uint8_t white;
+   19: 	uint8_t leftTrigger;
+   20: 	uint8_t rightTrigger;
+   21: 	int16_t leftStickX;
+   22: 	int16_t leftStickY;
+   23: 	int16_t rightStickX;
+   24: 	int16_t rightStickY;
+   25: } xboxControllerState_t;
+   26: 
+   27: qboolean Sys_XboxInputInit(void);
+   28: void Sys_XboxInputPoll(void);
+   29: void Sys_XboxInputFrame(void);
+   30: void Sys_XboxInputShutdown(void);
+   31: const xboxControllerState_t *Sys_XboxInputState(int port);
+   32: 
+   33: #endif
+
+===== ioQ3 includes/libs usb no build =====
+ioQuake3-Xbox\cmake\tools\CMakeLists.txt:29:     ${SOURCE_DIR}/tools/lcc/src/input.c
+ioQuake3-Xbox\Makefile.xbox:51: 	$(CURDIR)/code/sys/xbox_input.c \
+ioQuake3-Xbox\Makefile.xbox:52: 	$(CURDIR)/code/sys/xbox_input_engine.c \
+ioQuake3-Xbox\Makefile.xbox:88: 	$(CURDIR)/code/client/cl_input.c \
+ioQuake3-Xbox\Makefile.xbox:150: NXDK_USB_ENABLE_HID = y
+ioQuake3-Xbox\Makefile.xbox:176: # nxdk's base USB library includes the XID driver.
+
+===== lg_client_stubs.c IN_* =====
+openmohaa\code\renderernull\lg_client_stubs.c:65: LG_Z(IN_Init)
+openmohaa\code\renderernull\lg_client_stubs.c:66: LG_Z(IN_Frame)
+openmohaa\code\renderernull\lg_client_stubs.c:67: LG_Z(IN_Shutdown)
+openmohaa\code\renderernull\lg_client_stubs.c:68: LG_Z(IN_Restart)
+openmohaa\code\renderernull\lg_client_stubs.c:69: LG_Z(IN_SetCursorFromImage)
+openmohaa\code\renderernull\lg_client_stubs.c:70: LG_Z(IN_FreeCursor)
+openmohaa\code\renderernull\lg_client_stubs.c:71: LG_Z(IN_IsCursorActive)
+openmohaa\code\renderernull\lg_client_stubs.c:77: void IN_GetMousePosition(int *x, int *y); void IN_GetMousePosition(int *x, int *y) { if (x) *x = 0; if (y) *y = 0; }
+
+===== OpenMoHAA: declaracoes IN_* / Sys_QueEvent / Com_QueueEvent =====
+openmohaa\code\client\client.h:593: void IN_ToggleMouse( void );
+openmohaa\code\client\client.h:594: void IN_MouseOn( void );
+openmohaa\code\client\client.h:595: void IN_MouseOff( void );
+openmohaa\code\client\client.h:605: void IN_CenterView (void);
+openmohaa\code\qcommon\qcommon.h:1231: void CL_JoystickEvent( int axis, int value, int time );
+openmohaa\code\qcommon\qcommon.h:1298: void IN_Init(void *windowData);
+openmohaa\code\qcommon\qcommon.h:1299: void IN_Frame(void);
+openmohaa\code\qcommon\qcommon.h:1300: void IN_Shutdown(void);
+openmohaa\code\qcommon\qcommon.h:1301: void IN_Restart(void);
+openmohaa\code\qcommon\qcommon.h:1302: void IN_GetMousePosition(int *x, int *y);
+openmohaa\code\qcommon\qcommon.h:1305: qboolean IN_SetCursorFromImage(const byte *pic, int width, int height, pCursorFree cursorFreeFn);
+openmohaa\code\qcommon\qcommon.h:1306: void IN_FreeCursor();
+openmohaa\code\qcommon\qcommon.h:1307: qboolean IN_IsCursorActive();
+openmohaa\code\qcommon\qcommon.h:1356: void		Com_QueueEvent( int time, sysEventType_t type, int value, int value2, size_t ptrLength, void *ptr );
+
+===== OpenMoHAA: K_JOY / K_PAD / K_AUX / sysEventType_t =====
+openmohaa\code\client\keycodes.h:104: 	K_JOY1,
+openmohaa\code\client\keycodes.h:105: 	K_JOY2,
+openmohaa\code\client\keycodes.h:106: 	K_JOY3,
+openmohaa\code\client\keycodes.h:107: 	K_JOY4,
+openmohaa\code\client\keycodes.h:108: 	K_JOY5,
+openmohaa\code\client\keycodes.h:109: 	K_JOY6,
+openmohaa\code\client\keycodes.h:110: 	K_JOY7,
+openmohaa\code\client\keycodes.h:111: 	K_JOY8,
+openmohaa\code\client\keycodes.h:112: 	K_JOY9,
+openmohaa\code\client\keycodes.h:113: 	K_JOY10,
+openmohaa\code\client\keycodes.h:114: 	K_JOY11,
+openmohaa\code\client\keycodes.h:115: 	K_JOY12,
+openmohaa\code\client\keycodes.h:116: 	K_JOY13,
+openmohaa\code\client\keycodes.h:117: 	K_JOY14,
+openmohaa\code\client\keycodes.h:118: 	K_JOY15,
+openmohaa\code\client\keycodes.h:119: 	K_JOY16,
+openmohaa\code\client\keycodes.h:120: 	K_JOY17,
+openmohaa\code\client\keycodes.h:121: 	K_JOY18,
+openmohaa\code\client\keycodes.h:122: 	K_JOY19,
+openmohaa\code\client\keycodes.h:123: 	K_JOY20,
+openmohaa\code\client\keycodes.h:124: 	K_JOY21,
+openmohaa\code\client\keycodes.h:125: 	K_JOY22,
+openmohaa\code\client\keycodes.h:126: 	K_JOY23,
+openmohaa\code\client\keycodes.h:127: 	K_JOY24,
+openmohaa\code\client\keycodes.h:128: 	K_JOY25,
+openmohaa\code\client\keycodes.h:129: 	K_JOY26,
+openmohaa\code\client\keycodes.h:130: 	K_JOY27,
+openmohaa\code\client\keycodes.h:131: 	K_JOY28,
+openmohaa\code\client\keycodes.h:132: 	K_JOY29,
+openmohaa\code\client\keycodes.h:133: 	K_JOY30,
+openmohaa\code\client\keycodes.h:134: 	K_JOY31,
+openmohaa\code\client\keycodes.h:135: 	K_JOY32,
+openmohaa\code\client\keycodes.h:137: 	K_AUX1,
+openmohaa\code\client\keycodes.h:138: 	K_AUX2,
+openmohaa\code\client\keycodes.h:139: 	K_AUX3,
+openmohaa\code\client\keycodes.h:140: 	K_AUX4,
+openmohaa\code\client\keycodes.h:141: 	K_AUX5,
+openmohaa\code\client\keycodes.h:142: 	K_AUX6,
+openmohaa\code\client\keycodes.h:143: 	K_AUX7,
+openmohaa\code\client\keycodes.h:144: 	K_AUX8,
+openmohaa\code\client\keycodes.h:145: 	K_AUX9,
+openmohaa\code\client\keycodes.h:146: 	K_AUX10,
+openmohaa\code\client\keycodes.h:147: 	K_AUX11,
+openmohaa\code\client\keycodes.h:148: 	K_AUX12,
+openmohaa\code\client\keycodes.h:149: 	K_AUX13,
+openmohaa\code\client\keycodes.h:150: 	K_AUX14,
+openmohaa\code\client\keycodes.h:151: 	K_AUX15,
+openmohaa\code\client\keycodes.h:152: 	K_AUX16,
+openmohaa\code\client\keycodes.h:264: 	K_PAD0_A,
+openmohaa\code\client\keycodes.h:265: 	K_PAD0_B,
+openmohaa\code\client\keycodes.h:266: 	K_PAD0_X,
+openmohaa\code\client\keycodes.h:267: 	K_PAD0_Y,
+openmohaa\code\client\keycodes.h:268: 	K_PAD0_BACK,
+openmohaa\code\client\keycodes.h:269: 	K_PAD0_GUIDE,
+openmohaa\code\client\keycodes.h:270: 	K_PAD0_START,
+openmohaa\code\client\keycodes.h:271: 	K_PAD0_LEFTSTICK_CLICK,
+openmohaa\code\client\keycodes.h:272: 	K_PAD0_RIGHTSTICK_CLICK,
+openmohaa\code\client\keycodes.h:273: 	K_PAD0_LEFTSHOULDER,
+openmohaa\code\client\keycodes.h:274: 	K_PAD0_RIGHTSHOULDER,
+openmohaa\code\client\keycodes.h:275: 	K_PAD0_DPAD_UP,
+openmohaa\code\client\keycodes.h:276: 	K_PAD0_DPAD_DOWN,
+openmohaa\code\client\keycodes.h:277: 	K_PAD0_DPAD_LEFT,
+openmohaa\code\client\keycodes.h:278: 	K_PAD0_DPAD_RIGHT,
+openmohaa\code\client\keycodes.h:280: 	K_PAD0_LEFTSTICK_LEFT,
+openmohaa\code\client\keycodes.h:281: 	K_PAD0_LEFTSTICK_RIGHT,
+openmohaa\code\client\keycodes.h:282: 	K_PAD0_LEFTSTICK_UP,
+openmohaa\code\client\keycodes.h:283: 	K_PAD0_LEFTSTICK_DOWN,
+openmohaa\code\client\keycodes.h:284: 	K_PAD0_RIGHTSTICK_LEFT,
+openmohaa\code\client\keycodes.h:285: 	K_PAD0_RIGHTSTICK_RIGHT,
+openmohaa\code\client\keycodes.h:286: 	K_PAD0_RIGHTSTICK_UP,
+openmohaa\code\client\keycodes.h:287: 	K_PAD0_RIGHTSTICK_DOWN,
+openmohaa\code\client\keycodes.h:288: 	K_PAD0_LEFTTRIGGER,
+openmohaa\code\client\keycodes.h:289: 	K_PAD0_RIGHTTRIGGER,
+openmohaa\code\client\keycodes.h:291: 	K_PAD0_MISC1,    /* Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button */
+openmohaa\code\client\keycodes.h:292: 	K_PAD0_PADDLE1,  /* Xbox Elite paddle P1 */
+openmohaa\code\client\keycodes.h:293: 	K_PAD0_PADDLE2,  /* Xbox Elite paddle P3 */
+openmohaa\code\client\keycodes.h:294: 	K_PAD0_PADDLE3,  /* Xbox Elite paddle P2 */
+openmohaa\code\client\keycodes.h:295: 	K_PAD0_PADDLE4,  /* Xbox Elite paddle P4 */
+openmohaa\code\client\keycodes.h:296: 	K_PAD0_TOUCHPAD, /* PS4/PS5 touchpad button */
+openmohaa\code\qcommon\qcommon.h:1338: 	SE_KEY,		// evValue is a key code, evValue2 is the down flag
+openmohaa\code\qcommon\qcommon.h:1339: 	SE_CHAR,	// evValue is an ascii char
+openmohaa\code\qcommon\qcommon.h:1340: 	SE_MOUSE,	// evValue and evValue2 are reletive signed x / y moves
+openmohaa\code\qcommon\qcommon.h:1341: 	SE_JOYSTICK_AXIS,	// evValue is an axis number and evValue2 is the current state (-127 to 127)
+
+===== OpenMoHAA: chamadas IN_Frame/IN_Init no cliente =====
+openmohaa\code\qcommon\common.c:2351:     IN_Frame();
+
+===== nxdk: usbh/xid no container =====
+Makefile
+libusbohci
+libusbohci_xbox
+/usr/src/nxdk/lib/usb/libusbohci/inc/usbh_hid.h
+/usr/src/nxdk/lib/usb/libusbohci/inc/usbh_cdc.h
+/usr/src/nxdk/lib/usb/libusbohci/inc/usbh_uvc.h
+/usr/src/nxdk/lib/usb/libusbohci/inc/usbh_uac.h
+/usr/src/nxdk/lib/usb/libusbohci/inc/usbh_lib.h
+/usr/src/nxdk/lib/usb/libusbohci/inc/usbh_msc.h
+/usr/src/nxdk/lib/usb/libusbohci_xbox/xid_driver.h
+/usr/src/nxdk/lib/usb/libusbohci_xbox/usbh_xbox.c
+/usr/src/nxdk/lib/usb/libusbohci_xbox/usbh_xbox.obj
+/usr/src/nxdk/lib/usb/libusbohci_xbox/xid_driver.c
+/usr/src/nxdk/lib/usb/libusbohci_xbox/usbh_config_xbox.h
+/usr/src/nxdk/lib/usb/libusbohci_xbox/xid_driver.c.d
+/usr/src/nxdk/lib/usb/libusbohci_xbox/xid_driver.obj
+/usr/src/nxdk/lib/usb/libusbohci_xbox/usbh_xbox.c.d
+/usr/src/nxdk/lib/nxdk_usb.lib

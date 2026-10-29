@@ -947,3 +947,9 @@
 - 18z8p xemu: MARCO - DrawString REAL: 'Game Saved' em RitualFont; tga ok 4 / dec 4 / up 4; q 10; fps 63 -> 36-38 (suspeita dbgblit CPU 256 px)
 - 18z8q 1a/2a: quad forcado = 'if (lgx_quad(...)) lg2d_nq++;' com comentario NO FIM da linha 183 -> regex 'lgx_quad(...);' e busca apos o comentario falharam; nada gravado
 - 18z8q: linha inteira do quad + dbgblit -> (void)0; numstat 3	3	code/renderernull/tr_null.c; exe=True iso=True
+
+## Lote 18z9a (2026-10-28 22:00)
+- 18z8q xemu: MARCO - 2D NV2A LIMPO: fps 59-60 (era 36-38), atlas forcados sumiram, 'Game Saved' RitualFont visivel (q 9 -> q 0 apos sumir); draw 66-73 fill 103-112
+- Confirmado: queda do 18z8p = dbgblit CPU; caminho GPU (fill/quad/DrawString) sem custo de fps
+- Pendentes 2D: alpha<0.5 pulado (6/frame), shaders MOHAA inexistentes (sh0), GetShaderWidth/Height=1
+- 18z9a: inicio INPUT - coleta xbox_input* do ioQ3 + stubs IN_* + K_JOY/SE_* + usbh/xid do nxdk (docs/probes/lote18z9a-input.log), sem build
