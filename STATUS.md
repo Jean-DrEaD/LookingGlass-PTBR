@@ -922,3 +922,8 @@
 - 18z8n-e: shaders cgame MOHAA inexistentes -> sh0 dominante; so backtile = T
 - 18z8o: coleta fonts/ nos pk3 + verdana-14.ritualfont + R_LoadFont/R_DrawString GL1 + fontheader_t (docs/probes/lote18z8o-fonte.log), sem build
 - Plano 18z8p: LoadFont real (ritualfont + tga) + DrawString via lgx_quad por caractere
+
+## Lote 18z8p-a (2026-10-28 21:03)
+- 18z8o: 16 .ritualfont em pak0 fonts/; formato RitFont = height/aspect/indirections[256]/locations {x y w h} em PIXELS (GL1 usa size*256 -> loader divide por 256, atlas 256 px provavel)
+- 18z8o: .ritualfont nao nomeia textura; so fonts/backup/asrafel.tga e courier-14.tga no fonts/ -> textura resolvida em R_LoadFontShader
+- 18z8p-a: coleta R_LoadFontShader + parser sgl + struct letterloc/sgl + arquivos de fonte qualquer extensao + topo tr_null.c (docs/probes/lote18z8p-a-fontshader.log), sem build
