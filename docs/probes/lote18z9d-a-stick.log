@@ -1,0 +1,318 @@
+# Lote 18z9d-a 2026-10-28 22:47
+## 1) lg_input.c
+    1: /* LG 18z9b: pad Xbox (XID) -> eventos OpenMoHAA. Base ioQ3-Xbox xbox_input.c, sem HID (nxdk_usb.lib sem usbh_hid). */
+    2: #include <string.h>
+    3: #include <usb.h>
+    4: #include <usbh_lib.h>
+    5: #include <xid_driver.h>
+    6: #include "../qcommon/q_shared.h"
+    7: #include "../qcommon/qcommon.h"
+    8: #include "../client/keycodes.h"
+    9: 
+   10: extern int Key_GetCatcher(void);
+   11: extern void Key_SetBinding(int keynum, const char *binding);
+   12: extern int lg_dbg[];
+   13: 
+   14: #define LGI_PORTS 4
+   15: #define LGI_THR 30
+   16: #define LGI_DZ 7849
+   17: #define LGI_MAX 32767
+   18: #define LGI_CUR 400.0f
+   19: 
+   20: enum { B_UP, B_DOWN, B_LEFT, B_RIGHT, B_START, B_BACK, B_LT_CLK, B_RT_CLK,
+   21: B_A, B_B, B_X, B_Y, B_BLACK, B_WHITE, B_LT, B_RT, B_COUNT };
+   22: 
+   23: static const int lgi_keys[B_COUNT] = {
+   24: K_UPARROW, K_DOWNARROW, K_LEFTARROW, K_RIGHTARROW,
+   25: K_ESCAPE, K_JOY11, K_JOY9, K_JOY10,
+   26: K_JOY1, K_JOY2, K_JOY3, K_JOY4, K_JOY5, K_JOY6, K_JOY7, K_JOY8 };
+   27: 
+   28: typedef struct {
+   29: int connected;
+   30: uint16_t buttons;
+   31: uint8_t an[8]; /* a b x y black white l r */
+   32: int16_t lx, ly, rx, ry;
+   33: } lgi_pad_t;
+   34: 
+   35: static lgi_pad_t lgi_pad[LGI_PORTS];
+   36: static int lgi_sent[LGI_PORTS][B_COUNT];
+   37: static int lgi_axis[LGI_PORTS][4];
+   38: static float lgi_cx, lgi_cy;
+   39: static int lgi_last, lgi_started, lgi_stopping, lgi_presses;
+   40: 
+   41: static void lgi_read(UTR_T *t)
+   42: {
+   43: xid_dev_t *d = t ? (xid_dev_t *)t->context : NULL;
+   44: lgi_pad_t *p;
+   45: xid_gamepad_in r;
+   46: if (!d || t->status != USBH_OK || t->xfer_len < sizeof(r)) return;
+   47: if (d->xid_desc.bType != XID_TYPE_GAMECONTROLLER) return;
+   48: p = (lgi_pad_t *)d->user_data;
+   49: if (!p) return;
+   50: memcpy(&r, t->buff, sizeof(r));
+   51: p->buttons = r.dButtons;
+   52: p->an[0] = r.a; p->an[1] = r.b; p->an[2] = r.x; p->an[3] = r.y;
+   53: p->an[4] = r.black; p->an[5] = r.white; p->an[6] = r.l; p->an[7] = r.r;
+   54: p->lx = r.leftStickX; p->ly = r.leftStickY; p->rx = r.rightStickX; p->ry = r.rightStickY;
+   55: if (!lgi_stopping) { t->xfer_len = 0; t->bIsTransferDone = 0; (void)usbh_int_xfer(t); }
+   56: }
+   57: 
+   58: static void lgi_conn(xid_dev_t *d, int param)
+   59: {
+   60: int i;
+   61: (void)param;
+   62: if (!d || usbh_xid_get_type(d) == XID_UNKNOWN) return;
+   63: if (!d->user_data)
+   64: for (i = 0; i < LGI_PORTS; ++i)
+   65: if (!lgi_pad[i].connected) { lgi_pad[i].connected = 1; d->user_data = &lgi_pad[i]; break; }
+   66: if (d->user_data) (void)usbh_xid_read(d, 0, (void *)lgi_read);
+   67: }
+   68: 
+   69: static void lgi_disc(xid_dev_t *d, int param)
+   70: {
+   71: (void)param;
+   72: if (!d) return;
+   73: if (d->user_data) memset(d->user_data, 0, sizeof(lgi_pad_t));
+   74: d->user_data = NULL;
+   75: }
+   76: 
+   77: static int lgi_stick(int v)
+   78: {
+   79: int m = v < 0 ? -v : v;
+   80: if (m <= LGI_DZ) return 0;
+   81: if (m > LGI_MAX) m = LGI_MAX;
+   82: m = (m - LGI_DZ) * LGI_MAX / (LGI_MAX - LGI_DZ);
+   83: return v < 0 ? -m : m;
+   84: }
+   85: 
+   86: static int lgi_down(const lgi_pad_t *p, int b)
+   87: {
+   88: if (b >= B_A) return p->an[b - B_A] >= LGI_THR;
+   89: return (p->buttons & (1 << b)) != 0;
+   90: }
+   91: 
+   92: void IN_Init(void *windowData)
+   93: {
+   94: int t0;
+   95: (void)windowData;
+   96: if (lgi_started) return;
+   97: memset(lgi_pad, 0, sizeof(lgi_pad));
+   98: memset(lgi_sent, 0, sizeof(lgi_sent));
+   99: memset(lgi_axis, 0, sizeof(lgi_axis));
+  100: lgi_cx = lgi_cy = 0.0f;
+  101: lgi_stopping = 0;
+  102: usbh_core_init();
+  103: usbh_xid_init();
+  104: usbh_install_xid_conn_callback(lgi_conn, lgi_disc);
+  105: t0 = Sys_Milliseconds();
+  106: while (Sys_Milliseconds() - t0 < 500) usbh_pooling_hubs();
+  107: Key_SetBinding(K_JOY1, "+moveup");
+  108: Key_SetBinding(K_JOY2, "+movedown");
+  109: Key_SetBinding(K_JOY3, "+use");
+  110: Key_SetBinding(K_JOY4, "weapnext");
+  111: Key_SetBinding(K_JOY5, "weapprev");
+  112: Key_SetBinding(K_JOY6, "+speed");
+  113: Key_SetBinding(K_JOY7, "+attacksecondary");
+  114: Key_SetBinding(K_JOY8, "+attackprimary");
+  115: Cvar_Set("j_yaw", "-0.006");
+  116: Cvar_Set("j_pitch", "0.005");
+  117: Cvar_Set("j_forward", "-0.0039");
+  118: Cvar_Set("j_side", "0.0039");
+  119: lgi_last = Sys_Milliseconds();
+  120: lgi_started = 1;
+  121: }
+  122: 
+  123: void IN_Frame(void)
+  124: {
+  125: int port, i, time, ms, menu, npads = 0;
+  126: if (!lgi_started) IN_Init(NULL);
+  127: usbh_pooling_hubs();
+  128: time = Sys_Milliseconds();
+  129: ms = time - lgi_last; lgi_last = time;
+  130: if (ms < 0) ms = 0;
+  131: if (ms > 50) ms = 50;
+  132: menu = (Key_GetCatcher() & KEYCATCH_UI) != 0;
+  133: if (!menu) lgi_cx = lgi_cy = 0.0f;
+  134: for (port = 0; port < LGI_PORTS; ++port)
+  135: {
+  136: const lgi_pad_t *p = &lgi_pad[port];
+  137: int st[4];
+  138: if (p->connected) npads++;
+  139: for (i = 0; i < B_COUNT; ++i)
+  140: {
+  141: int dn = lgi_down(p, i);
+  142: int *s = &lgi_sent[port][i];
+  143: if (dn && !*s) {
+  144: *s = (menu && i == B_A) ? K_ENTER : (menu && i == B_B) ? K_ESCAPE : lgi_keys[i];
+  145: Com_QueueEvent(time, SE_KEY, *s, qtrue, 0, NULL);
+  146: lgi_presses++;
+  147: } else if (!dn && *s) {
+  148: Com_QueueEvent(time, SE_KEY, *s, qfalse, 0, NULL);
+  149: *s = 0;
+  150: }
+  151: }
+  152: st[0] = lgi_stick(p->lx); st[1] = -lgi_stick(p->ly);
+  153: st[2] = lgi_stick(p->rx); st[3] = -lgi_stick(p->ry);
+  154: if (menu)
+  155: {
+  156: float fx = (float)st[0] / LGI_MAX, fy = (float)st[1] / LGI_MAX;
+  157: int dx, dy;
+  158: lgi_cx += fx * (fx < 0 ? -fx : fx) * LGI_CUR * ms * 0.001f;
+  159: lgi_cy += fy * (fy < 0 ? -fy : fy) * LGI_CUR * ms * 0.001f;
+  160: dx = (int)lgi_cx; dy = (int)lgi_cy;
+  161: lgi_cx -= (float)dx; lgi_cy -= (float)dy;
+  162: if (dx || dy) Com_QueueEvent(time, SE_MOUSE, dx, dy, 0, NULL);
+  163: memset(st, 0, sizeof(st));
+  164: }
+  165: for (i = 0; i < 4; ++i)
+  166: if (st[i] != lgi_axis[port][i]) {
+  167: lgi_axis[port][i] = st[i];
+  168: Com_QueueEvent(time, SE_JOYSTICK_AXIS, i, st[i], 0, NULL);
+  169: }
+  170: }
+  171: lg_dbg[2] = npads * 1000 + (lgi_presses % 1000);
+  172: }
+  173: 
+  174: void IN_Shutdown(void)
+  175: {
+  176: if (!lgi_started) return;
+  177: lgi_stopping = 1;
+  178: usbh_install_xid_conn_callback(NULL, NULL);
+  179: usbh_core_deinit();
+  180: memset(lgi_pad, 0, sizeof(lgi_pad));
+  181: memset(lgi_sent, 0, sizeof(lgi_sent));
+  182: memset(lgi_axis, 0, sizeof(lgi_axis));
+  183: lgi_started = 0;
+  184: }
+  185: 
+  186: void IN_Restart(void)
+  187: {
+  188: IN_Shutdown();
+  189: IN_Init(NULL);
+  190: }
+## 2) cliente
+---- cl_input.cpp:435 [^\s*void\s+CL_(MouseEvent|JoystickEvent)\s*\(]
+  435: void CL_MouseEvent( int dx, int dy, int time ) {
+  436: 	if( in_guimouse )
+  437: 	{
+  438: 		cl.mousex += dx;
+  439: 		cl.mousey += dy;
+  440: 
+  441: 		if( cl.mousex < 0 )
+  442: 			cl.mousex = 0;
+  443: 
+  444: 		if( cl.mousex > cls.glconfig.vidWidth )
+  445: 			cl.mousex = cls.glconfig.vidWidth;
+  446: 
+  447: 		if( cl.mousey < 0 )
+  448: 			cl.mousey = 0;
+  449: 
+  450: 		if( cl.mousey > cls.glconfig.vidHeight )
+  451: 			cl.mousey = cls.glconfig.vidHeight;
+  452: 	}
+  453: 	else if ( !paused->integer )
+  454: 	{
+  455: 		cl.mouseDx[cl.mouseIndex] += dx;
+  456: 		cl.mouseDy[cl.mouseIndex] += dy;
+  457: 	}
+  458: }
+  459: 
+  460: /*
+  461: =================
+  462: CL_JoystickEvent
+  463: 
+  464: Joystick values stay set until changed
+  465: =================
+  466: */
+  467: void CL_JoystickEvent( int axis, int value, int time ) {
+  468: 	if ( axis < 0 || axis >= MAX_JOYSTICK_AXIS ) {
+  469: 		Com_Error( ERR_DROP, "CL_JoystickEvent: bad axis %i", axis );
+  470: 	}
+  471: 	cl.joystickAxis[axis] = value;
+  472: }
+  473: 
+  474: /*
+  475: =================
+  476: CL_UpdateMouse
+  477: 
+  478: Added in OPM
+  479: Update mouse position with absolute position (relative to the window)
+  480: when the UI catcher is active.
+---- cl_input.cpp:467 [^\s*void\s+CL_(MouseEvent|JoystickEvent)\s*\(]
+  467: void CL_JoystickEvent( int axis, int value, int time ) {
+  468: 	if ( axis < 0 || axis >= MAX_JOYSTICK_AXIS ) {
+  469: 		Com_Error( ERR_DROP, "CL_JoystickEvent: bad axis %i", axis );
+  470: 	}
+  471: 	cl.joystickAxis[axis] = value;
+  472: }
+  473: 
+  474: /*
+  475: =================
+  476: CL_UpdateMouse
+  477: 
+  478: Added in OPM
+  479: Update mouse position with absolute position (relative to the window)
+  480: when the UI catcher is active.
+  481: =================
+  482: */
+  483: void CL_UpdateMouse() {
+  484:     if (!(Key_GetCatcher() & KEYCATCH_UI)) {
+  485:         return;
+  486:     }
+  487: 
+  488:     if (IN_IsCursorActive()) {
+  489:         // If it's grabbed, don't use absolute position
+  490:         return;
+  491:     }
+  492: 
+  493:     if (com_unfocused->integer) {
+  494:         // Ignore updates when unfocused
+  495:         return;
+  496:     }
+  497: 
+  498:     IN_GetMousePosition(&cl.mousex, &cl.mousey);
+  499: }
+  500: 
+  501: /*
+  502: =================
+  503: CL_JoystickMove
+  504: =================
+  505: */
+  506: void CL_JoystickMove( usercmd_t *cmd ) {
+  507: 	float	anglespeed;
+  508: 
+  509: 	float yaw     = j_yaw->value     * cl.joystickAxis[j_yaw_axis->integer];
+  510: 	float right   = j_side->value    * cl.joystickAxis[j_side_axis->integer];
+  511: 	float forward = j_forward->value * cl.joystickAxis[j_forward_axis->integer];
+  512: 	float pitch   = j_pitch->value   * cl.joystickAxis[j_pitch_axis->integer];
+ref cl_input.cpp:70: IN_MouseOff();
+ref cl_input.cpp:74: IN_MouseOn();
+ref cl_input.cpp:78: void IN_MouseOn( void ) {
+ref cl_input.cpp:93: void IN_MouseOff( void ) {
+ref cl_input.cpp:488: if (IN_IsCursorActive()) {
+ref cl_input.cpp:498: IN_GetMousePosition(&cl.mousex, &cl.mousey);
+## 3) qcommon
+common.c:1055: if ( type == SE_MOUSE && eventHead != eventTail )
+common.c:1059: if ( ev->evType == SE_MOUSE )
+common.c:1313: case SE_MOUSE:
+common.c:1314: CL_MouseEvent( ev.evValue, ev.evValue2, ev.evTime );
+common.c:1316: case SE_JOYSTICK_AXIS:
+common.c:1317: CL_JoystickEvent( ev.evValue, ev.evValue2, ev.evTime );
+## 4) stubs
+stubs:65: LG_Z(IN_SetCursorFromImage)
+stubs:66: LG_Z(IN_FreeCursor)
+stubs:67: LG_Z(IN_IsCursorActive)
+stubs:73: void IN_GetMousePosition(int *x, int *y); void IN_GetMousePosition(int *x, int *y) { if (x) *x = 0; if (y) *y = 0; }
+## 5) mouse state
+cl_input.cpp:455: cl.mouseDx[cl.mouseIndex] += dx;
+cl_input.cpp:456: cl.mouseDy[cl.mouseIndex] += dy;
+cl_input.cpp:498: IN_GetMousePosition(&cl.mousex, &cl.mousey);
+cl_input.cpp:556: mx = (cl.mouseDx[0] + cl.mouseDx[1]) * 0.5f;
+cl_input.cpp:557: my = (cl.mouseDy[0] + cl.mouseDy[1]) * 0.5f;
+cl_input.cpp:561: mx = cl.mouseDx[cl.mouseIndex];
+cl_input.cpp:562: my = cl.mouseDy[cl.mouseIndex];
+cl_input.cpp:565: cl.mouseIndex ^= 1;
+cl_input.cpp:566: cl.mouseDx[cl.mouseIndex] = 0;
+cl_input.cpp:567: cl.mouseDy[cl.mouseIndex] = 0;
+cl_invrender.cpp:463: clientPoint = UIPoint2D(uid.mouseX, uid.mouseY);
+cl_ui.cpp:3679: CL_GetMouseState(&uid.mouseX, &uid.mouseY, &uid.mouseFlags);

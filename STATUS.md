@@ -983,3 +983,8 @@
 - 18z9b xemu: Start abriu o MENU do Alice (input chega a UI); CONGELOU ao girar os analogicos (suspeita: eixos/cursor no menu)
 - 18z9c2: extern "C" nos 4 .cpp + bloco extern "C" (#ifdef __cplusplus) no tr_null.c; exe=True iso=True
 - Regra: global compartilhado C/C++ = extern "C" nos .cpp
+
+## Lote 18z9d-a (2026-10-28 22:47)
+- 18z9c2 xemu: overlay 'LG 18z9c' OK (link C resolvido); Start -> k27 -> MENU Alice (fundo em blocos 256 + ui/main/glowA..F = T); k183 navega newgame/loadgame/settings/quit
+- 18z9c2: origem fixa 1136 -1712 -439, y0 p0 (sem movimento); stick ESQ fora do menu CONGELA (suspeita: caminho mouse SE_MOUSE/CL_MouseEvent/stubs IN_Mouse*)
+- 18z9d-a: coleta lg_input.c + CL_MouseEvent/JoystickEvent + SE_* + stubs IN_ + estado do mouse (docs/probes/lote18z9d-a-stick.log), sem build
