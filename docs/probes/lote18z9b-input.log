@@ -1,0 +1,29 @@
+# Lote 18z9b 2026-10-28 22:16
+lg_input.c: 5316 B
+IN_* restantes nos stubs: 0
+cmake explicito: D:\openmohaa\cmake\client.cmake
+cmake renderernull: D:\openmohaa\cmake\client.cmake, D:\openmohaa\cmake\renderer_gl1.cmake
+cmake usado: D:\openmohaa\cmake\client.cmake (alterado=True)
+## Objetos ok / falhos:
+505
+0
+## Erros por arquivo:
+## Top mensagens:
+## Linker (simbolos):
+## Falhou:
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Section 0x0002 (.data)...OK
+Xbe::Export: Writing Section 0x0003 (.tls)...OK
+Xbe::Export: Writing Zero Padding...OK
+
+sucessfully created alice-cliente.iso (26 files totalling 667969707 bytes added)
+xbe=6209536
+numstat: 11	1	cmake/client.cmake | 0	4	code/renderernull/lg_client_stubs.c
+exe=True iso=True

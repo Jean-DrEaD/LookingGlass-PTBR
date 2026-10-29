@@ -959,3 +959,10 @@
 - 18z9a: OpenMoHAA tem IN_*, Com_QueueEvent, K_JOY1..32, SE_* compativeis; IN_* hoje = LG_Z em lg_client_stubs.c:65-71; nxdk tem nxdk_usb.lib + xid_driver (libusbohci_xbox)
 - 18z9a2: coleta xbox_input.c 700-fim + Makefile.xbox USB + probe.ps1 libs + Key_* OpenMoHAA + xid_driver.h/usbh_hid.h + simbolos nxdk_usb.lib (docs/probes/lote18z9a2-input.log), sem build
 - Plano 18z9b: copiar xbox_input*.c/h -> code/renderernull (adaptar Key_*), remover IN_Init/Frame/Shutdown/Restart dos stubs, nxdk_usb.lib no link
+
+## Lote 18z9b (2026-10-28 22:16)
+- 18z9a2: nxdk_usb.lib SEM usbh_hid_* -> HID fora; probe.ps1 nao linkava nxdk_usb; IN_Init nunca chamado (so IN_Frame em common.c:2351)
+- 18z9b 1a: Select-String -SimpleMatch com 'lg_client_stubs\.c' = barra literal -> 0 cmake; regra: -SimpleMatch nunca com escape regex
+- 18z9b: code/renderernull/lg_input.c (XID 4 portas; IN_Init lazy, enum 500 ms; botoes->K_JOY1..11/setas/ESC, menu A=ENTER B=ESC, stick esq = cursor; binds MOHAA; j_* do ioQ3)
+- 18z9b: IN_* fora dos stubs; include USB + USBH_USE_EXTERNAL_CONFIG em client.cmake; nxdk_usb.lib no probe.ps1
+- 18z9b: overlay campo 'r' = pads*1000 + botoes; exe=True iso=True (docs/probes/lote18z9b-input.log)
