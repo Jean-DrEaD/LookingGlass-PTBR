@@ -1011,3 +1011,9 @@
 - 18z9f: thread watchdog em lg_input.c (IN_Frame pulsa lg_wd; parado 1,5 s -> pb_show_debug_screen + debugPrint 'LG WD' cm/ev/ps/pl)
 - Marcas: cm 1/2 = antes/depois Pmove (ClientMove); ev 1/2 = EvaluateState; ps = PmoveSingle; pl = laco Pmove; exe=True iso=True
 - Leitura: cm1 = trava no Pmove; cm2 ev1 = statemap; cm2 ev2 = depois (anim/TIKI/outro); sem texto WD = crash/excecao (CPU parada)
+
+## Lote 18z9g (2026-10-28 23:38)
+- 18z9f xemu: tela presa no debug screen apos 'Saving autosave' -> watchdog disparou em hitch legitimo (load/save > 1,5 s) e nunca voltava ao pbkit
+- 18z9f: 'omohaaded Error 1' = lg_st so definido em lg_input.c (cliente); game no dedicado ficou sem simbolo; cliente linkou (exe/iso validos)
+- 18z9g: lg_st definido em bg_pmove.cpp (selectany, game+cgame); watchdog 3 s; ao voltar pulso -> pb_show_front_screen; exe=True ded=True iso=True
+- Nota: ps conta Pmove do game E da predicao do cgame; cm/ev so do game
