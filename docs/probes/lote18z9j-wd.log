@@ -1,0 +1,22 @@
+# Lote 18z9j 2026-10-29 08:35
+    6: volatile int lg_wd;
+    7: static int lg_wd_on;
+    8: static DWORD WINAPI lg_wd_thread(LPVOID p) {
+   12:     if (lg_wd != last) { if (still >= 6) pb_show_front_screen(); last = lg_wd; still = 0; continue; }
+   14:     if (still == 6) pb_show_debug_screen();
+   16:       debugPrint("LG WD frame %d cm %d ev %d ps %d pl %d pm %d s5 %d s6 %d\n",
+   17:         lg_wd, lg_st[0], lg_st[1], lg_st[3], lg_st[5], lg_st[4], lg_st[6], lg_st[7]);
+  149:   lg_wd++; if (!lg_wd_on) { lg_wd_on = 1; CreateThread(NULL, 0, lg_wd_thread, NULL, 0, NULL); }
+ok: pb_show=2 debugPrint=1 anulados
+## Alvos:
+build-xbox/recacstnav_recast/libRecast.lib
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-cliente.iso (26 files totalling 667973803 bytes added)
+numstat: 4	3	code/renderernull/lg_input.c | 1	1	code/renderernull/tr_null.c
+exe=True ded=True iso=True

@@ -1032,3 +1032,8 @@
 ## Lote 18z9i (2026-10-29 08:07)
 - 18z9h xemu: WD 943 (s5 0 s6 0) = hitch do load, frame 944 rodou; apos 'Saving to centipede10028' NENHUM WD -> CPU inteira morta no save (crash), s5/s6 invisiveis
 - 18z9i: marcadores s5/s6 imprimem direto (debugPrint 'LG sX N'); SV_SaveGame/SV_ArchiveLevelFile no log; exe=True ded=True iso=True
+
+## Lote 18z9j (2026-10-29 08:35)
+- 18z9i xemu: trava SEM input no LOAD (s9 r1000 k0 fps 4, frame 989), sem tela WD; nao chegou ao autosave
+- Hipotese: watchdog (18z9f) troca tela pbkit + debugPrint de OUTRA thread durante hitch >3 s -> corrida com main no pushbuffer -> crash; 18z8q salvava OK ('Game Saved') antes do watchdog
+- 18z9j: pb_show_*/debugPrint anulados em lg_input.c (thread e contadores mantidos); exe=True ded=True iso=True
