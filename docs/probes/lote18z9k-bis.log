@@ -1,0 +1,12 @@
+# Lote 18z9k-bis 2026-10-30 11:37
+18z9b=c2ec107 base=8254fa9 : LG lote 18z8q: dbgblit CPU e quad forcado desligados (exe=True)
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-bisect.iso (26 files totalling 667949227 bytes added)
+volta: xbox 0d37b59
+exe=True iso=True

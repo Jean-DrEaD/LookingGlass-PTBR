@@ -1037,3 +1037,7 @@
 - 18z9i xemu: trava SEM input no LOAD (s9 r1000 k0 fps 4, frame 989), sem tela WD; nao chegou ao autosave
 - Hipotese: watchdog (18z9f) troca tela pbkit + debugPrint de OUTRA thread durante hitch >3 s -> corrida com main no pushbuffer -> crash; 18z8q salvava OK ('Game Saved') antes do watchdog
 - 18z9j: pb_show_*/debugPrint anulados em lg_input.c (thread e contadores mantidos); exe=True ded=True iso=True
+
+## Lote 18z9k-bis (2026-10-30 11:37)
+- 18z9j xemu: trava IGUAL sem pad (s9 r0 k0 fps 5, frame 997) -> watchdog/pbkit INOCENTE; janela fixa frames ~940-1000 no load/1o autosave
+- 18z9k-bis: bissecao = build do commit 8254fa9 (antes do 18z9b: sem USB/XID/watchdog) em G:\xemu\alice-bisect.iso; xbox intacta; exe=True iso=True
