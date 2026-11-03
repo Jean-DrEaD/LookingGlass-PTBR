@@ -1052,3 +1052,8 @@
 - 18z9l xemu: 79dd9e9 (renderer nulo) PASSOU 3x: Game Saved + heartbeat estavel 1547..2819 (~91 fps)
 - Conclusao: regressao entre 79dd9e9 e 8254fa9 = lotes do renderer pbkit/xgu (18z8c-18z8q); save/motor/input inocentes
 - 18z9m: bissecao no meio da faixa (15 commits), alvo 42dea8b em G:\xemu\alice-bisect3.iso; testar 3x; exe=True iso=True
+
+## Lote 18z9n (2026-11-03 14:42)
+- 18z9m xemu: 42dea8b (18z8m-c, xgu sem chamadas) PASSOU 3x: frames 2628/6544 a 62-64 fps, alem da janela da trava (~940-1011); 'Game Saved' invisivel = DrawString stub ate 18z8p
+- Conclusao: regressao em 027a7a6..8254fa9; suspeito principal 027a7a6 (lgx_upload no RegisterShader durante o load)
+- 18z9n: alvo 7b59924 em G:\xemu\alice-bisect4.iso; testar 3x (passar = frame > 1100); exe=True iso=True
