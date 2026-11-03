@@ -1074,3 +1074,9 @@
 - BISSECAO CONCLUIDA: regressao = 8254fa9 (18z8q: quad forcado + dbgblit -> (void)0)
 - Hipoteses: (a) patch textual alterou logica (if sem chaves/linha com comentario); (b) quad forcado mantinha estado xgu valido todo frame / dbgblit mascarava timing
 - 18z9q-a: git show 8254fa9 + linhas atuais tr_null.c + corpos lgx_frame/lgx_quad (docs/probes/lote18z9q-a.log), sem build
+
+## Lote 18z9q (2026-11-03 15:31)
+- 18z9q-a: diff do 8254fa9 = 2 linhas autocontidas -> (void)0; hipotese (a) patch textual DESCARTADA
+- Suspeita (b): lgx_vb reescrito todo frame (lgx_nv=0) enquanto a GPU ainda le o frame anterior (pb_finished desiste em 50 ms no load) -> GPU trava -> pb_begin bloqueia CPU; quad forcado/dbgblit mudavam o timing
+- Ressalva: trava intermitente -> 3 passes = indicio, nao prova
+- 18z9q: HEAD xbox + SO quad forcado religado em G:\xemu\alice-q.iso; testar 3x (passa = quad mascara; trava = testar dbgblit); exe=True iso=True

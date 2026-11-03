@@ -1,0 +1,9 @@
+# Lote 18z9q 2026-11-03 15:31
+numstat: 1	1	code/renderernull/tr_null.c
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-q.iso (26 files totalling 667973803 bytes added)
+exe=True iso=True
