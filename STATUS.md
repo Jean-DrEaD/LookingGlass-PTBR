@@ -1062,3 +1062,9 @@
 - 18z9n xemu: 7b59924 (18z8n-c2) PASSOU 3x: frames 6606/8165/16884, fps 51-63, draw 0 -> upload/quad xgu (027a7a6), quad forcado e contadores INOCENTES
 - Faixa restante: 4e06d7c (cg_hud/lagometer = 2D do cgame no load) | f2ccebf (LoadFont real + DrawString) | 8254fa9 (so desliga debug)
 - 18z9o: alvo 4e06d7c em G:\xemu\alice-bisect5.iso; testar 3x (passar = frame > 1100; esperado draw > 0); exe=True iso=True
+
+## Lote 18z9p (2026-11-03 15:19)
+- 18z9o xemu: 4e06d7c (cg_hud/lagometer) PASSOU 3x: frames 3724/11747/1127, draw 62-73, fps 61-65 -> 2D do cgame INOCENTE
+- HISTORICO: trava ORIGINAL = analogico esq/D-pad cima congelava (18z9c2/18z9d-b); 18z9h-a cm0/ps0 = Pmove nunca rodou; 18z9j trava igual SEM pad -> caca virou regressao do load (frames ~940-1011)
+- PENDENTE: apos corrigir a regressao, RETESTAR analogico esq/D-pad fora do menu (coincidencia com a janela do load nao provada)
+- 18z9p: ultimo alvo f2ccebf (LoadFont real + DrawString) em G:\xemu\alice-bisect6.iso; trava = fonte; passa = 8254fa9 (dbgblit/quad off); exe=True iso=True

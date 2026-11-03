@@ -1,0 +1,10 @@
+# Lote 18z9p 2026-11-03 15:19
+alvo=f2ccebf : LG lote 18z8p2: prototipos lgf_* apos os includes (exe=True)
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-bisect6.iso (26 files totalling 667949227 bytes added)
+volta: xbox 0d37b59
+exe=True iso=True
