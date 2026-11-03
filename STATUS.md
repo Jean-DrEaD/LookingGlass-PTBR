@@ -1041,3 +1041,9 @@
 ## Lote 18z9k-bis (2026-10-30 11:37)
 - 18z9j xemu: trava IGUAL sem pad (s9 r0 k0 fps 5, frame 997) -> watchdog/pbkit INOCENTE; janela fixa frames ~940-1000 no load/1o autosave
 - 18z9k-bis: bissecao = build do commit 8254fa9 (antes do 18z9b: sem USB/XID/watchdog) em G:\xemu\alice-bisect.iso; xbox intacta; exe=True iso=True
+
+## Lote 18z9l (2026-11-03 14:18)
+- 18z9k-bis xemu: 8254fa9 (sem USB/XID/watchdog) TRAVA no load (s9 frame ~1011 fps 4), inclusive com HDD limpo; 1 execucao passou ate 'Game Saved' -> trava INTERMITENTE; input/watchdog inocentes
+- 1a tentativa do 18z9l: D: sem espaco -> checkout parcial; repos restaurados (checkout -f xbox); trava de espaco livre >= 5 GB no script
+- Suspeito (nao confirmado): renderer pbkit (18z8c-18z8q) no hitch do load
+- 18z9l: bissecao no commit 79dd9e9 (18z6c, renderer nulo, sem pbkit) em G:\xemu\alice-bisect2.iso; testar 3x; exe=True iso=True

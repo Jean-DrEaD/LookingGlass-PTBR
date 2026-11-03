@@ -1,0 +1,12 @@
+# Lote 18z9l 2026-11-03 14:18
+base 18z6c=79dd9e9 : LG lote 18z6c: rename bg_* no cgame + stub GetCGameAPI dedicado (link=True)
+build-xbox/recastnav_crowd/libDetourCrowd.lib
+build-xbox/recastnav_detour/libDetour.lib
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-bisect2.iso (26 files totalling 667900075 bytes added)
+volta: xbox 0d37b59
+exe=True iso=True
