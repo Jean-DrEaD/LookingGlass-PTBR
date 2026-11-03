@@ -1,0 +1,26 @@
+# Lote 18z9m 2026-11-03 14:28
+faixa 79dd9e9..8254fa9 = 15 commits
+  84ecc83 LG lote 18z8c: 2D minimo pbkit no renderer nulo (exe=True)
+  f7ed2dc LG lote 18z8d: contadores 2D + RegisterShader com handles (exe=True)
+  8435840 LG lote 18z8e: tempos vbl/fin/game no overlay + timeout 50 ms (exe=True)
+  8bccade LG lote 18z8g: clear de fundo + fill solido via GPU (exe=True)
+  f2618fb LG lote 18z8i: probe TGA no RegisterShader + overlay (exe=True)
+  743a710 LG lote 18z8j: status por shader no overlay + fallback jpg (exe=True)
+  5c7f348 LG lote 18z8k: decode TGA (2/10, 24/32) + blit debug (exe=True)
+  42dea8b LG lote 18z8m-c: xgu + shaders ioQ3 + lg_nv2a.c (upload swizzled/quad, sem chamadas) (exe=True)
+  027a7a6 LG lote 18z8m-d: lgx_init/upload/frame/quad ligados no DrawStretchPic (exe=True)
+  6e6b51f LG lote 18z8m-e: quad forcado do backtile no EndFrame (exe=True)
+  7b59924 LG lote 18z8n-c2: contadores lg_dbg do caminho 2D (decl no topo do tr_null.c) (exe=True)
+  4e06d7c LG lote 18z8n-e: cg_hud/cg_lagometer 1 sob NXDK (exe=True)
+  950db65 LG lote 18z8p: LoadFont real (RitualFont+gfx/fonts tga) + DrawString via DrawStretchPic (exe=False)
+  f2ccebf LG lote 18z8p2: prototipos lgf_* apos os includes (exe=True)
+  8254fa9 LG lote 18z8q: dbgblit CPU e quad forcado desligados (exe=True)
+alvo=42dea8b : LG lote 18z8m-c: xgu + shaders ioQ3 + lg_nv2a.c (upload swizzled/quad, sem chamadas) (exe=True)
+build-xbox/Release/libcgame.lib
+build-xbox/Release/libgame.lib
+build-xbox/Release/omohaaded.exe
+build-xbox/Release/openmohaa.exe
+Xbe::Export: Writing Zero Padding...OK
+sucessfully created alice-bisect3.iso (26 files totalling 667945131 bytes added)
+volta: xbox 0d37b59
+exe=True iso=True

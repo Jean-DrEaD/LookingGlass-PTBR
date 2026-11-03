@@ -1047,3 +1047,8 @@
 - 1a tentativa do 18z9l: D: sem espaco -> checkout parcial; repos restaurados (checkout -f xbox); trava de espaco livre >= 5 GB no script
 - Suspeito (nao confirmado): renderer pbkit (18z8c-18z8q) no hitch do load
 - 18z9l: bissecao no commit 79dd9e9 (18z6c, renderer nulo, sem pbkit) em G:\xemu\alice-bisect2.iso; testar 3x; exe=True iso=True
+
+## Lote 18z9m (2026-11-03 14:28)
+- 18z9l xemu: 79dd9e9 (renderer nulo) PASSOU 3x: Game Saved + heartbeat estavel 1547..2819 (~91 fps)
+- Conclusao: regressao entre 79dd9e9 e 8254fa9 = lotes do renderer pbkit/xgu (18z8c-18z8q); save/motor/input inocentes
+- 18z9m: bissecao no meio da faixa (15 commits), alvo 42dea8b em G:\xemu\alice-bisect3.iso; testar 3x; exe=True iso=True
