@@ -1057,3 +1057,8 @@
 - 18z9m xemu: 42dea8b (18z8m-c, xgu sem chamadas) PASSOU 3x: frames 2628/6544 a 62-64 fps, alem da janela da trava (~940-1011); 'Game Saved' invisivel = DrawString stub ate 18z8p
 - Conclusao: regressao em 027a7a6..8254fa9; suspeito principal 027a7a6 (lgx_upload no RegisterShader durante o load)
 - 18z9n: alvo 7b59924 em G:\xemu\alice-bisect4.iso; testar 3x (passar = frame > 1100); exe=True iso=True
+
+## Lote 18z9o (2026-11-03 15:02)
+- 18z9n xemu: 7b59924 (18z8n-c2) PASSOU 3x: frames 6606/8165/16884, fps 51-63, draw 0 -> upload/quad xgu (027a7a6), quad forcado e contadores INOCENTES
+- Faixa restante: 4e06d7c (cg_hud/lagometer = 2D do cgame no load) | f2ccebf (LoadFont real + DrawString) | 8254fa9 (so desliga debug)
+- 18z9o: alvo 4e06d7c em G:\xemu\alice-bisect5.iso; testar 3x (passar = frame > 1100; esperado draw > 0); exe=True iso=True
