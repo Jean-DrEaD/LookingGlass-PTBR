@@ -1,0 +1,150 @@
+# Lote 18z9q-a 2026-11-03 15:26
+=== git show 8254fa9 (diff completo, contexto 15) ===
+commit 8254fa9f8b50187ed83749c650f0806f517bbc29
+Author: Jean-DrEaD <jean.dread@gmail.com>
+Date:   Wed Oct 28 21:50:23 2026 -0300
+
+    LG lote 18z8q: dbgblit CPU e quad forcado desligados (exe=True)
+
+diff --git a/code/renderernull/tr_null.c b/code/renderernull/tr_null.c
+index be0834b..6a3a9bd 100644
+--- a/code/renderernull/tr_null.c
++++ b/code/renderernull/tr_null.c
+@@ -168,35 +168,35 @@ static void LG2D_BeginFrame(int stereo) {
+     DWORD *fb; int i, n;
+     (void)stereo;
+     if (!lg2d_ok || lg2d_in) return;
+     { DWORD lgv = GetTickCount(); if (lg2d_tend) lg2d_msgame = lgv - lg2d_tend; pb_wait_for_vbl(); lg2d_msvbl = GetTickCount() - lgv; }
+     pb_reset();
+     pb_target_back_buffer();
+     fb = 0; n = 0;
+     (void)fb; (void)i; (void)n; lg2d_gpufill(0, 0, lg2d_w, lg2d_h, 0xFF101020); if (lgx_st > 0) lgx_frame(); /* LG 18z8m-d */
+     lg2d_in = 1; lg2d_frame++;
+ }
+ static void LG2D_EndFrame(int *fe, int *be) {
+     DWORD t;
+     if (fe) *fe = 0; if (be) *be = 0;
+     if (!lg2d_in) return;
+     lg2d_nfill--; lg2d_ndraw--; lg2d_fill((float)(lg2d_frame % (unsigned int)(lg2d_w - 40)), (float)(lg2d_h - 12), 40.0f, 10.0f, 0xFF00FF00);
+-    if (lgx_st > 0) { int k; for (k = 0; k < lg2d_nsh; k++) if (lg_tex[k]) { static const uint8_t wc[4] = { 255, 255, 255, 255 }; if (lgx_quad(lg_tex[k] - 1, 200.0f, 150.0f, 128.0f, 128.0f, 0.0f, 0.0f, 1.0f, 1.0f, wc)) lg2d_nq++; break; } } /* LG 18z8m-e quad forcado */
++    (void)0; /* LG 18z8q: quad forcado off */
+     pb_erase_text_screen();
+     lg2d_fpsf++; if (GetTickCount() - lg2d_fpst >= 1000) { lg2d_fps = lg2d_fpsf; lg2d_fpsf = 0; lg2d_fpst = GetTickCount(); }
+-    lg2d_dbgblit((int)lg2d_nsh); /* LG 18z8k */
+-    pb_printat(0, 0, "LG 18z8p frame %u fps %u", lg2d_frame, lg2d_fps);
++    (void)0; /* LG 18z8q: dbgblit off */ /* LG 18z8k */
++    pb_printat(0, 0, "LG 18z8q frame %u fps %u", lg2d_frame, lg2d_fps);
+     pb_printat(1, 0, "fill %u draw %u alpha %u sh0 %u", lg2d_nfill, lg2d_ndraw, lg2d_nalpha, lg2d_nsh0);
+     pb_printat(2, 0, "setcolor %u shaders %u q %u up %u x%d", lg2d_ncol, (unsigned int)lg2d_nsh, lg2d_nq, lg_nup, lgx_st); lg2d_nq = 0; pb_printat(4, 0, "tga ok %u fail %u dec %u t%d %dx%d b%d", lg_tga_ok, lg_tga_fail, lg_ndec, lg_tga_t, lg_tga_w, lg_tga_h, lg_tga_bpp); if (0) pb_printat(4, 0, "%u", lg_tga_ok, lg_tga_fail, lg_tga_t, lg_tga_w, lg_tga_h, lg_tga_bpp); { int i0 = lg2d_nsh > 18 ? lg2d_nsh - 18 : 0, r; for (r = 0; i0 + r < lg2d_nsh; r++) pb_printat(5 + r, 0, "%c %-34.34s", lg_sh_st[i0 + r], lg2d_shn[i0 + r]); }
+     pb_printat(3, 0, "s%d a%d r%d d%d c%d v%d", lg_dbg[0], lg_dbg[1] % 10000, lg_dbg[2] % 10000, lg_dbg[3] % 10000, lg_dbg[4] % 10000, lg_dbg[5] % 10000); /* LG 18z8n-c */
+     lg2d_nfill = lg2d_ndraw = lg2d_nalpha = lg2d_nsh0 = lg2d_ncol = 0;
+     pb_draw_text_screen();
+     __asm__ __volatile__("sfence" ::: "memory");
+     t = GetTickCount();
+     while (pb_finished()) { if (GetTickCount() - t > 50) { lg2d_nto++; break; } } lg2d_msfin = GetTickCount() - t; lg2d_tend = GetTickCount();
+     lg2d_in = 0;
+ }
+ static void LG2D_DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, qhandle_t shader) {
+     if (lg2d_in && lgx_st > 0 && shader > 0 && shader <= 512 && lg_tex[shader - 1]) { /* LG 18z8m-d */
+         uint8_t c[4]; int i; for (i = 0; i < 4; i++) c[i] = (uint8_t)(lg2d_c01(lg2d_rgba[i]) * 255.0f);
+         if (lgx_quad(lg_tex[shader - 1] - 1, x, y, w, h, s1, t1, s2, t2, c)) { lg2d_nq++; return; }
+     }
+=== diff f2ccebf..8254fa9 --stat ===
+ code/renderernull/tr_null.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+=== HEAD xbox: linhas com (void)0 / lgx_quad / dbgblit / lgx_frame em tr_null.c ===
+62: int lgx_init(void); int lgx_upload(const uint32_t *argb, int w, int h); void lgx_frame(void);
+63: int lgx_quad(int id, float x, float y, float w, float h, float s1, float t1, float s2, float t2, const uint8_t *rgba);
+64: static int lg_tex[512]; static int lgx_st = 0; static unsigned int lg2d_nq = 0, lg_nup = 0;
+109: static void lg2d_dbgblit(int nsh) {
+137: lg2d_ok = 1; lgx_st = lgx_init() ? 1 : -1; /* LG 18z8m-d */
+182: (void)fb; (void)i; (void)n; lg2d_gpufill(0, 0, lg2d_w, lg2d_h, 0xFF101020); if (lgx_st > 0) lgx_frame(); /* LG 18z8m-d */
+190: (void)0; /* LG 18z8q: quad forcado off */
+193: (void)0; /* LG 18z8q: dbgblit off */ /* LG 18z8k */
+196: pb_printat(2, 0, "setcolor %u shaders %u q %u up %u x%d", lg2d_ncol, (unsigned int)lg2d_nsh, lg2d_nq, lg_nup, lgx_st); lg2d_nq = 0; pb_printat(4, 0, "tga ok %u fail %u dec %u t%d %dx%d b%d", lg_tga_ok, lg_tga_fail, lg_ndec, lg_tga_t, lg_tga_w, lg_tga_h, lg_tga_bpp); if (0) pb_printat(4, 0, "%u", lg_tga_ok, lg_tga_fail, lg_tga_t, lg_tga_w, lg_tga_h, lg_tga_bpp); { int i0 = lg2d_nsh > 18 ? lg2d_nsh - 18 : 0, r; for (r = 0; i0 + r < lg2d_nsh; r++) pb_printat(5 + r, 0, "%c %-34.34s", lg_sh_st[i0 + r], lg2d_shn[i0 + r]); }
+206: if (lg2d_in && lgx_st > 0 && shader > 0 && shader <= 512 && lg_tex[shader - 1]) { /* LG 18z8m-d */
+208: if (lgx_quad(lg_tex[shader - 1] - 1, x, y, w, h, s1, t1, s2, t2, c)) { lg2d_nq++; return; }
+=== lg_nv2a.c: lgx_frame/lgx_quad corpos ===
+80: void lgx_frame(void)
+81: {
+82: XguVec4 m[4];
+83: const lgxVert *v = lgx_vb;
+84: uint32_t *p;
+85: int i;
+86: if (!lgx_ok) return;
+87: lgx_nv = 0;
+88: memset(m, 0, sizeof(m));
+89: for (i = 0; i < 4; ++i) m[i].f[i] = 1.0f;
+90: p = pb_begin();
+91: p = xgu_set_front_face(p, XGU_FRONT_CCW);
+92: p = xgu_set_cull_face_enable(p, false);
+93: p = xgu_set_depth_test_enable(p, false);
+94: p = xgu_set_depth_mask(p, false);
+95: p = xgu_set_stencil_test_enable(p, false);
+96: p = xgu_set_alpha_test_enable(p, false);
+97: p = xgu_set_blend_enable(p, true);
+98: p = xgu_set_blend_func_sfactor(p, XGU_FACTOR_SRC_ALPHA);
+99: p = xgu_set_blend_func_dfactor(p, XGU_FACTOR_ONE_MINUS_SRC_ALPHA);
+100: p = xgu_set_transform_constant_load(p, 96);
+101: p = xgu_set_transform_constant(p, m, 4);
+102: pb_end(p);
+103: for (i = 0; i < XGU_ATTRIBUTE_COUNT; ++i)
+104: xgux_set_attrib_pointer((XguVertexArray)i, XGU_FLOAT, 0, 0, NULL);
+105: xgux_set_attrib_pointer(XGU_VERTEX_ARRAY, XGU_FLOAT, 3, sizeof(*v), &v[0].pos[0]);
+106: xgux_set_attrib_pointer(XGU_COLOR_ARRAY, LGX_UB_OGL, 4, sizeof(*v), &v[0].col[0]);
+107: xgux_set_attrib_pointer(XGU_TEXCOORD0_ARRAY, XGU_FLOAT, 2, sizeof(*v), &v[0].tc0[0]);
+108: xgux_set_attrib_pointer(XGU_TEXCOORD1_ARRAY, XGU_FLOAT, 2, sizeof(*v), &v[0].tc1[0]);
+109: }
+110: 
+111: static uint32_t *lgx_bind(uint32_t *p, unsigned int unit, int id)
+112: {
+113: const lgxTex *t = &lgx_tex[id];
+114: p = xgu_set_texture_offset(p, unit, (void *)((uint32_t)t->mem & 0x03ffffff));
+115: p = xgu_set_texture_format(p, unit, 2, false, XGU_SOURCE_COLOR, 2,
+116: XGU_TEXTURE_FORMAT_A8R8G8B8_SWIZZLED, 1, (uint8_t)t->lw, (uint8_t)t->lh, 0);
+117: p = xgu_set_texture_address(p, unit, XGU_WRAP, false, XGU_WRAP, false, XGU_WRAP, false, false);
+118: p = xgu_set_texture_control0(p, unit, true, 0, 4095);
+119: p = xgu_set_texture_filter(p, unit, 0, XGU_TEXTURE_CONVOLUTION_QUINCUNX, 2, 2,
+120: false, false, false, false);
+121: return p;
+122: }
+123: 
+124: static void lgx_vtx(lgxVert *v, float x, float y, float s, float t, const uint8_t *c)
+125: {
+126: v->pos[0] = x; v->pos[1] = y; v->pos[2] = 0.0f;
+127: v->col[0] = c[0]; v->col[1] = c[1]; v->col[2] = c[2]; v->col[3] = c[3];
+128: v->tc0[0] = s; v->tc0[1] = t; v->tc1[0] = 0.0f; v->tc1[1] = 0.0f;
+129: }
+130: 
+131: /* Quad texturizado em pixels de tela; rgba = SetColor do jogo. */
+132: int lgx_quad(int id, float x, float y, float w, float h,
+133: float s1, float t1, float s2, float t2, const uint8_t *rgba)
+134: {
+135: lgxVert *v;
+136: uint32_t *p;
+137: if (!lgx_ok || id < 0 || id >= lgx_ntex || lgx_nv + 6 > LGX_MAXVERT) return 0;
+138: v = lgx_vb + lgx_nv;
+139: lgx_vtx(&v[0], x, y, s1, t1, rgba);
+140: lgx_vtx(&v[1], x + w, y, s2, t1, rgba);
+132: int lgx_quad(int id, float x, float y, float w, float h,
+133: float s1, float t1, float s2, float t2, const uint8_t *rgba)
+134: {
+135: lgxVert *v;
+136: uint32_t *p;
+137: if (!lgx_ok || id < 0 || id >= lgx_ntex || lgx_nv + 6 > LGX_MAXVERT) return 0;
+138: v = lgx_vb + lgx_nv;
+139: lgx_vtx(&v[0], x, y, s1, t1, rgba);
+140: lgx_vtx(&v[1], x + w, y, s2, t1, rgba);
+141: lgx_vtx(&v[2], x + w, y + h, s2, t2, rgba);
+142: lgx_vtx(&v[3], x, y, s1, t1, rgba);
+143: lgx_vtx(&v[4], x + w, y + h, s2, t2, rgba);
+144: lgx_vtx(&v[5], x, y + h, s1, t2, rgba);
+145: p = pb_begin();
+146: p = lgx_bind(p, 0, id);
+147: p = lgx_bind(p, 1, lgx_white);
+148: p = push_command_parameter(p, NV097_BREAK_VERTEX_BUFFER_CACHE, 0);
+149: pb_end(p);
+150: xgux_draw_arrays(XGU_TRIANGLES, lgx_nv, 6);
+151: lgx_nv += 6;
+152: return 1;
+153: }

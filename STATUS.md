@@ -1068,3 +1068,9 @@
 - HISTORICO: trava ORIGINAL = analogico esq/D-pad cima congelava (18z9c2/18z9d-b); 18z9h-a cm0/ps0 = Pmove nunca rodou; 18z9j trava igual SEM pad -> caca virou regressao do load (frames ~940-1011)
 - PENDENTE: apos corrigir a regressao, RETESTAR analogico esq/D-pad fora do menu (coincidencia com a janela do load nao provada)
 - 18z9p: ultimo alvo f2ccebf (LoadFont real + DrawString) em G:\xemu\alice-bisect6.iso; trava = fonte; passa = 8254fa9 (dbgblit/quad off); exe=True iso=True
+
+## Lote 18z9q-a (2026-11-03 15:26)
+- 18z9p xemu: f2ccebf (LoadFont real + DrawString) PASSOU 3x: frames 2152/2478 em jogo, draw 61-62, fps 63 -> fonte INOCENTE
+- BISSECAO CONCLUIDA: regressao = 8254fa9 (18z8q: quad forcado + dbgblit -> (void)0)
+- Hipoteses: (a) patch textual alterou logica (if sem chaves/linha com comentario); (b) quad forcado mantinha estado xgu valido todo frame / dbgblit mascarava timing
+- 18z9q-a: git show 8254fa9 + linhas atuais tr_null.c + corpos lgx_frame/lgx_quad (docs/probes/lote18z9q-a.log), sem build
