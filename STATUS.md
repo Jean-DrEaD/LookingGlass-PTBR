@@ -1085,3 +1085,8 @@
 - 18z9q xemu (sem pad): quad forcado ON (q 1, atlas asrafel visivel) TRAVOU 3x: frames 997/1004/1006, s9 fps 4-12 -> quad forcado NAO mascara
 - Resta do diff 8254fa9: dbgblit (CPU no framebuffer, ~10 ms/frame)
 - 18z9r: tr_null.c de 0d37b59 (quad off) + SO dbgblit religado em G:\xemu\alice-r.iso; testar 3x (passa = timing CPU/GPU confirmado; trava = bissecao 8254fa9 x f2ccebf suspeita, refazer f2ccebf); exe=True iso=True
+
+## Lote 18z9s (2026-11-04 09:47)
+- 18z9r xemu: HEAD + quad off + dbgblit ON TRAVOU 3x: frames 942/1028/912 (s9 r1000 fps 4-6) -> dbgblit NAO mascara
+- Ressalva: 18z9q/18z9r rodaram sobre HEAD (USB/XID/watchdog); bissecao foi pre-input -> comparacao nao e direta
+- 18z9s: sem build; retestar alice-bisect6.iso (f2ccebf) 5x + alice-bisect.iso (8254fa9) 3x; f2ccebf travar = bissecao invalida (refazer 4e06d7c/7b59924 5x)
