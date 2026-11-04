@@ -1080,3 +1080,8 @@
 - Suspeita (b): lgx_vb reescrito todo frame (lgx_nv=0) enquanto a GPU ainda le o frame anterior (pb_finished desiste em 50 ms no load) -> GPU trava -> pb_begin bloqueia CPU; quad forcado/dbgblit mudavam o timing
 - Ressalva: trava intermitente -> 3 passes = indicio, nao prova
 - 18z9q: HEAD xbox + SO quad forcado religado em G:\xemu\alice-q.iso; testar 3x (passa = quad mascara; trava = testar dbgblit); exe=True iso=True
+
+## Lote 18z9r (2026-11-04 08:54)
+- 18z9q xemu (sem pad): quad forcado ON (q 1, atlas asrafel visivel) TRAVOU 3x: frames 997/1004/1006, s9 fps 4-12 -> quad forcado NAO mascara
+- Resta do diff 8254fa9: dbgblit (CPU no framebuffer, ~10 ms/frame)
+- 18z9r: tr_null.c de 0d37b59 (quad off) + SO dbgblit religado em G:\xemu\alice-r.iso; testar 3x (passa = timing CPU/GPU confirmado; trava = bissecao 8254fa9 x f2ccebf suspeita, refazer f2ccebf); exe=True iso=True
