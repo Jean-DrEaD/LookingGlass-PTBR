@@ -1090,3 +1090,9 @@
 - 18z9r xemu: HEAD + quad off + dbgblit ON TRAVOU 3x: frames 942/1028/912 (s9 r1000 fps 4-6) -> dbgblit NAO mascara
 - Ressalva: 18z9q/18z9r rodaram sobre HEAD (USB/XID/watchdog); bissecao foi pre-input -> comparacao nao e direta
 - 18z9s: sem build; retestar alice-bisect6.iso (f2ccebf) 5x + alice-bisect.iso (8254fa9) 3x; f2ccebf travar = bissecao invalida (refazer 4e06d7c/7b59924 5x)
+
+## Auto (2026-11-04 18:58)
+- mudanca: ajustes (auto)
+- build cliente OK sobre o commit 7ec8197 (engine) + alteracoes abaixo; XBE 6213632 bytes
+- teste no xemu: 5 de 5 execucoes TRAVARAM (1=TRAVOU@50s 2=TRAVOU@50s 3=TRAVOU@45s 4=TRAVOU@50s 5=TRAVOU@45s)
+- arquivos alterados: [port] ?? tools/lg-build.ps1; [port] ?? tools/lg-xemu-test.ps1; [port] ?? tools/lg.ps1
